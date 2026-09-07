@@ -1,0 +1,189 @@
+check_base = "main"
+
+# T-1576: brand-new scaffolded repos start on the rapid profile --
+# see docs/modules/tickets.md#development-profiles-frobtoml-profile-t-1575.
+# The one-way auto-ratchet upgrades this to standard automatically once
+# the repo grows past frob.tickets._profile's thresholds; downgrading
+# back to rapid after that is an explicit `frob profile downgrade` call.
+[profile]
+profile = "rapid"
+
+# New projects start strict: no legacy-adoption baseline to dial back
+# (see frob's own frob.toml for what that dial looks like once a repo
+# has un-annotated legacy surface to grandfather in). Every rule below
+# stays at its hard-error default.
+# T-3931: a fresh repo has no way to know it must set this until the
+# first `frob check` fires MILE003 on its own first ticket -- declare
+# a sane starting point (matching the version above) day one instead.
+[tickets]
+default_milestone = "0.1.0"
+
+[gates.severity]
+
+# Thresholds sized for a fresh, minimal scaffold on day one -- raise them
+# as the project's real test suite grows. frob's own defaults
+# (min_unit_cases=3, module_line_cov=85) assume an established codebase;
+# a brand-new project has one smoke test per symbol, not three.
+[testing]
+min_unit_cases = 1
+min_integration = 1
+unit_branch_cov = 50
+module_line_cov = 50
+system_line_cov = 50
+
+[[test.runner]]
+language = "python"
+command = ["uv", "run", "pytest", "-q", "{ids}"]
+all_command = ["uv", "run", "pytest", "-q"]
+cwd = "."
+
+[[test.runner]]
+language = "typescript"
+command = ["npx", "vitest", "run", "{ids}"]
+all_command = ["npx", "vitest", "run"]
+cwd = "."
+
+# T-3277: REF001/REF002 (anti-orphan gate) flags every one of these on a
+# freshly scaffolded, untouched repo -- each is read by something OUTSIDE
+# this project's own tracked-file graph (a human, GitHub Actions, a CI/CD
+# runner, or a packaging tool), never referenced by name from source the
+# way an import or a doc link would be. Declaring them here (the same
+# `[[refs.entrypoint]]` idiom frob's own frob.toml uses) is the correct
+# fix -- these are template bugs in the scaffold's OWN frob.toml, not a
+# gate bug and not something a per-project waiver belongs on.
+[[refs.entrypoint]]
+path = ".env.example"
+reason = "read by humans setting up their local .env, not referenced from tracked source"
+
+[[refs.entrypoint]]
+path = ".github/workflows/*.yml"
+reason = "read by GitHub Actions outside this repo's own tracked-file graph, never imported/referenced from source"
+
+[[refs.entrypoint]]
+path = "docker-compose.yml"
+reason = "read by `docker compose` outside this repo's own tracked-file graph, not referenced from source"
+
+[[refs.entrypoint]]
+path = "Makefile"
+reason = "read by `make` outside this repo's own tracked-file graph, not referenced from source"
+
+[[refs.entrypoint]]
+path = "invariants/.gitkeep"
+reason = "placeholder that keeps the empty invariants/ directory tracked by git; never referenced by name from source"
+
+[[refs.entrypoint]]
+path = "tests/conftest.py"
+reason = "pytest's own fixture-discovery entry point, loaded by path convention, never imported by tracked source"
+
+[[refs.entrypoint]]
+path = "README.md"
+reason = "read by humans/GitHub, a single pyproject.toml reference is expected, not fragile"
+
+[[refs.entrypoint]]
+path = "src/hullbreach_server/__init__.py"
+reason = "the package's own root module, imported by convention rather than referenced by name from other tracked files"
+
+[[refs.entrypoint]]
+path = "uv.lock"
+reason = "read by `uv sync`/`uv run` outside this repo's own tracked-file graph, one CI workflow mention is expected, not fragile"
+
+# Repo-level policy documents: read by humans and by GitHub's community
+# health tooling, never referenced by name from source.
+[[refs.entrypoint]]
+path = "LICENSE"
+reason = "read by humans and GitHub's license detection, not referenced from source"
+
+[[refs.entrypoint]]
+path = "CODE_OF_CONDUCT.md"
+reason = "read by humans and GitHub's community-health tab, not referenced from source"
+
+[[refs.entrypoint]]
+path = "SECURITY.md"
+reason = "read by humans and GitHub's security tab, not referenced from source"
+
+[[refs.entrypoint]]
+path = "CONTRIBUTING.md"
+reason = "read by humans and GitHub's PR template hints, not referenced from source"
+
+[[refs.entrypoint]]
+path = ".editorconfig"
+reason = "read by editors outside this repo's own tracked-file graph"
+
+# Web toolchain: every one of these is loaded by its tool by filename
+# convention (vite, tsc, eslint, prettier, npm), never imported from source.
+[[refs.entrypoint]]
+path = "package.json"
+reason = "read by npm/npx by filename convention, one CI workflow mention is expected"
+
+[[refs.entrypoint]]
+path = "package-lock.json"
+reason = "read by `npm ci` outside this repo's own tracked-file graph"
+
+[[refs.entrypoint]]
+path = "tsconfig.json"
+reason = "read by tsc/vite by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = "vite.config.ts"
+reason = "read by vite/vitest by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = "eslint.config.js"
+reason = "read by eslint by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = ".prettierrc.json"
+reason = "read by prettier by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = ".prettierignore"
+reason = "read by prettier by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = ".gitignore"
+reason = "read by git by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = "web/index.html"
+reason = "vite's HTML entry point, located via vite.config.ts `root`, never imported from source"
+
+[[refs.entrypoint]]
+path = "web/src/vite-env.d.ts"
+reason = "ambient type declarations picked up by tsconfig `include`, never imported by name"
+
+[[refs.entrypoint]]
+path = "web/tests/setup.ts"
+reason = "vitest setupFiles entry, referenced only from vite.config.ts"
+
+[[refs.entrypoint]]
+path = ".github/pull_request_template.md"
+reason = "read by GitHub when opening a PR, never referenced from source"
+
+# crunk (web design-system linter): the spec plus its generated outputs.
+[[refs.entrypoint]]
+path = "crunk.toml"
+reason = "read by `crunk` by filename convention, not referenced from source"
+
+[[refs.entrypoint]]
+path = "web/tailwind.config.ts"
+reason = "loaded by Tailwind through `@config` in web/src/index.css and read by crunk, never imported from source"
+
+[[refs.entrypoint]]
+path = "web/tailwind.theme.json"
+reason = "GENERATED by `crunk tokens`; imported only by web/tailwind.config.ts"
+
+[[refs.entrypoint]]
+path = "web/src/styles/tokens.css"
+reason = "GENERATED by `crunk tokens`; imported only by web/src/index.css"
+
+[[refs.entrypoint]]
+path = "web/src/styles/base/reset.css"
+reason = "imported only by web/src/index.css; crunk's base bucket"
+
+[[refs.entrypoint]]
+path = "web/src/styles/*/.gitkeep"
+reason = "placeholders that keep crunk's empty organization buckets tracked by git"
+
+[[refs.entrypoint]]
+path = "web/src/index.css"
+reason = "the stylesheet entry, imported only by web/src/main.tsx"

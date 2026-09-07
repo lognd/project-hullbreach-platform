@@ -1,0 +1,30 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ty_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# web
+node_modules/
+dist/
+coverage/
+.vite/
+*.local
+
+# frob local state
+.frob/
+
+# serena local state
+.serena/
+FROBLEMS.md
+
+# secrets
+.env
