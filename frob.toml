@@ -72,6 +72,10 @@ path = "invariants/.gitkeep"
 reason = "placeholder that keeps the empty invariants/ directory tracked by git; never referenced by name from source"
 
 [[refs.entrypoint]]
+path = "tickets/**"
+reason = "the frob ticket ledger, read by `frob ticket` and `frob check`, never referenced by name from source"
+
+[[refs.entrypoint]]
 path = "tests/conftest.py"
 reason = "pytest's own fixture-discovery entry point, loaded by path convention, never imported by tracked source"
 
