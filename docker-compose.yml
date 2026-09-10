@@ -1,0 +1,23 @@
+# Local development database. This is the stand-in for the central server
+# the course requires -- the API only ever sees a connection string, so
+# swapping this for a hosted PostgreSQL is a .env change, not a code change.
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hullbreach}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hullbreach}
+      POSTGRES_DB: ${POSTGRES_DB:-hullbreach}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hullbreach}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
