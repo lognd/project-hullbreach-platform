@@ -29,3 +29,12 @@ resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
 `health` is the liveness probe. The `logging` subpackage provides
 `get_logger`, wired per the house logging convention (stdout for DEBUG/INFO,
 stderr for WARNING+).
+
+## Web frontend
+
+The React app under `web/` is the player-facing site: landing page, cookie
+notice and data policy, registration and login, the profile page, and the
+cosmetic store. `web/index.html` is vite's entry; it loads
+`web/src/main.tsx`, which mounts `web/src/App.tsx` and imports the
+Tailwind stylesheet `web/src/index.css`. In development vite proxies
+`/api` to the Python server so the site and the API share an origin.
