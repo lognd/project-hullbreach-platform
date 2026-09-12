@@ -38,3 +38,12 @@ cosmetic store. `web/index.html` is vite's entry; it loads
 `web/src/main.tsx`, which mounts `web/src/App.tsx` and imports the
 Tailwind stylesheet `web/src/index.css`. In development vite proxies
 `/api` to the Python server so the site and the API share an origin.
+
+The design system is declared once in `crunk.toml` (palette, spacing and
+type scales, radii, z-index layers, file organization). `crunk tokens`
+generates `web/src/styles/tokens.css` and `web/tailwind.theme.json` from
+it; `web/tailwind.config.ts` hands that theme to Tailwind through
+`@config`, and `crunk check` lints every stylesheet and `className` string
+against the spec so an undeclared color or off-scale spacing is a red
+build. Utilities are namespaced to the declared scales: `bg-paper`,
+`text-ink`, `gap-space-8`, `text-font-size-20`, `rounded-radius-8`.
