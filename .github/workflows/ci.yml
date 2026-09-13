@@ -1,0 +1,138 @@
+name: CI
+
+# Development happens on branches; main only moves by pull request. Every
+# job below must succeed on the PR's head before it can merge -- the
+# `gate` job at the bottom is the single required status check to name in
+# branch protection (see CONTRIBUTING.md). pytest xfail counts as success,
+# xpass (strict) counts as failure; that is pytest's own semantics and CI
+# does not soften them.
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    name: server (python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: install
+        run: uv sync
+
+      - name: lint
+        run: uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+
+      - name: typecheck
+        run: uv run ty check src/
+
+      - name: test
+        run: uv run pytest tests/ -n auto --cov=src --cov-report=term-missing
+
+  web:
+    name: web (typescript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: install
+        run: npm ci && uv sync
+
+      - name: lint
+        run: npm run lint && npx prettier --check .
+
+      # crunk: the design-system gate. Fails on any color/size/shadow in
+      # CSS or a className string that crunk.toml does not declare, and on
+      # generated token files that drifted from the spec.
+      - name: crunk
+        run: uv run crunk check && uv run crunk tokens --check
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: test
+        run: npm run test:coverage
+
+      - name: build
+        run: npm run build
+
+  frob:
+    name: frob check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # frob diffs against main
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: install
+        run: uv sync && npm ci
+
+      # A missing/broken frob install means the gate genuinely could NOT
+      # run -- that must be a loud, non-green status, never a quiet notice
+      # next to an otherwise-green build. A skipped gate that only prints
+      # a notice is indistinguishable from a passing one.
+      - name: install frob
+        run: uv tool install frob || true
+
+      - name: frob check
+        run: |
+          if command -v frob >/dev/null 2>&1 && frob graph --help >/dev/null 2>&1; then
+            frob check --base origin/main
+          else
+            echo "::error::frob check could not run -- frob is not installed or not working (install: uv tool install frob). This gate is UNMEASURED, not clean; fix the install rather than ignoring this failure."
+            exit 1
+          fi
+
+  # The one status check branch protection requires. It fails if any job
+  # above failed OR was skipped/cancelled, so a partial run can never merge.
+  gate:
+    name: All checks pass
+    runs-on: ubuntu-latest
+    needs: [server, web, frob]
+    if: always()
+    steps:
+      - name: verify every job succeeded
+        run: |
+          echo "server: ${{ needs.server.result }}"
+          echo "web:    ${{ needs.web.result }}"
+          echo "frob:   ${{ needs.frob.result }}"
+          if [ "${{ needs.server.result }}" != "success" ] || \
+             [ "${{ needs.web.result }}" != "success" ] || \
+             [ "${{ needs.frob.result }}" != "success" ]; then
+            echo "::error::at least one required job did not succeed"
+            exit 1
+          fi
