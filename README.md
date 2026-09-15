@@ -63,11 +63,11 @@ everything around the game that is not time-critical:
 
 ## 2. How the pieces fit together
 
-```
-browser ──HTTP──▶ website (vite, :5173) ──/api──▶ API (uvicorn, :8000) ──SQL──▶ PostgreSQL (docker, :5432)
-game client ─────────────────────────HTTPS───────▶ API
-game server ─────────────────────────HTTPS───────▶ API   (match results, ELO)
-```
+The browser talks HTTP to the website dev server (vite, port 5173), which
+forwards anything under `/api` to the API (uvicorn, port 8000). The API
+speaks SQL to PostgreSQL (docker, port 5432). The game client and the game
+server talk HTTPS to the API directly; the game server reports match
+results and ELO changes that way.
 
 In development all four run on your own computer. The website's dev
 server forwards anything under `/api` to the API, so the browser only
@@ -166,48 +166,18 @@ should print a version number, not an error.
 
 ### 5a. WSL (Windows only)
 
-Open **PowerShell as Administrator** (Windows key, type `PowerShell`,
-right-click it, "Run as administrator") and run:
-
-```
-wsl --install
-```
-
-Restart when it asks. On the next boot an Ubuntu window opens and asks
-for a username and password. Pick short ones with no spaces; the
-password does not show as you type. From now on **every command in this
-README goes in that Ubuntu window**, not PowerShell.
-
-<details>
-<summary><strong>If that didn't work:</strong> WSL problems</summary>
-
-- **"WSL 2 requires an update to its kernel component"**: follow the
-  link it prints, install the update, run `wsl --install` again.
-- **No Ubuntu window after restart**: Windows key, type `Ubuntu`, open
-  it. If it is not there, open the Microsoft Store, search "Ubuntu",
-  install, open.
-- **"Virtualization is not enabled"**: this is a one-time setting in
-  your computer's BIOS/UEFI (a key like `F2` or `Del` while booting;
-  look for "Intel VT-x", "AMD-V", or "SVM"). Ask me if unsure.
-- **Where to put files**: inside Ubuntu, keep the project under your
-  Linux home (`~/projects/...`), _not_ under `/mnt/c/...`. The Windows
-  drive is very slow from WSL and some tools misbehave there.
-- **Opening the Windows side from Ubuntu**: `explorer.exe .` opens the
-  current Ubuntu folder in Windows Explorer, if you ever need to drag a
-  file in.
-
-</details>
+Open PowerShell as Administrator, run `wsl --install`, restart, and set a
+username and password in the Ubuntu window that opens. Every command in
+this README goes in that Ubuntu window from now on, not PowerShell. Keep
+the project under your Linux home (`~/projects/...`), not under
+`/mnt/c/...`. If WSL will not install, ask me.
 
 ### 5b. Git
 
-Git tracks every change to the code and is how we share work through
-GitHub.
-
 - **WSL / Ubuntu:** `sudo apt update && sudo apt install -y git`
-- **macOS:** run `git --version`; if it offers to install "command line
-  developer tools", click Install and wait.
+- **macOS:** run `git --version` and accept the developer tools prompt.
 
-Then tell Git who you are (same email as your GitHub account):
+Then tell Git who you are, with the same email as your GitHub account:
 
 ```
 git config --global user.name "Your Name"
@@ -291,8 +261,8 @@ Download Docker Desktop from https://www.docker.com/ and install it.
 Open it once so it finishes setting up.
 
 - **Windows:** during setup keep "Use WSL 2" checked. After it opens,
-  Settings → Resources → WSL integration → turn on the switch for
-  Ubuntu → Apply. Close and reopen your Ubuntu terminal.
+  Settings -> Resources -> WSL integration -> turn on the switch for
+  Ubuntu -> Apply. Close and reopen your Ubuntu terminal.
 - **macOS:** drag to Applications, open, accept the prompts.
 
 Check (in your normal terminal): `docker --version` and
@@ -302,8 +272,8 @@ Check (in your normal terminal): `docker --version` and
 <summary><strong>If that didn't work:</strong> Docker problems</summary>
 
 - **"docker: command not found" in WSL**: Docker Desktop is not
-  integrated with Ubuntu. Settings → Resources → WSL integration →
-  Ubuntu on → Apply. New Ubuntu terminal.
+  integrated with Ubuntu. Settings -> Resources -> WSL integration ->
+  Ubuntu on -> Apply. New Ubuntu terminal.
 - **"Cannot connect to the Docker daemon"**: Docker Desktop is not
   running. Open it and wait for the whale icon to stop animating. It
   has to be running every time you want the database.
@@ -335,7 +305,7 @@ PATH fix.
 
 Any editor works. If you do not have one, install **Visual Studio
 Code** from https://code.visualstudio.com/. On Windows, also install its
-"WSL" extension (Extensions panel → search "WSL" → Install) so it can
+"WSL" extension (Extensions panel -> search "WSL" -> Install) so it can
 open folders that live inside Ubuntu. From the Ubuntu terminal, `code .`
 opens the current folder. Recommended extensions once you have the
 project open: "Python" (Microsoft), "Ruff", "ESLint", "Prettier", and
@@ -444,8 +414,8 @@ That URL is also under the green **Code** button on the repository page.
 Git asks for your GitHub username and a password. **Your GitHub password
 does not work here.** You need a _personal access token_:
 
-1. On GitHub: your avatar → Settings → Developer settings → Personal
-   access tokens → Tokens (classic) → Generate new token.
+1. On GitHub: your avatar -> Settings -> Developer settings -> Personal
+   access tokens -> Tokens (classic) -> Generate new token.
 2. Name it, pick an expiry (90 days is fine), tick the `repo` box,
    generate.
 3. Copy the token and paste it where Git asks for a password. It does
@@ -600,7 +570,7 @@ for anything that loads data.
 
 - **"vite: not found"**: `npm ci` did not finish. Run it again.
 - **Port 5173 is taken**: vite picks the next free one and prints it.
-- **A blank page**: open the browser's developer console (`F12` →
+- **A blank page**: open the browser's developer console (`F12` ->
   Console) and read the red text. Usually a typo in a `.tsx` file; the
   `npm run dev` terminal shows the same error with a line number.
 - **A Tailwind class does nothing**: we do not use Tailwind's stock
@@ -823,8 +793,8 @@ In order:
   line endings. `git config --global core.autocrlf input` and re-clone.
   `.editorconfig` tells VS Code to use LF.
 - **VS Code shows red squiggles but `frob check` is green**: VS Code is
-  using a different Python. `Ctrl+Shift+P` → "Python: Select
-  Interpreter" → the one inside `.venv`.
+  using a different Python. `Ctrl+Shift+P` -> "Python: Select
+  Interpreter" -> the one inside `.venv`.
 
 </details>
 
