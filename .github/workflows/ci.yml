@@ -112,8 +112,9 @@ jobs:
       # derive the active ticket from the branch name the way it does on a
       # developer machine; pass it from the head ref instead. Pushes to
       # main have an empty diff against origin/main and need no ticket.
-      # The coverage stamp lives in the gitignored .frob/ directory, so it
-      # is rebuilt here before the gate reads it (TEST006).
+      # The coverage stamp and the ticket pre-work sweep record live in the
+      # gitignored .frob/ directory, so both are rebuilt here before the
+      # gate reads them (TEST006, PRE001).
       - name: frob check
         env:
           HEAD_REF: ${{ github.head_ref || github.ref_name }}
@@ -126,6 +127,7 @@ jobs:
           frob coverage --full --fail-on-degraded
           ticket=$(printf "%s" "$HEAD_REF" | grep -oE "^T-[0-9]{4}" || true)
           if [ -n "$ticket" ]; then
+            frob ticket sweep "$ticket"
             frob check --base origin/main --ticket "$ticket"
           else
             frob check --base origin/main
