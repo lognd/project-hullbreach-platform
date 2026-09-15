@@ -74,7 +74,8 @@ server forwards anything under `/api` to the API, so the browser only
 ever talks to one address.
 
 Three tools sit on top of the code and are part of the project, not
-optional extras:
+optional extras. Two of them, frob and crunk, are packages I wrote and
+maintain on PyPI, so if either does something confusing, ask me:
 
 - **uv** installs Python and every Python package, into a private folder
   inside the project.
@@ -187,7 +188,7 @@ README goes in that Ubuntu window**, not PowerShell.
   install, open.
 - **"Virtualization is not enabled"**: this is a one-time setting in
   your computer's BIOS/UEFI (a key like `F2` or `Del` while booting;
-  look for "Intel VT-x", "AMD-V", or "SVM"). Ask Logan if unsure.
+  look for "Intel VT-x", "AMD-V", or "SVM"). Ask me if unsure.
 - **Where to put files**: inside Ubuntu, keep the project under your
   Linux home (`~/projects/...`), _not_ under `/mnt/c/...`. The Windows
   drive is very slow from WSL and some tools misbehave there.
@@ -310,7 +311,7 @@ Check (in your normal terminal): `docker --version` and
   `sudo usermod -aG docker $USER`, log out and back in.
 - **You cannot install Docker at all** (school laptop, no admin
   rights): you can still do everything except run the database
-  locally. Tell Logan; there is a shared database to point at instead
+  locally. Tell me; there is a shared database to point at instead
   (section 9).
 
 </details>
@@ -378,7 +379,7 @@ in front of any Python command and uv runs it inside `.venv`:
 uv run hullbreach_server        # the API
 uv run pytest                   # the tests
 uv run python                   # an interactive Python with our packages
-uv run crunk check              # crunk, which is a Python package we depend on
+uv run crunk check              # crunk, installed as a Python package
 ```
 
 If you have seen `source .venv/bin/activate` in tutorials, that also
@@ -428,18 +429,17 @@ dependency of this project (it is in `pyproject.toml`), so it lives in
 ## 7. Get the code
 
 You need to be a collaborator on the GitHub repository. If you have not
-been added, send Logan your GitHub username and accept the invitation
+been added, send me your GitHub username and accept the invitation
 email.
 
 ```
 mkdir -p ~/projects
 cd ~/projects
-git clone https://github.com/<org-or-user>/project-hullbreach-platform.git platform
+git clone https://github.com/lognd/project-hullbreach-platform.git platform
 cd platform
 ```
 
-Replace the URL with the one from the green **Code** button on the
-repository page; Logan will post it in the team chat.
+That URL is also under the green **Code** button on the repository page.
 
 Git asks for your GitHub username and a password. **Your GitHub password
 does not work here.** You need a _personal access token_:
@@ -515,7 +515,7 @@ to edit anything. `cat .env` to see what is there. Every setting has a
 safe default in `pyproject.toml` under `[tool.hullbreach_server]`; `.env`
 overrides those, and command-line flags override `.env`.
 
-If you could not install Docker, ask Logan for the shared database's
+If you could not install Docker, ask me for the shared database's
 connection string and set it as `HULLBREACH_DATABASE_URL=` in `.env`.
 
 ## 10. Start the database
@@ -655,7 +655,7 @@ uv run crunk tokens --check  # the generated token files match crunk.toml
 
 ## 14. Make a change the right way
 
-`main` is protected. Nobody can push to it directly, Logan included.
+`main` is protected. Nobody can push to it directly, me included.
 Every change goes on its own **branch**, becomes a **pull request** (PR),
 must pass CI, must be approved by one teammate, and is then merged. This
 is the whole workflow, every time.
