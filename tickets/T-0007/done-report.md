@@ -1,55 +1,54 @@
 ## Done report
 
-Changed:
-- alembic.ini (repo root; script_location = src/hullbreach_server/db/migrations)
-- src/hullbreach_server/db/migrations/env.py (run_migrations_online/offline)
-- src/hullbreach_server/db/migrations/script.py.mako (standard Alembic template)
-- src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::upgrade
-- src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::downgrade
-- src/hullbreach_server/__main__.py (db subparser group: upgrade wired to
-  alembic.config.main; seed is a stub pointing at T-0008, no import of the
-  not-yet-existing db/seed.py so ty check stays clean)
-- docs/index.md (CLI section synced), pyproject.toml/uv.lock (alembic dep)
+Changed (this round, on top of the prior Done report):
+- Deleted src/hullbreach_server/db/migrations/README (REF001: Alembic's
+  scaffold README had no inbound reference; docs/index.md is the doc home)
+- frob.toml: [[refs.entrypoint]] for script.py.mako (REF002: read by
+  Alembic's `revision` command by convention via alembic.ini's
+  script_location, not referenced by name from tracked source)
+- docs/index.md: new "### Database migrations" subsection (anchor
+  #database-migrations) describing db upgrade/db seed, env.py's two
+  entrypoints, script.py.mako, and the baseline revision; reworded the
+  "not implemented yet" phrasing to a positive statement (db seed
+  "builds on ... that lands in T-0008", <!-- frob:until T-0008 -->) and
+  to "always refuses... only online migrations are supported for 0.1.0"
+  (NEGEXIST001)
+- env.py: `# frob:doc docs/index.md#database-migrations` above both
+  run_migrations_offline and run_migrations_online (COV001); dropped the
+  now-redundant LANDPARITY001 waiver on run_migrations_offline since the
+  doc directive satisfies it directly
 
-Design decision: the first migration is a no-op baseline. Section 2 (data
-model) attributes User to T-0015 and Session to T-0019 only; T-0007 owns
-no table. Section 4's items-table/D3 discussion is scoped to T-0008's
-seeding problem and explicitly says that Table is hand-declared in
-seed.py (T-0008, does not exist yet) -- landing it here would desync
-Base.metadata (empty) from the migrated schema and fail the acceptance
-test's compare_metadata check. An empty baseline keeps both empty and
-in sync; T-0015/T-0019 add the first real migrations.
+Rebase: onto origin/main (PR #7, #12 merged) picked up T-0003's close,
+so CROSSTICKET001 on tickets/T-0007/ticket.md is gone, and App.tsx's
+COV001 was already resolved upstream -- neither needed touching here.
 
-Evidence: tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
-(bound to acceptance [1]) -- builds a throwaway SQLite engine, runs
-`alembic upgrade head` against it, and asserts compare_metadata reports
-no diffs against Base.metadata. xfail marker removed. Full suite green
-locally (`uv run pytest tests/ -n auto -q`) and via `uv run ty check src/`,
-`uv run ruff check/format`, `python -m typani.lint src`.
+Evidence: unchanged from before (tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata,
+bound to acceptance [1]).
 
-Filed: none. T-0099 (wire check_connectivity into App.__call__) is NOT
-folded into this ticket: design section 4 says `db upgrade`/`db seed`
-"exit without starting uvicorn" and "neither subcommand builds
-App/create_app" -- the fail-fast wiring (App.__call__ before uvicorn.run,
-decision D2, section 3) is a disjoint code path in app/app.py that this
-ticket's scope never touches. T-0099 stays queued for whoever picks up
-app/app.py.
-
-Gates: frob check --base origin/main --ticket T-0007 clean except the
-same structural CROSSTICKET001 on tickets/T-0007/ticket.md (T-0003's
-'tickets/**' lease, still in-progress) seen and confirmed non-blocking
-in T-0006's real CI run (PR #10 passed with only gate:SCOPE findings,
-no CROSSTICKET row at all -- that gate appears to depend on local
-cross-worktree lease state absent from a fresh CI checkout).
-Waivers: WIRE001 on migrations/versions/...::upgrade and ::downgrade
-(reflective/Alembic-only invocation, follow_up T-0015); TEST001 on
-::downgrade (no-op revert path). ruff check/format, ty check, and
-typani.lint all pass. `uv run pytest tests/ -n auto -q`: all green.
+Gates: `frob check --base origin/main --ticket T-0007` -- 0 errors, 81
+warnings, 1 unresolved (gate:FLAGCOV, pre-existing/unrelated), 48 waived.
+Exact CI sequence run locally: ruff check/format, ty check, `uv run
+pytest tests/ -n auto -q` (all green); `npx tsc --noEmit`, `npx eslint .`,
+`npx vitest run` (36/36, all green, after `npm ci` picked up
+@testing-library/user-event from a sibling ticket's package.json change).
 
 ### Changed
 ```
- tickets/T-0007/ticket.md | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ alembic.ini                                        | 152 +++++++++++++++++++++
+ design/hullbreach.strata                           |   8 +-
+ docs/index.md                                      |  15 +-
+ frob-coverage.lock.json                            |   4 +-
+ pyproject.toml                                     |   1 +
+ src/hullbreach_server/__main__.py                  |  30 ++++
+ src/hullbreach_server/db/migrations/README         |   1 +
+ src/hullbreach_server/db/migrations/env.py         |  72 ++++++++++
+ src/hullbreach_server/db/migrations/script.py.mako |  28 ++++
+ .../ba2efc248a9a_baseline_no_tables_yet.py         |  35 +++++
+ tests/system/test_build.py                         |  24 ++--
+ tickets/T-0007/done-report.md                      |  60 ++++++++
+ tickets/T-0007/ticket.md                           |  52 ++++++-
+ uv.lock                                            | 102 ++++++++++++++
+ 14 files changed, 561 insertions(+), 23 deletions(-)
 ```
 
 ### Evidence
