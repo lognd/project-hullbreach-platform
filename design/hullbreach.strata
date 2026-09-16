@@ -325,6 +325,14 @@ flow f_app_to_logging : hullbreach_server_app -> hullbreach_server_logging {
     attr "app/app.py imports get_logger from logging package";
 }
 
+// frob:ticket T-0099
+// frob:doc docs/design/sprint-1.md#fail-fast-startup-t-0006
+flow f_app_to_db : hullbreach_server_app -> hullbreach_server_db {
+    label Internal;
+    attr local;
+    attr "app/app.py imports check_connectivity/create_db_engine from db.engine for the fail-fast startup check";
+}
+
 // -------------------------------------------------------------------
 // Secrets: password hashes at rest, session tokens, and the database
 // credential itself -- each modeled as a cache-of-authority per

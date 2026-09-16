@@ -50,3 +50,39 @@ def test_create_app_returns_fastapi_with_config_attached() -> None:
 def test_app_is_constructible_without_binding_a_socket() -> None:
     # frob:tests src/hullbreach_server/app/app.py::App kind="unit"
     assert callable(App(AppConfig()))
+
+
+# frob:ticket T-0099
+def test_app_call_exits_nonzero_naming_host_when_database_unreachable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """App.__call__ exits non-zero (naming the host in the ERROR log) instead
+    of calling uvicorn.run when the configured database is unreachable."""
+    from typani import Err
+
+    from hullbreach_server.app import app as app_module
+    from hullbreach_server.db.engine import DatabaseError
+
+    monkeypatch.setattr(
+        app_module,
+        "check_connectivity",
+        lambda engine: Err(
+            DatabaseError(
+                message="Cannot reach database at bad-host:5432 (database=db): OperationalError"
+            )
+        ),
+    )
+
+    def _fail_if_called(*args: object, **kwargs: object) -> None:
+        raise AssertionError(
+            "uvicorn.run must not be called when the database is unreachable"
+        )
+
+    monkeypatch.setattr("uvicorn.run", _fail_if_called)
+
+    application = App(AppConfig(database_url="sqlite:///:memory:"))
+
+    with pytest.raises(SystemExit) as exc_info:
+        application()
+
+    assert exc_info.value.code == 1

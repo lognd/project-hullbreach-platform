@@ -1,7 +1,7 @@
 ---
 id: T-0099
 title: Wire check_connectivity into App startup for fail-fast DB check
-state: queued
+state: done
 kind: feature
 origin: human
 created: '2026-09-16'
@@ -16,10 +16,34 @@ runs_last_parallel_safe_reason: null
 scope:
 - src/hullbreach_server/app/app.py
 - tests/unit/test_app.py
+- design/hullbreach.strata
+- docs/design/sprint-1.md
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: design/hullbreach.strata
+  reason: App.__call__ now calls check_connectivity via db.engine; needs a new f_app_to_db
+    flow declared in the strata model to satisfy SYS003
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: f_app_to_db's frob:doc anchor points at docs/design/sprint-1.md#fail-fast-startup-t-0006
+    (AFFECT001); update it to reflect the landed wiring
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: App.__call__ now calls check_connectivity via db.engine; docs/index.md's
+    App description needs updating (AFFECT001)
+  actor: logan
+  at: '2026-09-16'
+evidence:
+- tests/unit/test_app.py::test_app_call_exits_nonzero_naming_host_when_database_unreachable
 designated_repro_test: null
 threat: null
 component: null
