@@ -49,13 +49,25 @@ cwd = "."
 # "typescript" entry above agree on -- returns "typescript" for .ts/.tsx.
 # `frob ticket evidence`/`close`'s verification path buckets by the
 # LANGUAGE_COLLECTORS key ("ts"), so it can never find the "typescript"
-# runner above and always fails NoRunner/EvidenceNotPassing on a vitest
-# node id, even though `frob test`/`npx vitest run` pass the same id.
-# This mirrors the typescript entry exactly as a workaround until that
-# key mismatch is fixed upstream; remove once it is.
+# runner above and always fails NoRunner. A second bug compounds this:
+# {ids} renders a full "file::describe > test" node id as vitest's
+# positional FILE filter (vitest has no pytest-style path::name syntax),
+# so even a "ts"-keyed runner using {ids} directly gets "No test files
+# found". This entry works around both: it registers under "ts" AND
+# splits the node id on its first "::" itself (file vs. vitest's own
+# -t test-name-pattern) before invoking vitest. Single-id evidence
+# binding only (frob passes one id per --accepts call); remove this
+# whole entry once frob fixes the "ts"/"typescript" key mismatch and
+# gives vitest ids a proper file+pattern render.
 [[test.runner]]
 language = "ts"
-command = ["npx", "vitest", "run", "{ids}"]
+command = [
+  "sh",
+  "-c",
+  "id=\"$1\"; file=\"${id%%::*}\"; rest=\"${id#*::}\"; name=\"${rest##*> }\"; exec npx vitest run \"$file\" -t \"$name\"",
+  "--",
+  "{ids}",
+]
 all_command = ["npx", "vitest", "run"]
 cwd = "."
 
