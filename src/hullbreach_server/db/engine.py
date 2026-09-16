@@ -76,7 +76,7 @@ def create_db_engine(url: str, **kwargs: Any) -> Engine:
 
 
 # frob:tests tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url  # noqa: E501
-# frob:waive WIRE001 reason="no route calls check_connectivity yet in this ticket" follow_up="T-0012"  # noqa: E501
+# frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:doc docs/index.md#public-api
 def check_connectivity(engine: Engine) -> Result[None, DatabaseError]:
     """Run `SELECT 1` against `engine`; Err names the host, never the raw URL."""

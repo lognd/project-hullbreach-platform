@@ -1,12 +1,5 @@
 """Unit tests for API routes."""
 
-# `hullbreach_server.app` is imported before `api.health` below so the
-# app package (and its import of the `api` package) finishes initializing
-# first -- importing `api.health` directly first would otherwise partially
-# initialize the `api` package while `api.health` -> `db` -> `app.config`
-# triggers `app`'s own `__init__` (which imports `app.app`, which imports
-# `api` back), a circular import.
-import hullbreach_server.app  # noqa: F401
 from hullbreach_server import __version__
 from hullbreach_server.api.health import health
 

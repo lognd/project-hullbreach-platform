@@ -9,10 +9,12 @@
     "src/hullbreach_server/app/config.py": 0.0,
     "src/hullbreach_server/db/__init__.py": 0.0,
     "src/hullbreach_server/db/engine.py": 0.0,
+    "src/hullbreach_server/db/migrations/env.py": 0.0,
+    "src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py": 0.0,
     "src/hullbreach_server/logging/__init__.py": 0.0,
     "src/hullbreach_server/logging/filter.py": 0.0,
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "53449d9b04cb8719990e95fa411064a98fc70d32e7db0846ce2ff4aeaa3c7443"
+  "source_sha": "3bf7f4964eab5648f3219e43d75db3fff78bce5af363406bf50929ee71fec1d5"
 }
