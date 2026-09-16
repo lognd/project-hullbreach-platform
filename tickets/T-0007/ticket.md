@@ -22,6 +22,7 @@ scope:
 - uv.lock
 - docs/index.md
 - design/hullbreach.strata
+- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -60,6 +61,12 @@ scope_changes:
   reason: must re-point REL200 waivers on database_url__issue/revoke, f_database_url_to_db,
     and f_db_to_postgres away from T-0007 (which does not address strata-declared
     timeout attrs) before closing, per frob's LiveTrackerCited check
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: REF002 waiver for script.py.mako needs a [[refs.entrypoint]] declaration
+    in frob.toml, per coordinator direction
   actor: logan
   at: '2026-09-16'
 evidence:
