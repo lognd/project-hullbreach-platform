@@ -22,6 +22,7 @@ scope:
 - web/tests/unit/Header.test.tsx
 - web/src/auth/session.ts
 - web/src/main.tsx
+- web/tests/unit/App.test.tsx
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -43,6 +44,14 @@ scope_changes:
     shape design/sprint-1.md sec.6 puts in auth/session.ts; T-0021 (already scoped
     to this same file) fills in Login.tsx's usage and reload-persistence coverage
     on top of this shape
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: web/tests/unit/App.test.tsx
+  reason: App.tsx's job changed from rendering landing content to being the page shell
+    (Header/Outlet/Footer) per design/sprint-1.md sec.6; the pre-existing scaffold
+    smoke test asserted the old content and must be updated to match, not left asserting
+    something now false
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
