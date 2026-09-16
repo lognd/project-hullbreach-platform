@@ -18,10 +18,39 @@ scope:
 - src/hullbreach_server/db/__init__.py
 - src/hullbreach_server/db/engine.py
 - tests/unit/test_db_engine.py
+- docs/index.md
+- pyproject.toml
+- uv.lock
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: docs/index.md
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: pyproject.toml
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: uv.lock
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
 designated_repro_test: null
