@@ -23,6 +23,7 @@ scope:
 - uv.lock
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -56,6 +57,12 @@ scope_changes:
   glob: docs/design/registry/capability-via-ratchet.lock.json
   reason: T-0006 adds hullbreach_server_db's first 'sql' via-site (check_connectivity),
     which must bump the committed via-ratchet ceiling from 0 to 1
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 requires the design doc's affects()-closure sections (7, 9) to
+    be touched alongside the strata flows T-0006 adds/edits
   actor: logan
   at: '2026-09-16'
 evidence:
