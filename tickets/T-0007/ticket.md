@@ -21,11 +21,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 designated_repro_test: null
 acceptance:
 - text: given a fresh database, when the upgrade command runs, then alembic heads
     match the models
-  evidence: []
+  evidence:
+  - tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 threat: null
 component: null
 anchor: false
