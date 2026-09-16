@@ -1,7 +1,7 @@
 ---
 id: T-0098
 title: Sprint 1 xfail test skeleton (python)
-state: in-progress
+state: done
 kind: docs
 origin: human
 created: '2026-09-16'
