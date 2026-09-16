@@ -27,6 +27,8 @@ scope:
 - docs/index.md
 - design/hullbreach.strata
 - docs/design/sprint-1.md
+- src/hullbreach_server/db/engine.py
+- src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -97,6 +99,20 @@ scope_changes:
   glob: docs/design/sprint-1.md
   reason: AFFECT001 requires section 7 (test strategy) to be touched alongside the
     new f_tests_to_auth flow
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/engine.py
+  reason: 'must re-point/resolve WIRE001 follow_up=T-0015 citations before closing
+    (frob''s LiveTrackerCited check): Base now has a real ORM subclass (User), and
+    the baseline migration''s waivers need a new open-ticket follow_up'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py
+  reason: 'must re-point/resolve WIRE001 follow_up=T-0015 citations before closing
+    (frob''s LiveTrackerCited check): Base now has a real ORM subclass (User), and
+    the baseline migration''s waivers need a new open-ticket follow_up'
   actor: logan
   at: '2026-09-16'
 evidence:
