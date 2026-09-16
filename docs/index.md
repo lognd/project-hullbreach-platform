@@ -122,6 +122,37 @@ against the spec so an undeclared color or off-scale spacing is a red
 build. Utilities are namespaced to the declared scales: `bg-paper`,
 `text-ink`, `gap-space-8`, `text-font-size-20`, `rounded-radius-8`.
 
+### Routing and page shell
+
+`web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
+landing content), `/register`, `/login`, and a `*` not-found fallback, all
+routed as children of `web/src/App.tsx`'s page shell. `App` renders
+`Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
+`Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
+router context renders nothing rather than throwing. `web/src/main.tsx`
+mounts the tree with `RouterProvider`, not `App` directly.
+
+`web/src/components/Header.tsx` reads `useSession()` (below) and shows
+Register/Login links when signed out, or the username and a Log out
+control when signed in; every control is a real `<a>`/`<button>` (never a
+`<div onClick>`) so tab order and Enter-activation work by construction.
+The signed-in Log out control does not yet clear the session or call the
+logout endpoint -- that lands with the ticket that also implements the
+API client module. `web/src/components/Footer.tsx` links to the cookie
+and data policy pages.
+
+### Session persistence
+
+`web/src/auth/session.ts` is the client-side session store: a
+`StoredSession` (token/userId/username/role) persisted to
+`localStorage["hullbreach.session"]`. `saveSession`/`loadSession`/
+`clearSession` read and write it directly (`loadSession` guards `JSON.
+parse` and returns `null` on anything malformed); `useSession` is the
+React hook `Header` and any future consumer read it through -- it
+initializes from `loadSession()` synchronously (no signed-out flash on
+reload) and re-reads on the `storage` event, so a change in one tab is
+reflected in another.
+
 ## Sprint 1 design
 
 `docs/design/sprint-1.md` is the system design for milestone 0.1.0
