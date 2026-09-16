@@ -533,6 +533,9 @@ No live-Postgres test exists in 0.1.0; `tests/system/test_build.py`'s
 Alembic check (section 4) also runs against the SQLite/in-memory engine,
 which Alembic supports for DDL-only migrations (no Postgres-only column
 types are used in the three 0.1.0 migrations, so this holds).
+`tests/unit/test_passwords.py` and `tests/unit/test_roles.py`'s direct
+imports of `hullbreach_server.auth.passwords` are the `f_tests_to_auth`
+edge (section 9) in `design/hullbreach.strata`.
 
 The strata `tests` node's `code` glob (section 9) covers both `tests/**`
 (the Python suite above) and `web/tests/**` -- T-0044/T-0017/T-0021/T-0024's

@@ -54,9 +54,9 @@ node game_server : foreign {
 node hullbreach_server_root : trusted {
     code "src/hullbreach_server/__init__.py" "src/hullbreach_server/__main__.py";
     may "env.write" via "src/hullbreach_server/__main__.py::main";
-    waive "REL200:database_url__issue" reason "design-only pass; the database URL is an operator-rotated credential (section 9's secret bound), not something T-0006's code path times out itself" ticket "T-0015";
-    waive "REL200:database_url__revoke" reason "same as database_url__issue: rotation is operational, not a code-level timeout" ticket "T-0015";
-    waive "REL200:f_database_url_to_db" reason "design-only pass; db/engine.py (T-0006) reads the URL once at engine construction, no request/response cycle to time out" ticket "T-0015";
+    waive "REL200:database_url__issue" reason "design-only pass; the database URL is an operator-rotated credential (section 9's secret bound), not something T-0006's code path times out itself" ticket "T-0012";
+    waive "REL200:database_url__revoke" reason "same as database_url__issue: rotation is operational, not a code-level timeout" ticket "T-0012";
+    waive "REL200:f_database_url_to_db" reason "design-only pass; db/engine.py (T-0006) reads the URL once at engine construction, no request/response cycle to time out" ticket "T-0012";
 }
 
 // frob:ticket T-0095
@@ -76,23 +76,22 @@ node hullbreach_server_api : trusted {
 // frob:ticket T-0095
 node hullbreach_server_auth : trusted {
     code "src/hullbreach_server/auth/**";
-    waive "SYS113" reason "design-first pass; T-0015 (auth/passwords.py) and T-0019 (auth/sessions.py, auth/deps.py) have not landed yet, so this declared surface has no files on this branch" ticket "T-0015";
-    waive "REL200:f_auth_to_db" reason "design-only pass; the internal auth->db call has no timeout token until T-0015/T-0019 land" ticket "T-0019";
+    waive "REL200:f_auth_to_db" reason "design-only pass; the internal auth->db call has no timeout token until T-0019 lands" ticket "T-0019";
     waive "REL200:session_token__issue" reason "design-only pass; T-0019/T-0020 introduce auth/sessions.py, the real issuer, and will declare/prove a real timeout there" ticket "T-0019";
     waive "REL200:session_token__revoke" reason "same as session_token__issue: no auth/sessions.py code exists yet" ticket "T-0019";
-    waive "REL200:password_hash__issue" reason "design-only pass; T-0015 introduces auth/passwords.py, the real issuer, and will declare/prove a real timeout there" ticket "T-0015";
-    waive "REL200:password_hash__revoke" reason "same as password_hash__issue: no auth/passwords.py code exists yet" ticket "T-0015";
+    waive "REL200:password_hash__issue" reason "design-only pass; hash_password (T-0015) computes a hash in-process with no connection/request to time out; T-0016 is the real persistence call site and will declare/prove a real timeout there" ticket "T-0016";
+    waive "REL200:password_hash__revoke" reason "same as password_hash__issue: a password hash is never revoked/rotated by code, only by a future rehash-on-login upgrade path (design section 8, open question)" ticket "T-0016";
     waive "REL200:f_session_token_to_browser" reason "design-only pass; T-0019/T-0020 introduce auth/sessions.py, which will declare/prove a real timeout on token issuance" ticket "T-0019";
     waive "REL200:f_session_token_to_game_client" reason "design-only pass; T-0026 introduces the game-client login path and will declare/prove a real timeout there" ticket "T-0026";
     waive "REL200:f_session_token_to_game_server" reason "design-only pass; T-0026 introduces GET /session and will declare/prove a real timeout there" ticket "T-0026";
-    waive "REL200:f_password_hash_to_db" reason "design-only pass; T-0015 introduces auth/passwords.py and will declare/prove a real timeout on the persistence call" ticket "T-0015";
+    waive "REL200:f_password_hash_to_db" reason "design-only pass; hash_password (T-0015) has no request/response cycle to time out; T-0016 is the real persistence call site and will declare/prove a real timeout there" ticket "T-0016";
 }
 
 // frob:ticket T-0095
 node hullbreach_server_db : trusted {
     code "src/hullbreach_server/db/**";
     may "sql" via "src/hullbreach_server/db/engine.py::check_connectivity";
-    waive "REL200:f_db_to_postgres" reason "design-only pass; create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg driver, but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is follow-up work, not blocking T-0006's own acceptance criteria" ticket "T-0015";
+    waive "REL200:f_db_to_postgres" reason "design-only pass; create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg driver, but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is follow-up work, not blocking T-0006's own acceptance criteria" ticket "T-0012";
 }
 
 // frob:ticket T-0095
@@ -169,6 +168,14 @@ flow f_tests_to_db : tests -> hullbreach_server_db {
     label Internal;
     attr local;
     attr "test modules import hullbreach_server.db/.db.engine directly";
+}
+
+// frob:ticket T-0015
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_auth : tests -> hullbreach_server_auth {
+    label Internal;
+    attr local;
+    attr "test modules import hullbreach_server.auth.passwords directly";
 }
 
 // -------------------------------------------------------------------
