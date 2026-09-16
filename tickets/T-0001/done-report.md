@@ -4,14 +4,19 @@ Merged as PR #1. The platform monorepo is scaffolded: FastAPI server with AppCon
 
 ### Changed
 ```
- tickets/T-0002/ticket.md | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ tickets/T-0001/done-report.md | 17 +++++++++++++++++
+ tickets/T-0001/ticket.md      | 13 +++++++++++--
+ tickets/T-0002/ticket.md      | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 61 insertions(+), 2 deletions(-)
 ```
 
 ### Evidence
-(no evidence recorded)
+- `tests/system/test_build.py::test_package_imports` (pytest node id, verified passing when recorded)
+- `tests/system/test_build.py::test_cli_help` (pytest node id, verified passing when recorded)
+- `tests/system/test_build.py::test_app_builds_and_serves_health` (pytest node id, verified passing when recorded)
+- `tests/unit/test_api.py::test_health_reports_ok_and_version` (pytest node id, verified passing when recorded)
 
 ### Captured claims
-- tests: 0 passed (from 0 evidence id(s))
+- tests: 4 passed (from 4 evidence id(s))
 - gates: 0 error(s), 25 warning(s), 0 waived
 - error-findings: none (measured, zero errors)
