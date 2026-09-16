@@ -26,6 +26,7 @@ scope:
 - tests/unit/test_roles.py
 - docs/index.md
 - design/hullbreach.strata
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -90,6 +91,12 @@ scope_changes:
   glob: design/hullbreach.strata
   reason: need a tests->auth Flow declaration (SYS003) and to refresh the stale SYS113
     waiver on hullbreach_server_auth now that auth/passwords.py has landed
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 requires section 7 (test strategy) to be touched alongside the
+    new f_tests_to_auth flow
   actor: logan
   at: '2026-09-16'
 evidence:
