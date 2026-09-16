@@ -27,13 +27,14 @@ updated docs/index.md's App paragraph to describe the fail-fast check
  frob-coverage.lock.json          |  2 +-
  src/hullbreach_server/app/app.py | 20 ++++++++++++++++++++
  tests/unit/test_app.py           | 36 ++++++++++++++++++++++++++++++++++++
- tickets/T-0099/ticket.md         | 24 +++++++++++++++++++++++-
- 6 files changed, 91 insertions(+), 5 deletions(-)
+ tickets/T-0099/done-report.md    | 39 +++++++++++++++++++++++++++++++++++++++
+ tickets/T-0099/ticket.md         | 26 +++++++++++++++++++++++++-
+ 7 files changed, 132 insertions(+), 5 deletions(-)
 ```
 
 ### Evidence
-(no evidence recorded)
+- `tests/unit/test_app.py::test_app_call_exits_nonzero_naming_host_when_database_unreachable` (pytest node id, verified passing when recorded)
 
 ### Captured claims
-- tests: 0 passed (from 0 evidence id(s))
+- tests: 1 passed (from 1 evidence id(s))
 - gates: unmeasured (no parsable gate-summary from a fresh check)
