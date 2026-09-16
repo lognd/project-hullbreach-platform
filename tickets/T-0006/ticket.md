@@ -22,11 +22,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
 designated_repro_test: null
 acceptance:
 - text: given an unreachable database URL, when create_app starts, then startup fails
     with a message naming the host
-  evidence: []
+  evidence:
+  - tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
 threat: null
 component: null
 anchor: false
