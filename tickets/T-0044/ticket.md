@@ -23,6 +23,7 @@ scope:
 - web/src/auth/session.ts
 - web/src/main.tsx
 - web/tests/unit/App.test.tsx
+- web/tests/unit/Login.test.tsx
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -52,6 +53,15 @@ scope_changes:
     (Header/Outlet/Footer) per design/sprint-1.md sec.6; the pre-existing scaffold
     smoke test asserted the old content and must be updated to match, not left asserting
     something now false
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: web/tests/unit/Login.test.tsx
+  reason: web/src/auth/session.ts's own shape (saveSession/loadSession/clearSession/useSession)
+    is fully implemented by T-0044 (needed by Header's signed-in state) and Login.test.tsx's
+    'auth/session.ts' describe block tests exactly that shape in isolation from the
+    Login page; flipping just those 4 to it, leaving the 6 'Login page' tests (which
+    need pages/Login.tsx, T-0021's own file) untouched and failing
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
