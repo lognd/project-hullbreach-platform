@@ -21,7 +21,6 @@ scope:
 - docs/index.md
 - pyproject.toml
 - uv.lock
-- design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
 - tests/unit/conftest.py
@@ -93,6 +92,13 @@ scope_changes:
     (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
     one-line fixes exposed by this ticket's own activation, per coordinator direction
     to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: design/hullbreach.strata
+  reason: T-0097 holds a live cross-worktree lease on this file; T-0006's strata edits
+    already landed in a prior commit on this branch and are not being changed further
+    in this round
   actor: logan
   at: '2026-09-16'
 evidence:
