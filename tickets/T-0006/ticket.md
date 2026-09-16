@@ -2,7 +2,7 @@
 id: T-0006
 title: Database engine and session dependency from HULLBREACH_DATABASE_URL, fail fast
   at startup
-state: done
+state: queued
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -85,3 +85,5 @@ anchor: false
 anchor_reason: null
 land_commit: null
 ---
+## Reopen log
+- 2026-09-16: PR #10 CI red from fixture-activation ripple (I001 in conftest.py/test_build.py, XPASS in test_auth_register.py); coordinator directed fixing these inside T-0006 instead of via drafts
