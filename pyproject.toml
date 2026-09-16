@@ -16,6 +16,8 @@ dependencies = [
     "pydantic>=2.12.0",
     "python-dotenv>=1.0",
     "typani>=0.0.3",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.3.5",
 ]
 
 [project.scripts]

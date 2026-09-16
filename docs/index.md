@@ -20,6 +20,13 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter.format -->
 <!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter -->
 <!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter.filter -->
+<!-- frob:describes src/hullbreach_server/db/engine.py::Base -->
+<!-- frob:describes src/hullbreach_server/db/engine.py::DatabaseError -->
+<!-- frob:describes src/hullbreach_server/db/engine.py::create_db_engine -->
+<!-- frob:describes src/hullbreach_server/db/engine.py::check_connectivity -->
+<!-- frob:describes src/hullbreach_server/db/__init__.py::get_engine -->
+<!-- frob:describes src/hullbreach_server/db/__init__.py::get_sessionmaker -->
+<!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
@@ -29,6 +36,17 @@ resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
 `health` is the liveness probe. The `logging` subpackage provides
 `get_logger`, wired per the house logging convention (stdout for DEBUG/INFO,
 stderr for WARNING+).
+
+The `db` package is the SQLAlchemy 2.x surface: `create_db_engine(url)`
+builds an `Engine` (normalizing a bare `postgresql://` URL to the
+`psycopg` v3 driver), `check_connectivity(engine)` runs `SELECT 1` and
+returns a typani `Result[None, DatabaseError]` whose message names the
+host/port/database but never a raw URL or password, and `Base` is the
+shared `DeclarativeBase` (with the ix/uq/ck/fk/pk naming convention) that
+every ORM model and the Alembic env import. `get_engine`/`get_sessionmaker`
+lazily build the process-wide engine and sessionmaker from
+`AppConfig.from_external()`, and `get_db` is the FastAPI dependency that
+yields a session per request and closes it afterward.
 
 ## Web frontend
 

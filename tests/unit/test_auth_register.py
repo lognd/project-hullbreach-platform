@@ -105,6 +105,7 @@ def test_register_response_never_exposes_password_hash(client) -> None:
     """UserProfile never includes password_hash or the raw password anywhere in the body."""
     response = client.post("/api/v1/auth/register", json=_register_payload())
 
+    assert response.status_code == 201
     body = response.json()
     assert "password_hash" not in body
     assert "password" not in body

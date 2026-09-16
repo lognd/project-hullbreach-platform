@@ -2,7 +2,7 @@
 id: T-0006
 title: Database engine and session dependency from HULLBREACH_DATABASE_URL, fail fast
   at startup
-state: queued
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -18,12 +18,132 @@ scope:
 - src/hullbreach_server/db/__init__.py
 - src/hullbreach_server/db/engine.py
 - tests/unit/test_db_engine.py
+- docs/index.md
+- pyproject.toml
+- uv.lock
+- tests/unit/conftest.py
+- tests/system/test_build.py
+- tests/unit/test_auth_register.py
+- docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: docs/index.md
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: pyproject.toml
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: uv.lock
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
+    strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: T-0006 adds hullbreach_server_db's first 'sql' via-site (check_connectivity),
+    which must bump the committed via-ratchet ceiling from 0 to 1
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 requires the design doc's affects()-closure sections (7, 9) to
+    be touched alongside the strata flows T-0006 adds/edits
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/conftest.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/system/test_build.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_auth_register.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: design/hullbreach.strata
+  reason: T-0097 holds a live cross-worktree lease on this file; T-0006's strata edits
+    already landed in a prior commit on this branch and are not being changed further
+    in this round
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: T-0097 holds live cross-worktree leases on these design files; T-0006's
+    edits to them already landed in a prior commit and are not changing further in
+    this round
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: docs/design/sprint-1.md
+  reason: T-0097 holds live cross-worktree leases on these design files; T-0006's
+    edits to them already landed in a prior commit and are not changing further in
+    this round
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 're-adding: these were part of T-0006''s original diff (db capability baseline,
+    doc sync) and removing them left SCOPE001 against the branch''s own already-committed
+    changes'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: 're-adding: these were part of T-0006''s original diff (db capability baseline,
+    doc sync) and removing them left SCOPE001 against the branch''s own already-committed
+    changes'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: 're-adding: part of T-0006''s original diff (db node capability/flows),
+    removing it left SCOPE001 against already-committed changes'
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
+- tests/unit/test_db_engine.py::test_check_connectivity_never_logs_the_full_url_with_password
+- tests/unit/test_db_engine.py::test_check_connectivity_succeeds_on_reachable_sqlite_engine
+- tests/unit/test_db_engine.py::test_create_db_engine_returns_a_sqlalchemy_engine
+- tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
+- tests/unit/test_db_engine.py::test_base_metadata_has_naming_convention_for_alembic
+- tests/unit/test_db_engine.py::test_get_db_dependency_yields_a_session
 designated_repro_test: null
 acceptance:
 - text: given an unreachable database URL, when create_app starts, then startup fails
@@ -36,3 +156,5 @@ anchor: false
 anchor_reason: null
 land_commit: null
 ---
+## Reopen log
+- 2026-09-16: PR #10 CI red from fixture-activation ripple (I001 in conftest.py/test_build.py, XPASS in test_auth_register.py); coordinator directed fixing these inside T-0006 instead of via drafts

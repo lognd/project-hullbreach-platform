@@ -512,7 +512,9 @@ Unit tests use SQLite through a URL override: a `conftest.py` fixture
 (`tests/unit/conftest.py`, new file, in scope for whichever ticket first <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
 needs it -- T-0006's `tests/unit/test_db_engine.py` is scope-eligible to <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
 add it since fixtures shared across `tests/unit/` conventionally live
-there) provides:
+there) provides -- `tests/unit/test_db_engine.py` and this fixture file
+are the direct imports of `hullbreach_server.db`/`db.engine` that
+`f_tests_to_db` (section 9) declares in `design/hullbreach.strata`:
 
 - `engine` -- `create_db_engine("sqlite:///:memory:")` with
   `StaticPool` and `connect_args={"check_same_thread": False}` so the
@@ -631,7 +633,12 @@ platform package's existing, already-shipped Python import edges between
 `__main__.py`, `app/`, `api/`, and `logging/` (measured, not planned --
 the same edges `frob sys init --check` derives from the real import
 graph, each marked `attr local` since none of them cross a process
-boundary); a `tests` node (`code "tests/**"`) declaring, via `may`, the
+boundary); two more such measured edges added by T-0006 once `db/`
+landed (`f_db_to_app`, since `src/hullbreach_server/db/__init__.py` reads `AppConfig` via
+`AppConfig.from_external()`, and `f_db_to_logging`, since both `db`
+modules use the module-logger convention), plus `f_tests_to_db` for the
+test tree's direct imports of `db`/`db.engine`; a `tests` node (`code
+"tests/**"`) declaring, via `may`, the
 `eval`/`exec`/`fs.read` capabilities `tests/system/test_build.py`'s
 fresh-`uv sync` smoke test legitimately exercises and the `fs.write`
 capability `tests/unit/test_app.py`'s config-file fixture exercises, so
