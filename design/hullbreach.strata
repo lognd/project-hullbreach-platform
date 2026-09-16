@@ -126,6 +126,8 @@ node tests : trusted {
     may "exec" via "tests/system/test_build.py";
     may "fs.read" via "tests/system/test_build.py";
     may "fs.write" via "tests/unit/test_app.py";
+    may "client_storage" via "web/tests/unit/Header.test.tsx";
+    may "client_storage" via "web/tests/unit/Login.test.tsx";
     may "sql"; // because: "sprint-1 xfail test bodies (test_seed.py, conftest.py) execute raw SQL against the in-memory SQLite fixture to assert idempotency/row counts; nearly every test in this node touches the database, so per-file via scoping is not worth it"
 }
 
