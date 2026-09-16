@@ -21,6 +21,8 @@ scope:
 - src/hullbreach_server/db/models/__init__.py
 - src/hullbreach_server/db/migrations/versions/
 - src/hullbreach_server/db/migrations/env.py
+- pyproject.toml
+- uv.lock
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -55,6 +57,16 @@ scope_changes:
   reason: env.py must import db.models so Base.metadata is populated before compare_metadata/autogenerate
     runs, per docs/design/sprint-1.md section 1's own module map ('db/migrations/env.py
     imports Base and every model module from db/models/')
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: pyproject.toml
+  reason: pyproject.toml/uv.lock gain the pwdlib[argon2] dependency
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: uv.lock
+  reason: pyproject.toml/uv.lock gain the pwdlib[argon2] dependency
   actor: logan
   at: '2026-09-16'
 evidence:
