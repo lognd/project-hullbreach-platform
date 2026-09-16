@@ -1,7 +1,7 @@
 ---
 id: T-0096
 title: Sprint 1 failing test skeleton (web)
-state: queued
+state: in-progress
 kind: docs
 origin: human
 created: '2026-09-16'
