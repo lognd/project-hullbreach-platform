@@ -51,14 +51,14 @@ afterEach(() => {
 });
 
 describe("Header (signed out)", () => {
-  it.fails("renders the brand", async () => {
+  it("renders the brand", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     render(<Header />);
     expect(screen.getByText(/hullbreach/i)).toBeInTheDocument();
   });
 
-  it.fails("shows Register and Login links when signed out", async () => {
+  it("shows Register and Login links when signed out", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     render(<Header />);
@@ -72,7 +72,7 @@ describe("Header (signed out)", () => {
     );
   });
 
-  it.fails(
+  it(
     "renders every interactive control as a real anchor or button element",
     async () => {
       // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
@@ -91,7 +91,7 @@ describe("Header (signed out)", () => {
 });
 
 describe("Header (signed in)", () => {
-  it.fails("shows username and a Log out control when signed in", async () => {
+  it("shows username and a Log out control when signed in", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const session = await import(sessionModulePath);
     session.saveSession({
@@ -159,7 +159,7 @@ describe("Header (signed in)", () => {
 });
 
 describe("Header keyboard access", () => {
-  it.fails(
+  it(
     "tab order matches visual order and Enter activates each control",
     async () => {
       // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
@@ -188,7 +188,7 @@ describe("Header keyboard access", () => {
 });
 
 describe("Footer", () => {
-  it.fails("renders the footer with cookie and data policy links", async () => {
+  it("renders the footer with cookie and data policy links", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Footer } = await import(footerModulePath);
     render(<Footer />);
@@ -202,7 +202,16 @@ describe("Footer", () => {
 });
 
 describe("router", () => {
-  it.fails("renders the landing page at /", async () => {
+  // Each test below pushes a different path and then dynamically re-imports
+  // router.tsx; without resetting the module registry first, the second and
+  // later imports would return the already-cached router (and its state,
+  // fixed at the first import's location) instead of a fresh one that reads
+  // the just-pushed path.
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it("renders the landing page at /", async () => {
     window.history.pushState({}, "", "/");
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
@@ -214,7 +223,7 @@ describe("router", () => {
     ).toBeInTheDocument();
   });
 
-  it.fails("renders the register page at /register", async () => {
+  it("renders the register page at /register", async () => {
     window.history.pushState({}, "", "/register");
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
@@ -226,7 +235,7 @@ describe("router", () => {
     ).toBeInTheDocument();
   });
 
-  it.fails("renders the login page at /login", async () => {
+  it("renders the login page at /login", async () => {
     window.history.pushState({}, "", "/login");
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
@@ -238,7 +247,7 @@ describe("router", () => {
     ).toBeInTheDocument();
   });
 
-  it.fails("renders a not-found page for an unknown path", async () => {
+  it("renders a not-found page for an unknown path", async () => {
     window.history.pushState({}, "", "/does-not-exist");
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
@@ -250,7 +259,7 @@ describe("router", () => {
 });
 
 describe("App shell", () => {
-  it.fails("renders Header and Footer around the routed page", async () => {
+  it("renders Header and Footer around the routed page", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { App } = await import(appModulePath);
     render(<App />);

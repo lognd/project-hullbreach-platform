@@ -44,6 +44,11 @@
       "accepted_count": 1,
       "reason": "T-0006: db/engine.py::check_connectivity runs SELECT 1 against the configured database, the first real site for this node's declared 'sql' capability",
       "ticket": "T-0006"
+    },
+    "browser::client_storage": {
+      "accepted_count": 1,
+      "reason": "T-0044: web/src/auth/session.ts persists the signed-in session to localStorage (saveSession/loadSession/clearSession/useSession), the first real production site for the browser node's client_storage capability",
+      "ticket": "T-0044"
     }
   }
 }

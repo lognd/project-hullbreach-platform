@@ -185,7 +185,7 @@ describe("Login page", () => {
 });
 
 describe("auth/session.ts", () => {
-  it.fails(
+  it(
     "restores the session from localStorage synchronously on mount",
     async () => {
       window.localStorage.setItem(
@@ -208,7 +208,7 @@ describe("auth/session.ts", () => {
     },
   );
 
-  it.fails(
+  it(
     "clears the stored session so loadSession returns null after clearSession",
     async () => {
       // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
@@ -226,7 +226,7 @@ describe("auth/session.ts", () => {
     },
   );
 
-  it.fails(
+  it(
     "useSession updates when a storage event fires from another tab",
     async () => {
       // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
@@ -252,7 +252,7 @@ describe("auth/session.ts", () => {
     },
   );
 
-  it.fails(
+  it(
     "loadSession returns null for malformed JSON in localStorage",
     async () => {
       window.localStorage.setItem("hullbreach.session", "{not-json");
