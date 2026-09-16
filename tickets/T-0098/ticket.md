@@ -28,6 +28,7 @@ scope:
 - tests/system/test_build.py
 - ty.toml
 - design/hullbreach.strata
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -37,6 +38,12 @@ scope_changes:
   glob: design/hullbreach.strata
   reason: the new tests/ SQL execute() calls in test_seed.py/conftest.py need a may="sql"
     capability grant on the tests node
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: touched section 7 to cross-reference the tests node in design/hullbreach.strata,
+    needed to satisfy AFFECT001
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
