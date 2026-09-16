@@ -15,6 +15,8 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/app/config.py::AppConfig.from_external -->
 <!-- frob:describes src/hullbreach_server/api/health.py::health -->
 <!-- frob:describes src/hullbreach_server/api/health.py::HealthResponse -->
+<!-- frob:describes src/hullbreach_server/api/health.py::ready -->
+<!-- frob:describes src/hullbreach_server/api/health.py::ReadyResponse -->
 <!-- frob:describes src/hullbreach_server/logging/logger.py::get_logger -->
 <!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter -->
 <!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter.format -->
@@ -38,7 +40,11 @@ database maintenance step and exits without building `App`/`create_app`.
 `create_app` is the pure, socket-free core that
 tests exercise through `TestClient`. Routes live in `api/`, one module per
 resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
-`health` is the liveness probe. The `logging` subpackage provides
+`health` is the liveness probe, which never touches the database; `ready`
+is the readiness probe, returning 200 with `{"status": "ready", "database":
+"ok"}` when `check_connectivity` succeeds against the request's database
+session, or 503 with `{"status": "not_ready", "database": "unreachable"}`
+otherwise. The `logging` subpackage provides
 `get_logger`, wired per the house logging convention (stdout for DEBUG/INFO,
 stderr for WARNING+).
 

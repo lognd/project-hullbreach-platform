@@ -11,7 +11,6 @@ from collections.abc import Iterator
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from hullbreach_server.app.config import AppConfig
 from hullbreach_server.db.engine import (
     Base,
     DatabaseError,
@@ -36,12 +35,23 @@ _sessionmaker: sessionmaker[Session] | None = None
 
 
 # frob:tests tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
-# frob:waive WIRE001 reason="no route uses get_db yet in this ticket" follow_up="T-0012"  # noqa: E501
+# frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:doc docs/index.md#public-api
 def get_engine() -> Engine:
-    """Return the process-wide SQLAlchemy Engine, built lazily from config."""
+    """Return the process-wide SQLAlchemy Engine, built lazily from config.
+
+    `AppConfig` is imported here, not at module scope: `db` is imported
+    from `api/health.py` (T-0012), and an eager `app.config` import at
+    `db` module load time would trigger `app`'s own `__init__` (which
+    imports `app.app`, which imports `api`) while `api`'s package
+    `__init__` is itself still mid-import -- a circular import. Deferring
+    the import to call time (this function only runs per-request, well
+    after every package has finished importing) breaks the cycle.
+    """
     global _engine
     if _engine is None:
+        from hullbreach_server.app.config import AppConfig
+
         cfg = AppConfig.from_external(argparse.Namespace())
         _log.info("initializing database engine")
         _engine = create_db_engine(cfg.database_url)
@@ -49,7 +59,6 @@ def get_engine() -> Engine:
 
 
 # frob:tests tests/unit/test_db_engine.py::test_get_db_dependency_yields_a_session
-# frob:waive WIRE001 reason="no route uses get_db yet in this ticket" follow_up="T-0012"  # noqa: E501
 # frob:doc docs/index.md#public-api
 def get_sessionmaker() -> sessionmaker[Session]:
     """Return the process-wide sessionmaker bound to `get_engine()`."""
@@ -60,7 +69,7 @@ def get_sessionmaker() -> sessionmaker[Session]:
 
 
 # frob:tests tests/unit/test_db_engine.py::test_get_db_dependency_yields_a_session
-# frob:waive WIRE001 reason="no route uses get_db yet in this ticket" follow_up="T-0012"  # noqa: E501
+# frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:doc docs/index.md#public-api
 def get_db() -> Iterator[Session]:
     """FastAPI dependency yielding a SQLAlchemy Session, closed after the request."""

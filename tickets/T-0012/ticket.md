@@ -2,7 +2,7 @@
 id: T-0012
 title: Readiness endpoint reporting database connectivity alongside the liveness health
   route
-state: queued
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -17,10 +17,43 @@ runs_last_parallel_safe_reason: null
 scope:
 - src/hullbreach_server/api/health.py
 - tests/unit/test_api.py
+- src/hullbreach_server/db/__init__.py
+- docs/index.md
+- design/hullbreach.strata
+- src/hullbreach_server/db/engine.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/db/__init__.py
+  reason: fixing api.health's new import of db.get_db/check_connectivity requires
+    deferring db/__init__.py's module-level AppConfig import so importing db (e.g.
+    tests/system/test_build.py) before app no longer circularly re-enters the still-initializing
+    api package
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: readiness route needs docs/index.md's public API list updated; T-0007 lease
+    cleared on main
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: closing T-0012 requires re-pointing REL200 waivers (design/hullbreach.strata)
+    and removing the now-stale WIRE001 waiver on check_connectivity (db/engine.py)
+    that both cited T-0012 as their resolving ticket
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/engine.py
+  reason: closing T-0012 requires re-pointing REL200 waivers (design/hullbreach.strata)
+    and removing the now-stale WIRE001 waiver on check_connectivity (db/engine.py)
+    that both cited T-0012 as their resolving ticket
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 - tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
