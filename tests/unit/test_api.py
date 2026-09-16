@@ -1,7 +1,12 @@
 """Unit tests for API routes."""
 
-import pytest
-
+# `hullbreach_server.app` is imported before `api.health` below so the
+# app package (and its import of the `api` package) finishes initializing
+# first -- importing `api.health` directly first would otherwise partially
+# initialize the `api` package while `api.health` -> `db` -> `app.config`
+# triggers `app`'s own `__init__` (which imports `app.app`, which imports
+# `api` back), a circular import.
+import hullbreach_server.app  # noqa: F401
 from hullbreach_server import __version__
 from hullbreach_server.api.health import health
 
@@ -13,13 +18,7 @@ def test_health_reports_ok_and_version() -> None:
     assert body.version == __version__
 
 
-# The tests below cover the planned GET /api/v1/ready readiness route
-# (T-0012), which does not exist yet -- imports of not-yet-built symbols
-# are lazy, inside each test body, so collection succeeds.
-
-
 # frob:ticket T-0012
-@pytest.mark.xfail(strict=True, reason="T-0012 not implemented")
 def test_ready_returns_200_when_database_reachable(client) -> None:
     """Given a reachable database, GET /api/v1/ready returns 200 with a ready body."""
     response = client.get("/api/v1/ready")
@@ -29,7 +28,6 @@ def test_ready_returns_200_when_database_reachable(client) -> None:
 
 
 # frob:ticket T-0012
-@pytest.mark.xfail(strict=True, reason="T-0012 not implemented")
 def test_ready_returns_503_when_database_unreachable(monkeypatch) -> None:
     """Given an unreachable database, GET /api/v1/ready returns 503 with a not_ready body."""
     from fastapi.testclient import TestClient
