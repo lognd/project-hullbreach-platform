@@ -46,12 +46,15 @@ scope_changes:
     needed to satisfy AFFECT001
   actor: logan
   at: '2026-09-16'
+evidence:
+- cmd:uv run pytest tests/ -q -rA exit=0 sha256=d6e6ee619628
 designated_repro_test: null
 acceptance:
 - text: given docs/design/sprint-1.md section 7's acceptance table, when uv run pytest
     runs, then every planned node id in that table exists, is marked xfail(strict=True),
     and the full suite reports zero failures and zero errors
-  evidence: []
+  evidence:
+  - cmd:uv run pytest tests/ -q -rA exit=0 sha256=d6e6ee619628
 threat: null
 component: null
 anchor: false
