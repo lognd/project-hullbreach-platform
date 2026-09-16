@@ -122,6 +122,8 @@ triage_changes:
     is the right fit'
   actor: logan
   at: '2026-09-16'
+evidence:
+- cmd:npx vitest run exit=0 sha256=96c3342b408a
 kind_history:
 - 2026-09-16 bug->docs evidence=2 done_report=yes
 designated_repro_test: null
@@ -130,7 +132,8 @@ acceptance:
     a branch carrying web/tests/unit/Header.test.tsx and Login.test.tsx, then their
     observed client_storage capability is bound by the node's code glob (no SELFAUDIT001/SYS103
     finding)
-  evidence: []
+  evidence:
+  - cmd:npx vitest run exit=0 sha256=96c3342b408a
 evidence_changes:
 - old_node: cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Login.test.tsx
     exit=0 sha256=85e91495d928
