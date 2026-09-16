@@ -17,6 +17,7 @@ scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
+- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -32,6 +33,14 @@ scope_changes:
   glob: docs/design/sprint-1.md
   reason: 'AFFECT001: widening the tests node''s code glob touches its affects()-closure
     doc anchor (section 7 test strategy), which must be updated in the same diff'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: 'COV003/NoRunner: run_selected resolves web/tests/unit/*.test.tsx to language
+    ''ts'', but frob.toml only declares a [[test.runner]] for language ''typescript'',
+    so pytest-style vitest node-id evidence cannot be collected for a non-docs/ux
+    ticket; add the matching runner entry'
   actor: logan
   at: '2026-09-16'
 evidence:
