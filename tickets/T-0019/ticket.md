@@ -18,10 +18,18 @@ scope:
 - src/hullbreach_server/auth/sessions.py
 - src/hullbreach_server/auth/deps.py
 - tests/unit/test_sessions.py
+- src/hullbreach_server/db/models/__init__.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/db/models/__init__.py
+  reason: Session must be re-exported here so Base.metadata (and Alembic autogenerate)
+    sees it, per env.py's own comment naming T-0019
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_sessions.py::test_expired_token_returns_401
 - tests/unit/test_sessions.py::test_revoked_token_returns_401
