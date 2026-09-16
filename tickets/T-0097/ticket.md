@@ -2,7 +2,7 @@
 id: T-0097
 title: Widen strata tests node glob to cover web/tests
 state: in-progress
-kind: bug
+kind: docs
 origin: human
 created: '2026-09-16'
 priority: medium
@@ -87,10 +87,22 @@ scope_changes:
     are browser-only, so process/console trip no-undef without a node-env override
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: kind
+  old_value: bug
+  new_value: docs
+  reason: 'T-0097 only touches design/hullbreach.strata plus its doc anchor, exactly
+    what T-0095 (kind docs) covered; the vitest-runner wrapper explored for real node-id
+    evidence was dropped to keep the change minimal, so cmd: evidence (docs/ux only)
+    is the right fit'
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
   order and Enter activates each control
 - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
+kind_history:
+- 2026-09-16 bug->docs evidence=2 done_report=yes
 designated_repro_test: null
 acceptance:
 - text: given design/hullbreach.strata's tests node, when frob check runs against
