@@ -67,6 +67,12 @@ scope_changes:
   at: '2026-09-16'
 evidence:
 - tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
+- tests/unit/test_db_engine.py::test_check_connectivity_never_logs_the_full_url_with_password
+- tests/unit/test_db_engine.py::test_check_connectivity_succeeds_on_reachable_sqlite_engine
+- tests/unit/test_db_engine.py::test_create_db_engine_returns_a_sqlalchemy_engine
+- tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
+- tests/unit/test_db_engine.py::test_base_metadata_has_naming_convention_for_alembic
+- tests/unit/test_db_engine.py::test_get_db_dependency_yields_a_session
 designated_repro_test: null
 acceptance:
 - text: given an unreachable database URL, when create_app starts, then startup fails
