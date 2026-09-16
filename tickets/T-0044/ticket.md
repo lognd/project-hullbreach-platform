@@ -2,7 +2,7 @@
 id: T-0044
 title: Router, page shell, header and footer components with signed-in and signed-out
   states
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
