@@ -26,6 +26,7 @@ scope:
 - web/tests/unit/Login.test.tsx
 - package.json
 - package-lock.json
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -76,6 +77,13 @@ scope_changes:
   glob: package-lock.json
   reason: react-router-dom dependency addition needed for router.tsx (createBrowserRouter/RouterProvider),
     per docs/design/sprint-1.md sec.6
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: documenting the new router/Header/Footer/session shell in the same change,
+    per the doc-as-you-go convention; adding frob:doc anchors above the new public
+    symbols
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
