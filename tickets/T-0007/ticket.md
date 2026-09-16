@@ -17,10 +17,43 @@ scope:
 - src/hullbreach_server/db/migrations/
 - src/hullbreach_server/__main__.py
 - tests/system/test_build.py
+- alembic.ini
+- pyproject.toml
+- uv.lock
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: alembic.ini
+  reason: alembic.ini is the alembic config file this ticket needs (config-file exception);
+    pyproject.toml/uv.lock gain the alembic dependency; docs/index.md needs syncing
+    for the new __main__.py db subcommand
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: pyproject.toml
+  reason: alembic.ini is the alembic config file this ticket needs (config-file exception);
+    pyproject.toml/uv.lock gain the alembic dependency; docs/index.md needs syncing
+    for the new __main__.py db subcommand
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: uv.lock
+  reason: alembic.ini is the alembic config file this ticket needs (config-file exception);
+    pyproject.toml/uv.lock gain the alembic dependency; docs/index.md needs syncing
+    for the new __main__.py db subcommand
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: alembic.ini is the alembic config file this ticket needs (config-file exception);
+    pyproject.toml/uv.lock gain the alembic dependency; docs/index.md needs syncing
+    for the new __main__.py db subcommand
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 designated_repro_test: null
