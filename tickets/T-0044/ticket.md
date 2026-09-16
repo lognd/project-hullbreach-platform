@@ -27,6 +27,7 @@ scope:
 - package.json
 - package-lock.json
 - docs/index.md
+- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -84,6 +85,14 @@ scope_changes:
   reason: documenting the new router/Header/Footer/session shell in the same change,
     per the doc-as-you-go convention; adding frob:doc anchors above the new public
     symbols
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: workaround for frob 0.531.0's LANGUAGE_COLLECTORS keying vitest tests as
+    language=ts while frob.toml/frob test use typescript, which otherwise blocks frob
+    ticket evidence/close on any vitest node id; mirrors the existing typescript runner
+    entry (coordinator-approved workaround)
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
