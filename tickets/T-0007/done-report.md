@@ -22,6 +22,8 @@ Rebase: onto origin/main (PR #7, #12 merged) picked up T-0003's close,
 so CROSSTICKET001 on tickets/T-0007/ticket.md is gone, and App.tsx's
 COV001 was already resolved upstream -- neither needed touching here.
 
+Filed: T-0008 (already existed; db seed's stub points at it for the real dispatch, not newly filed here).
+
 Evidence: unchanged from before (tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata,
 bound to acceptance [1]).
 
@@ -45,10 +47,10 @@ pytest tests/ -n auto -q` (all green); `npx tsc --noEmit`, `npx eslint .`,
  src/hullbreach_server/db/migrations/script.py.mako |  28 ++++
  .../ba2efc248a9a_baseline_no_tables_yet.py         |  35 +++++
  tests/system/test_build.py                         |  24 ++--
- tickets/T-0007/done-report.md                      |  60 ++++++++
+ tickets/T-0007/done-report.md                      |  59 ++++++++
  tickets/T-0007/ticket.md                           |  52 ++++++-
  uv.lock                                            | 102 ++++++++++++++
- 14 files changed, 561 insertions(+), 23 deletions(-)
+ 14 files changed, 560 insertions(+), 23 deletions(-)
 ```
 
 ### Evidence
