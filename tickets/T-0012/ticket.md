@@ -21,11 +21,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 designated_repro_test: null
 acceptance:
 - text: given a reachable database, when GET /api/v1/ready is called, then 200; when
     unreachable, then 503
-  evidence: []
+  evidence:
+  - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 threat: null
 component: null
 anchor: false
