@@ -16,6 +16,7 @@ runs_last_parallel_safe_reason: null
 scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -25,6 +26,12 @@ scope_changes:
   glob: docs/design/registry/capability-via-ratchet.lock.json
   reason: widening the tests node's client_storage grant requires raising this ratchet's
     accepted_count in the same diff (SYS111)
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: 'AFFECT001: widening the tests node''s code glob touches its affects()-closure
+    doc anchor (section 7 test strategy), which must be updated in the same diff'
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
