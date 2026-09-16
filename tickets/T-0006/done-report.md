@@ -21,13 +21,13 @@ returns-a-sqlalchemy-engine, base-is-shared, base-metadata-naming-
 convention, get-db-yields-a-session). All 7 xfail(strict=True) stubs
 pass with the xfail markers removed.
 
-Filed: T-draft-696af73f (wire check_connectivity into App startup per
+Filed: T-0099 (wire check_connectivity into App startup per
 design decision D2; scope src/hullbreach_server/app/app.py,
 tests/unit/test_app.py).
 
 Gates: frob check --ticket T-0006 clean except two known structural
 findings unrelated to this ticket's code: CROSSTICKET001/SCOPE001 on
-tickets/T-0006/ticket.md and tickets/T-draft-696af73f/ticket.md, both
+tickets/T-0006/ticket.md and tickets/T-0099/ticket.md, both
 because T-0003's declared scope is 'tickets/**' and T-0003 is still
 in-progress -- every ticket's own bookkeeping file collides with that
 lease. `frob ticket land --allow-cross-ticket` is the documented
@@ -42,7 +42,7 @@ branch's changes.
 ### Changed
 ```
  tickets/T-0006/ticket.md           | 51 +++++++++++++++++++++++++++++++++++++-
- tickets/T-draft-696af73f/ticket.md | 30 ++++++++++++++++++++++
+ tickets/T-0099/ticket.md | 30 ++++++++++++++++++++++
  2 files changed, 80 insertions(+), 1 deletion(-)
 ```
 
