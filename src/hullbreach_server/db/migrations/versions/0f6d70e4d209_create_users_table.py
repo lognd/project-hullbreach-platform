@@ -33,7 +33,13 @@ def upgrade() -> None:
         "users",
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("username", sa.String(length=32), nullable=False),
+        # PII (category "contact"): account identity, covered by the data
+        # policy tracked in T-0049 (design/hullbreach.strata's
+        # hullbreach_server_db node declares this via `carries`).
         sa.Column("email", sa.String(length=254), nullable=False),
+        # PII (category "credentials"): a credential at rest -- always an
+        # Argon2id hash (auth/passwords.py::hash_password), never the raw
+        # password. Covered by the data policy tracked in T-0049.
         sa.Column("password_hash", sa.String(length=255), nullable=False),
         sa.Column(
             "role",
