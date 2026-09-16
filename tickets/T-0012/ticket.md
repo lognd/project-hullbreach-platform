@@ -18,6 +18,7 @@ scope:
 - src/hullbreach_server/api/health.py
 - tests/unit/test_api.py
 - src/hullbreach_server/db/__init__.py
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -29,6 +30,12 @@ scope_changes:
     deferring db/__init__.py's module-level AppConfig import so importing db (e.g.
     tests/system/test_build.py) before app no longer circularly re-enters the still-initializing
     api package
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: readiness route needs docs/index.md's public API list updated; T-0007 lease
+    cleared on main
   actor: logan
   at: '2026-09-16'
 evidence:
