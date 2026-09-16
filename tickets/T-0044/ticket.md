@@ -27,6 +27,7 @@ scope:
 - package.json
 - package-lock.json
 - frob.toml
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -100,6 +101,13 @@ scope_changes:
     design/hullbreach.strata and needs docs/index.md; T-0044 held docs/index.md and
     needs the strata file); patch kept at scratchpad/t0044-docs.patch to re-apply
     once T-0099 lands
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: web/src/auth/session.ts (T-0044) uses window.localStorage in production
+    code; the browser node's capability declaration must grant client_storage via
+    that real file, or SELFAUDIT001 flags an undeclared observed capability
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
