@@ -17,11 +17,6 @@ scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
-- frob.toml
-- web/scripts/run-vitest-ids.mjs
-- package.json
-- package-lock.json
-- eslint.config.js
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -85,6 +80,36 @@ scope_changes:
   glob: eslint.config.js
   reason: web/scripts/run-vitest-ids.mjs is a node script; eslint's default globals
     are browser-only, so process/console trip no-undef without a node-env override
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: frob.toml
+  reason: 'dropped the vitest node-id runner wrapper to keep the diff minimal now
+    that kind=docs allows cmd: evidence'
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: web/scripts/run-vitest-ids.mjs
+  reason: 'dropped the vitest node-id runner wrapper to keep the diff minimal now
+    that kind=docs allows cmd: evidence'
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: package.json
+  reason: 'dropped the vitest node-id runner wrapper to keep the diff minimal now
+    that kind=docs allows cmd: evidence'
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: package-lock.json
+  reason: 'dropped the vitest node-id runner wrapper to keep the diff minimal now
+    that kind=docs allows cmd: evidence'
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: eslint.config.js
+  reason: 'dropped the vitest node-id runner wrapper to keep the diff minimal now
+    that kind=docs allows cmd: evidence'
   actor: logan
   at: '2026-09-16'
 triage_changes:
