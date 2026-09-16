@@ -1,7 +1,7 @@
 ---
 id: T-0097
 title: Widen strata tests node glob to cover web/tests
-state: done
+state: queued
 kind: bug
 origin: human
 created: '2026-09-16'
@@ -112,3 +112,4 @@ found while working T-0096: the design's 'tests' node (design/hullbreach.strata)
 
 ## Reopen log
 - 2026-09-16: COV003: cmd: evidence is not allowed for kind=bug; replace with real pytest/vitest node-id evidence per CI's frob check finding
+- 2026-09-16: web/scripts/run-vitest-ids.mjs (a node script) trips eslint's browser-only no-undef on process/console; needs an eslint.config.js override
