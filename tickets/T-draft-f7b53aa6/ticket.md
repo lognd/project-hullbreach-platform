@@ -2,7 +2,7 @@
 id: T-draft-f7b53aa6
 title: Fix ruff import-order (I001) in conftest.py/test_build.py now that hullbreach_server.db
   is importable
-state: queued
+state: dropped
 kind: bug
 origin: human
 created: '2026-09-16'
@@ -29,3 +29,6 @@ anchor_reason: null
 land_commit: null
 ---
 found while working T-0006: landing src/hullbreach_server/db made the lazy imports in these test files resolve as first-party, changing ruff isort's grouping and failing 'ruff check' in CI (server (python) job on PR #10). Needs an import-order fix (ruff check --fix), not a logic change.
+
+## Drop reason
+- 2026-09-16: fixed in T-0006 (absorbed by T-0006)
