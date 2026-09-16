@@ -2,7 +2,7 @@
 id: T-0095
 title: Sprint 1 system design doc and strata model
 state: done
-kind: feature
+kind: docs
 origin: human
 created: '2026-09-16'
 priority: medium
@@ -42,8 +42,17 @@ scope_changes:
     it; needed to make prettier --check clean for CI
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: kind
+  old_value: feature
+  new_value: docs
+  reason: 'docs-only design pass; cmd: evidence requires kind=docs/ux per COV003'
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - cmd:grep -n 'module hullbreach_sprint1' design/hullbreach.strata exit=0 sha256=4619336c0007
+kind_history:
+- 2026-09-16 feature->docs evidence=1 done_report=yes
 designated_repro_test: null
 acceptance:
 - text: given the sprint-1 tickets' thin bodies, when an implementer or test-writing
