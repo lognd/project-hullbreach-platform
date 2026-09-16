@@ -125,11 +125,16 @@ scope_changes:
     T-0044's own docs section
   actor: logan
   at: '2026-09-16'
+evidence:
+- web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
+  order and Enter activates each control
 designated_repro_test: null
 acceptance:
 - text: given the header, when tabbing through, then focus order matches visual order
     and every control activates with Enter
-  evidence: []
+  evidence:
+  - web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
+    order and Enter activates each control
 threat: null
 component: null
 anchor: false
