@@ -1,7 +1,7 @@
 ---
 id: T-0007
 title: Alembic migrations with a hullbreach_server db upgrade command
-state: done
+state: queued
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -76,3 +76,5 @@ anchor: false
 anchor_reason: null
 land_commit: null
 ---
+## Reopen log
+- 2026-09-16: PR #13 frob check failed with REF001/REF002/COV001/NEGEXIST001; fixing per coordinator direction
