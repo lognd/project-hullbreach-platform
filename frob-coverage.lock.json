@@ -8,18 +8,22 @@
     "src/hullbreach_server/app/app.py": 0.0,
     "src/hullbreach_server/app/config.py": 0.0,
     "src/hullbreach_server/auth/__init__.py": 100.0,
+    "src/hullbreach_server/auth/deps.py": 0.0,
     "src/hullbreach_server/auth/passwords.py": 0.0,
+    "src/hullbreach_server/auth/sessions.py": 0.0,
     "src/hullbreach_server/db/__init__.py": 0.0,
     "src/hullbreach_server/db/engine.py": 0.0,
     "src/hullbreach_server/db/migrations/env.py": 0.0,
     "src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py": 0.0,
+    "src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py": 0.0,
     "src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py": 0.0,
     "src/hullbreach_server/db/models/__init__.py": 0.0,
+    "src/hullbreach_server/db/models/session.py": 0.0,
     "src/hullbreach_server/db/models/user.py": 0.0,
     "src/hullbreach_server/logging/__init__.py": 0.0,
     "src/hullbreach_server/logging/filter.py": 0.0,
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "37c537c80fb7ee10be9371a03d12729682ea86aca49326877ec04437d87fe22c"
+  "source_sha": "b8e0853f1237809b757c9bd7050a0caaab3e8b6c17e47891afd513119ab88da0"
 }

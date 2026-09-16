@@ -10,6 +10,8 @@ created_at, expires_at, and a nullable revoked_at, per
 docs/design/sprint-1.md section 2.
 """
 
+# frob:waive REF002 reason="a per-revision Alembic migration file is inherently a single-anchor leaf: its only real consumer is the Alembic revision chain (down_revision) plus the frob:tests/frob:doc directives already on upgrade()/downgrade() below, same shape as the pre-existing 0f6d70e4d209/ba2efc248a9a migrations in this same directory"  # noqa: E501
+
 from __future__ import annotations
 
 from collections.abc import Sequence
