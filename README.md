@@ -5,7 +5,7 @@ Postgres database behind accounts, sessions, ELO, match history, and the
 cosmetic store. The Unity game and its realtime server are in the other
 repo and talk to this one over HTTPS.
 
-Company of Theseus, UF CEN3031, fall 2026. All rights reserved, see
+Company of Theseus, UF CEN3031, Fall 2026. All rights reserved, see
 [LICENSE](LICENSE).
 
 I wrote this so you can go from a blank laptop to a merged PR without
