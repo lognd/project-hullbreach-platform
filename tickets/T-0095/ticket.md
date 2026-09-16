@@ -19,6 +19,7 @@ scope:
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/index.md
 - .prettierignore
+- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -40,6 +41,12 @@ scope_changes:
   glob: .prettierignore
   reason: prettier chokes on design/*.strata and reformats the markdown doc without
     it; needed to make prettier --check clean for CI
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: needed a [[refs.entrypoint]] declaration for the capability-via-ratchet
+    lock file (REF002)
   actor: logan
   at: '2026-09-16'
 triage_changes:
