@@ -67,25 +67,29 @@ item above.
 
 ### Changed
 ```
- docs/index.md                  | 31 ++++++++++++++++
- package-lock.json              | 60 ++++++++++++++++++++++++++++++-
- package.json                   |  3 +-
- tickets/T-0044/ticket.md       | 64 ++++++++++++++++++++++++++++++++-
- web/src/App.tsx                | 20 +++++++----
- web/src/auth/session.ts        | 80 ++++++++++++++++++++++++++++++++++++++++++
- web/src/components/Footer.tsx  | 11 ++++++
- web/src/components/Header.tsx  | 61 ++++++++++++++++++++++++++++++++
- web/src/main.tsx               |  5 +--
- web/src/router.tsx             | 60 +++++++++++++++++++++++++++++++
- web/tests/unit/App.test.tsx    | 13 ++++---
- web/tests/unit/Header.test.tsx | 31 ++++++++++------
- web/tests/unit/Login.test.tsx  |  8 ++---
- 13 files changed, 416 insertions(+), 31 deletions(-)
+ design/hullbreach.strata                           |   1 +
+ .../registry/capability-via-ratchet.lock.json      |   5 +
+ docs/index.md                                      |  31 ++++++
+ frob.toml                                          |  28 ++++++
+ package-lock.json                                  |  60 ++++++++++-
+ package.json                                       |   3 +-
+ tickets/T-0044/done-report.md                      |  91 +++++++++++++++++
+ tickets/T-0044/ticket.md                           | 110 ++++++++++++++++++++-
+ web/src/App.tsx                                    |  20 ++--
+ web/src/auth/session.ts                            |  80 +++++++++++++++
+ web/src/components/Footer.tsx                      |  11 +++
+ web/src/components/Header.tsx                      |  61 ++++++++++++
+ web/src/main.tsx                                   |   5 +-
+ web/src/router.tsx                                 |  60 +++++++++++
+ web/tests/unit/App.test.tsx                        |  13 ++-
+ web/tests/unit/Header.test.tsx                     |  31 +++---
+ web/tests/unit/Login.test.tsx                      |   8 +-
+ 17 files changed, 586 insertions(+), 32 deletions(-)
 ```
 
 ### Evidence
-(no evidence recorded)
+- `web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual order and Enter activates each control` (pytest node id, verified passing when recorded)
 
 ### Captured claims
-- tests: 0 passed (from 0 evidence id(s))
+- tests: 1 passed (from 1 evidence id(s))
 - gates: unmeasured (no parsable gate-summary from a fresh check)
