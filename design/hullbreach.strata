@@ -1,0 +1,179 @@
+// Sprint-1 (milestone 0.1.0) target architecture. Hand-written, not
+// `frob sys init` output (this file predates any generated skeleton).
+// Companion to docs/design/sprint-1.md, which is the human-readable spec;
+// this file is the checked model of the same design. `code=` globs are
+// bound to PLANNED files (T-0006..T-0044) that do not all exist yet, so
+// `frob check --only sys` running against this branch's code tree will
+// show FOREIGN/missing-binding gaps until those tickets land -- expected
+// during the design phase, not a defect in this file.
+
+module hullbreach_sprint1
+
+// -------------------------------------------------------------------
+// External callers (foreign: outside our control once code ships to them)
+// -------------------------------------------------------------------
+
+node browser : foreign {
+    // The React app runs inside a player's browser: our own JS, but
+    // executing in an environment the player can inspect, tamper with,
+    // or replay from -- untrusted the same way any client is.
+    code "web/src/**";
+}
+
+node game_client : foreign {
+    // The Unity game client authenticates against us with a bearer
+    // token obtained from /auth/login; we do not own or scan its code.
+    managed;
+}
+
+node game_server : foreign {
+    // The Unity game server validates a client-presented token via
+    // GET /auth/session; lives in the sibling game repo (T-0026,
+    // labeled needs-game), no scannable code here.
+    managed;
+}
+
+// -------------------------------------------------------------------
+// Platform API, split by planned package (matches docs/design/sprint-1.md
+// section 1's module map)
+// -------------------------------------------------------------------
+
+node hullbreach_server_root : trusted {
+    code "src/hullbreach_server/__init__.py" "src/hullbreach_server/__main__.py";
+    may "env.write" via "src/hullbreach_server/__main__.py::main";
+}
+
+node hullbreach_server_app : trusted {
+    code "src/hullbreach_server/app/**";
+    may "net.listen" via "src/hullbreach_server/app/app.py::App.__call__";
+    may "env.read" via "src/hullbreach_server/app/config.py::AppConfig.from_external";
+}
+
+node hullbreach_server_api : trusted {
+    code "src/hullbreach_server/api/**";
+}
+
+node hullbreach_server_auth : trusted {
+    code "src/hullbreach_server/auth/**";
+}
+
+node hullbreach_server_db : trusted {
+    code "src/hullbreach_server/db/**";
+}
+
+node hullbreach_server_logging : trusted {
+    code "src/hullbreach_server/logging/**";
+}
+
+// -------------------------------------------------------------------
+// Data store (external infrastructure, no code of ours to scan)
+// -------------------------------------------------------------------
+
+node hullbreach_postgres : trusted {
+    managed;
+}
+
+// -------------------------------------------------------------------
+// Flows: every HTTP call in the sprint-1 design, plus the DB connection.
+// -------------------------------------------------------------------
+
+flow f_register : browser -> hullbreach_server_api {
+    label Pii;
+    attr "POST /api/v1/auth/register";
+    attr timeout;
+}
+
+flow f_login_web : browser -> hullbreach_server_api {
+    label Pii;
+    attr "POST /api/v1/auth/login";
+    attr timeout;
+}
+
+flow f_login_game : game_client -> hullbreach_server_api {
+    label Pii;
+    attr "POST /api/v1/auth/login";
+    attr timeout;
+}
+
+flow f_logout : browser -> hullbreach_server_api {
+    label Internal;
+    attr "POST /api/v1/auth/logout";
+    attr timeout;
+}
+
+flow f_session_check : game_server -> hullbreach_server_api {
+    label Internal;
+    attr "GET /api/v1/auth/session";
+    attr timeout;
+}
+
+flow f_health : browser -> hullbreach_server_api {
+    label Public;
+    attr "GET /api/v1/health";
+    attr timeout;
+}
+
+flow f_ready : browser -> hullbreach_server_api {
+    label Public;
+    attr "GET /api/v1/ready";
+    attr timeout;
+}
+
+flow f_api_to_auth : hullbreach_server_api -> hullbreach_server_auth {
+    label Pii;
+    attr "internal call: password/session handling";
+    attr timeout;
+}
+
+flow f_auth_to_db : hullbreach_server_auth -> hullbreach_server_db {
+    label Pii;
+    attr "internal call: user/session persistence";
+    attr timeout;
+}
+
+flow f_api_to_db : hullbreach_server_api -> hullbreach_server_db {
+    label Internal;
+    attr "internal call: readiness check (SELECT 1)";
+    attr timeout;
+}
+
+flow f_db_to_postgres : hullbreach_server_db -> hullbreach_postgres {
+    label Pii;
+    attr "SQL over HULLBREACH_DATABASE_URL";
+    attr timeout;
+}
+
+// -------------------------------------------------------------------
+// Secrets: password hashes at rest, session tokens, and the database
+// credential itself -- each modeled as a cache-of-authority per
+// docs/strata/surface.md#std-secrets.
+// -------------------------------------------------------------------
+
+secret session_token {
+    issued_by hullbreach_server_auth;
+    audience { browser, game_client, game_server };
+    lifetime 14 d;
+    revoke 1 s;
+}
+
+secret password_hash {
+    issued_by hullbreach_server_auth;
+    audience { hullbreach_server_db };
+    // Argon2id hashes are not time-bound the way a session token is;
+    // the "lifetime" here stands for the rotation horizon at which a
+    // scheme/parameter upgrade should be forced (open question, see
+    // docs/design/sprint-1.md section 8 -- no rehash-on-login upgrade
+    // path exists yet in 0.1.0).
+    lifetime 3650 d;
+    revoke 1 d;
+}
+
+secret database_url {
+    issued_by hullbreach_server_root;
+    audience { hullbreach_server_db };
+    // HULLBREACH_DATABASE_URL is an operator-rotated credential (env
+    // var / secret manager), not something the app itself times out;
+    // the bound recorded here is the operational rotation policy.
+    lifetime 180 d;
+    revoke 1 d;
+}
