@@ -122,12 +122,9 @@ node hullbreach_postgres : trusted {
 node tests : trusted {
     code "tests/**";
     code "web/tests/**";
-    code "web/scripts/**";
     may "eval" via "tests/system/test_build.py";
     may "exec" via "tests/system/test_build.py";
-    may "exec" via "web/scripts/run-vitest-ids.mjs";
     may "fs.read" via "tests/system/test_build.py";
-    may "fs.read" via "web/scripts/run-vitest-ids.mjs";
     may "fs.write" via "tests/unit/test_app.py";
     may "sql"; // because: "sprint-1 xfail test bodies (test_seed.py, conftest.py) execute raw SQL against the in-memory SQLite fixture to assert idempotency/row counts; nearly every test in this node touches the database, so per-file via scoping is not worth it"
 }

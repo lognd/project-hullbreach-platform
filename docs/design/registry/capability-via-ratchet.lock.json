@@ -21,14 +21,14 @@
       "ticket": "T-0095"
     },
     "tests::exec": {
-      "accepted_count": 2,
-      "reason": "T-0095 initial baseline (tests/system/test_build.py's fresh-uv-sync smoke test already shells out via subprocess) plus T-0097: web/scripts/run-vitest-ids.mjs spawns `npx vitest` per node id to translate a frob node id into vitest's real CLI shape (file + -t name), since frob's generic runner template substitutes the id verbatim",
-      "ticket": "T-0097"
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/system/test_build.py's fresh-uv-sync smoke test already shells out via subprocess; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
     },
     "tests::fs.read": {
-      "accepted_count": 2,
-      "reason": "T-0095 initial baseline (tests/system/test_build.py already reads files as part of the build smoke test) plus T-0097: web/scripts/run-vitest-ids.mjs reads back vitest's --outputFile.json report to confirm a node id actually selected a test, rather than trusting vitest's exit code alone (a -t filter that matches nothing still exits 0)",
-      "ticket": "T-0097"
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/system/test_build.py already reads files as part of the build smoke test; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
     },
     "tests::fs.write": {
       "accepted_count": 1,
