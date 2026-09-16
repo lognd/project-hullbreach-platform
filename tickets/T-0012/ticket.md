@@ -17,10 +17,20 @@ runs_last_parallel_safe_reason: null
 scope:
 - src/hullbreach_server/api/health.py
 - tests/unit/test_api.py
+- src/hullbreach_server/db/__init__.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/db/__init__.py
+  reason: fixing api.health's new import of db.get_db/check_connectivity requires
+    deferring db/__init__.py's module-level AppConfig import so importing db (e.g.
+    tests/system/test_build.py) before app no longer circularly re-enters the still-initializing
+    api package
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 - tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
