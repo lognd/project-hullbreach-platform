@@ -1,7 +1,7 @@
 ---
 id: T-0003
 title: File the Module 4 backlog as epics, stories, and tickets
-state: queued
+state: in-progress
 kind: docs
 origin: human
 created: '2026-09-15'
