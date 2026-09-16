@@ -1,7 +1,7 @@
 ---
 id: T-0007
 title: Alembic migrations with a hullbreach_server db upgrade command
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
