@@ -1,7 +1,7 @@
 ---
 id: T-0099
 title: Wire check_connectivity into App startup for fail-fast DB check
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-16'
