@@ -1,7 +1,7 @@
 ---
 id: T-0003
 title: File the Module 4 backlog as epics, stories, and tickets
-state: in-progress
+state: done
 kind: docs
 origin: human
 created: '2026-09-15'
@@ -19,11 +19,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- cmd:frob ticket board exit=0 sha256=427a2a410b65
 designated_repro_test: null
 acceptance:
 - text: given the story map PDF, when frob ticket board runs, then every platform
     story E1-E7 exists as a story under its epic with sprint and milestone set
-  evidence: []
+  evidence:
+  - cmd:frob ticket board exit=0 sha256=427a2a410b65
 threat: null
 component: null
 anchor: false
