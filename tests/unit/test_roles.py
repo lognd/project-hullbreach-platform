@@ -9,6 +9,7 @@ from __future__ import annotations
 import pytest
 
 
+# frob:ticket T-0098
 def _register_and_login(client, username: str = "player_one") -> dict:
     client.post(
         "/api/v1/auth/register",
@@ -26,6 +27,7 @@ def _register_and_login(client, username: str = "player_one") -> dict:
     return {"Authorization": f"Bearer {token}"}
 
 
+# frob:ticket T-0098
 def _mount_admin_route(app):
     from fastapi import Depends
     from hullbreach_server.auth.deps import require_admin
