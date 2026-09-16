@@ -1,7 +1,7 @@
 ---
 id: T-0017
 title: Website register page with inline validation errors
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
