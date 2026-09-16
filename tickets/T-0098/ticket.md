@@ -27,10 +27,18 @@ scope:
 - tests/unit/test_roles.py
 - tests/system/test_build.py
 - ty.toml
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: design/hullbreach.strata
+  reason: the new tests/ SQL execute() calls in test_seed.py/conftest.py need a may="sql"
+    capability grant on the tests node
+  actor: logan
+  at: '2026-09-16'
 designated_repro_test: null
 acceptance:
 - text: given docs/design/sprint-1.md section 7's acceptance table, when uv run pytest
