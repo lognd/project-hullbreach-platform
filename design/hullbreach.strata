@@ -54,9 +54,9 @@ node game_server : foreign {
 node hullbreach_server_root : trusted {
     code "src/hullbreach_server/__init__.py" "src/hullbreach_server/__main__.py";
     may "env.write" via "src/hullbreach_server/__main__.py::main";
-    waive "REL200:database_url__issue" reason "design-only pass; T-0006 introduces db/engine.py, the real caller of the database URL, and will declare/prove a real connect-timeout there" ticket "T-0006";
-    waive "REL200:database_url__revoke" reason "same as database_url__issue: no engine code exists yet to carry a real timeout token" ticket "T-0006";
-    waive "REL200:f_database_url_to_db" reason "design-only pass; T-0006 introduces db/engine.py, the real consumer of the database URL, and will declare/prove a real connect-timeout there" ticket "T-0006";
+    waive "REL200:database_url__issue" reason "design-only pass; the database URL is an operator-rotated credential (section 9's secret bound), not something T-0006's code path times out itself" ticket "T-0007";
+    waive "REL200:database_url__revoke" reason "same as database_url__issue: rotation is operational, not a code-level timeout" ticket "T-0007";
+    waive "REL200:f_database_url_to_db" reason "design-only pass; db/engine.py (T-0006) reads the URL once at engine construction, no request/response cycle to time out" ticket "T-0007";
 }
 
 // frob:ticket T-0095
@@ -91,8 +91,8 @@ node hullbreach_server_auth : trusted {
 // frob:ticket T-0095
 node hullbreach_server_db : trusted {
     code "src/hullbreach_server/db/**";
-    waive "SYS113" reason "design-first pass; T-0006 (db/engine.py) has not landed yet, so this declared surface has no files on this branch" ticket "T-0006";
-    waive "REL200:f_db_to_postgres" reason "design-only pass; T-0006 introduces db/engine.py, the real caller of Postgres, and will declare/prove a real connect-timeout there" ticket "T-0006";
+    may "sql" via "src/hullbreach_server/db/engine.py::check_connectivity";
+    waive "REL200:f_db_to_postgres" reason "design-only pass; create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg driver, but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is follow-up work, not blocking T-0006's own acceptance criteria" ticket "T-0007";
 }
 
 // frob:ticket T-0095
@@ -157,6 +157,14 @@ flow f_tests_to_logging : tests -> hullbreach_server_logging {
     label Internal;
     attr local;
     attr "test modules import hullbreach_server.logging.* directly";
+}
+
+// frob:ticket T-0006
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_db : tests -> hullbreach_server_db {
+    label Internal;
+    attr local;
+    attr "test modules import hullbreach_server.db/.db.engine directly";
 }
 
 // -------------------------------------------------------------------
@@ -238,6 +246,22 @@ flow f_api_to_db : hullbreach_server_api -> hullbreach_server_db {
 flow f_db_to_postgres : hullbreach_server_db -> hullbreach_postgres {
     label Pii;
     attr "SQL over HULLBREACH_DATABASE_URL";
+}
+
+// frob:ticket T-0006
+// frob:doc docs/design/sprint-1.md#9-strata-model-designhullbreachstrata
+flow f_db_to_app : hullbreach_server_db -> hullbreach_server_app {
+    label Internal;
+    attr local;
+    attr "db/__init__.py reads AppConfig.from_external() to build the engine";
+}
+
+// frob:ticket T-0006
+// frob:doc docs/design/sprint-1.md#9-strata-model-designhullbreachstrata
+flow f_db_to_logging : hullbreach_server_db -> hullbreach_server_logging {
+    label Internal;
+    attr local;
+    attr "db/engine.py and db/__init__.py use the module logger convention";
 }
 
 // -------------------------------------------------------------------

@@ -34,6 +34,11 @@
       "accepted_count": 1,
       "reason": "T-0095 initial baseline: tests/unit/test_app.py's tmp_path config-file fixture already writes files; declaring the existing site, not granting new capability",
       "ticket": "T-0095"
+    },
+    "hullbreach_server_db::sql": {
+      "accepted_count": 1,
+      "reason": "T-0006: db/engine.py::check_connectivity runs SELECT 1 against the configured database, the first real site for this node's declared 'sql' capability",
+      "ticket": "T-0006"
     }
   }
 }
