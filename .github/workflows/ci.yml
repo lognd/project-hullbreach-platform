@@ -125,6 +125,11 @@ jobs:
           fi
           source .venv/bin/activate
           frob coverage --full --fail-on-degraded
+          # The refresh rewrites frob-coverage.lock.json with a new source
+          # hash even when nothing changed; put the committed lock back so
+          # the gate does not see an unticketed dirty file (PRE001/SCOPE001
+          # on every push to main). The stamp it needs lives in .frob/.
+          git checkout -- frob-coverage.lock.json
           ticket=$(printf "%s" "$HEAD_REF" | grep -oE "^T-[0-9]{4}" || true)
           if [ -n "$ticket" ]; then
             frob ticket sweep "$ticket"
