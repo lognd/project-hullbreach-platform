@@ -20,6 +20,7 @@ scope:
 - tests/unit/test_sessions.py
 - src/hullbreach_server/db/models/__init__.py
 - src/hullbreach_server/db/migrations/versions/*.py
+- .env.example
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -35,6 +36,12 @@ scope_changes:
   glob: src/hullbreach_server/db/migrations/versions/*.py
   reason: session migration file lives under versions/, needed to create the sessions
     table
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: .env.example
+  reason: documents HULLBREACH_SESSION_TTL_SECONDS per docs/design/sprint-1.md section
+    3, brief-allowed config exception
   actor: logan
   at: '2026-09-16'
 evidence:
