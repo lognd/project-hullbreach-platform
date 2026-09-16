@@ -26,6 +26,7 @@ scope:
 - tests/unit/test_auth_register.py
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -127,6 +128,12 @@ scope_changes:
   reason: 're-adding: these were part of T-0006''s original diff (db capability baseline,
     doc sync) and removing them left SCOPE001 against the branch''s own already-committed
     changes'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: 're-adding: part of T-0006''s original diff (db node capability/flows),
+    removing it left SCOPE001 against already-committed changes'
   actor: logan
   at: '2026-09-16'
 evidence:
