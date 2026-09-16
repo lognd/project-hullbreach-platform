@@ -123,8 +123,6 @@ triage_changes:
   actor: logan
   at: '2026-09-16'
 evidence:
-- web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
-  order and Enter activates each control
 - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 kind_history:
 - 2026-09-16 bug->docs evidence=2 done_report=yes
@@ -135,8 +133,6 @@ acceptance:
     observed client_storage capability is bound by the node's code glob (no SELFAUDIT001/SYS103
     finding)
   evidence:
-  - web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
-    order and Enter activates each control
   - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 evidence_changes:
 - old_node: cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Login.test.tsx
@@ -144,6 +140,12 @@ evidence_changes:
   new_node: ''
   reason: 'kind=bug cannot carry cmd: evidence (COV003); replacing with real vitest
     node ids'
+  actor: logan
+  at: '2026-09-16'
+- old_node: web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches
+    visual order and Enter activates each control
+  new_node: ''
+  reason: 'kind changed back to docs; using cmd: evidence per T-0095 precedent'
   actor: logan
   at: '2026-09-16'
 threat: null
