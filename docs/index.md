@@ -34,16 +34,8 @@ both authenticate against it. Real-time match traffic never touches it.
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
 to `App`, which runs uvicorn. Running with no subcommand still serves; a
 `db` subcommand group (`db upgrade`, `db seed`) instead runs the given
-database maintenance step and exits without building `App`/`create_app`
-(T-0007) -- `db upgrade` shells out to Alembic (`alembic.ini` at the repo
-root, `script_location` under `db/migrations/`) to run every pending
-migration up to head; `db seed` is not implemented yet (T-0008). The
-first revision (`ba2efc248a9a_baseline_no_tables_yet.py`) is a no-op:
-its `upgrade`/`downgrade` create and drop nothing, since no ORM model
-exists yet <!-- frob:waive DOC006 reason="planned files per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the tickets that create them, not a claim they exist yet" -->
-(`db/models/user.py` is T-0015, `db/models/session.py` is
-T-0019) -- it only establishes the revision chain those tickets' own
-migrations build on. `create_app` is the pure, socket-free core that
+database maintenance step and exits without building `App`/`create_app`.
+`create_app` is the pure, socket-free core that
 tests exercise through `TestClient`. Routes live in `api/`, one module per
 resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
 `health` is the liveness probe. The `logging` subpackage provides
@@ -60,6 +52,32 @@ every ORM model and the Alembic env import. `get_engine`/`get_sessionmaker`
 lazily build the process-wide engine and sessionmaker from
 `AppConfig.from_external()`, and `get_db` is the FastAPI dependency that
 yields a session per request and closes it afterward.
+
+### Database migrations
+
+<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
+<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_online -->
+
+`hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
+the repo root, `script_location` pointing at `db/migrations/`) to run
+every pending migration up to head; `db seed` builds on the item catalog
+and admin-account loader <!-- frob:until T-0008 -->
+that lands in T-0008. `db/migrations/env.py::run_migrations_online`
+resolves `HULLBREACH_DATABASE_URL` via `AppConfig` the same way every
+other entrypoint does and runs against a caller-supplied connection
+(tests) or a fresh engine; `run_migrations_offline` always refuses,
+since only online (connected) migrations are supported for 0.1.0
+(docs/design/sprint-1.md section 8, open question). Each revision file
+under
+`db/migrations/versions/` is generated from `script.py.mako`, the
+standard Alembic revision template `alembic revision` reads by
+convention via `alembic.ini`'s `script_location`. The first revision
+(`ba2efc248a9a_baseline_no_tables_yet.py`) is a no-op: its
+`upgrade`/`downgrade` create and drop nothing, since no ORM model exists
+yet <!-- frob:waive DOC006 reason="planned files per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the tickets that create them, not a claim they exist yet" -->
+(`db/models/user.py` is T-0015, `db/models/session.py` is T-0019) -- it
+only establishes the revision chain those tickets' own migrations build
+on.
 
 ## Web frontend
 

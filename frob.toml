@@ -91,6 +91,10 @@ reason = "the package's own root module, imported by convention rather than refe
 path = "uv.lock"
 reason = "read by `uv sync`/`uv run` outside this repo's own tracked-file graph, one CI workflow mention is expected, not fragile"
 
+[[refs.entrypoint]]
+path = "src/hullbreach_server/db/migrations/script.py.mako"
+reason = "read by Alembic's `revision` command by convention via alembic.ini's script_location, never referenced by name from tracked source (T-0007)"
+
 # Repo-level policy documents: read by humans and by GitHub's community
 # health tooling, never referenced by name from source.
 [[refs.entrypoint]]

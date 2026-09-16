@@ -35,10 +35,10 @@ def _resolve_database_url() -> str:
     return AppConfig.from_external(argparse.Namespace()).database_url
 
 
-# frob:waive LANDPARITY001 reason="this module is exec'd exclusively by Alembic's own runner (never imported directly outside it), so no unit test can import it without a live alembic Config/context already in place; run_migrations_online is covered end-to-end by the system test below, and this offline path is an intentional refusal"  # noqa: E501
-# frob:waive TEST001 reason="same as LANDPARITY001 above -- untestable in isolation without Alembic's own execution context"  # noqa: E501
+# frob:doc docs/index.md#database-migrations
+# frob:waive TEST001 reason="untestable in isolation without Alembic's own execution context; this module is exec'd exclusively by Alembic's own runner, never imported directly outside it"  # noqa: E501
 def run_migrations_offline() -> None:
-    """Refuse: offline SQL-script generation is not implemented (open question)."""
+    """Refuse: only online (connected) migrations are supported for 0.1.0."""
     raise NotImplementedError(
         "Offline migrations are not supported; `hullbreach_server db upgrade` "
         "always runs against a live connection (see docs/design/sprint-1.md "
@@ -53,6 +53,7 @@ def _do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
+# frob:doc docs/index.md#database-migrations
 # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
 def run_migrations_online() -> None:
     """Run migrations against a caller-supplied connection, else a fresh engine."""
