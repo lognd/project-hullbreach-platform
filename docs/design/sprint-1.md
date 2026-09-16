@@ -200,9 +200,9 @@ still gets a URL without touching `app/config.py`).
 
 `create_db_engine(url)` builds the engine lazily (SQLAlchemy engines do
 not open a connection until first use), so "fail fast at startup" means
-`App.__call__` (or a startup hook -- decision D2) calls
-`check_connectivity(engine)` before calling `uvicorn.run` and exits
-non-zero on failure, logging at `ERROR`:
+`App.__call__` calls `check_connectivity(engine)` (wired by T-0099) before
+calling `uvicorn.run` and exits non-zero (`sys.exit(1)`) on failure,
+logging at `ERROR`:
 
 ```
 Cannot reach database at <host>:<port> (database=<name>): <driver error>
