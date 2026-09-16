@@ -64,13 +64,20 @@ scope_changes:
     ''ts'' (not ''typescript'') is what run_selected reports for a .tsx test file'
   actor: logan
   at: '2026-09-16'
+evidence:
+- web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
+  order and Enter activates each control
+- web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 designated_repro_test: null
 acceptance:
 - text: given design/hullbreach.strata's tests node, when frob check runs against
     a branch carrying web/tests/unit/Header.test.tsx and Login.test.tsx, then their
     observed client_storage capability is bound by the node's code glob (no SELFAUDIT001/SYS103
     finding)
-  evidence: []
+  evidence:
+  - web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual
+    order and Enter activates each control
+  - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 evidence_changes:
 - old_node: cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Login.test.tsx
     exit=0 sha256=85e91495d928
