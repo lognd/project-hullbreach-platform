@@ -1,0 +1,10 @@
+# ty configuration. CI's own `server` job already scopes typechecking to
+# `uv run ty check src/`, matching the project convention that tests/ is
+# not typechecked. `frob check`'s internal ty gate scans the whole repo
+# root, so this file's `src.exclude` keeps it consistent with that same
+# convention rather than typechecking a directory CI never types --
+# xfail(strict=True) test stubs deliberately import planned symbols
+# (SQLAlchemy, Alembic, hullbreach_server.db/auth) that do not exist on
+# disk yet, which ty (correctly) flags as unresolved imports.
+[src]
+exclude = ["tests/**"]
