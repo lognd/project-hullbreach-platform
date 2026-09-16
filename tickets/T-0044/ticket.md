@@ -29,6 +29,7 @@ scope:
 - frob.toml
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -116,6 +117,12 @@ scope_changes:
   reason: 'SYS111 ratchet: browser node''s client_storage via-list grew from 0 to
     1 site (web/src/auth/session.ts) with T-0044''s may declaration; raising accepted_count
     in the same diff per the ratchet''s own requirement'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: re-adding after T-0099 landed and freed the lease deadlock; re-applying
+    T-0044's own docs section
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
