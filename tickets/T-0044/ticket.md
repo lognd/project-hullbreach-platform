@@ -24,6 +24,8 @@ scope:
 - web/src/main.tsx
 - web/tests/unit/App.test.tsx
 - web/tests/unit/Login.test.tsx
+- package.json
+- package-lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -62,6 +64,18 @@ scope_changes:
     'auth/session.ts' describe block tests exactly that shape in isolation from the
     Login page; flipping just those 4 to it, leaving the 6 'Login page' tests (which
     need pages/Login.tsx, T-0021's own file) untouched and failing
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: package.json
+  reason: react-router-dom dependency addition needed for router.tsx (createBrowserRouter/RouterProvider),
+    per docs/design/sprint-1.md sec.6
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: package-lock.json
+  reason: react-router-dom dependency addition needed for router.tsx (createBrowserRouter/RouterProvider),
+    per docs/design/sprint-1.md sec.6
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
