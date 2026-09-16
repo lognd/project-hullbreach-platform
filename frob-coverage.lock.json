@@ -7,14 +7,19 @@
     "src/hullbreach_server/app/__init__.py": 0.0,
     "src/hullbreach_server/app/app.py": 0.0,
     "src/hullbreach_server/app/config.py": 0.0,
+    "src/hullbreach_server/auth/__init__.py": 100.0,
+    "src/hullbreach_server/auth/passwords.py": 0.0,
     "src/hullbreach_server/db/__init__.py": 0.0,
     "src/hullbreach_server/db/engine.py": 0.0,
     "src/hullbreach_server/db/migrations/env.py": 0.0,
+    "src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py": 0.0,
     "src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py": 0.0,
+    "src/hullbreach_server/db/models/__init__.py": 0.0,
+    "src/hullbreach_server/db/models/user.py": 0.0,
     "src/hullbreach_server/logging/__init__.py": 0.0,
     "src/hullbreach_server/logging/filter.py": 0.0,
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "3bf7f4964eab5648f3219e43d75db3fff78bce5af363406bf50929ee71fec1d5"
+  "source_sha": "ea48c85aab07c552c05c3d841831a58d401bc88888c22a9ddb8572b54d39b047"
 }
