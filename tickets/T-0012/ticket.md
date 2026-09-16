@@ -19,6 +19,8 @@ scope:
 - tests/unit/test_api.py
 - src/hullbreach_server/db/__init__.py
 - docs/index.md
+- design/hullbreach.strata
+- src/hullbreach_server/db/engine.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -36,6 +38,20 @@ scope_changes:
   glob: docs/index.md
   reason: readiness route needs docs/index.md's public API list updated; T-0007 lease
     cleared on main
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: closing T-0012 requires re-pointing REL200 waivers (design/hullbreach.strata)
+    and removing the now-stale WIRE001 waiver on check_connectivity (db/engine.py)
+    that both cited T-0012 as their resolving ticket
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/engine.py
+  reason: closing T-0012 requires re-pointing REL200 waivers (design/hullbreach.strata)
+    and removing the now-stale WIRE001 waiver on check_connectivity (db/engine.py)
+    that both cited T-0012 as their resolving ticket
   actor: logan
   at: '2026-09-16'
 evidence:
