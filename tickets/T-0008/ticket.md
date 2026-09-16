@@ -18,6 +18,7 @@ scope:
 - src/hullbreach_server/db/seed_items.json
 - tests/unit/test_seed.py
 - src/hullbreach_server/__main__.py
+- src/hullbreach_server/auth/passwords.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -27,6 +28,12 @@ scope_changes:
   glob: src/hullbreach_server/__main__.py
   reason: wiring the db seed subcommand requires replacing __main__.py's _db_seed
     stub (frob:todo T-0008) with the real dispatch to db/seed.py::seed
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/passwords.py
+  reason: seed() now calls hash_password, making its WIRE001 waiver (follow_up=T-0016)
+    stale; remove it
   actor: logan
   at: '2026-09-16'
 evidence:
