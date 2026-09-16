@@ -27,10 +27,23 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_engine -->
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_sessionmaker -->
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::downgrade -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
-to `App`, which runs uvicorn. `create_app` is the pure, socket-free core that
+to `App`, which runs uvicorn. Running with no subcommand still serves; a
+`db` subcommand group (`db upgrade`, `db seed`) instead runs the given
+database maintenance step and exits without building `App`/`create_app`
+(T-0007) -- `db upgrade` shells out to Alembic (`alembic.ini` at the repo
+root, `script_location` under `db/migrations/`) to run every pending
+migration up to head; `db seed` is not implemented yet (T-0008). The
+first revision (`ba2efc248a9a_baseline_no_tables_yet.py`) is a no-op:
+its `upgrade`/`downgrade` create and drop nothing, since no ORM model
+exists yet <!-- frob:waive DOC006 reason="planned files per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the tickets that create them, not a claim they exist yet" -->
+(`db/models/user.py` is T-0015, `db/models/session.py` is
+T-0019) -- it only establishes the revision chain those tickets' own
+migrations build on. `create_app` is the pure, socket-free core that
 tests exercise through `TestClient`. Routes live in `api/`, one module per
 resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
 `health` is the liveness probe. The `logging` subpackage provides

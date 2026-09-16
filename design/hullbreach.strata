@@ -54,9 +54,9 @@ node game_server : foreign {
 node hullbreach_server_root : trusted {
     code "src/hullbreach_server/__init__.py" "src/hullbreach_server/__main__.py";
     may "env.write" via "src/hullbreach_server/__main__.py::main";
-    waive "REL200:database_url__issue" reason "design-only pass; the database URL is an operator-rotated credential (section 9's secret bound), not something T-0006's code path times out itself" ticket "T-0007";
-    waive "REL200:database_url__revoke" reason "same as database_url__issue: rotation is operational, not a code-level timeout" ticket "T-0007";
-    waive "REL200:f_database_url_to_db" reason "design-only pass; db/engine.py (T-0006) reads the URL once at engine construction, no request/response cycle to time out" ticket "T-0007";
+    waive "REL200:database_url__issue" reason "design-only pass; the database URL is an operator-rotated credential (section 9's secret bound), not something T-0006's code path times out itself" ticket "T-0015";
+    waive "REL200:database_url__revoke" reason "same as database_url__issue: rotation is operational, not a code-level timeout" ticket "T-0015";
+    waive "REL200:f_database_url_to_db" reason "design-only pass; db/engine.py (T-0006) reads the URL once at engine construction, no request/response cycle to time out" ticket "T-0015";
 }
 
 // frob:ticket T-0095
@@ -92,7 +92,7 @@ node hullbreach_server_auth : trusted {
 node hullbreach_server_db : trusted {
     code "src/hullbreach_server/db/**";
     may "sql" via "src/hullbreach_server/db/engine.py::check_connectivity";
-    waive "REL200:f_db_to_postgres" reason "design-only pass; create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg driver, but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is follow-up work, not blocking T-0006's own acceptance criteria" ticket "T-0007";
+    waive "REL200:f_db_to_postgres" reason "design-only pass; create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg driver, but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is follow-up work, not blocking T-0006's own acceptance criteria" ticket "T-0015";
 }
 
 // frob:ticket T-0095
