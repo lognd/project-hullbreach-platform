@@ -17,6 +17,8 @@ scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
+- frob.toml
+- web/scripts/run-vitest-ids.mjs
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -46,6 +48,20 @@ scope_changes:
   glob: frob.toml
   reason: reverted the runner-language experiment; cmd evidence via kind=docs is the
     simpler fix
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: 'COV003/NoRunner: vitest node-id evidence needs a runner that translates
+    a frob node id into vitest''s actual CLI shape (file + -t name), and language
+    ''ts'' (not ''typescript'') is what run_selected reports for a .tsx test file'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: web/scripts/run-vitest-ids.mjs
+  reason: 'COV003/NoRunner: vitest node-id evidence needs a runner that translates
+    a frob node id into vitest''s actual CLI shape (file + -t name), and language
+    ''ts'' (not ''typescript'') is what run_selected reports for a .tsx test file'
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
