@@ -22,8 +22,9 @@ import pytest
 @pytest.fixture
 def engine() -> Iterator[Any]:
     """A fresh in-memory SQLite engine, shared across connections via StaticPool."""
-    from hullbreach_server.db.engine import create_db_engine
     from sqlalchemy.pool import StaticPool
+
+    from hullbreach_server.db.engine import create_db_engine
 
     eng = create_db_engine(
         "sqlite:///:memory:",
@@ -39,8 +40,9 @@ def engine() -> Iterator[Any]:
 def db_session(engine: Any) -> Iterator[Any]:
     """A SQLAlchemy Session against `engine`, with every table created and
     dropped around the test so each test starts from an empty schema."""
-    from hullbreach_server.db import Base
     from sqlalchemy.orm import Session
+
+    from hullbreach_server.db import Base
 
     Base.metadata.create_all(engine)
     session = Session(bind=engine)
@@ -57,9 +59,8 @@ def db_session(engine: Any) -> Iterator[Any]:
 def app(db_session: Any) -> Any:
     """A `create_app`-built FastAPI app with `get_db` overridden to yield
     `db_session`, so every route in the test sees the same in-memory schema."""
-    from hullbreach_server.db import get_db
-
     from hullbreach_server.app import AppConfig, create_app
+    from hullbreach_server.db import get_db
 
     application = create_app(AppConfig(database_url="sqlite://"))
 

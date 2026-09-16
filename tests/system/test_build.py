@@ -100,9 +100,10 @@ def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
     from alembic.autogenerate import compare_metadata
     from alembic.config import Config
     from alembic.runtime.migration import MigrationContext
+    from sqlalchemy.pool import StaticPool
+
     from hullbreach_server.db import Base
     from hullbreach_server.db.engine import create_db_engine
-    from sqlalchemy.pool import StaticPool
 
     db_path = tmp_path / "upgrade_check.db"
     engine = create_db_engine(
