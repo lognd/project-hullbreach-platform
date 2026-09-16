@@ -30,6 +30,8 @@ no_scope_declared_reason: null
 evidence:
 - tests/system/test_build.py::test_package_imports
 - tests/system/test_build.py::test_cli_help
+- tests/system/test_build.py::test_app_builds_and_serves_health
+- tests/unit/test_api.py::test_health_reports_ok_and_version
 designated_repro_test: null
 acceptance:
 - text: given a fresh clone, when uv sync and npm ci run, then frob check reports
@@ -38,7 +40,9 @@ acceptance:
   - tests/system/test_build.py::test_package_imports
   - tests/system/test_build.py::test_cli_help
 - text: given create_app, when GET /api/v1/health, then 200 with status ok
-  evidence: []
+  evidence:
+  - tests/system/test_build.py::test_app_builds_and_serves_health
+  - tests/unit/test_api.py::test_health_reports_ok_and_version
 threat: null
 component: null
 anchor: false
