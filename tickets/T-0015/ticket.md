@@ -24,6 +24,7 @@ scope:
 - pyproject.toml
 - uv.lock
 - tests/unit/test_roles.py
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -76,6 +77,12 @@ scope_changes:
     (enum membership, default role) genuinely pass -- same class of fixture-activation
     ripple as T-0006's; fixing inline rather than leaving a false XPASS(strict) failure
     in CI
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: need frob:doc anchors for hash_password/verify_password/Role/User and the
+    database-migrations section update for the new users migration
   actor: logan
   at: '2026-09-16'
 evidence:
