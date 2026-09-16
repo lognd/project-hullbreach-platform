@@ -15,10 +15,18 @@ runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
 scope:
 - design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: widening the tests node's client_storage grant requires raising this ratchet's
+    accepted_count in the same diff (SYS111)
+  actor: logan
+  at: '2026-09-16'
 designated_repro_test: null
 threat: null
 component: null
