@@ -2,7 +2,7 @@
 id: T-0006
 title: Database engine and session dependency from HULLBREACH_DATABASE_URL, fail fast
   at startup
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
