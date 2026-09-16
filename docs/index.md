@@ -31,6 +31,12 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
+<!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
+<!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
+<!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
@@ -59,6 +65,14 @@ lazily build the process-wide engine and sessionmaker from
 `AppConfig.from_external()`, and `get_db` is the FastAPI dependency that
 yields a session per request and closes it afterward.
 
+`src/hullbreach_server/db/models/user.py` holds the first ORM model:
+`User` (table `users`) -- `id` (UUID), unique `username`/`email`,
+`password_hash`, a `role` (`Role.player` default, stored as a `VARCHAR`
+with a CHECK constraint via `native_enum=False` rather than a Postgres
+native enum), and `created_at`.
+`src/hullbreach_server/auth/passwords.py` provides `hash_password`/
+`verify_password`, Argon2id via `pwdlib.PasswordHash.recommended()`.
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
@@ -74,16 +88,17 @@ other entrypoint does and runs against a caller-supplied connection
 (tests) or a fresh engine; `run_migrations_offline` always refuses,
 since only online (connected) migrations are supported for 0.1.0
 (docs/design/sprint-1.md section 8, open question). Each revision file
-under
-`db/migrations/versions/` is generated from `script.py.mako`, the
+under `db/migrations/versions/` is generated from `script.py.mako`, the
 standard Alembic revision template `alembic revision` reads by
 convention via `alembic.ini`'s `script_location`. The first revision
 (`ba2efc248a9a_baseline_no_tables_yet.py`) is a no-op: its
-`upgrade`/`downgrade` create and drop nothing, since no ORM model exists
-yet <!-- frob:waive DOC006 reason="planned files per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the tickets that create them, not a claim they exist yet" -->
-(`db/models/user.py` is T-0015, `db/models/session.py` is T-0019) -- it
-only establishes the revision chain those tickets' own migrations build
-on.
+`upgrade`/`downgrade` create and drop nothing, since no ORM model existed
+yet at that point <!-- frob:waive DOC006 reason="planned file per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the ticket that creates it, not a claim it exists yet" -->
+(`db/models/session.py` is T-0019, still pending) --
+it establishes the revision chain later migrations build on. The second
+revision (`0f6d70e4d209_create_users_table.py`, T-0015) creates the
+`users` table matching `src/hullbreach_server/db/models/user.py::User`
+exactly, so `compare_metadata` reports no diff after `db upgrade` runs.
 
 ## Web frontend
 

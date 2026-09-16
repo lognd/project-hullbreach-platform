@@ -1,12 +1,15 @@
 """Unit tests for the Role enum, the require_admin dependency, and role
-exclusion from register/profile schemas (T-0028). `hullbreach_server.
-db.models.user`/`auth.deps`/`auth.schemas` do not exist yet; imports are
-lazy inside each test body so collection succeeds.
+exclusion from register/profile schemas (T-0028). `db.models.user`'s Role
+enum and default-role behavior land with T-0015; `auth.deps`/`auth.schemas`
+do not exist yet, so their tests' imports stay lazy inside the test body.
 """
 
 from __future__ import annotations
 
 import pytest
+
+from hullbreach_server.auth.passwords import hash_password
+from hullbreach_server.db.models.user import Role, User
 
 
 # frob:ticket T-0098
@@ -37,22 +40,15 @@ def _mount_admin_route(app):
         return {"ok": True}
 
 
-# frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
+# frob:ticket T-0015
 def test_role_enum_has_exactly_player_and_admin_members() -> None:
     """Role is a str enum with exactly the members player and admin."""
-    from hullbreach_server.db.models.user import Role
-
     assert {member.value for member in Role} == {"player", "admin"}
 
 
-# frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
+# frob:ticket T-0015
 def test_user_default_role_is_player(db_session) -> None:
     """A User created without an explicit role defaults to Role.player."""
-    from hullbreach_server.auth.passwords import hash_password
-    from hullbreach_server.db.models.user import Role, User
-
     user = User(
         username="player_one",
         email="player_one@example.com",
@@ -83,8 +79,9 @@ def test_player_token_on_admin_route_returns_403_with_permissions_message(
 @pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None:
     """Given an Admin token, the same admin route succeeds."""
-    from hullbreach_server.auth.passwords import hash_password
     from hullbreach_server.auth.sessions import issue_session
+
+    from hullbreach_server.auth.passwords import hash_password
     from hullbreach_server.db.models.user import Role, User
 
     _mount_admin_route(app)

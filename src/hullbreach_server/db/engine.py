@@ -31,7 +31,6 @@ _NAMING_CONVENTION = {
 
 # frob:tests tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
 # frob:tests tests/unit/test_db_engine.py::test_base_metadata_has_naming_convention_for_alembic  # noqa: E501
-# frob:waive WIRE001 reason="no ORM model subclasses Base yet in this ticket" follow_up="T-0015"  # noqa: E501
 # frob:doc docs/index.md#public-api
 class Base(DeclarativeBase):
     """Shared declarative base for every ORM model; owns Alembic's naming convention."""
