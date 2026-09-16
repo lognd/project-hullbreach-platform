@@ -1,7 +1,7 @@
 ---
 id: T-0097
 title: Widen strata tests node glob to cover web/tests
-state: done
+state: queued
 kind: bug
 origin: human
 created: '2026-09-16'
@@ -53,3 +53,6 @@ anchor_reason: null
 land_commit: null
 ---
 found while working T-0096: the design's 'tests' node (design/hullbreach.strata) only globs 'tests/**', so web/tests/unit/*.test.tsx's observed client_storage capability (localStorage use in Header.test.tsx and Login.test.tsx) is unbound, tripping SELFAUDIT001/SYS103. Widen the node's code= glob (or add a second node) to also cover web/tests/**.
+
+## Reopen log
+- 2026-09-16: COV003: cmd: evidence is not allowed for kind=bug; replace with real pytest/vitest node-id evidence per CI's frob check finding
