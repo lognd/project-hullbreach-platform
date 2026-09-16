@@ -24,6 +24,8 @@ scope:
 - tests/unit/conftest.py
 - tests/system/test_build.py
 - tests/unit/test_auth_register.py
+- docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -111,6 +113,20 @@ scope_changes:
   reason: T-0097 holds live cross-worktree leases on these design files; T-0006's
     edits to them already landed in a prior commit and are not changing further in
     this round
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 're-adding: these were part of T-0006''s original diff (db capability baseline,
+    doc sync) and removing them left SCOPE001 against the branch''s own already-committed
+    changes'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: 're-adding: these were part of T-0006''s original diff (db capability baseline,
+    doc sync) and removing them left SCOPE001 against the branch''s own already-committed
+    changes'
   actor: logan
   at: '2026-09-16'
 evidence:
