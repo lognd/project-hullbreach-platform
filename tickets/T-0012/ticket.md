@@ -23,12 +23,14 @@ no_scope_declared: false
 no_scope_declared_reason: null
 evidence:
 - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
+- tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
 designated_repro_test: null
 acceptance:
 - text: given a reachable database, when GET /api/v1/ready is called, then 200; when
     unreachable, then 503
   evidence:
   - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
+  - tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
 threat: null
 component: null
 anchor: false
