@@ -1,7 +1,7 @@
 ---
 id: T-0095
 title: Sprint 1 system design doc and strata model
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-16'
