@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 
+# frob:ticket T-0098
 def _make_user(db_session):
     from hullbreach_server.auth.passwords import hash_password
     from hullbreach_server.db.models.user import User
