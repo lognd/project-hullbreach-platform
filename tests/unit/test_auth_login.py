@@ -9,6 +9,7 @@ from __future__ import annotations
 import pytest
 
 
+# frob:ticket T-0098
 def _register(client, **overrides: object) -> None:
     payload = {
         "username": "player_one",
