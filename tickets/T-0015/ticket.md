@@ -21,11 +21,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 designated_repro_test: null
 acceptance:
 - text: given a password, when hashed, then verify succeeds and the stored value is
     not the password
-  evidence: []
+  evidence:
+  - tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 threat: null
 component: null
 anchor: false
