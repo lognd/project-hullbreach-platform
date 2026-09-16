@@ -16,10 +16,25 @@ runs_last_parallel_safe_reason: null
 scope:
 - docs/design/sprint-1.md
 - design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: capability-via-ratchet lock file and the docs/index.md link needed to link/discharge
+    the strata model's own gate findings (REF001/002, SYS111)
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: capability-via-ratchet lock file and the docs/index.md link needed to link/discharge
+    the strata model's own gate findings (REF001/002, SYS111)
+  actor: logan
+  at: '2026-09-16'
 designated_repro_test: null
 acceptance:
 - text: given the sprint-1 tickets' thin bodies, when an implementer or test-writing
