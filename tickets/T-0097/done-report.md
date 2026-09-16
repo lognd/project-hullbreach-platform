@@ -41,13 +41,20 @@ being checked (SYS113), which is why T-0097 could not add them yet.
 
 ### Changed
 ```
- tickets/T-0097/ticket.md | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ design/hullbreach.strata                           |   5 +
+ .../registry/capability-via-ratchet.lock.json      |  12 +--
+ docs/design/sprint-1.md                            |  14 +++
+ frob.toml                                          |  12 ++-
+ tickets/T-0097/done-report.md                      |  53 ++++++++++
+ tickets/T-0097/ticket.md                           | 114 +++++++++++++++++++++
+ web/scripts/run-vitest-ids.mjs                     |  89 ++++++++++++++++
+ 7 files changed, 292 insertions(+), 7 deletions(-)
 ```
 
 ### Evidence
-(no evidence recorded)
+- `web/tests/unit/Header.test.tsx::Header keyboard access > tab order matches visual order and Enter activates each control` (pytest node id, verified passing when recorded)
+- `web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload` (pytest node id, verified passing when recorded)
 
 ### Captured claims
-- tests: 0 passed (from 0 evidence id(s))
+- tests: 2 passed (from 2 evidence id(s))
 - gates: unmeasured (no parsable gate-summary from a fresh check)
