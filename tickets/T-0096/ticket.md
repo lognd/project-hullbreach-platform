@@ -1,0 +1,70 @@
+---
+id: T-0096
+title: Sprint 1 failing test skeleton (web)
+state: done
+kind: docs
+origin: human
+created: '2026-09-16'
+priority: medium
+parent: null
+tier: ticket
+sprint: null
+runs_last: false
+milestone: null
+runs_last_parallel_safe: false
+runs_last_parallel_safe_reason: null
+scope:
+- web/tests/unit/Header.test.tsx
+- web/tests/unit/Register.test.tsx
+- web/tests/unit/Login.test.tsx
+- package.json
+- package-lock.json
+- design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
+scope_breadth_ack: false
+scope_breadth_ack_reason: null
+no_scope_declared: false
+no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: design/hullbreach.strata
+  reason: 'SYS100: the tests node''s client_storage capability, observed via Header.test.tsx/Login.test.tsx
+    now that they exist, needs a may/via declaration (deferred by T-0097 until these
+    files landed)'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 'SYS100: the tests node''s client_storage capability, observed via Header.test.tsx/Login.test.tsx
+    now that they exist, needs a may/via declaration (deferred by T-0097 until these
+    files landed)'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: 'AFFECT001: the tests node''s affects()-closure doc anchor must be touched
+    in the same diff as the strata change'
+  actor: logan
+  at: '2026-09-16'
+evidence:
+- cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx
+  web/tests/unit/Login.test.tsx exit=0 sha256=f306fed9ad13
+designated_repro_test: null
+acceptance:
+- text: given the sprint-1 web ticket bodies, when the failing-test skeleton is run,
+    then vitest reports every planned it.fails node id passing (expected-fail) with
+    no accidental xpass
+  evidence:
+  - cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx
+    web/tests/unit/Login.test.tsx exit=0 sha256=f306fed9ad13
+threat: null
+component: null
+anchor: false
+anchor_reason: null
+land_commit: null
+---
+Test-first failing-test skeleton (vitest it.fails) for the sprint-1 web tickets T-0044, T-0017, T-0021, T-0024, per docs/design/sprint-1.md section 7. Adds @testing-library/user-event as a devDependency for keyboard/click interaction in the header tab-order test.
+
+## Reopen log
+- 2026-09-16: SELFAUDIT001/SYS100: now that Header.test.tsx and Login.test.tsx exist on this branch, the tests node's client_storage capability is observed but not declared -- add the may via grants T-0097 deferred

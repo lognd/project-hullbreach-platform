@@ -35,6 +35,11 @@
       "reason": "T-0095 initial baseline: tests/unit/test_app.py's tmp_path config-file fixture already writes files; declaring the existing site, not granting new capability",
       "ticket": "T-0095"
     },
+    "tests::client_storage": {
+      "accepted_count": 2,
+      "reason": "T-0096: web/tests/unit/Header.test.tsx (T-0044/T-0024) and Login.test.tsx (T-0021) exercise localStorage/StorageEvent for the session-persistence and logout tests; T-0097 widened the tests node's glob to cover these files but deferred this grant until they existed on the branch being checked",
+      "ticket": "T-0096"
+    },
     "hullbreach_server_db::sql": {
       "accepted_count": 1,
       "reason": "T-0006: db/engine.py::check_connectivity runs SELECT 1 against the configured database, the first real site for this node's declared 'sql' capability",

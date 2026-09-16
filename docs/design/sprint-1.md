@@ -535,18 +535,16 @@ which Alembic supports for DDL-only migrations (no Postgres-only column
 types are used in the three 0.1.0 migrations, so this holds).
 
 The strata `tests` node's `code` glob (section 9) covers both `tests/**`
-(the Python suite above) and `web/tests/**` -- T-0044/T-0017/T-0021/T-0024's <!-- frob:waive DOC006 reason="the two web test files this paragraph describes are planned per the acceptance-criterion table below (T-0021/T-0024 rows); they land with those tickets' own test skeletons, not with T-0097, which only widens the node's glob ahead of them" -->
+(the Python suite above) and `web/tests/**` -- T-0044/T-0017/T-0021/T-0024's
 vitest suite, whose T-0021/T-0024 session-persistence tests reach
 `localStorage`/`StorageEvent` (the `client_storage` capability), per the
 acceptance criteria in the table below. Both trees are one node because
 they are the same kind of thing here: test code exercising capabilities
 the design does not otherwise grant, not production code with its own
-package boundary (T-0097). The node's `may "client_storage" via ...`
-grant for the two specific web test files that exercise it is added
-once those files exist, so the `via` target resolves against a real
-file (T-0097 only widens the glob and updates this doc; landing the
-capability grant belongs to whichever of T-0021/T-0024's tickets is
-open when those files merge).
+package boundary (T-0097 widened the glob; T-0096 added the `may
+"client_storage" via "web/tests/unit/Header.test.tsx"` and
+`Login.test.tsx` grants once those files existed on the branch being
+checked, since a `via` target must resolve to a real file).
 
 Every row below is a planned `xfail(strict=True)` stub for the next step,
 one node id per acceptance criterion, in the ticket's own scoped test
