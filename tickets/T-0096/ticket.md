@@ -24,6 +24,11 @@ scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
 designated_repro_test: null
+acceptance:
+- text: given the sprint-1 web ticket bodies, when the failing-test skeleton is run,
+    then vitest reports every planned it.fails node id passing (expected-fail) with
+    no accidental xpass
+  evidence: []
 threat: null
 component: null
 anchor: false
