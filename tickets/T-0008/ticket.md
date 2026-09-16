@@ -21,13 +21,18 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin
+- tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run
 designated_repro_test: null
 acceptance:
 - text: given an empty database, when seed runs, then item count >= 100 and one Administrator
     exists
-  evidence: []
+  evidence:
+  - tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin
 - text: given a seeded database, when seed runs again, then nothing is duplicated
-  evidence: []
+  evidence:
+  - tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run
 threat: null
 component: null
 anchor: false

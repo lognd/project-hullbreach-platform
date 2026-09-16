@@ -20,10 +20,13 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 designated_repro_test: null
 acceptance:
 - text: given five failed attempts in a minute, when a sixth arrives, then 429
-  evidence: []
+  evidence:
+  - tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 threat: null
 component: null
 anchor: false

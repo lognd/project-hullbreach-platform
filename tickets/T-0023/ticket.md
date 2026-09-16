@@ -20,11 +20,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
 designated_repro_test: null
 acceptance:
 - text: given a valid session, when logout is called, then that token is rejected
     afterwards
-  evidence: []
+  evidence:
+  - tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
 threat: null
 component: null
 anchor: false

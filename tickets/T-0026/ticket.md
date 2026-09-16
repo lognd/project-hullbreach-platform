@@ -22,11 +22,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
 designated_repro_test: null
 acceptance:
 - text: given a client token, when the game server calls the session endpoint, then
     it gets the player id and role
-  evidence: []
+  evidence:
+  - tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
 threat: null
 component: null
 labels:

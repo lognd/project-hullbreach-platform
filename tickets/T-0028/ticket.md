@@ -23,11 +23,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message
 designated_repro_test: null
 acceptance:
 - text: given a Player token, when an admin route is called, then 403 with a permissions
     message
-  evidence: []
+  evidence:
+  - tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message
 threat: null
 component: null
 anchor: false

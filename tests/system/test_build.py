@@ -9,6 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 _SRC_ROOT = Path(__file__).parent.parent.parent / "src" / "hullbreach_server"
@@ -84,3 +85,40 @@ def test_no_syntax_errors_in_src():
             errors.append(f"{py_file}: {exc}")
 
     assert not errors, "Syntax errors found:\n" + "\n".join(errors)
+
+
+# The test below covers the planned Alembic migration environment
+# (T-0007), which does not exist yet -- its imports are lazy, inside the
+# test body, so collection succeeds.
+
+
+# frob:ticket T-0007
+@pytest.mark.xfail(strict=True, reason="T-0007 not implemented")
+def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
+    """Given a fresh database, running the Alembic upgrade head matches the
+    declarative models exactly (compare_metadata reports no diffs)."""
+    from alembic.autogenerate import compare_metadata
+    from alembic.config import Config
+    from alembic.runtime.migration import MigrationContext
+    from hullbreach_server.db import Base
+    from hullbreach_server.db.engine import create_db_engine
+    from sqlalchemy.pool import StaticPool
+
+    db_path = tmp_path / "upgrade_check.db"
+    engine = create_db_engine(
+        f"sqlite:///{db_path}",
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
+
+    alembic_cfg = Config(str(_SRC_ROOT.parent.parent / "alembic.ini"))
+    alembic_cfg.attributes["connection"] = engine.connect()
+    from alembic import command
+
+    command.upgrade(alembic_cfg, "head")
+
+    with engine.connect() as connection:
+        context = MigrationContext.configure(connection)
+        diffs = compare_metadata(context, Base.metadata)
+
+    assert diffs == []

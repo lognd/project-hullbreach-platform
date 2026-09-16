@@ -520,7 +520,8 @@ there) provides:
   `TestClient` and the test itself both open.
 - `db_session` -- runs `Base.metadata.create_all(engine)`, yields a
   `sqlalchemy.orm.Session`, rolls back and drops all tables after.
-- `app` / `client` -- `create_app(AppConfig(database_url="sqlite://"))`
+- `app` / `client` (`tests` node in `design/hullbreach.strata`) --
+  `create_app(AppConfig(database_url="sqlite://"))`
   with `app.dependency_overrides[get_db]` pointed at the `db_session`
   fixture, wrapped in `TestClient`, matching the existing
   `create_app`-is-pure convention (no real engine touches a socket in
