@@ -23,12 +23,17 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx
+  web/tests/unit/Login.test.tsx exit=0 sha256=f306fed9ad13
 designated_repro_test: null
 acceptance:
 - text: given the sprint-1 web ticket bodies, when the failing-test skeleton is run,
     then vitest reports every planned it.fails node id passing (expected-fail) with
     no accidental xpass
-  evidence: []
+  evidence:
+  - cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx
+    web/tests/unit/Login.test.tsx exit=0 sha256=f306fed9ad13
 threat: null
 component: null
 anchor: false
