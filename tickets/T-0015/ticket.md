@@ -25,6 +25,7 @@ scope:
 - uv.lock
 - tests/unit/test_roles.py
 - docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -83,6 +84,12 @@ scope_changes:
   glob: docs/index.md
   reason: need frob:doc anchors for hash_password/verify_password/Role/User and the
     database-migrations section update for the new users migration
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: need a tests->auth Flow declaration (SYS003) and to refresh the stale SYS113
+    waiver on hullbreach_server_auth now that auth/passwords.py has landed
   actor: logan
   at: '2026-09-16'
 evidence:
