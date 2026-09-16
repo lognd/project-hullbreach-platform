@@ -24,8 +24,8 @@ node browser : foreign {
     waive "REL200:f_register" reason "design-only pass; T-0017 implements the register form/fetch call and will declare/prove a real request timeout there" ticket "T-0017";
     waive "REL200:f_login_web" reason "design-only pass; T-0021 implements the login form/fetch call and will declare/prove a real request timeout there" ticket "T-0021";
     waive "REL200:f_logout" reason "design-only pass; T-0024 implements the logout control's fetch call and will declare/prove a real request timeout there" ticket "T-0024";
-    waive "REL200:f_health" reason "design-only pass; no browser-side caller of /health exists yet in this sprint's scope -- deferred to whichever ticket first calls it" ticket "T-0012";
-    waive "REL200:f_ready" reason "design-only pass; no browser-side caller of /ready exists yet in this sprint's scope -- deferred to whichever ticket first calls it" ticket "T-0012";
+    waive "REL200:f_health" reason "design-only pass; no browser-side caller of /health exists yet -- T-0100 wires a web/ops caller for both /health and /ready" ticket "T-0100";
+    waive "REL200:f_ready" reason "design-only pass; no browser-side caller of /ready exists yet -- T-0100 wires a web/ops caller for it" ticket "T-0100";
 }
 
 // frob:ticket T-0095
@@ -70,7 +70,7 @@ node hullbreach_server_app : trusted {
 node hullbreach_server_api : trusted {
     code "src/hullbreach_server/api/**";
     waive "REL200:f_api_to_auth" reason "design-only pass; the internal api->auth call has no timeout token until T-0019/T-0020 land" ticket "T-0019";
-    waive "REL200:f_api_to_db" reason "design-only pass; the internal api->db readiness check has no timeout token until T-0012 lands" ticket "T-0012";
+    waive "REL200:f_api_to_db" reason "T-0012 landed the readiness check (check_connectivity via create_db_engine's 5s connect_timeout), but that is a connect_args kwarg, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
 }
 
 // frob:ticket T-0095
