@@ -1,5 +1,5 @@
 ---
-id: T-draft-68a47ce3
+id: T-0100
 title: Wire GET /api/v1/ready into a real caller (web/ops)
 state: queued
 kind: feature
