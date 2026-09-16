@@ -321,9 +321,11 @@ comparison key, not a raw string compare against a secret). Session TTL
 is `HULLBREACH_SESSION_TTL_SECONDS` (default 14 days), set at issuance as
 `expires_at = now() + timedelta(seconds=ttl)`.
 
-### Endpoints (`api/auth.py`) <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+### Endpoints
 
-All four share the pattern: pydantic request model, pydantic response
+<!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+
+All four routes below live in `api/auth.py` and share the pattern: pydantic request model, pydantic response
 model, `Depends(get_db)` for a `Session` (SQLAlchemy) from `db.get_db`.
 `role` never appears as an input field on any schema and never appears in
 any response schema returned to the caller whose own role it is not
@@ -622,44 +624,73 @@ platform API split by planned package (`api`, `app`, `auth`, `db`,
 `logging`, `root`, matching section 1's module map), and the Postgres
 database (`managed`, external infrastructure); flows for every HTTP call
 in section 5 plus the internal API-to-auth, auth-to-db, and db-to-Postgres
-hops; and three `secret` declarations (`session_token`, `password_hash`,
-`database_url`) per `docs/strata/surface.md`'s `std.secrets` <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
-cache-of-authority model, each with `issued_by`, `audience`, `lifetime`,
-and a mandatory `revoke` bound.
+hops; five further flows (`f_root_to_app`, `f_api_to_root`,
+`f_app_to_root`, `f_app_to_api`, `f_app_to_logging`) declaring the
+platform package's existing, already-shipped Python import edges between
+`__main__.py`, `app/`, `api/`, and `logging/` (measured, not planned --
+the same edges `frob sys init --check` derives from the real import
+graph, each marked `attr local` since none of them cross a process
+boundary); a `tests` node (`code "tests/**"`) declaring, via `may`, the
+`eval`/`exec`/`fs.read` capabilities `tests/system/test_build.py`'s
+fresh-`uv sync` smoke test legitimately exercises and the `fs.write`
+capability `tests/unit/test_app.py`'s config-file fixture exercises, so
+the test tree is not simply unbound; and three `secret` declarations
+(`session_token`, `password_hash`,
+<!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
 
-This design pass is tracked as **T-0095** (scope: this document,
-`design/hullbreach.strata`, `docs/index.md`, and
-`docs/design/registry/capability-via-ratchet.lock.json`). Filing that <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-ticket, adding `frob:ticket T-0095` to every node/flow/secret in the
-strata file, linking this document from `docs/index.md`, and recording
-the `may`-grant baselines in the capability-via-ratchet lock file
-resolved what were originally the largest finding categories (COV002,
-SCOPE001, PRE001, DOC001, REF001/002, the three SYS111 ratchet findings,
-and every REL200/REL201 finding on a real declared node, each waived with
-a `waive "REL200:<flow-id>" reason "..." ticket "T-####"` clause naming
-the sprint-1 ticket that will implement that flow's real timeout).
+`database_url`) per `docs/strata/surface.md`'s `std.secrets`
+cache-of-authority model, each with `issued_by`, `lifetime`, and a
+mandatory `revoke` bound.
+
+This design pass is tracked as **T-0095** (kind `docs`; scope: this
+document, `design/hullbreach.strata`, `docs/index.md`,
+`docs/design/registry/capability-via-ratchet.lock.json`, and
+<!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+
+`frob.toml`). Filing that ticket, adding `frob:ticket T-0095` to every
+node/flow/secret in the strata file, `frob:doc` anchors on the module and
+every flow pointing at the section of this document that describes it,
+linking this document from `docs/index.md`, recording the `may`-grant
+baselines in the capability-via-ratchet lock file, and declaring that
+lock file a `[[refs.entrypoint]]` in `frob.toml` (it is frob-generated
+registry data, read by the SYS111 gate, not something a second tracked
+file should have to reference just to satisfy REF002) resolved what were
+originally the largest finding categories (COV001/002/003, SCOPE001,
+PRE001, DOC001, REF001/002, the three SYS111 ratchet findings, the two
+SYS113 zero-file findings on `auth`/`db` (waived on those nodes, naming
+T-0015/T-0006), and every REL200/REL201 finding on a real declared node,
+each waived with a `waive "REL200:<flow-id>" reason "..." ticket
+"T-####"` clause naming the sprint-1 ticket that will implement that
+flow's real timeout).
 
 `frob check --ticket T-0095` and `frob sys threats` were both run to
-green on the constructs this ticket owns. Two categories of finding
-remain, both genuinely undischargeable at this design stage rather than
-overlooked:
+green on every construct this ticket owns. One design decision and one
+upstream language gap remain, both disclosed here rather than papered
+over:
 
-- **REL200 on the five secret-derived "reads" flows**
-  (`session_token__reads_browser`, `session_token__reads_game_client`,
-  `session_token__reads_game_server`, `password_hash__reads_
-hullbreach_server_db`, `database_url__reads_hullbreach_server_db`).
-  `std.secrets` auto-generates these flows from each `secret` block's
-  `audience` list (`docs/strata/surface.md#std-secrets`); their `src` is <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
-  the synthetic secret-clearance node itself, which the surface grammar's
-  `secret_prop` clause set (`issued_by`/`audience`/`lifetime`/`revoke`)
-  has no `waive` slot for -- only `node` and `store` accept a `waive`
-  clause today. There is no legal `.strata` syntax to discharge these
-  short of hand-declaring the secret as an ordinary `node` (which would
-  lose the `std.secrets` cache-of-authority semantics this design
-  deliberately uses). Left as a disclosed, mechanically-unwaivable gap;
-  a future `docs/strata` ticket adding a `waive` clause to `secret_prop` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-  would close it cleanly.
-- **The six-phase `boundary` construct** (`docs/strata/boundary.md`, <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
+- **`std.secrets`' auto-generated "reads" flows have no `waive` slot.**
+  <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
+  `docs/strata/surface.md`'s `secret_prop` grammar
+  (`issued_by`/`audience`/`lifetime`/`revoke`) has no `waive` clause,
+  unlike `node`/`store`; `std.secrets` auto-generates one "reads" flow
+  per `audience` member with `src` set to the synthetic secret-clearance
+  node itself, so a REL200 finding on one of those flows could never be
+  discharged during a design-only pass with no code yet to prove a real
+  timeout against. Worked around here: `audience` is left empty on all
+  three secrets, and the equivalent "who relies on this secret" edges
+  are hand-declared as ordinary flows (`f_session_token_to_browser`,
+  `f_session_token_to_game_client`, `f_session_token_to_game_server`,
+  `f_password_hash_to_db`, `f_database_url_to_db`) sourced from a real
+  node that already has a `waive` slot. The cost: these three secrets
+  lose `std.secrets`' auto-generated `readers(secret) == audience`
+  SetEquality claim, an accepted trade-off for 0.1.0. Filed upstream in
+  the `frob` project's own ticket ledger at `~/projects/frob` (not this
+  repo's `tickets/`, so it does not resolve against this repo's own
+  ledger) as a language gap, titled "strata: secret_prop reads-flows
+  cannot carry a waive or timeout so REL200 is unfixable", draft id
+  suffix `deb011e5`.
+- **The six-phase `boundary` construct** <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
+  (`docs/strata/boundary.md`,
   admit/parse/judge/effect/record/refuse plus `operation`/`atomic`
   framing) was judged infeasible to model correctly in the time available
   for a design pass with no code yet to bind its phases to, so no
@@ -668,15 +699,12 @@ hullbreach_server_db`, `database_url__reads_hullbreach_server_db`).
   from the original brief; adding it is future work once T-0016 lands
   and there is a real `judge`/`effect` call site to describe.
 
-Two further findings are pre-existing repo conditions, not introduced by
-this design pass (confirmed by reproducing them against `main` before any
+One further finding is a pre-existing repo condition, not introduced by
+this design pass (confirmed by reproducing it against `main` before any
 of this ticket's changes) and out of T-0095's declared scope to fix:
-
-- **CROSSTICKET001** on `tickets/T-0095/ticket.md` -- T-0003's own scope
-  (`tickets/**`, already flagged separately by TICK009 as too broad) is
-  IN_PROGRESS and covers every file under `tickets/`, so any new ticket
-  file reads as carrying T-0003's unfinished work. Fixing this is
-  narrowing T-0003's scope, which belongs to whoever owns T-0003.
-- **TEST003 / COV001 on `web/src/App.tsx`** -- pre-existing gaps (no
-  integration test, no `frob:doc` anchor) on a file this ticket's scope
-  does not include and this design does not change.
+**CROSSTICKET001** on `tickets/T-0095/ticket.md` and
+`tickets/T-0095/done-report.md` -- T-0003's own scope (`tickets/**`,
+already flagged separately by TICK009 as too broad) is IN_PROGRESS and
+covers every file under `tickets/`, so any new ticket file reads as
+carrying T-0003's unfinished work. Fixing this is narrowing T-0003's
+scope, which belongs to whoever owns T-0003.

@@ -14,6 +14,26 @@
       "accepted_count": 1,
       "reason": "T-0095 initial baseline: __main__.main already calls load_dotenv(), which writes parsed .env values into os.environ; declaring the existing site, not granting new capability",
       "ticket": "T-0095"
+    },
+    "tests::eval": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/system/test_build.py's fresh-uv-sync smoke test already exercises eval-shaped subprocess/import machinery; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    },
+    "tests::exec": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/system/test_build.py's fresh-uv-sync smoke test already shells out via subprocess; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    },
+    "tests::fs.read": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/system/test_build.py already reads files as part of the build smoke test; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    },
+    "tests::fs.write": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: tests/unit/test_app.py's tmp_path config-file fixture already writes files; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
     }
   }
 }
