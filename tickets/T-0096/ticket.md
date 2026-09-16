@@ -19,10 +19,27 @@ scope:
 - web/tests/unit/Login.test.tsx
 - package.json
 - package-lock.json
+- design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: design/hullbreach.strata
+  reason: 'SYS100: the tests node''s client_storage capability, observed via Header.test.tsx/Login.test.tsx
+    now that they exist, needs a may/via declaration (deferred by T-0097 until these
+    files landed)'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 'SYS100: the tests node''s client_storage capability, observed via Header.test.tsx/Login.test.tsx
+    now that they exist, needs a may/via declaration (deferred by T-0097 until these
+    files landed)'
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - cmd:npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx
   web/tests/unit/Login.test.tsx exit=0 sha256=f306fed9ad13
