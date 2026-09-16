@@ -2,7 +2,7 @@
 id: T-0012
 title: Readiness endpoint reporting database connectivity alongside the liveness health
   route
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
