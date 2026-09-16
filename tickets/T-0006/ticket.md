@@ -24,6 +24,9 @@ scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
+- tests/unit/conftest.py
+- tests/system/test_build.py
+- tests/unit/test_auth_register.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -63,6 +66,33 @@ scope_changes:
   glob: docs/design/sprint-1.md
   reason: AFFECT001 requires the design doc's affects()-closure sections (7, 9) to
     be touched alongside the strata flows T-0006 adds/edits
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/conftest.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/system/test_build.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_auth_register.py
+  reason: landing db/ activates the shared conftest fixtures (previously ImportError
+    at setup), which flips ruff's isort classification for conftest.py/test_build.py
+    (I001) and lets test_auth_register.py's weak assertions XPASS on a 404; both are
+    one-line fixes exposed by this ticket's own activation, per coordinator direction
+    to fix in T-0006 rather than file drafts
   actor: logan
   at: '2026-09-16'
 evidence:
