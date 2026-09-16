@@ -19,6 +19,8 @@ scope:
 - docs/design/sprint-1.md
 - frob.toml
 - web/scripts/run-vitest-ids.mjs
+- package.json
+- package-lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -62,6 +64,20 @@ scope_changes:
   reason: 'COV003/NoRunner: vitest node-id evidence needs a runner that translates
     a frob node id into vitest''s actual CLI shape (file + -t name), and language
     ''ts'' (not ''typescript'') is what run_selected reports for a .tsx test file'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: package.json
+  reason: the two web test files this ticket's evidence targets (T-0096, not yet merged)
+    import @testing-library/user-event; adding it here so evidence can be verified
+    against this branch without waiting on T-0096
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: package-lock.json
+  reason: the two web test files this ticket's evidence targets (T-0096, not yet merged)
+    import @testing-library/user-event; adding it here so evidence can be verified
+    against this branch without waiting on T-0096
   actor: logan
   at: '2026-09-16'
 evidence:
