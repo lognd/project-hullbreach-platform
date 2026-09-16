@@ -27,4 +27,15 @@ export default tseslint.config(
       "react/react-in-jsx-scope": "off",
     },
   },
+  {
+    // Node CLI scripts (run outside the browser bundle) -- process/console
+    // are real globals here, unlike web/src's browser code.
+    files: ["web/scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        console: "readonly",
+      },
+    },
+  },
 );
