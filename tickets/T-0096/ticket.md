@@ -21,6 +21,7 @@ scope:
 - package-lock.json
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -38,6 +39,12 @@ scope_changes:
   reason: 'SYS100: the tests node''s client_storage capability, observed via Header.test.tsx/Login.test.tsx
     now that they exist, needs a may/via declaration (deferred by T-0097 until these
     files landed)'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: 'AFFECT001: the tests node''s affects()-closure doc anchor must be touched
+    in the same diff as the strata change'
   actor: logan
   at: '2026-09-16'
 evidence:
