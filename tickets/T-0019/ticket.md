@@ -1,7 +1,7 @@
 ---
 id: T-0019
 title: Session model with expiry and revocation, and the current-user auth dependency
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
