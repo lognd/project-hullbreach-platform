@@ -195,3 +195,7 @@ reason = "the stylesheet entry, imported only by web/src/main.tsx"
 [[refs.entrypoint]]
 path = "docs/design/registry/capability-via-ratchet.lock.json"
 reason = "frob-generated capability-via-ratchet registry (docs/strata/surface.md), read by frob's own SYS111 gate rather than referenced from tracked source"
+
+[[refs.entrypoint]]
+path = "ty.toml"
+reason = "read by ty/frob's ty gate by filename convention, not referenced from source"
