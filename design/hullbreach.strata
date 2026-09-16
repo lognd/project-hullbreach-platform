@@ -7,30 +7,41 @@
 // show FOREIGN/missing-binding gaps until those tickets land -- expected
 // during the design phase, not a defect in this file.
 
+// frob:ticket T-0095
 module hullbreach_sprint1
 
 // -------------------------------------------------------------------
 // External callers (foreign: outside our control once code ships to them)
 // -------------------------------------------------------------------
 
+// frob:ticket T-0095
 node browser : foreign {
     // The React app runs inside a player's browser: our own JS, but
     // executing in an environment the player can inspect, tamper with,
     // or replay from -- untrusted the same way any client is.
     code "web/src/**";
+    waive "REL200:f_register" reason "design-only pass; T-0017 implements the register form/fetch call and will declare/prove a real request timeout there" ticket "T-0017";
+    waive "REL200:f_login_web" reason "design-only pass; T-0021 implements the login form/fetch call and will declare/prove a real request timeout there" ticket "T-0021";
+    waive "REL200:f_logout" reason "design-only pass; T-0024 implements the logout control's fetch call and will declare/prove a real request timeout there" ticket "T-0024";
+    waive "REL200:f_health" reason "design-only pass; no browser-side caller of /health exists yet in this sprint's scope -- deferred to whichever ticket first calls it" ticket "T-0012";
+    waive "REL200:f_ready" reason "design-only pass; no browser-side caller of /ready exists yet in this sprint's scope -- deferred to whichever ticket first calls it" ticket "T-0012";
 }
 
+// frob:ticket T-0095
 node game_client : foreign {
     // The Unity game client authenticates against us with a bearer
     // token obtained from /auth/login; we do not own or scan its code.
     managed;
+    waive "REL200:f_login_game" reason "design-only pass; the game client is managed (no code we scan), and T-0026 lands the server-side session validation this flow leads to" ticket "T-0026";
 }
 
+// frob:ticket T-0095
 node game_server : foreign {
     // The Unity game server validates a client-presented token via
     // GET /auth/session; lives in the sibling game repo (T-0026,
     // labeled needs-game), no scannable code here.
     managed;
+    waive "REL200:f_session_check" reason "design-only pass; the game server is managed (no code we scan) and lives in the sibling repo; T-0026 lands the platform side of this flow" ticket "T-0026";
 }
 
 // -------------------------------------------------------------------
@@ -38,29 +49,45 @@ node game_server : foreign {
 // section 1's module map)
 // -------------------------------------------------------------------
 
+// frob:ticket T-0095
 node hullbreach_server_root : trusted {
     code "src/hullbreach_server/__init__.py" "src/hullbreach_server/__main__.py";
     may "env.write" via "src/hullbreach_server/__main__.py::main";
+    waive "REL200:database_url__issue" reason "design-only pass; T-0006 introduces db/engine.py, the real caller of the database URL, and will declare/prove a real connect-timeout there" ticket "T-0006";
+    waive "REL200:database_url__revoke" reason "same as database_url__issue: no engine code exists yet to carry a real timeout token" ticket "T-0006";
 }
 
+// frob:ticket T-0095
 node hullbreach_server_app : trusted {
     code "src/hullbreach_server/app/**";
     may "net.listen" via "src/hullbreach_server/app/app.py::App.__call__";
     may "env.read" via "src/hullbreach_server/app/config.py::AppConfig.from_external";
 }
 
+// frob:ticket T-0095
 node hullbreach_server_api : trusted {
     code "src/hullbreach_server/api/**";
+    waive "REL200:f_api_to_auth" reason "design-only pass; the internal api->auth call has no timeout token until T-0019/T-0020 land" ticket "T-0019";
+    waive "REL200:f_api_to_db" reason "design-only pass; the internal api->db readiness check has no timeout token until T-0012 lands" ticket "T-0012";
 }
 
+// frob:ticket T-0095
 node hullbreach_server_auth : trusted {
     code "src/hullbreach_server/auth/**";
+    waive "REL200:f_auth_to_db" reason "design-only pass; the internal auth->db call has no timeout token until T-0015/T-0019 land" ticket "T-0019";
+    waive "REL200:session_token__issue" reason "design-only pass; T-0019/T-0020 introduce auth/sessions.py, the real issuer, and will declare/prove a real timeout there" ticket "T-0019";
+    waive "REL200:session_token__revoke" reason "same as session_token__issue: no auth/sessions.py code exists yet" ticket "T-0019";
+    waive "REL200:password_hash__issue" reason "design-only pass; T-0015 introduces auth/passwords.py, the real issuer, and will declare/prove a real timeout there" ticket "T-0015";
+    waive "REL200:password_hash__revoke" reason "same as password_hash__issue: no auth/passwords.py code exists yet" ticket "T-0015";
 }
 
+// frob:ticket T-0095
 node hullbreach_server_db : trusted {
     code "src/hullbreach_server/db/**";
+    waive "REL200:f_db_to_postgres" reason "design-only pass; T-0006 introduces db/engine.py, the real caller of Postgres, and will declare/prove a real connect-timeout there" ticket "T-0006";
 }
 
+// frob:ticket T-0095
 node hullbreach_server_logging : trusted {
     code "src/hullbreach_server/logging/**";
 }
@@ -69,6 +96,7 @@ node hullbreach_server_logging : trusted {
 // Data store (external infrastructure, no code of ours to scan)
 // -------------------------------------------------------------------
 
+// frob:ticket T-0095
 node hullbreach_postgres : trusted {
     managed;
 }
@@ -77,70 +105,111 @@ node hullbreach_postgres : trusted {
 // Flows: every HTTP call in the sprint-1 design, plus the DB connection.
 // -------------------------------------------------------------------
 
+// frob:ticket T-0095
 flow f_register : browser -> hullbreach_server_api {
     label Pii;
     attr "POST /api/v1/auth/register";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_login_web : browser -> hullbreach_server_api {
     label Pii;
     attr "POST /api/v1/auth/login";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_login_game : game_client -> hullbreach_server_api {
     label Pii;
     attr "POST /api/v1/auth/login";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_logout : browser -> hullbreach_server_api {
     label Internal;
     attr "POST /api/v1/auth/logout";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_session_check : game_server -> hullbreach_server_api {
     label Internal;
     attr "GET /api/v1/auth/session";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_health : browser -> hullbreach_server_api {
     label Public;
     attr "GET /api/v1/health";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_ready : browser -> hullbreach_server_api {
     label Public;
     attr "GET /api/v1/ready";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_api_to_auth : hullbreach_server_api -> hullbreach_server_auth {
     label Pii;
     attr "internal call: password/session handling";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_auth_to_db : hullbreach_server_auth -> hullbreach_server_db {
     label Pii;
     attr "internal call: user/session persistence";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_api_to_db : hullbreach_server_api -> hullbreach_server_db {
     label Internal;
     attr "internal call: readiness check (SELECT 1)";
-    attr timeout;
 }
 
+// frob:ticket T-0095
 flow f_db_to_postgres : hullbreach_server_db -> hullbreach_postgres {
     label Pii;
     attr "SQL over HULLBREACH_DATABASE_URL";
-    attr timeout;
+}
+
+// -------------------------------------------------------------------
+// Existing Python import edges within the platform package (measured,
+// not planned -- the same edges `frob sys init --check` derives from
+// the current import graph, declared here so SYS003 does not flag them).
+// -------------------------------------------------------------------
+
+// frob:ticket T-0095
+flow f_root_to_app : hullbreach_server_root -> hullbreach_server_app {
+    label Internal;
+    attr local;
+    attr "__main__.py imports App/AppConfig from app package";
+}
+
+// frob:ticket T-0095
+flow f_api_to_root : hullbreach_server_api -> hullbreach_server_root {
+    label Internal;
+    attr local;
+    attr "api/health.py imports __version__ from package root";
+}
+
+// frob:ticket T-0095
+flow f_app_to_root : hullbreach_server_app -> hullbreach_server_root {
+    label Internal;
+    attr local;
+    attr "app/app.py imports __version__ from package root";
+}
+
+// frob:ticket T-0095
+flow f_app_to_api : hullbreach_server_app -> hullbreach_server_api {
+    label Internal;
+    attr local;
+    attr "app/app.py imports api_router from api package";
+}
+
+// frob:ticket T-0095
+flow f_app_to_logging : hullbreach_server_app -> hullbreach_server_logging {
+    label Internal;
+    attr local;
+    attr "app/app.py imports get_logger from logging package";
 }
 
 // -------------------------------------------------------------------
@@ -149,6 +218,7 @@ flow f_db_to_postgres : hullbreach_server_db -> hullbreach_postgres {
 // docs/strata/surface.md#std-secrets.
 // -------------------------------------------------------------------
 
+// frob:ticket T-0095
 secret session_token {
     issued_by hullbreach_server_auth;
     audience { browser, game_client, game_server };
@@ -156,6 +226,7 @@ secret session_token {
     revoke 1 s;
 }
 
+// frob:ticket T-0095
 secret password_hash {
     issued_by hullbreach_server_auth;
     audience { hullbreach_server_db };
@@ -168,6 +239,7 @@ secret password_hash {
     revoke 1 d;
 }
 
+// frob:ticket T-0095
 secret database_url {
     issued_by hullbreach_server_root;
     audience { hullbreach_server_db };

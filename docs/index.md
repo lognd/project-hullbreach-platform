@@ -47,3 +47,11 @@ it; `web/tailwind.config.ts` hands that theme to Tailwind through
 against the spec so an undeclared color or off-scale spacing is a red
 build. Utilities are namespaced to the declared scales: `bg-paper`,
 `text-ink`, `gap-space-8`, `text-font-size-20`, `rounded-radius-8`.
+
+## Sprint 1 design
+
+`docs/design/sprint-1.md` is the system design for milestone 0.1.0
+(database wiring, auth, and the site shell): module map, data model,
+config, CLI, auth contracts, web routing, and a per-acceptance-criterion
+test plan. `design/hullbreach.strata` is its checked companion model
+(nodes, flows, and secrets for the same target architecture).

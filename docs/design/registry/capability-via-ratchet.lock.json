@@ -1,0 +1,19 @@
+{
+  "entries": {
+    "hullbreach_server_app::env.read": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: AppConfig.from_external already reads os.environ for HULLBREACH_* settings; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    },
+    "hullbreach_server_app::net.listen": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: App.__call__ already calls uvicorn.run, which binds a listening socket; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    },
+    "hullbreach_server_root::env.write": {
+      "accepted_count": 1,
+      "reason": "T-0095 initial baseline: __main__.main already calls load_dotenv(), which writes parsed .env values into os.environ; declaring the existing site, not granting new capability",
+      "ticket": "T-0095"
+    }
+  }
+}
