@@ -21,6 +21,7 @@ scope:
 - web/scripts/run-vitest-ids.mjs
 - package.json
 - package-lock.json
+- eslint.config.js
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -78,6 +79,12 @@ scope_changes:
   reason: the two web test files this ticket's evidence targets (T-0096, not yet merged)
     import @testing-library/user-event; adding it here so evidence can be verified
     against this branch without waiting on T-0096
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: eslint.config.js
+  reason: web/scripts/run-vitest-ids.mjs is a node script; eslint's default globals
+    are browser-only, so process/console trip no-undef without a node-env override
   actor: logan
   at: '2026-09-16'
 evidence:
