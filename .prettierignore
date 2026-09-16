@@ -1,0 +1,9 @@
+dist/
+node_modules/
+coverage/
+.venv/
+src/
+tests/
+uv.lock
+web/tailwind.theme.json
+tickets/

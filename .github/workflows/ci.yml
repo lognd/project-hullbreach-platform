@@ -1,0 +1,134 @@
+name: CI
+
+# Development happens on branches; main only moves by pull request. Every
+# job below must succeed on the PR's head before it can merge -- the
+# `gate` job at the bottom is the single required status check to name in
+# branch protection (see CONTRIBUTING.md). pytest xfail counts as success,
+# xpass (strict) counts as failure; that is pytest's own semantics and CI
+# does not soften them.
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    name: server (python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: install
+        run: uv sync
+
+      - name: lint
+        run: uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+
+      - name: typecheck
+        run: uv run ty check src/
+
+      - name: test
+        run: uv run pytest tests/ -n auto --cov=src --cov-report=term-missing
+
+  web:
+    name: web (typescript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: install
+        run: npm ci && uv sync
+
+      - name: lint
+        run: npm run lint && npx prettier --check .
+
+      # crunk: the design-system gate. Fails on any color/size/shadow in
+      # CSS or a className string that crunk.toml does not declare, and on
+      # generated token files that drifted from the spec.
+      - name: crunk
+        run: uv run crunk check && uv run crunk tokens --check
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: test
+        run: npm run test:coverage
+
+      - name: build
+        run: npm run build
+
+  frob:
+    name: frob check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # frob diffs against main
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: install
+        run: uv sync && npm ci
+
+      # A missing/broken frob install means the gate genuinely could NOT
+      # run -- that must be a loud, non-green status, never a quiet notice
+      # next to an otherwise-green build. A skipped gate that only prints
+      # a notice is indistinguishable from a passing one.
+      - name: install frob
+        run: uv tool install frob || true
+
+      # GitHub checks out a PR as a detached merge commit, so frob cannot
+      # derive the active ticket from the branch name the way it does on a
+      # developer machine; pass it from the head ref instead. Pushes to
+      # main have an empty diff against origin/main and need no ticket.
+      # The coverage stamp and the ticket pre-work sweep record live in the
+      # gitignored .frob/ directory, so both are rebuilt here before the
+      # gate reads them (TEST006, PRE001).
+      - name: frob check
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if ! command -v frob >/dev/null 2>&1 || ! frob graph --help >/dev/null 2>&1; then
+            echo "::error::frob check could not run -- frob is not installed or not working (install: uv tool install frob). This gate is UNMEASURED, not clean; fix the install rather than ignoring this failure."
+            exit 1
+          fi
+          source .venv/bin/activate
+          frob coverage --full --fail-on-degraded
+          ticket=$(printf "%s" "$HEAD_REF" | grep -oE "^T-[0-9]{4}" || true)
+          if [ -n "$ticket" ]; then
+            frob ticket sweep "$ticket"
+            frob check --base origin/main --ticket "$ticket"
+          else
+            frob check --base origin/main
+          fi

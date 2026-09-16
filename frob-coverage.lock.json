@@ -1,0 +1,16 @@
+{
+  "module_line": {
+    "src/hullbreach_server/__init__.py": 0.0,
+    "src/hullbreach_server/__main__.py": 0.0,
+    "src/hullbreach_server/api/__init__.py": 0.0,
+    "src/hullbreach_server/api/health.py": 0.0,
+    "src/hullbreach_server/app/__init__.py": 0.0,
+    "src/hullbreach_server/app/app.py": 0.0,
+    "src/hullbreach_server/app/config.py": 0.0,
+    "src/hullbreach_server/logging/__init__.py": 0.0,
+    "src/hullbreach_server/logging/filter.py": 0.0,
+    "src/hullbreach_server/logging/formatter.py": 0.0,
+    "src/hullbreach_server/logging/logger.py": 0.0
+  },
+  "source_sha": "d61cc33760d20217b0e102821743bcd16f242f72693e363e686afb0b23ba39c6"
+}
