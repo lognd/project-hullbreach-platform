@@ -9,6 +9,7 @@ from __future__ import annotations
 import pytest
 
 
+# frob:ticket T-0098
 def _register_and_login(client, username: str = "player_one") -> dict:
     client.post(
         "/api/v1/auth/register",
