@@ -42,13 +42,16 @@ scope_changes:
     it; needed to make prettier --check clean for CI
   actor: logan
   at: '2026-09-16'
+evidence:
+- cmd:grep -n 'module hullbreach_sprint1' design/hullbreach.strata exit=0 sha256=4619336c0007
 designated_repro_test: null
 acceptance:
 - text: given the sprint-1 tickets' thin bodies, when an implementer or test-writing
     agent reads docs/design/sprint-1.md, then they find a concrete spec (module map,
     data model, config, CLI, auth contracts, web routing, test-to-acceptance-criterion
     mapping) with no open question left unresolved or undocumented
-  evidence: []
+  evidence:
+  - cmd:grep -n 'module hullbreach_sprint1' design/hullbreach.strata exit=0 sha256=4619336c0007
 threat: null
 component: null
 anchor: false
