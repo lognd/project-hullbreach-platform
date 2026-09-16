@@ -1,7 +1,7 @@
 ---
 id: T-0096
 title: Sprint 1 failing test skeleton (web)
-state: done
+state: queued
 kind: docs
 origin: human
 created: '2026-09-16'
@@ -41,3 +41,6 @@ anchor_reason: null
 land_commit: null
 ---
 Test-first failing-test skeleton (vitest it.fails) for the sprint-1 web tickets T-0044, T-0017, T-0021, T-0024, per docs/design/sprint-1.md section 7. Adds @testing-library/user-event as a devDependency for keyboard/click interaction in the header tab-order test.
+
+## Reopen log
+- 2026-09-16: SELFAUDIT001/SYS100: now that Header.test.tsx and Login.test.tsx exist on this branch, the tests node's client_storage capability is observed but not declared -- add the may via grants T-0097 deferred
