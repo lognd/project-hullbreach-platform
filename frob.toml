@@ -43,6 +43,22 @@ command = ["npx", "vitest", "run", "{ids}"]
 all_command = ["npx", "vitest", "run"]
 cwd = "."
 
+# T-0044: frob.testing.LANGUAGE_COLLECTORS registers the vitest collector
+# under the key "ts" (frob 0.531.0), but frob.lang.language_for_extension
+# -- the canonical mapping frob.testing._select and this file's own
+# "typescript" entry above agree on -- returns "typescript" for .ts/.tsx.
+# `frob ticket evidence`/`close`'s verification path buckets by the
+# LANGUAGE_COLLECTORS key ("ts"), so it can never find the "typescript"
+# runner above and always fails NoRunner/EvidenceNotPassing on a vitest
+# node id, even though `frob test`/`npx vitest run` pass the same id.
+# This mirrors the typescript entry exactly as a workaround until that
+# key mismatch is fixed upstream; remove once it is.
+[[test.runner]]
+language = "ts"
+command = ["npx", "vitest", "run", "{ids}"]
+all_command = ["npx", "vitest", "run"]
+cwd = "."
+
 # T-3277: REF001/REF002 (anti-orphan gate) flags every one of these on a
 # freshly scaffolded, untouched repo -- each is read by something OUTSIDE
 # this project's own tracked-file graph (a human, GitHub Actions, a CI/CD
