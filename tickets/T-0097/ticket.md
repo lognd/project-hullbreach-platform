@@ -35,6 +35,12 @@ scope_changes:
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
+acceptance:
+- text: given design/hullbreach.strata's tests node, when frob check runs against
+    a branch carrying web/tests/unit/Header.test.tsx and Login.test.tsx, then their
+    observed client_storage capability is bound by the node's code glob (no SELFAUDIT001/SYS103
+    finding)
+  evidence: []
 threat: null
 component: null
 anchor: false
