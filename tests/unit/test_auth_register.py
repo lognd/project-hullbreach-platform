@@ -8,6 +8,7 @@ from __future__ import annotations
 import pytest
 
 
+# frob:ticket T-0098
 def _register_payload(**overrides: object) -> dict:
     payload = {
         "username": "player_one",
