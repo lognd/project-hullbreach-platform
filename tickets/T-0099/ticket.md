@@ -42,6 +42,8 @@ scope_changes:
     App description needs updating (AFFECT001)
   actor: logan
   at: '2026-09-16'
+evidence:
+- tests/unit/test_app.py::test_app_call_exits_nonzero_naming_host_when_database_unreachable
 designated_repro_test: null
 threat: null
 component: null
