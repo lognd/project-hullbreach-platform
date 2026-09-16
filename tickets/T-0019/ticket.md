@@ -24,12 +24,14 @@ no_scope_declared: false
 no_scope_declared_reason: null
 evidence:
 - tests/unit/test_sessions.py::test_expired_token_returns_401
+- tests/unit/test_sessions.py::test_revoked_token_returns_401
 designated_repro_test: null
 acceptance:
 - text: given an expired or revoked token, when a protected route is called, then
     401
   evidence:
   - tests/unit/test_sessions.py::test_expired_token_returns_401
+  - tests/unit/test_sessions.py::test_revoked_token_returns_401
 threat: null
 component: null
 anchor: false
