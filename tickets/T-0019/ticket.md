@@ -19,6 +19,7 @@ scope:
 - src/hullbreach_server/auth/deps.py
 - tests/unit/test_sessions.py
 - src/hullbreach_server/db/models/__init__.py
+- src/hullbreach_server/db/migrations/versions/*.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -28,6 +29,12 @@ scope_changes:
   glob: src/hullbreach_server/db/models/__init__.py
   reason: Session must be re-exported here so Base.metadata (and Alembic autogenerate)
     sees it, per env.py's own comment naming T-0019
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/migrations/versions/*.py
+  reason: session migration file lives under versions/, needed to create the sessions
+    table
   actor: logan
   at: '2026-09-16'
 evidence:
