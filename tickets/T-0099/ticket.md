@@ -18,6 +18,7 @@ scope:
 - tests/unit/test_app.py
 - design/hullbreach.strata
 - docs/design/sprint-1.md
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -33,6 +34,12 @@ scope_changes:
   glob: docs/design/sprint-1.md
   reason: f_app_to_db's frob:doc anchor points at docs/design/sprint-1.md#fail-fast-startup-t-0006
     (AFFECT001); update it to reflect the landed wiring
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: App.__call__ now calls check_connectivity via db.engine; docs/index.md's
+    App description needs updating (AFFECT001)
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
