@@ -39,7 +39,17 @@ cwd = "."
 
 [[test.runner]]
 language = "typescript"
-command = ["npx", "vitest", "run", "{ids}"]
+command = ["node", "web/scripts/run-vitest-ids.mjs", "{ids}"]
+all_command = ["npx", "vitest", "run"]
+cwd = "."
+
+# T-0097: run_selected classifies web/tests/**/*.test.tsx under the
+# short language id "ts", not "typescript" -- both entries stay so
+# evidence collection resolves regardless of which id a given frob
+# version reports for a .tsx test file.
+[[test.runner]]
+language = "ts"
+command = ["node", "web/scripts/run-vitest-ids.mjs", "{ids}"]
 all_command = ["npx", "vitest", "run"]
 cwd = "."
 
