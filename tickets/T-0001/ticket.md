@@ -1,7 +1,7 @@
 ---
 id: T-0001
 title: Scaffold the platform monorepo
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
