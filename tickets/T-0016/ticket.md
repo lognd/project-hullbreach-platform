@@ -21,11 +21,14 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+evidence:
+- tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
 designated_repro_test: null
 acceptance:
 - text: given a duplicate username, when registering, then 409 with a field-specific
     message
-  evidence: []
+  evidence:
+  - tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
 - text: given a valid request, when registering, then 201 and role Player, currency
     0, rating default
   evidence: []
