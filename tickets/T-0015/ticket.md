@@ -101,6 +101,12 @@ scope_changes:
   at: '2026-09-16'
 evidence:
 - tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
+- tests/unit/test_passwords.py::test_verify_password_rejects_wrong_password
+- tests/unit/test_passwords.py::test_hash_password_uses_argon2id_scheme
+- tests/unit/test_passwords.py::test_hash_password_is_salted_so_two_hashes_of_the_same_password_differ
+- tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
+- tests/unit/test_roles.py::test_role_enum_has_exactly_player_and_admin_members
+- tests/unit/test_roles.py::test_user_default_role_is_player
 designated_repro_test: null
 acceptance:
 - text: given a password, when hashed, then verify succeeds and the stored value is
