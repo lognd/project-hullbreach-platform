@@ -1,7 +1,7 @@
 ---
 id: T-0002
 title: 'CI: restore coverage lock after refresh so main pushes stay clean'
-state: in-progress
+state: done
 kind: bug
 origin: human
 created: '2026-09-15'
@@ -44,11 +44,18 @@ scope_changes:
     glob made every later ticket look like T-0002 work (CROSSTICKET001)
   actor: logan
   at: '2026-09-15'
+evidence:
+- tests/unit/test_api.py::test_health_reports_ok_and_version
+- tests/unit/test_logging.py::test_below_level_filter_passes_records_below_threshold
+- tests/unit/test_logging.py::test_simple_formatter_prefixes_level_at_warning_and_above
 designated_repro_test: null
 acceptance:
 - text: given a push to main, when the frob check job runs, then PRE001/SCOPE001 do
     not fire
-  evidence: []
+  evidence:
+  - tests/unit/test_api.py::test_health_reports_ok_and_version
+  - tests/unit/test_logging.py::test_below_level_filter_passes_records_below_threshold
+  - tests/unit/test_logging.py::test_simple_formatter_prefixes_level_at_warning_and_above
 threat: null
 component: null
 anchor: false
