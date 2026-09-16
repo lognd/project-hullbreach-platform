@@ -15,7 +15,6 @@ runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
 scope:
 - .github/workflows/ci.yml
-- tickets/**
 - src/hullbreach_server/api/health.py
 - src/hullbreach_server/logging/filter.py
 - src/hullbreach_server/logging/formatter.py
@@ -37,6 +36,12 @@ scope_changes:
 - op: add
   glob: src/hullbreach_server/logging/formatter.py
   reason: drop the WIRE001 waivers that cite T-0001 so it can close
+  actor: logan
+  at: '2026-09-15'
+- op: remove
+  glob: tickets/**
+  reason: the CI fix only touches the workflow and three source files; the tickets
+    glob made every later ticket look like T-0002 work (CROSSTICKET001)
   actor: logan
   at: '2026-09-15'
 designated_repro_test: null

@@ -1,0 +1,35 @@
+---
+id: T-0006
+title: Database engine and session dependency from HULLBREACH_DATABASE_URL, fail fast
+  at startup
+state: queued
+kind: feature
+origin: human
+created: '2026-09-15'
+priority: medium
+parent: T-0005
+tier: ticket
+sprint: sprint-1
+runs_last: false
+milestone: 0.1.0
+runs_last_parallel_safe: false
+runs_last_parallel_safe_reason: null
+scope:
+- src/hullbreach_server/db/__init__.py
+- src/hullbreach_server/db/engine.py
+- tests/unit/test_db_engine.py
+scope_breadth_ack: false
+scope_breadth_ack_reason: null
+no_scope_declared: false
+no_scope_declared_reason: null
+designated_repro_test: null
+acceptance:
+- text: given an unreachable database URL, when create_app starts, then startup fails
+    with a message naming the host
+  evidence: []
+threat: null
+component: null
+anchor: false
+anchor_reason: null
+land_commit: null
+---
