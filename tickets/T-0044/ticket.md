@@ -26,7 +26,6 @@ scope:
 - web/tests/unit/Login.test.tsx
 - package.json
 - package-lock.json
-- docs/index.md
 - frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
@@ -93,6 +92,14 @@ scope_changes:
     language=ts while frob.toml/frob test use typescript, which otherwise blocks frob
     ticket evidence/close on any vitest node id; mirrors the existing typescript runner
     entry (coordinator-approved workaround)
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: docs/index.md
+  reason: yielding docs/index.md to break a lease deadlock with T-0099 (T-0099 holds
+    design/hullbreach.strata and needs docs/index.md; T-0044 held docs/index.md and
+    needs the strata file); patch kept at scratchpad/t0044-docs.patch to re-apply
+    once T-0099 lands
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
