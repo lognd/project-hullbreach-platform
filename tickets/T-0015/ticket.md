@@ -23,6 +23,7 @@ scope:
 - src/hullbreach_server/db/migrations/env.py
 - pyproject.toml
 - uv.lock
+- tests/unit/test_roles.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -67,6 +68,14 @@ scope_changes:
 - op: add
   glob: uv.lock
   reason: pyproject.toml/uv.lock gain the pwdlib[argon2] dependency
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_roles.py
+  reason: landing db/models/user.py (Role, User) makes two of T-0028's xfail tests
+    (enum membership, default role) genuinely pass -- same class of fixture-activation
+    ripple as T-0006's; fixing inline rather than leaving a false XPASS(strict) failure
+    in CI
   actor: logan
   at: '2026-09-16'
 evidence:
