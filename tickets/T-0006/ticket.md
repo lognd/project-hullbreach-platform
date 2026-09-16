@@ -22,6 +22,7 @@ scope:
 - pyproject.toml
 - uv.lock
 - design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -49,6 +50,12 @@ scope_changes:
   glob: design/hullbreach.strata
   reason: T-0006 needs docs/index.md updates, sqlalchemy/psycopg deps, and the sprint-1
     strata model brought in sync with the landed db/engine.py surface
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: T-0006 adds hullbreach_server_db's first 'sql' via-site (check_connectivity),
+    which must bump the committed via-ratchet ceiling from 0 to 1
   actor: logan
   at: '2026-09-16'
 evidence:
