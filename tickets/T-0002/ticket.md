@@ -1,5 +1,5 @@
 ---
-id: T-draft-7d70b385
+id: T-0002
 title: 'CI: restore coverage lock after refresh so main pushes stay clean'
 state: queued
 kind: bug
