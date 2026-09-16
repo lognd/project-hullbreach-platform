@@ -1,7 +1,7 @@
 ---
 id: T-0015
 title: User model, migration, and password hashing helper
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
