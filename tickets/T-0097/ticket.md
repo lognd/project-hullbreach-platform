@@ -17,7 +17,6 @@ scope:
 - design/hullbreach.strata
 - docs/design/registry/capability-via-ratchet.lock.json
 - docs/design/sprint-1.md
-- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -41,6 +40,12 @@ scope_changes:
     ''ts'', but frob.toml only declares a [[test.runner]] for language ''typescript'',
     so pytest-style vitest node-id evidence cannot be collected for a non-docs/ux
     ticket; add the matching runner entry'
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: frob.toml
+  reason: reverted the runner-language experiment; cmd evidence via kind=docs is the
+    simpler fix
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
