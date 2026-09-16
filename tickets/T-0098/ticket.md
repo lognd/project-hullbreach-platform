@@ -29,6 +29,7 @@ scope:
 - ty.toml
 - design/hullbreach.strata
 - docs/design/sprint-1.md
+- frob.toml
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -44,6 +45,11 @@ scope_changes:
   glob: docs/design/sprint-1.md
   reason: touched section 7 to cross-reference the tests node in design/hullbreach.strata,
     needed to satisfy AFFECT001
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: frob.toml
+  reason: needed a [[refs.entrypoint]] declaration for ty.toml (REF001)
   actor: logan
   at: '2026-09-16'
 evidence:
