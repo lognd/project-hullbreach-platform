@@ -21,8 +21,6 @@ scope:
 - docs/index.md
 - pyproject.toml
 - uv.lock
-- docs/design/registry/capability-via-ratchet.lock.json
-- docs/design/sprint-1.md
 - tests/unit/conftest.py
 - tests/system/test_build.py
 - tests/unit/test_auth_register.py
@@ -99,6 +97,20 @@ scope_changes:
   reason: T-0097 holds a live cross-worktree lease on this file; T-0006's strata edits
     already landed in a prior commit on this branch and are not being changed further
     in this round
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: T-0097 holds live cross-worktree leases on these design files; T-0006's
+    edits to them already landed in a prior commit and are not changing further in
+    this round
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: docs/design/sprint-1.md
+  reason: T-0097 holds live cross-worktree leases on these design files; T-0006's
+    edits to them already landed in a prior commit and are not changing further in
+    this round
   actor: logan
   at: '2026-09-16'
 evidence:
