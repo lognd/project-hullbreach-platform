@@ -43,6 +43,10 @@ both authenticate against it. Real-time match traffic never touches it.
 to `App`, which runs uvicorn. Running with no subcommand still serves; a
 `db` subcommand group (`db upgrade`, `db seed`) instead runs the given
 database maintenance step and exits without building `App`/`create_app`.
+Before serving, `App.__call__` fails fast: it builds an engine from
+`AppConfig.database_url` and runs `check_connectivity`, exiting non-zero
+and logging the connectivity error at `ERROR` instead of calling
+`uvicorn.run` against a database it cannot reach.
 `create_app` is the pure, socket-free core that
 tests exercise through `TestClient`. Routes live in `api/`, one module per
 resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
