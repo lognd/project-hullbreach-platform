@@ -1,7 +1,7 @@
 ---
 id: T-0097
 title: Widen strata tests node glob to cover web/tests
-state: in-progress
+state: done
 kind: docs
 origin: human
 created: '2026-09-16'
