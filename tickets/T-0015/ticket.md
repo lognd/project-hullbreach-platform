@@ -17,10 +17,38 @@ scope:
 - src/hullbreach_server/db/models/user.py
 - src/hullbreach_server/auth/passwords.py
 - tests/unit/test_passwords.py
+- src/hullbreach_server/auth/__init__.py
+- src/hullbreach_server/db/models/__init__.py
+- src/hullbreach_server/db/migrations/versions/
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/auth/__init__.py
+  reason: new auth/ and db/models/ packages need __init__.py; the users migration
+    (T-0015's acceptance criterion 'alembic heads match the models' via T-0007's env.py)
+    lands under db/migrations/versions/, per the coordinator's explicit instruction
+    to add the real users migration there
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/models/__init__.py
+  reason: new auth/ and db/models/ packages need __init__.py; the users migration
+    (T-0015's acceptance criterion 'alembic heads match the models' via T-0007's env.py)
+    lands under db/migrations/versions/, per the coordinator's explicit instruction
+    to add the real users migration there
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/migrations/versions/
+  reason: new auth/ and db/models/ packages need __init__.py; the users migration
+    (T-0015's acceptance criterion 'alembic heads match the models' via T-0007's env.py)
+    lands under db/migrations/versions/, per the coordinator's explicit instruction
+    to add the real users migration there
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 designated_repro_test: null
