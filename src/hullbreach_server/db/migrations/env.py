@@ -15,9 +15,9 @@ from hullbreach_server.app.config import AppConfig
 from hullbreach_server.db.engine import Base, create_db_engine
 
 # Import every model module here so Base.metadata is fully populated
-# before autogenerate/compare_metadata runs. None exist yet (T-0015
-# adds db/models/user.py, T-0019 adds db/models/session.py); this list
-# grows as those tickets land.
+# before autogenerate/compare_metadata runs. db/models/__init__.py
+# re-exports each one (T-0019 adds db/models/session.py to that list).
+from hullbreach_server.db.models import Role, User  # noqa: F401
 
 # This is the Alembic Config object, which provides access to values
 # within alembic.ini.
