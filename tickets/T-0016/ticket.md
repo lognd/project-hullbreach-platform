@@ -17,10 +17,18 @@ scope:
 - src/hullbreach_server/api/auth.py
 - src/hullbreach_server/auth/schemas.py
 - tests/unit/test_auth_register.py
+- src/hullbreach_server/api/__init__.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/api/__init__.py
+  reason: mount the new auth router onto api_router under /api/v1/auth, per docs/design/sprint-1.md
+    section 5
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
 - tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
