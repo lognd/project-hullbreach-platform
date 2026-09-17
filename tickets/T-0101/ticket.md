@@ -18,6 +18,7 @@ scope:
 - src/hullbreach_server/db/seed.py
 - tests/unit/test_seed.py
 - tests/system/test_build.py
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -40,6 +41,11 @@ scope_changes:
   reason: compare_metadata's diff check needs an include_object filter to exclude
     the intentionally model-less items table, or the new migration fails the existing
     acceptance test
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: database-migrations section needs the new items migration documented (AFFECT001)
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
