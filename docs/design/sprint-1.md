@@ -661,7 +661,10 @@ edge added by T-0019 once `auth/sessions.py`/`auth/deps.py` landed
 convention, same reason as `f_db_to_logging`), plus the `hullbreach_server_auth`
 node's `may "env.read"` grant on `auth/sessions.py::_session_ttl_seconds`
 (it reads `HULLBREACH_SESSION_TTL_SECONDS` directly rather than through
-`AppConfig`, per section 3's rationale); a `tests` node (`code
+`AppConfig`, per section 3's rationale); one more such measured edge
+added by T-0016 once `api/auth.py` landed (`f_api_to_logging`, since
+`api/auth.py` uses the module-logger convention, same reason as
+`f_db_to_logging`/`f_auth_to_logging`); a `tests` node (`code
 "tests/**"`) declaring, via `may`, the
 `eval`/`exec`/`fs.read` capabilities `tests/system/test_build.py`'s
 fresh-`uv sync` smoke test legitimately exercises and the `fs.write`

@@ -117,6 +117,30 @@ raising 401 uniformly for a missing header, an unknown token, an expired
 session, or a revoked session (never FastAPI's default 403 on a missing
 credential).
 
+### Auth API
+
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::RegisterRequest -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile.from_user -->
+<!-- frob:describes src/hullbreach_server/api/auth.py::register -->
+
+`POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
+takes a `RegisterRequest` (`username`, `email` as `EmailStr`, `password`
+with `Field(min_length=8)`; `role` is deliberately not a field at all,
+never merely ignored) and returns a `UserProfile` (`id`, `username`,
+`email`, `role`, `currency`, `rating`, `created_at`) with 201 on success.
+`UserProfile.from_user` builds the response from the persisted `User`
+row, filling in `currency=0` and the default starting `rating` (1200) --
+neither is a real column yet (ELO and currency land in later
+milestones). A pre-query (`_duplicate_field`) checks for an existing
+`username` or `email` before the insert, so a 409 response can name the
+specific offending field (`{"detail": "username already taken",
+"field": "username"}` or the `email` equivalent) rather than parsing a
+driver `IntegrityError`. A too-short password or malformed email fails
+pydantic validation with FastAPI's default 422, no custom body needed.
+Per docs/design/sprint-1.md section 5, `login`/`logout`/`session` land
+in later tickets (T-0020, T-0023, T-0026).
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->

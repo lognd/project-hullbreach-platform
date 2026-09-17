@@ -87,12 +87,12 @@ node hullbreach_server_auth : trusted {
     waive "REL200:f_auth_to_db" reason "T-0019 landed auth/sessions.py's SQLAlchemy Session calls, but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:session_token__issue" reason "T-0019 landed issue_session (the real issuer), but its own tests are the only caller so far; T-0020's POST /auth/login route is the real request/response cycle that will declare/prove a real timeout" ticket "T-0020";
     waive "REL200:session_token__revoke" reason "T-0019 landed revoke_session/revoke_all_sessions, but no route calls them yet; T-0023 (POST /auth/logout) is the real call site that will declare/prove a real timeout" ticket "T-0023";
-    waive "REL200:password_hash__issue" reason "design-only pass; hash_password (T-0015) computes a hash in-process with no connection/request to time out; T-0016 is the real persistence call site and will declare/prove a real timeout there" ticket "T-0016";
-    waive "REL200:password_hash__revoke" reason "same as password_hash__issue: a password hash is never revoked/rotated by code, only by a future rehash-on-login upgrade path (design section 8, open question)" ticket "T-0016";
+    waive "REL200:password_hash__issue" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
+    waive "REL200:password_hash__revoke" reason "a password hash is never revoked/rotated by code, only by a future rehash-on-login upgrade path (design section 8, open question); tracked under T-0100's general timeout-attr follow-up until that upgrade path exists" ticket "T-0100";
     waive "REL200:f_session_token_to_browser" reason "T-0019 landed auth/sessions.py's issue_session, but no route returns a token to the browser yet; T-0020's POST /auth/login response is the real call site that will declare/prove a real timeout" ticket "T-0020";
     waive "REL200:f_session_token_to_game_client" reason "design-only pass; T-0026 introduces the game-client login path and will declare/prove a real timeout there" ticket "T-0026";
     waive "REL200:f_session_token_to_game_server" reason "design-only pass; T-0026 introduces GET /session and will declare/prove a real timeout there" ticket "T-0026";
-    waive "REL200:f_password_hash_to_db" reason "design-only pass; hash_password (T-0015) has no request/response cycle to time out; T-0016 is the real persistence call site and will declare/prove a real timeout there" ticket "T-0016";
+    waive "REL200:f_password_hash_to_db" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
 }
 
 // frob:ticket T-0095
@@ -325,6 +325,14 @@ flow f_api_to_root : hullbreach_server_api -> hullbreach_server_root {
     label Internal;
     attr local;
     attr "api/health.py imports __version__ from package root";
+}
+
+// frob:ticket T-0016
+// frob:doc docs/design/sprint-1.md#9-strata-model-designhullbreachstrata
+flow f_api_to_logging : hullbreach_server_api -> hullbreach_server_logging {
+    label Internal;
+    attr local;
+    attr "api/auth.py uses the module logger convention";
 }
 
 // frob:ticket T-0095
