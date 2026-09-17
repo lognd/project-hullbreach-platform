@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { App } from "@/App";
 import { Register } from "@/pages/Register";
+import { Login } from "@/pages/Login";
 
 /** Landing route content; a fuller version lands with T-0045/T-0046 in a later milestone. */
 function Landing() {
@@ -10,15 +11,6 @@ function Landing() {
         Project Hullbreach
       </h1>
       <p className="text-font-size-20 text-muted">Build a ship. Breach a hull.</p>
-    </main>
-  );
-}
-
-/** Login route content; the real form lands with T-0021 in web/src/pages/Login.tsx. */
-function Login() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-8 bg-paper text-ink">
-      <h1 className="text-font-size-32 font-semibold">Log in</h1>
     </main>
   );
 }

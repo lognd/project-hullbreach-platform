@@ -47,7 +47,7 @@ afterEach(() => {
 });
 
 describe("Login page", () => {
-  it.fails("submits login with username and password fields", async () => {
+  it("submits login with username and password fields", async () => {
     const fetchMock = vi
       .fn()
       .mockResolvedValue(jsonResponse(validLoginResponse, 200));
@@ -71,7 +71,7 @@ describe("Login page", () => {
     );
   });
 
-  it.fails(
+  it(
     "persists the session to localStorage on successful login",
     async () => {
       vi.stubGlobal(
@@ -94,7 +94,7 @@ describe("Login page", () => {
     },
   );
 
-  it.fails("keeps user signed in after reload", async () => {
+  it("keeps user signed in after reload", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(jsonResponse(validLoginResponse, 200)),
@@ -118,7 +118,7 @@ describe("Login page", () => {
     expect(screen.getByText("flagship")).toBeInTheDocument();
   });
 
-  it.fails(
+  it(
     "shows a form-level error banner on 401 invalid credentials",
     async () => {
       vi.stubGlobal(
@@ -140,7 +140,7 @@ describe("Login page", () => {
     },
   );
 
-  it.fails(
+  it(
     "shows a rate-limit message on 429 too many attempts",
     async () => {
       vi.stubGlobal(
@@ -165,7 +165,7 @@ describe("Login page", () => {
     },
   );
 
-  it.fails(
+  it(
     "navigates to the landing page after a successful login",
     async () => {
       vi.stubGlobal(
