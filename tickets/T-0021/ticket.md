@@ -43,11 +43,14 @@ scope_changes:
     adding a frob:tests citation to Login.test.tsx
   actor: logan
   at: '2026-09-16'
+evidence:
+- web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 designated_repro_test: null
 acceptance:
 - text: given a login, when the page reloads, then the user is still shown as signed
     in
-  evidence: []
+  evidence:
+  - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 threat: null
 component: null
 anchor: false
