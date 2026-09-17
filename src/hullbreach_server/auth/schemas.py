@@ -89,3 +89,19 @@ class LoginResponse(BaseModel):
 
     token: str
     user: UserProfile
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token  # noqa: E501
+# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email  # noqa: E501
+class SessionInfo(BaseModel):
+    """GET /api/v1/auth/session's 200 response body; deliberately minimal.
+
+    No username/email -- the game server's only need is "who is this and
+    what can they do".
+    """
+
+    model_config = {}
+
+    user_id: uuid.UUID
+    role: Role

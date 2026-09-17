@@ -38,7 +38,6 @@ class AuthContext:
 # frob:tests tests/unit/test_sessions.py::test_expired_token_returns_401
 # frob:tests tests/unit/test_sessions.py::test_revoked_token_returns_401
 # frob:tests tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403  # noqa: E501
-# frob:waive WIRE001 reason="no route depends on get_current_user yet in this ticket" follow_up="T-0023"  # noqa: E501
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
     db: DBSession = Depends(get_db),

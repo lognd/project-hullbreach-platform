@@ -1,12 +1,16 @@
-"""Unit tests for the planned GET /api/v1/auth/session endpoint used by
-the game server to validate a client-presented token (T-0026).
-`hullbreach_server.api.auth` does not exist yet; imports are lazy inside
-each test body so collection succeeds.
+"""Unit tests for the GET /api/v1/auth/session endpoint used by the
+game server to validate a client-presented token (T-0026's route,
+implemented by T-0023 -- see tests/unit/test_auth_logout.py's own
+revocation checks, which needed a protected endpoint to prove a token
+is now rejected).
 """
 
 from __future__ import annotations
 
-import pytest
+# Import at module scope so `User` is registered on Base.metadata before
+# conftest's `db_session` fixture runs `Base.metadata.create_all(engine)`,
+# regardless of test order (same fix as tests/unit/test_sessions.py).
+from hullbreach_server.db.models.user import User  # noqa: F401
 
 
 # frob:ticket T-0098
@@ -28,7 +32,6 @@ def _register_and_login(client, username: str = "player_one") -> dict:
 
 
 # frob:ticket T-0026
-@pytest.mark.xfail(strict=True, reason="T-0026 not implemented")
 def test_session_endpoint_returns_player_id_and_role_for_valid_token(client) -> None:
     """Given a client token, when the game server calls the session endpoint, it gets the player id and role."""
     headers = _register_and_login(client)
@@ -42,7 +45,6 @@ def test_session_endpoint_returns_player_id_and_role_for_valid_token(client) -> 
 
 
 # frob:ticket T-0026
-@pytest.mark.xfail(strict=True, reason="T-0026 not implemented")
 def test_session_endpoint_returns_401_for_missing_token(client) -> None:
     """Calling the session endpoint with no Authorization header returns 401."""
     response = client.get("/api/v1/auth/session")
@@ -52,7 +54,6 @@ def test_session_endpoint_returns_401_for_missing_token(client) -> None:
 
 
 # frob:ticket T-0026
-@pytest.mark.xfail(strict=True, reason="T-0026 not implemented")
 def test_session_endpoint_returns_401_for_malformed_token(client) -> None:
     """Calling the session endpoint with a malformed bearer token returns 401."""
     response = client.get(

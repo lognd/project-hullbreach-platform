@@ -1,19 +1,21 @@
-"""Auth routes: register (T-0016), login (T-0020); logout/session land
-in later tickets, per docs/design/sprint-1.md section 5 ("Endpoints").
+"""Auth routes: register (T-0016), login (T-0020), logout and session
+(T-0023), per docs/design/sprint-1.md section 5 ("Endpoints").
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from hullbreach_server.auth.deps import AuthContext, get_current_user
 from hullbreach_server.auth.passwords import hash_password, verify_password
 from hullbreach_server.auth.schemas import (
     LoginRequest,
     LoginResponse,
     RegisterRequest,
+    SessionInfo,
     UserProfile,
 )
 from hullbreach_server.auth.sessions import (
@@ -22,6 +24,8 @@ from hullbreach_server.auth.sessions import (
     is_login_rate_limited,
     issue_session,
     record_failed_login,
+    revoke_all_sessions,
+    revoke_session,
 )
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
@@ -117,3 +121,40 @@ def login(
     _session_row, token = issue_session(db, user)
     _log.info("logged in user %s", user.id)
     return LoginResponse(token=token, user=UserProfile.from_user(user))
+
+
+# frob:tests tests/unit/test_auth_logout.py::test_logout_returns_204
+# frob:tests tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward  # noqa: E501
+# frob:tests tests/unit/test_auth_logout.py::test_logout_without_all_only_revokes_the_presented_session  # noqa: E501
+# frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session  # noqa: E501
+# frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401  # noqa: E501
+# frob:doc docs/index.md#auth-api
+# frob:waive WIRE001 reason="already called from web/src/components/Header.tsx via api/auth.ts's logout() (T-0024, merged); this Python-only gate cannot trace the cross-language call site, only the strata f_logout flow declares it" follow_up="T-0100"  # noqa: E501
+@router.post("/logout", status_code=204)
+def logout(
+    all: bool = False,
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> Response:
+    """Revoke the presented session (`all=false`, default) or every session
+    for the caller (`all=true`); 401 if the token is already invalid."""
+    if all:
+        revoke_all_sessions(db, ctx.user)
+        _log.info("logged out user %s (all sessions)", ctx.user.id)
+    else:
+        revoke_session(db, ctx.session)
+        _log.info("logged out user %s (current session)", ctx.user.id)
+    return Response(status_code=204)
+
+
+# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token  # noqa: E501
+# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email  # noqa: E501
+# frob:doc docs/index.md#auth-api
+@router.get("/session", response_model=SessionInfo)
+def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
+    """Validate a client-presented token; used by the game server (T-0026).
+
+    Deliberately minimal (no username/email) -- the caller's only need is
+    "who is this and what can they do".
+    """
+    return SessionInfo(user_id=ctx.user.id, role=ctx.user.role)
