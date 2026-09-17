@@ -18,6 +18,7 @@ scope:
 - web/src/auth/session.ts
 - web/tests/unit/Login.test.tsx
 - web/src/router.tsx
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -27,6 +28,12 @@ scope_changes:
   glob: web/src/router.tsx
   reason: wire the new Login page into the /login route now that it exists, replacing
     T-0044's inline placeholder
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: documenting web/src/pages/Login.tsx (new caller of login()) and the doc-as-you-go
+    convention for frob:doc anchors
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
