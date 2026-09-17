@@ -1,7 +1,7 @@
 ---
 id: T-0020
 title: POST /api/v1/auth/login issuing a token, with failed-login rate limiting
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
