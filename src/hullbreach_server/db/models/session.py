@@ -28,7 +28,7 @@ class _UTCDateTime(TypeDecorator):
     # frob:doc docs/index.md#public-api
     # frob:tests tests/unit/test_sessions.py::test_resolve_session_succeeds_for_a_valid_token  # noqa: E501
     # frob:waive TEST001 reason="exercised indirectly by every Session round-trip test; SQLAlchemy's TypeDecorator interface requires the method to be named/typed exactly this way, so it cannot be renamed private"  # noqa: E501
-    # frob:waive WIRE001 reason="called by SQLAlchemy's own result-loading machinery on every Session row read, never through a static call site this gate can see" follow_up="T-0028"  # noqa: E501
+    # frob:waive WIRE001 reason="called by SQLAlchemy's own result-loading machinery on every Session row read, never through a static call site this gate can see" follow_up="T-0100"  # noqa: E501
     def process_result_value(
         self, value: datetime | None, dialect: object
     ) -> datetime | None:

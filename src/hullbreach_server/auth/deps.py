@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session as DBSession
 from hullbreach_server.auth.sessions import resolve_session
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.session import Session
-from hullbreach_server.db.models.user import User
+from hullbreach_server.db.models.user import Role, User
 from hullbreach_server.logging import get_logger
 
 _log = get_logger(__name__)
@@ -63,3 +63,22 @@ async def get_current_user(
         raise HTTPException(status_code=401, detail="not authenticated")
 
     return AuthContext(user=user, session=session_row)
+
+
+# frob:doc docs/index.md#public-api
+# frob:tests tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message  # noqa: E501
+# frob:tests tests/unit/test_roles.py::test_admin_token_on_admin_route_returns_200
+# frob:tests tests/unit/test_roles.py::test_missing_admin_route_dependency_never_returns_401_for_a_valid_player  # noqa: E501
+# frob:waive WIRE001 reason="no production admin route exists in milestone 0.1.0 (admin moderation is out of scope for this sprint); exercised only by tests/unit/test_roles.py's test-only router (_mount_admin_route)" follow_up="T-0076"  # noqa: E501
+async def require_admin(ctx: AuthContext = Depends(get_current_user)) -> AuthContext:
+    """Require the resolved caller to hold the admin role, or raise 403.
+
+    Layered on `get_current_user` rather than folded into one dependency:
+    401 means "I don't know who you are", 403 means "I know who you are
+    and the answer is no" -- a Player token is a fully authenticated,
+    merely unauthorized caller, so it must never see a 401 here.
+    """
+    if ctx.user.role is not Role.admin:
+        _log.warning("require_admin: user %s is not an admin", ctx.user.id)
+        raise HTTPException(status_code=403, detail="admin role required")
+    return ctx
