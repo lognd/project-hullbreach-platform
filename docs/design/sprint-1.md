@@ -652,7 +652,13 @@ boundary); two more such measured edges added by T-0006 once `db/`
 landed (`f_db_to_app`, since `src/hullbreach_server/db/__init__.py` reads `AppConfig` via
 `AppConfig.from_external()`, and `f_db_to_logging`, since both `db`
 modules use the module-logger convention), plus `f_tests_to_db` for the
-test tree's direct imports of `db`/`db.engine`; a `tests` node (`code
+test tree's direct imports of `db`/`db.engine`; one more such measured
+edge added by T-0019 once `auth/sessions.py`/`auth/deps.py` landed
+(`f_auth_to_logging`, since both modules use the module-logger
+convention, same reason as `f_db_to_logging`), plus the `hullbreach_server_auth`
+node's `may "env.read"` grant on `auth/sessions.py::_session_ttl_seconds`
+(it reads `HULLBREACH_SESSION_TTL_SECONDS` directly rather than through
+`AppConfig`, per section 3's rationale); a `tests` node (`code
 "tests/**"`) declaring, via `may`, the
 `eval`/`exec`/`fs.read` capabilities `tests/system/test_build.py`'s
 fresh-`uv sync` smoke test legitimately exercises and the `fs.write`

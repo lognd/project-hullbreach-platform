@@ -54,6 +54,11 @@
       "accepted_count": 1,
       "reason": "T-0017: web/src/api/auth.ts calls window.fetch for register/login/logout/fetchSession, the first real production site for the browser node's fetch_url capability",
       "ticket": "T-0017"
+    },
+    "hullbreach_server_auth::env.read": {
+      "accepted_count": 1,
+      "reason": "T-0019: auth/sessions.py::_session_ttl_seconds reads HULLBREACH_SESSION_TTL_SECONDS directly, the first real site for this node's env.read capability",
+      "ticket": "T-0019"
     }
   }
 }
