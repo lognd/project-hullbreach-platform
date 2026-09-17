@@ -18,6 +18,8 @@ scope:
 - src/hullbreach_server/auth/schemas.py
 - tests/unit/test_auth_register.py
 - src/hullbreach_server/api/__init__.py
+- pyproject.toml
+- uv.lock
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -27,6 +29,18 @@ scope_changes:
   glob: src/hullbreach_server/api/__init__.py
   reason: mount the new auth router onto api_router under /api/v1/auth, per docs/design/sprint-1.md
     section 5
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: pyproject.toml
+  reason: add pydantic[email] extra for EmailStr validation on RegisterRequest, per
+    docs/design/sprint-1.md section 5
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: uv.lock
+  reason: add pydantic[email] extra for EmailStr validation on RegisterRequest, per
+    docs/design/sprint-1.md section 5
   actor: logan
   at: '2026-09-16'
 evidence:
