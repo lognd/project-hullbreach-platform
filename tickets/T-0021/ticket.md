@@ -19,6 +19,7 @@ scope:
 - web/tests/unit/Login.test.tsx
 - web/src/router.tsx
 - docs/index.md
+- web/src/api/auth.ts
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -34,6 +35,12 @@ scope_changes:
   glob: docs/index.md
   reason: documenting web/src/pages/Login.tsx (new caller of login()) and the doc-as-you-go
     convention for frob:doc anchors
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: web/src/api/auth.ts
+  reason: removing the WIRE001 waiver on login() now that Login.tsx calls it, and
+    adding a frob:tests citation to Login.test.tsx
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
