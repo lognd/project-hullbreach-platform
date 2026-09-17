@@ -23,6 +23,7 @@ scope:
 - design/hullbreach.strata
 - docs/design/sprint-1.md
 - .env.example
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -66,6 +67,12 @@ scope_changes:
   reason: seed.py needs docs/index.md's public API/db-seed paragraph updated, a declared
     f_db_to_auth flow and fs.read capability in the strata model, a sprint-1.md note
     about the items-table runtime create, and .env.example's HULLBREACH_ADMIN_* documentation
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: seed.py's new fs.read/env.read call sites in hullbreach_server_db need the
+    ratchet ceiling raised (SYS111)
   actor: logan
   at: '2026-09-16'
 evidence:
