@@ -172,6 +172,17 @@ find it either way); an `ApiError` with no `field` (422's generic
 validation failure) sets a `role="alert"` form-level banner instead.
 Success swaps the form out for a confirmation message.
 
+`web/src/pages/Login.tsx` is the second caller: on submit it calls
+`login()`, and on success builds a `StoredSession` from the returned
+`LoginResponse` (`token`, and `userId`/`username`/`role` from its
+`user`), passes it to `saveSession` (`web/src/auth/session.ts`), and
+navigates home -- satisfying T-0021's reload-persistence criterion,
+since `useSession` reads that same localStorage key back on mount. Any
+`ApiError` (401 invalid credentials, 429 rate-limited) sets a
+`role="alert"` form-level banner with the server's `detail` message;
+Login has no field-level errors (the login contract never names a
+`field`).
+
 ## Sprint 1 design
 
 `docs/design/sprint-1.md` is the system design for milestone 0.1.0

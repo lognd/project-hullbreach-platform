@@ -109,8 +109,7 @@ export async function register(payload: RegisterRequest): Promise<UserProfile> {
 }
 
 // frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:waive WIRE001 reason="no production call site yet; T-0021 wires this into \
-// Login.tsx's submit handler" follow_up="T-0021"
+// frob:tests web/tests/unit/Login.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/login; 200 LoginResponse on success, 401/429 rejects with an ApiError. */
 export async function login(payload: LoginRequest): Promise<LoginResponse> {
