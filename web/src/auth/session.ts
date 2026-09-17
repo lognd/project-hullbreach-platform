@@ -51,8 +51,7 @@ export function loadSession(): StoredSession | null {
 }
 
 // frob:tests web/tests/unit/Login.test.tsx kind="unit"
-// frob:waive WIRE001 reason="no production call site yet; T-0024 wires this into \
-// Header's logout handler" follow_up="T-0024"
+// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#session-persistence
 /** Removes the persisted session, e.g. on logout. */
 export function clearSession(): void {

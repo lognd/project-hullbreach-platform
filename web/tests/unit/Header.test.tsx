@@ -109,7 +109,7 @@ describe("Header (signed in)", () => {
     ).toBeInTheDocument();
   });
 
-  it.fails("clears session and navigates home on logout click", async () => {
+  it("clears session and navigates home on logout click", async () => {
     // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const session = await import(sessionModulePath);
     session.saveSession({
@@ -128,7 +128,7 @@ describe("Header (signed in)", () => {
     expect(window.location.pathname).toBe("/");
   });
 
-  it.fails(
+  it(
     "logout button calls POST /api/v1/auth/logout with the bearer token",
     async () => {
       // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
