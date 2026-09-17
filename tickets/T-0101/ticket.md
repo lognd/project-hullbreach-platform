@@ -48,6 +48,8 @@ scope_changes:
   reason: database-migrations section needs the new items migration documented (AFFECT001)
   actor: logan
   at: '2026-09-16'
+evidence:
+- tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 designated_repro_test: null
 threat: null
 component: null
