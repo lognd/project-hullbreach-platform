@@ -26,6 +26,7 @@ scope:
 - docs/design/sprint-1.md
 - docs/design/registry/capability-via-ratchet.lock.json
 - tests/unit/test_roles.py
+- src/hullbreach_server/auth/__init__.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -84,6 +85,12 @@ scope_changes:
     block from unresolvable to first-party-but-unsorted, turning a previously-latent
     lint bug into a real CI failure on main; fixing only the import order (no xfail/logic
     change, T-0028's own test content untouched)
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/__init__.py
+  reason: frob-exports flagged 9 public auth symbols missing from the package __init__;
+    export them per the codebase's db/__init__.py convention
   actor: logan
   at: '2026-09-16'
 evidence:
