@@ -136,10 +136,12 @@ mounts the tree with `RouterProvider`, not `App` directly.
 Register/Login links when signed out, or the username and a Log out
 control when signed in; every control is a real `<a>`/`<button>` (never a
 `<div onClick>`) so tab order and Enter-activation work by construction.
-The signed-in Log out control does not yet clear the session or call the
-logout endpoint -- that lands with the ticket that also implements the
-API client module. `web/src/components/Footer.tsx` links to the cookie
-and data policy pages.
+The signed-in Log out control calls `api/auth.ts`'s `logout()` with the
+session's token (best-effort: an expired token or a network error does
+not block signing out locally), then `clearSession()`, then navigates
+home -- `useSession`'s `storage`-event listener means any other open tab
+picks up the sign-out too. `web/src/components/Footer.tsx` links to the
+cookie and data policy pages.
 
 ### Session persistence
 

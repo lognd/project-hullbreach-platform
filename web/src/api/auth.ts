@@ -121,8 +121,7 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
 }
 
 // frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:waive WIRE001 reason="no production call site yet; T-0024 wires this into \
-// Header's logout handler" follow_up="T-0024"
+// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/logout with the caller's bearer token; 204 on success, throws an ApiError otherwise. */
 export async function logout(token: string): Promise<void> {

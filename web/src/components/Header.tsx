@@ -1,17 +1,22 @@
-import { useSession } from "@/auth/session";
-
-// frob:todo T-0024
-/** Placeholder logout handler; T-0024 wires this to api/auth.ts's logout(), clearSession(), and a navigate to "/". */
-function handleLogoutPlaceholder(): void {
-  // Intentionally empty: real behavior (revoke token, clear session, redirect
-  // home) lands with T-0024. This exists only so the control is a real,
-  // focusable, Enter-activatable <button> per T-0044's keyboard-access
-  // acceptance criterion.
-}
+import { logout } from "@/api/auth";
+import { clearSession, useSession, type StoredSession } from "@/auth/session";
 
 /** Sends the user home; a plain assignment (not useNavigate) so Header also works rendered outside a Router, e.g. in isolation tests. */
 function goHome(): void {
   window.location.assign("/");
+}
+
+// frob:tests web/tests/unit/Header.test.tsx kind="unit"
+/** Revokes `session`'s token, clears the local session, and sends the user home; the server call is best-effort -- local sign-out proceeds even if it fails. */
+async function handleLogout(session: StoredSession): Promise<void> {
+  try {
+    await logout(session.token);
+  } catch {
+    // Best-effort: an already-expired token or a network error should not
+    // block the user from signing out locally.
+  }
+  clearSession();
+  goHome();
 }
 
 // frob:tests web/tests/unit/Header.test.tsx kind="unit"
@@ -37,7 +42,9 @@ export function Header() {
             <span className="text-font-size-16 text-muted">{session.username}</span>
             <button
               type="button"
-              onClick={handleLogoutPlaceholder}
+              onClick={() => {
+                void handleLogout(session);
+              }}
               className="text-font-size-16"
             >
               Log out
