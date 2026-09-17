@@ -49,7 +49,7 @@ node game_server : foreign {
     // GET /auth/session; lives in the sibling game repo (T-0026,
     // labeled needs-game), no scannable code here.
     managed;
-    waive "REL200:f_session_check" reason "design-only pass; the game server is managed (no code we scan) and lives in the sibling repo; T-0026 lands the platform side of this flow" ticket "T-0026";
+    waive "REL200:f_session_check" reason "T-0023 landed the platform side of this flow (GET /auth/session); the game server itself is managed (no code we scan) and lives in the sibling repo, so proving a timeout formally on this side is T-0100's follow-up work" ticket "T-0100";
 }
 
 // -------------------------------------------------------------------
@@ -88,12 +88,12 @@ node hullbreach_server_auth : trusted {
     may "env.read" via "src/hullbreach_server/auth/sessions.py::_login_rate_limit_window_seconds";
     waive "REL200:f_auth_to_db" reason "T-0019 landed auth/sessions.py's SQLAlchemy Session calls, but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:session_token__issue" reason "T-0020 landed the real request/response cycle (POST /auth/login), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
-    waive "REL200:session_token__revoke" reason "T-0019 landed revoke_session/revoke_all_sessions, but no route calls them yet; T-0023 (POST /auth/logout) is the real call site that will declare/prove a real timeout" ticket "T-0023";
+    waive "REL200:session_token__revoke" reason "T-0023 landed the real call site (POST /auth/logout), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:password_hash__issue" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:password_hash__revoke" reason "a password hash is never revoked/rotated by code, only by a future rehash-on-login upgrade path (design section 8, open question); tracked under T-0100's general timeout-attr follow-up until that upgrade path exists" ticket "T-0100";
     waive "REL200:f_session_token_to_browser" reason "T-0020 landed the real call site (POST /auth/login's response), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:f_session_token_to_game_client" reason "design-only pass; T-0026 introduces the game-client login path and will declare/prove a real timeout there" ticket "T-0026";
-    waive "REL200:f_session_token_to_game_server" reason "design-only pass; T-0026 introduces GET /session and will declare/prove a real timeout there" ticket "T-0026";
+    waive "REL200:f_session_token_to_game_server" reason "T-0023 landed GET /session, but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:f_password_hash_to_db" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
 }
 

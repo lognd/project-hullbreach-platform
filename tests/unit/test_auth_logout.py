@@ -1,11 +1,11 @@
-"""Unit tests for the planned POST /api/v1/auth/logout endpoint (T-0023).
-`hullbreach_server.api.auth` does not exist yet; imports are lazy inside
-each test body so collection succeeds.
-"""
+"""Unit tests for the POST /api/v1/auth/logout endpoint (T-0023)."""
 
 from __future__ import annotations
 
-import pytest
+# Import at module scope so `User` is registered on Base.metadata before
+# conftest's `db_session` fixture runs `Base.metadata.create_all(engine)`,
+# regardless of test order (same fix as tests/unit/test_sessions.py).
+from hullbreach_server.db.models.user import User  # noqa: F401
 
 
 # frob:ticket T-0098
@@ -27,7 +27,6 @@ def _register_and_login(client, username: str = "player_one") -> tuple[str, dict
 
 
 # frob:ticket T-0023
-@pytest.mark.xfail(strict=True, reason="T-0023 not implemented")
 def test_logout_returns_204(client) -> None:
     """Given a valid session, logout returns 204 No Content."""
     _token, headers = _register_and_login(client)
@@ -38,7 +37,6 @@ def test_logout_returns_204(client) -> None:
 
 
 # frob:ticket T-0023
-@pytest.mark.xfail(strict=True, reason="T-0023 not implemented")
 def test_logout_revokes_token_so_it_is_rejected_afterward(client) -> None:
     """Given a valid session, when logout is called, that token is rejected afterwards."""
     token, headers = _register_and_login(client)
@@ -50,7 +48,6 @@ def test_logout_revokes_token_so_it_is_rejected_afterward(client) -> None:
 
 
 # frob:ticket T-0023
-@pytest.mark.xfail(strict=True, reason="T-0023 not implemented")
 def test_logout_without_all_only_revokes_the_presented_session(client) -> None:
     """Logout with all=false (default) leaves the caller's other sessions valid."""
     token, headers = _register_and_login(client)
@@ -67,7 +64,6 @@ def test_logout_without_all_only_revokes_the_presented_session(client) -> None:
 
 
 # frob:ticket T-0023
-@pytest.mark.xfail(strict=True, reason="T-0023 not implemented")
 def test_logout_with_all_true_revokes_every_session(client) -> None:
     """Logout with all=true revokes every non-revoked session for that user, including a second login."""
     token, headers = _register_and_login(client)
@@ -84,7 +80,6 @@ def test_logout_with_all_true_revokes_every_session(client) -> None:
 
 
 # frob:ticket T-0023
-@pytest.mark.xfail(strict=True, reason="T-0023 not implemented")
 def test_logout_with_already_invalid_token_returns_401(client) -> None:
     """Logging out twice with the same token returns 401 the second time."""
     _token, headers = _register_and_login(client)

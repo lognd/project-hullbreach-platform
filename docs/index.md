@@ -130,6 +130,9 @@ credential).
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::is_login_rate_limited -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::record_failed_login -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::clear_failed_logins -->
+<!-- frob:describes src/hullbreach_server/api/auth.py::logout -->
+<!-- frob:describes src/hullbreach_server/api/auth.py::session -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::SessionInfo -->
 
 `POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
 takes a `RegisterRequest` (`username`, `email` as `EmailStr`, `password`
@@ -165,8 +168,21 @@ through both the check and the record call, so a single frozen instant
 governs one HTTP request. A successful login calls `clear_failed_logins`
 so the next failure does not immediately trip the limit.
 
-Per docs/design/sprint-1.md section 5, `logout`/`session` land in later
-tickets (T-0023, T-0026).
+`POST /api/v1/auth/logout` (`src/hullbreach_server/api/auth.py::logout`)
+requires `Authorization: Bearer <token>` (via `get_current_user`) and
+revokes it: `all=false` (the default query param) revokes only the
+presented session (`revoke_session`); `all=true` revokes every
+non-revoked session for that user (`revoke_all_sessions`, T-0019). 204
+No Content on success; 401 (via `get_current_user`) if the token is
+already invalid, so logging out twice with the same token 401s the
+second time.
+
+`GET /api/v1/auth/session` (`src/hullbreach_server/api/auth.py::session`)
+also requires a bearer token and returns a `SessionInfo` (`user_id`,
+`role`) with 200 -- deliberately minimal, no `username`/`email`, since
+the game server's only need is "who is this and what can they do"
+(T-0026). It shares `get_current_user` with `logout`, so a missing,
+malformed, expired, or revoked token gets the same uniform 401.
 
 ### Database migrations
 

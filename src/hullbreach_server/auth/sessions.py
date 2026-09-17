@@ -173,7 +173,6 @@ def resolve_session(db: DBSession, token: str) -> Result[Session, SessionError]:
 
 # frob:doc docs/index.md#public-api
 # frob:tests tests/unit/test_sessions.py::test_revoke_session_sets_revoked_at
-# frob:waive WIRE001 reason="no route calls revoke_session yet in this ticket" follow_up="T-0023"  # noqa: E501
 def revoke_session(db: DBSession, session_row: Session) -> None:
     """Mark `session_row` revoked (sets revoked_at) and persist it."""
     session_row.revoked_at = datetime.now(timezone.utc)
@@ -183,7 +182,6 @@ def revoke_session(db: DBSession, session_row: Session) -> None:
 
 # frob:doc docs/index.md#public-api
 # frob:tests tests/unit/test_sessions.py::test_revoke_all_sessions_revokes_every_non_revoked_session_for_user  # noqa: E501
-# frob:waive WIRE001 reason="no route calls revoke_all_sessions yet in this ticket" follow_up="T-0023"  # noqa: E501
 def revoke_all_sessions(db: DBSession, user: User) -> None:
     """Revoke every non-revoked Session belonging to `user`."""
     now = datetime.now(timezone.utc)
