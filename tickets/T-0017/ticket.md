@@ -52,11 +52,16 @@ scope_changes:
     the same diff per the ratchet''s own requirement'
   actor: logan
   at: '2026-09-16'
+evidence:
+- web/tests/unit/Register.test.tsx::Register page > shows field error next to the
+  offending input
 designated_repro_test: null
 acceptance:
 - text: given the register form, when the API returns a field error, then it is shown
     next to the field
-  evidence: []
+  evidence:
+  - web/tests/unit/Register.test.tsx::Register page > shows field error next to the
+    offending input
 threat: null
 component: null
 anchor: false
