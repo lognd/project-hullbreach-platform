@@ -20,6 +20,7 @@ scope:
 - src/hullbreach_server/api/__init__.py
 - pyproject.toml
 - uv.lock
+- tests/unit/test_roles.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -41,6 +42,14 @@ scope_changes:
   glob: uv.lock
   reason: add pydantic[email] extra for EmailStr validation on RegisterRequest, per
     docs/design/sprint-1.md section 5
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_roles.py
+  reason: T-0016 implements RegisterRequest with no role field at all, which makes
+    T-0028's pre-existing xfail(strict=True) test_role_is_never_accepted_as_an_input_field_on_register_schema
+    an unexpected strict xpass; dropping only that test's xfail marker, no other T-0028
+    test touched
   actor: logan
   at: '2026-09-16'
 evidence:
