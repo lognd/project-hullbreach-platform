@@ -136,10 +136,10 @@ export async function logout(token: string): Promise<void> {
 }
 
 // frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:waive WIRE001 reason="no web production call site yet -- GET \
+// frob:waive WIRE001 reason="no web production call site -- GET \
 // /api/v1/auth/session (docs/design/sprint-1.md sec.5) is designed for the game \
-// server to call directly, not this web client; kept here for API-surface \
-// completeness and T-0017's test suite" follow_up="T-0026"
+// server to call directly, never this web client (T-0026); kept here for \
+// API-surface completeness and T-0017's test suite" follow_up="T-0100"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** GET /api/v1/auth/session with the caller's bearer token; 200 SessionInfo on success, throws an ApiError otherwise. */
 export async function fetchSession(token: string): Promise<SessionInfo> {
