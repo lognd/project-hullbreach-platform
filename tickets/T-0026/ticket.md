@@ -57,6 +57,9 @@ scope_changes:
   at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
+- tests/unit/test_auth_game.py::test_session_endpoint_returns_401_for_missing_token
+- tests/unit/test_auth_game.py::test_session_endpoint_returns_401_for_malformed_token
+- tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email
 designated_repro_test: null
 acceptance:
 - text: given a client token, when the game server calls the session endpoint, then
