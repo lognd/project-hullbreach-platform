@@ -664,7 +664,12 @@ node's `may "env.read"` grant on `auth/sessions.py::_session_ttl_seconds`
 `AppConfig`, per section 3's rationale); one more such measured edge
 added by T-0016 once `api/auth.py` landed (`f_api_to_logging`, since
 `api/auth.py` uses the module-logger convention, same reason as
-`f_db_to_logging`/`f_auth_to_logging`); a `tests` node (`code
+`f_db_to_logging`/`f_auth_to_logging`); the `hullbreach_server_auth`
+node's `may "env.read"` grant widened by T-0020 to also cover
+`auth/sessions.py::_login_rate_limit_max` and
+`_login_rate_limit_window_seconds`, both reading
+`HULLBREACH_LOGIN_RATE_LIMIT_MAX`/`_WINDOW_SECONDS` directly, same
+rationale as `_session_ttl_seconds`; a `tests` node (`code
 "tests/**"`) declaring, via `may`, the
 `eval`/`exec`/`fs.read` capabilities `tests/system/test_build.py`'s
 fresh-`uv sync` smoke test legitimately exercises and the `fs.write`

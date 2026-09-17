@@ -66,9 +66,9 @@
       "ticket": "T-0017"
     },
     "hullbreach_server_auth::env.read": {
-      "accepted_count": 1,
-      "reason": "T-0019: auth/sessions.py::_session_ttl_seconds reads HULLBREACH_SESSION_TTL_SECONDS directly, the first real site for this node's env.read capability",
-      "ticket": "T-0019"
+      "accepted_count": 3,
+      "reason": "T-0020: auth/sessions.py's rate limiter adds _login_rate_limit_max and _login_rate_limit_window_seconds, both reading HULLBREACH_LOGIN_RATE_LIMIT_* directly, alongside T-0019's _session_ttl_seconds",
+      "ticket": "T-0020"
     }
   }
 }
