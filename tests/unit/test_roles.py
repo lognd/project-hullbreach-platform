@@ -104,7 +104,6 @@ def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None
 
 
 # frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_role_is_never_accepted_as_an_input_field_on_register_schema() -> None:
     """RegisterRequest has no `role` field at all, not merely an ignored one."""
     from hullbreach_server.auth.schemas import RegisterRequest

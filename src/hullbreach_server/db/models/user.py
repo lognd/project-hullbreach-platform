@@ -25,7 +25,6 @@ class Role(str, enum.Enum):
 
 # frob:doc docs/index.md#public-api
 # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
-# frob:waive WIRE001 reason="no route persists a User yet in this ticket" follow_up="T-0016"  # noqa: E501
 class User(Base):
     """A registered account: credentials, role, and creation time."""
 

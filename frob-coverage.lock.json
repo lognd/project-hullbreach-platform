@@ -3,6 +3,7 @@
     "src/hullbreach_server/__init__.py": 0.0,
     "src/hullbreach_server/__main__.py": 0.0,
     "src/hullbreach_server/api/__init__.py": 0.0,
+    "src/hullbreach_server/api/auth.py": 0.0,
     "src/hullbreach_server/api/health.py": 0.0,
     "src/hullbreach_server/app/__init__.py": 0.0,
     "src/hullbreach_server/app/app.py": 0.0,
@@ -10,6 +11,7 @@
     "src/hullbreach_server/auth/__init__.py": 0.0,
     "src/hullbreach_server/auth/deps.py": 0.0,
     "src/hullbreach_server/auth/passwords.py": 0.0,
+    "src/hullbreach_server/auth/schemas.py": 0.0,
     "src/hullbreach_server/auth/sessions.py": 0.0,
     "src/hullbreach_server/db/__init__.py": 0.0,
     "src/hullbreach_server/db/engine.py": 0.0,
@@ -26,5 +28,5 @@
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "b48d51cef3133ca12d3561658b44d891ef5a5ff39cc00c697fe9942cd5bf9a41"
+  "source_sha": "bc15c678020641d001dbfdb256843929a849875d712b44d76c257ca502d3db04"
 }
