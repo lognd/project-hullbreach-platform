@@ -90,6 +90,7 @@ native enum), and `created_at`.
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
 <!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
 <!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
+<!-- frob:describes src/hullbreach_server/auth/deps.py::require_admin -->
 
 `src/hullbreach_server/db/models/session.py` holds `Session` (table
 `sessions`) -- `id` (UUID), `user_id` (FK to `users.id`, `ON DELETE
@@ -115,7 +116,15 @@ that user).
 header via `resolve_session` and returns an `AuthContext(user, session)`,
 raising 401 uniformly for a missing header, an unknown token, an expired
 session, or a revoked session (never FastAPI's default 403 on a missing
-credential).
+credential). `require_admin` composes `get_current_user`: it raises 403
+`{"detail": "admin role required"}` if the resolved caller's role is
+not `Role.admin`, and otherwise returns the same `AuthContext`. 401
+means "I don't know who you are"; 403 means "I know who you are and the
+answer is no" -- a Player token is fully authenticated, merely
+unauthorized, so `require_admin` never returns 401. No production admin
+route exists yet in milestone 0.1.0 (admin moderation is a later
+milestone); `require_admin` is exercised by a test-only router mounted
+directly on the test app fixture (`tests/unit/test_roles.py`).
 
 ### Auth API
 

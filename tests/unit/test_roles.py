@@ -1,12 +1,11 @@
 """Unit tests for the Role enum, the require_admin dependency, and role
-exclusion from register/profile schemas (T-0028). `db.models.user`'s Role
-enum and default-role behavior land with T-0015; `auth.deps`/`auth.schemas`
-do not exist yet, so their tests' imports stay lazy inside the test body.
+exclusion from register/profile schemas (T-0028). The Role enum and
+default-role behavior landed with T-0015; require_admin is a test-only
+router (`_mount_admin_route`) mounted on the app fixture, since no
+production admin route exists yet.
 """
 
 from __future__ import annotations
-
-import pytest
 
 from hullbreach_server.auth.passwords import hash_password
 from hullbreach_server.db.models.user import Role, User
@@ -62,7 +61,6 @@ def test_user_default_role_is_player(db_session) -> None:
 
 
 # frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_player_token_on_admin_route_returns_403_with_permissions_message(
     app, client
 ) -> None:
@@ -77,7 +75,6 @@ def test_player_token_on_admin_route_returns_403_with_permissions_message(
 
 
 # frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None:
     """Given an Admin token, the same admin route succeeds."""
     from hullbreach_server.auth.passwords import hash_password
@@ -112,7 +109,6 @@ def test_role_is_never_accepted_as_an_input_field_on_register_schema() -> None:
 
 
 # frob:ticket T-0028
-@pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_missing_admin_route_dependency_never_returns_401_for_a_valid_player(
     app, client
 ) -> None:
