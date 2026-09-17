@@ -67,3 +67,25 @@ class UserProfile(BaseModel):
             rating=_DEFAULT_RATING,
             created_at=user.created_at,
         )
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_login_password_min_length_still_enforced_by_schema  # noqa: E501
+class LoginRequest(BaseModel):
+    """POST /api/v1/auth/login's request body; no min_length on password (shape only)."""  # noqa: E501
+
+    model_config = {}
+
+    username: str
+    password: str
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user  # noqa: E501
+class LoginResponse(BaseModel):
+    """POST /api/v1/auth/login's 200 response body."""
+
+    model_config = {}
+
+    token: str
+    user: UserProfile

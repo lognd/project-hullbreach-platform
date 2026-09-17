@@ -1,7 +1,7 @@
 ---
 id: T-0020
 title: POST /api/v1/auth/login issuing a token, with failed-login rate limiting
-state: queued
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -16,10 +16,107 @@ runs_last_parallel_safe_reason: null
 scope:
 - src/hullbreach_server/api/auth.py
 - tests/unit/test_auth_login.py
+- src/hullbreach_server/auth/sessions.py
+- .env.example
+- src/hullbreach_server/auth/schemas.py
+- src/hullbreach_server/auth/passwords.py
+- tests/unit/test_auth_game.py
+- docs/index.md
+- design/hullbreach.strata
+- docs/design/sprint-1.md
+- docs/design/registry/capability-via-ratchet.lock.json
+- src/hullbreach_server/db/models/session.py
+- src/hullbreach_server/auth/deps.py
+- src/hullbreach_server/db/migrations/versions/*.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/auth/sessions.py
+  reason: 'the failed-login rate limiter''s in-process store lives in auth/sessions.py
+    per docs/design/sprint-1.md section 5 ("Store: ... behind a module-level lock
+    in auth/sessions.py"); tests/unit/test_auth_login.py::test_rate_limit_window_resets_after_60_seconds
+    monkeypatches hullbreach_server.auth.sessions.datetime directly, which only works
+    if the limiter''s clock calls resolve through this module'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: .env.example
+  reason: document HULLBREACH_LOGIN_RATE_LIMIT_MAX and HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS,
+    per docs/design/sprint-1.md section 3, brief-allowed config exception
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/schemas.py
+  reason: add LoginRequest/LoginResponse pydantic schemas for POST /api/v1/auth/login,
+    matching web/src/api/auth.ts's existing types
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/passwords.py
+  reason: login now calls verify_password, resolving its WIRE001 waiver that named
+    T-0020 as follow_up; remove the now-satisfied waiver
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_auth_game.py
+  reason: T-0020's working login makes _register_and_login succeed, so this pre-existing
+    xfail(strict=True) test now reaches a real 404 from GET /session (T-0026, not
+    yet implemented) whose body incidentally satisfies this test's weak 'field absent'
+    assertions, turning it into a strict xpass; dropping only this one marker, the
+    other three T-0026 xfail tests in this file are untouched and still correctly
+    fail
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: document POST /auth/login in the Auth API section, and declare the env.read
+    capability on hullbreach_server_auth for the two new rate-limit env var readers
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: document POST /auth/login in the Auth API section, and declare the env.read
+    capability on hullbreach_server_auth for the two new rate-limit env var readers
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 needs section-9 doc touched for the env.read capability grant
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 'SYS111 ratchet: hullbreach_server_auth''s env.read via-list grew from 1
+    to 3 sites with the two new rate-limit env readers'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/models/session.py
+  reason: 're-point/resolve WIRE001 waivers that named T-0020 as follow_up: Session
+    is now persisted by login''s issue_session (waiver resolved, remove it); get_current_user
+    and the three migration files'' Alembic-reflection waivers still need a live tracker,
+    re-pointed to T-0023'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/deps.py
+  reason: 're-point/resolve WIRE001 waivers that named T-0020 as follow_up: Session
+    is now persisted by login''s issue_session (waiver resolved, remove it); get_current_user
+    and the three migration files'' Alembic-reflection waivers still need a live tracker,
+    re-pointed to T-0023'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/migrations/versions/*.py
+  reason: 're-point/resolve WIRE001 waivers that named T-0020 as follow_up: Session
+    is now persisted by login''s issue_session (waiver resolved, remove it); get_current_user
+    and the three migration files'' Alembic-reflection waivers still need a live tracker,
+    re-pointed to T-0023'
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 designated_repro_test: null

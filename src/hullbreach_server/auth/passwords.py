@@ -20,7 +20,6 @@ def hash_password(plain: str) -> str:
 # frob:doc docs/index.md#public-api
 # frob:tests tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext  # noqa: E501
 # frob:tests tests/unit/test_passwords.py::test_verify_password_rejects_wrong_password
-# frob:waive WIRE001 reason="no route calls verify_password yet in this ticket" follow_up="T-0020"  # noqa: E501
 def verify_password(plain: str, hashed: str) -> bool:
     """Check a plaintext password against a stored Argon2id hash."""
     return _hasher.verify(plain, hashed)

@@ -123,6 +123,13 @@ credential).
 <!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile -->
 <!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile.from_user -->
 <!-- frob:describes src/hullbreach_server/api/auth.py::register -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginRequest -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginResponse -->
+<!-- frob:describes src/hullbreach_server/api/auth.py::login -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::current_time -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::is_login_rate_limited -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::record_failed_login -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::clear_failed_logins -->
 
 `POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
 takes a `RegisterRequest` (`username`, `email` as `EmailStr`, `password`
@@ -138,8 +145,28 @@ specific offending field (`{"detail": "username already taken",
 "field": "username"}` or the `email` equivalent) rather than parsing a
 driver `IntegrityError`. A too-short password or malformed email fails
 pydantic validation with FastAPI's default 422, no custom body needed.
-Per docs/design/sprint-1.md section 5, `login`/`logout`/`session` land
-in later tickets (T-0020, T-0023, T-0026).
+
+`POST /api/v1/auth/login` (`src/hullbreach_server/api/auth.py::login`)
+takes a `LoginRequest` (`username`, `password`; no `min_length` on
+password, shape only) and, on valid credentials, returns a
+`LoginResponse` (`token`, `user: UserProfile`) with 200 -- the token
+comes from `auth/sessions.py::issue_session` (T-0019). An unknown
+username and a wrong password both get the identical 401
+`{"detail": "invalid username or password"}`, so the endpoint never
+confirms account existence. A failed-login rate limiter guards every
+attempt: `is_login_rate_limited`/`record_failed_login`/
+`clear_failed_logins` share an in-process `dict[str, deque[datetime]]`
+keyed by username (`HULLBREACH_LOGIN_RATE_LIMIT_MAX`/
+`_WINDOW_SECONDS`, default 5 attempts / 60 seconds), explicitly
+single-instance for 0.1.0 -- it does not survive a process restart or
+work across multiple API instances. `current_time()` is the limiter's
+one clock read per request, called once in the route and threaded
+through both the check and the record call, so a single frozen instant
+governs one HTTP request. A successful login calls `clear_failed_logins`
+so the next failure does not immediately trip the limit.
+
+Per docs/design/sprint-1.md section 5, `logout`/`session` land in later
+tickets (T-0023, T-0026).
 
 ### Database migrations
 

@@ -28,7 +28,7 @@ class _UTCDateTime(TypeDecorator):
     # frob:doc docs/index.md#public-api
     # frob:tests tests/unit/test_sessions.py::test_resolve_session_succeeds_for_a_valid_token  # noqa: E501
     # frob:waive TEST001 reason="exercised indirectly by every Session round-trip test; SQLAlchemy's TypeDecorator interface requires the method to be named/typed exactly this way, so it cannot be renamed private"  # noqa: E501
-    # frob:waive WIRE001 reason="called by SQLAlchemy's own result-loading machinery on every Session row read, never through a static call site this gate can see" follow_up="T-0020"  # noqa: E501
+    # frob:waive WIRE001 reason="called by SQLAlchemy's own result-loading machinery on every Session row read, never through a static call site this gate can see" follow_up="T-0023"  # noqa: E501
     def process_result_value(
         self, value: datetime | None, dialect: object
     ) -> datetime | None:
@@ -41,7 +41,6 @@ class _UTCDateTime(TypeDecorator):
 # frob:doc docs/index.md#public-api
 # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
 # frob:tests tests/unit/test_sessions.py::test_issue_session_stores_sha256_hash_of_token
-# frob:waive WIRE001 reason="no route persists a Session yet in this ticket" follow_up="T-0020"  # noqa: E501
 class Session(Base):
     """A bearer-token login session: its hashed token, expiry, and revocation state."""
 
