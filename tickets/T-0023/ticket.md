@@ -18,6 +18,8 @@ scope:
 - tests/unit/test_auth_logout.py
 - src/hullbreach_server/auth/schemas.py
 - tests/unit/test_auth_game.py
+- docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -45,6 +47,18 @@ scope_changes:
     own pre-written xfail tests in test_auth_game.py (player_id/role, missing token,
     malformed token) since get_current_user already handles all three cases uniformly;
     T-0026's remaining scope (the game-client login path) is untouched
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: document POST /auth/logout and GET /auth/session in the Auth API section;
+    re-point/remove REL200 and WIRE001 waivers this ticket resolves
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: document POST /auth/logout and GET /auth/session in the Auth API section;
+    re-point/remove REL200 and WIRE001 waivers this ticket resolves
   actor: logan
   at: '2026-09-16'
 evidence:
