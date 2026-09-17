@@ -1,7 +1,7 @@
 ---
 id: T-0024
 title: Logout control in the site header
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
