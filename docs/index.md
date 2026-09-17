@@ -35,8 +35,16 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
+<!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
+<!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
+<!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
@@ -77,10 +85,34 @@ native enum), and `created_at`.
 `src/hullbreach_server/auth/passwords.py` provides `hash_password`/
 `verify_password`, Argon2id via `pwdlib.PasswordHash.recommended()`.
 
+`src/hullbreach_server/db/models/session.py` holds `Session` (table
+`sessions`) -- `id` (UUID), `user_id` (FK to `users.id`, `ON DELETE
+CASCADE`, indexed), a unique `token_hash` (sha256 of the bearer token,
+hex-encoded; the plaintext token is never stored), `created_at`,
+`expires_at`, and a nullable `revoked_at`. A session is valid iff
+`revoked_at is None and expires_at > now()`.
+`src/hullbreach_server/auth/sessions.py` provides `issue_session(db,
+user)` (creates a `Session`, returns the row plus the one-time plaintext
+token, `secrets.token_urlsafe(32)`; expiry is
+`HULLBREACH_SESSION_TTL_SECONDS` seconds from issuance, default 14 days),
+`resolve_session(db, token)` (returns a typani `Result[Session,
+SessionError]`, `Err` on an unknown, expired, or revoked token),
+`revoke_session(db, session)` (sets `revoked_at`), and
+`revoke_all_sessions(db, user)` (revokes every non-revoked session for
+that user).
+`src/hullbreach_server/auth/deps.py` provides the FastAPI dependency
+`get_current_user`, which resolves the `Authorization: Bearer <token>`
+header via `resolve_session` and returns an `AuthContext(user, session)`,
+raising 401 uniformly for a missing header, an unknown token, an expired
+session, or a revoked session (never FastAPI's default 403 on a missing
+credential).
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_online -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -97,12 +129,16 @@ standard Alembic revision template `alembic revision` reads by
 convention via `alembic.ini`'s `script_location`. The first revision
 (`ba2efc248a9a_baseline_no_tables_yet.py`) is a no-op: its
 `upgrade`/`downgrade` create and drop nothing, since no ORM model existed
-yet at that point <!-- frob:waive DOC006 reason="planned file per docs/design/sprint-1.md's own module map (section 1) -- named ahead of the ticket that creates it, not a claim it exists yet" -->
-(`db/models/session.py` is T-0019, still pending) --
+yet at that point --
 it establishes the revision chain later migrations build on. The second
 revision (`0f6d70e4d209_create_users_table.py`, T-0015) creates the
 `users` table matching `src/hullbreach_server/db/models/user.py::User`
 exactly, so `compare_metadata` reports no diff after `db upgrade` runs.
+The third revision (`550676f68926_create_sessions_table.py`, T-0019)
+creates the `sessions` table matching
+`src/hullbreach_server/db/models/session.py::Session` exactly, including
+its FK to `users.id` (`ON DELETE CASCADE`) and the indexed `user_id`
+column.
 
 ## Web frontend
 
