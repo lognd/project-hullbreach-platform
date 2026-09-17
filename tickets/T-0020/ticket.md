@@ -23,6 +23,7 @@ scope:
 - tests/unit/test_auth_game.py
 - docs/index.md
 - design/hullbreach.strata
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -75,6 +76,11 @@ scope_changes:
   glob: design/hullbreach.strata
   reason: document POST /auth/login in the Auth API section, and declare the env.read
     capability on hullbreach_server_auth for the two new rate-limit env var readers
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 needs section-9 doc touched for the env.read capability grant
   actor: logan
   at: '2026-09-16'
 evidence:
