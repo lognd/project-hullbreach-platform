@@ -1,7 +1,7 @@
 ---
 id: T-0008
 title: Seed command loading 100+ catalog items and the first admin account
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
