@@ -147,6 +147,8 @@ in later tickets (T-0020, T-0023, T-0026).
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_online -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -154,9 +156,11 @@ every pending migration up to head; `db seed` calls
 `db/seed.py::seed(session)` (T-0008), which idempotently upserts
 `db/seed_items.json`'s catalog (120 cosmetic entries across 8
 categories, matched by `slug` so a re-run never duplicates a row) into
-a hand-declared `items` table it creates on demand
-(`Table.create(checkfirst=True)`, since no items migration has landed
-yet -- T-0101 tracks adding one), and creates the first admin account
+a hand-declared `items` table (created by the fourth migration below,
+T-0101; `seed.py`'s own `Table.create(checkfirst=True)` call is a no-op
+wherever that migration has run and exists only for the unit-test
+SQLite fixture, which builds its schema from `Base.metadata` rather
+than running Alembic), and creates the first admin account
 via `auth.passwords.hash_password` when no `User` with `role ==
 Role.admin` exists, reading `HULLBREACH_ADMIN_USERNAME`/`_EMAIL`/
 `_PASSWORD` and returning `Err(SeedError.MissingAdminPassword)` rather
@@ -180,7 +184,12 @@ The third revision (`550676f68926_create_sessions_table.py`, T-0019)
 creates the `sessions` table matching
 `src/hullbreach_server/db/models/session.py::Session` exactly, including
 its FK to `users.id` (`ON DELETE CASCADE`) and the indexed `user_id`
-column.
+column. The fourth revision (`abbcc4cb6b34_create_items_table.py`,
+T-0101) creates the `items` table `db/seed.py` upserts into --
+deliberately not backed by an ORM model yet (T-0066 owns that), so
+`tests/system/test_build.py`'s `compare_metadata` check excludes it via
+an `include_object` filter rather than reporting a false "extra table"
+diff.
 
 ## Web frontend
 
