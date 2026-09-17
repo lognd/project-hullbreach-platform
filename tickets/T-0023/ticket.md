@@ -1,7 +1,7 @@
 ---
 id: T-0023
 title: POST /api/v1/auth/logout revoking the current session (and optionally all sessions)
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
