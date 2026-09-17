@@ -2,7 +2,7 @@
 id: T-0026
 title: Bearer-token login for the game client and GET /api/v1/auth/session for server-side
   validation
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
