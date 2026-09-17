@@ -17,10 +17,18 @@ scope:
 - web/src/pages/Login.tsx
 - web/src/auth/session.ts
 - web/tests/unit/Login.test.tsx
+- web/src/router.tsx
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: web/src/router.tsx
+  reason: wire the new Login page into the /login route now that it exists, replacing
+    T-0044's inline placeholder
+  actor: logan
+  at: '2026-09-16'
 designated_repro_test: null
 acceptance:
 - text: given a login, when the page reloads, then the user is still shown as signed
