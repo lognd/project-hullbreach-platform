@@ -19,10 +19,17 @@ scope:
 - src/hullbreach_server/auth/deps.py
 - src/hullbreach_server/auth/schemas.py
 - tests/unit/test_roles.py
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: docs/index.md
+  reason: document require_admin in the Public API section
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message
 designated_repro_test: null
