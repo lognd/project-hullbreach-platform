@@ -21,6 +21,8 @@ scope:
 - src/hullbreach_server/auth/schemas.py
 - src/hullbreach_server/auth/passwords.py
 - tests/unit/test_auth_game.py
+- docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -61,6 +63,18 @@ scope_changes:
     assertions, turning it into a strict xpass; dropping only this one marker, the
     other three T-0026 xfail tests in this file are untouched and still correctly
     fail
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: document POST /auth/login in the Auth API section, and declare the env.read
+    capability on hullbreach_server_auth for the two new rate-limit env var readers
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: document POST /auth/login in the Auth API section, and declare the env.read
+    capability on hullbreach_server_auth for the two new rate-limit env var readers
   actor: logan
   at: '2026-09-16'
 evidence:
