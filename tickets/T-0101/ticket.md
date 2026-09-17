@@ -17,6 +17,7 @@ scope:
 - src/hullbreach_server/db/migrations/versions/**
 - src/hullbreach_server/db/seed.py
 - tests/unit/test_seed.py
+- tests/system/test_build.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -32,6 +33,13 @@ scope_changes:
   glob: tests/unit/test_seed.py
   reason: seed()'s behavior change (relying on the migration) needs its test coverage
     kept accurate
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/system/test_build.py
+  reason: compare_metadata's diff check needs an include_object filter to exclude
+    the intentionally model-less items table, or the new migration fails the existing
+    acceptance test
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
