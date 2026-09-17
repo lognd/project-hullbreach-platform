@@ -20,6 +20,7 @@ scope:
 - web/src/router.tsx
 - docs/index.md
 - design/hullbreach.strata
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -42,6 +43,13 @@ scope_changes:
   reason: web/src/api/auth.ts uses window.fetch (register/login/logout/fetchSession);
     the browser node's capability declaration must grant fetch_url via that real file,
     or SELFAUDIT001 flags an undeclared observed capability
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 'SYS111 ratchet: browser node''s fetch_url via-list grew from 0 to 1 site
+    (web/src/api/auth.ts) with T-0017''s may declaration; raising accepted_count in
+    the same diff per the ratchet''s own requirement'
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
