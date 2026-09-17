@@ -42,11 +42,16 @@ scope_changes:
     convention
   actor: logan
   at: '2026-09-16'
+evidence:
+- web/tests/unit/Header.test.tsx::Header (signed in) > clears session and navigates
+  home on logout click
 designated_repro_test: null
 acceptance:
 - text: given a signed-in header, when logout is clicked, then the session is cleared
     and the landing page shows
-  evidence: []
+  evidence:
+  - web/tests/unit/Header.test.tsx::Header (signed in) > clears session and navigates
+    home on logout click
 threat: null
 component: null
 anchor: false
