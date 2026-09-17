@@ -40,7 +40,7 @@ node game_client : foreign {
     // The Unity game client authenticates against us with a bearer
     // token obtained from /auth/login; we do not own or scan its code.
     managed;
-    waive "REL200:f_login_game" reason "design-only pass; the game client is managed (no code we scan), and T-0026 lands the server-side session validation this flow leads to" ticket "T-0026";
+    waive "REL200:f_login_game" reason "the game client is managed (no code we scan) and reuses POST /auth/login verbatim (T-0020), same as f_login_web; proving a timeout formally on the platform side is T-0100's follow-up work" ticket "T-0100";
 }
 
 // frob:ticket T-0095
@@ -92,7 +92,7 @@ node hullbreach_server_auth : trusted {
     waive "REL200:password_hash__issue" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:password_hash__revoke" reason "a password hash is never revoked/rotated by code, only by a future rehash-on-login upgrade path (design section 8, open question); tracked under T-0100's general timeout-attr follow-up until that upgrade path exists" ticket "T-0100";
     waive "REL200:f_session_token_to_browser" reason "T-0020 landed the real call site (POST /auth/login's response), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
-    waive "REL200:f_session_token_to_game_client" reason "design-only pass; T-0026 introduces the game-client login path and will declare/prove a real timeout there" ticket "T-0026";
+    waive "REL200:f_session_token_to_game_client" reason "the game client gets its token from the same POST /auth/login response as the browser (T-0020); the game client itself is managed (no code we scan), so proving a timeout formally on the platform side is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:f_session_token_to_game_server" reason "T-0023 landed GET /session, but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
     waive "REL200:f_password_hash_to_db" reason "T-0016 landed the real persistence call site (POST /auth/register), but that is a per-call, not a strata-declared flow timeout attr -- proving it formally is T-0100's follow-up work" ticket "T-0100";
 }

@@ -184,6 +184,16 @@ the game server's only need is "who is this and what can they do"
 (T-0026). It shares `get_current_user` with `logout`, so a missing,
 malformed, expired, or revoked token gets the same uniform 401.
 
+The game client authenticates the same way the browser does: it calls
+`POST /api/v1/auth/login` verbatim (no separate route or client-kind
+flag -- the design's `f_login_game` flow and `f_login_web` share the
+identical `attr "POST /api/v1/auth/login"`), gets back the same
+`LoginResponse`, and then presents that token to its own server, which
+calls `GET /api/v1/auth/session` server-side to validate it and learn
+the player's id and role (T-0026). Neither endpoint distinguishes a
+game-client caller from a browser caller; there is nothing in the
+request that could, by design.
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
