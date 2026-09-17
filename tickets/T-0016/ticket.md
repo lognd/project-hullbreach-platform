@@ -1,7 +1,7 @@
 ---
 id: T-0016
 title: POST /api/v1/auth/register with username, email, and password validation
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
