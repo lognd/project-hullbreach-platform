@@ -17,6 +17,7 @@ scope:
 - src/hullbreach_server/api/auth.py
 - tests/unit/test_auth_login.py
 - src/hullbreach_server/auth/sessions.py
+- .env.example
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -29,6 +30,12 @@ scope_changes:
     in auth/sessions.py"); tests/unit/test_auth_login.py::test_rate_limit_window_resets_after_60_seconds
     monkeypatches hullbreach_server.auth.sessions.datetime directly, which only works
     if the limiter''s clock calls resolve through this module'
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: .env.example
+  reason: document HULLBREACH_LOGIN_RATE_LIMIT_MAX and HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS,
+    per docs/design/sprint-1.md section 3, brief-allowed config exception
   actor: logan
   at: '2026-09-16'
 evidence:
