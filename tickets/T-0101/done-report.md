@@ -27,13 +27,14 @@ and db-seed paragraph for the landed migration.
  .../versions/abbcc4cb6b34_create_items_table.py    | 54 ++++++++++++++++++++++
  src/hullbreach_server/db/seed.py                   | 22 ++++++---
  tests/system/test_build.py                         | 17 ++++++-
- tickets/T-0101/ticket.md                           | 31 ++++++++++++-
- 4 files changed, 115 insertions(+), 9 deletions(-)
+ tickets/T-0101/done-report.md                      | 39 ++++++++++++++++
+ tickets/T-0101/ticket.md                           | 33 ++++++++++++-
+ 5 files changed, 156 insertions(+), 9 deletions(-)
 ```
 
 ### Evidence
-(no evidence recorded)
+- `tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata` (pytest node id, verified passing when recorded)
 
 ### Captured claims
-- tests: 0 passed (from 0 evidence id(s))
+- tests: 1 passed (from 1 evidence id(s))
 - gates: unmeasured (no parsable gate-summary from a fresh check)
