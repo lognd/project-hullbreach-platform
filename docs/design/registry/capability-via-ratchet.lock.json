@@ -45,6 +45,16 @@
       "reason": "T-0006: db/engine.py::check_connectivity runs SELECT 1 against the configured database, the first real site for this node's declared 'sql' capability",
       "ticket": "T-0006"
     },
+    "hullbreach_server_db::fs.read": {
+      "accepted_count": 1,
+      "reason": "T-0008: db/seed.py::_load_seed_items reads db/seed_items.json, the first real site for this node's fs.read capability",
+      "ticket": "T-0008"
+    },
+    "hullbreach_server_db::env.read": {
+      "accepted_count": 1,
+      "reason": "T-0008: db/seed.py::_create_first_admin reads HULLBREACH_ADMIN_USERNAME/_EMAIL/_PASSWORD, the first real site for this node's env.read capability",
+      "ticket": "T-0008"
+    },
     "browser::client_storage": {
       "accepted_count": 1,
       "reason": "T-0044: web/src/auth/session.ts persists the signed-in session to localStorage (saveSession/loadSession/clearSession/useSession), the first real production site for the browser node's client_storage capability",

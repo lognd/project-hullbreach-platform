@@ -259,18 +259,21 @@ returns no diffs.
 
 <!-- frob:until T-0066 -->
 
-T-0066 (Item model, milestone 0.3.0) does not exist yet, so `db/seed.py` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+T-0066 (Item model, milestone 0.3.0) does not exist yet, so `db/seed.py`
 cannot seed rows into a model owned by a future ticket. Decision (see D3
-in section 8): T-0007's first migration set includes a **minimal**
-`items` table -- `id (UUID pk)`, `slug (String(64), unique)`,
-`name (String(120))`, `price_cents (Integer)` -- owned by the migration,
-with no ORM model in `db/models/` yet (seed writes it with a raw
-`sqlalchemy.Table` reflected or hand-declared in `seed.py`, not a mapped
-class, so nothing outside `db/seed.py`/`db/migrations` depends on its <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-shape). T-0066 later either reuses this table (adding a proper ORM model
-over the same columns, migrating additively) or supersedes it with an
-explicit migration; either way is that ticket's decision to make, not
-this one's.
+in section 8): a **minimal** `items` table -- `id (UUID pk)`,
+`slug (String(64), unique)`, `name (String(120))`,
+`price_cents (Integer)` -- with no ORM model in `db/models/` yet
+(`seed.py` hand-declares it on its own `sqlalchemy.MetaData`, not
+`Base`'s, so nothing outside `db/seed.py`/`db/migrations` depends on its
+shape). T-0007 did not end up shipping this table's migration, so
+`seed()` creates it itself at call time (`Table.create(bind=...,
+checkfirst=True)`), which is a no-op once a real migration exists;
+T-0101 tracks adding that migration so production Postgres gets the
+table from Alembic rather than a lazy runtime create. T-0066 later
+either reuses this table (adding a proper ORM model over the same
+columns, migrating additively) or supersedes it with an explicit
+migration; either way is that ticket's decision to make, not this one's.
 
 Idempotency: `seed()` upserts each catalog row by `slug` (`INSERT ...
 ON CONFLICT (slug) DO NOTHING` via SQLAlchemy's
