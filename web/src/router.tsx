@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { App } from "@/App";
+import { Register } from "@/pages/Register";
 
 /** Landing route content; a fuller version lands with T-0045/T-0046 in a later milestone. */
 function Landing() {
@@ -9,15 +10,6 @@ function Landing() {
         Project Hullbreach
       </h1>
       <p className="text-font-size-20 text-muted">Build a ship. Breach a hull.</p>
-    </main>
-  );
-}
-
-/** Register route content; the real form lands with T-0017 in web/src/pages/Register.tsx. */
-function Register() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-8 bg-paper text-ink">
-      <h1 className="text-font-size-32 font-semibold">Register</h1>
     </main>
   );
 }

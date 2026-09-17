@@ -22,7 +22,8 @@ node browser : foreign {
     // or replay from -- untrusted the same way any client is.
     code "web/src/**";
     may "client_storage" via "web/src/auth/session.ts";
-    waive "REL200:f_register" reason "design-only pass; T-0017 implements the register form/fetch call and will declare/prove a real request timeout there" ticket "T-0017";
+    may "fetch_url" via "web/src/api/auth.ts";
+    waive "REL200:f_register" reason "T-0017 implemented the register form/fetch call (web/src/api/auth.ts::register) without a request timeout; T-0102 adds one and will declare/prove it there" ticket "T-0102";
     waive "REL200:f_login_web" reason "design-only pass; T-0021 implements the login form/fetch call and will declare/prove a real request timeout there" ticket "T-0021";
     waive "REL200:f_logout" reason "design-only pass; T-0024 implements the logout control's fetch call and will declare/prove a real request timeout there" ticket "T-0024";
     waive "REL200:f_health" reason "design-only pass; no browser-side caller of /health exists yet -- T-0100 wires a web/ops caller for both /health and /ready" ticket "T-0100";
