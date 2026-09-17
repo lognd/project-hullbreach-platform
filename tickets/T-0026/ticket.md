@@ -20,6 +20,7 @@ scope:
 - design/hullbreach.strata
 - src/hullbreach_server/db/migrations/versions/*.py
 - src/hullbreach_server/db/models/session.py
+- web/src/api/auth.ts
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -69,6 +70,14 @@ scope_changes:
   reason: re-point the permanent Alembic-reflection/TypeDecorator WIRE001 waivers
     that named T-0026 as follow_up (no ticket can ever statically wire them) to T-0028,
     the next open ticket touching this area
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: web/src/api/auth.ts
+  reason: T-0026 closing strands fetchSession's WIRE001 waiver (follow_up named T-0026);
+    GET /session is designed for the game server to call directly, never this web
+    client, so the waiver is genuinely permanent -- mark it permanent=true rather
+    than re-pointing to another ticket that will never wire it either
   actor: logan
   at: '2026-09-16'
 evidence:
