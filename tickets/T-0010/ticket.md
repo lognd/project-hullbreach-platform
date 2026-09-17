@@ -2,7 +2,7 @@
 id: T-0010
 title: Require one approving review and All checks pass in branch protection; document
   it
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
