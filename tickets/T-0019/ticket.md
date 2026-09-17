@@ -23,6 +23,8 @@ scope:
 - .env.example
 - docs/index.md
 - design/hullbreach.strata
+- docs/design/sprint-1.md
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -58,6 +60,20 @@ scope_changes:
   reason: add frob:doc anchors for the new Session/sessions.py/deps.py public API,
     re-point the REL200 waivers off T-0019 to their real successors, add the SYS100
     env.read capability on hullbreach_server_auth and the auth->logging Flow
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 on the new f_auth_to_logging flow needs its section-9 doc touched,
+    and SELFAUDIT001/SYS111's env.read ratchet on hullbreach_server_auth needs raising
+    to 1 with a reason
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: AFFECT001 on the new f_auth_to_logging flow needs its section-9 doc touched,
+    and SELFAUDIT001/SYS111's env.read ratchet on hullbreach_server_auth needs raising
+    to 1 with a reason
   actor: logan
   at: '2026-09-16'
 evidence:
