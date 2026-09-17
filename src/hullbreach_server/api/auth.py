@@ -1,5 +1,5 @@
-"""Auth routes: register (T-0016), login/logout/session land in later
-tickets, per docs/design/sprint-1.md section 5 ("Endpoints").
+"""Auth routes: register (T-0016), login (T-0020); logout/session land
+in later tickets, per docs/design/sprint-1.md section 5 ("Endpoints").
 """
 
 from __future__ import annotations
@@ -9,8 +9,20 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hullbreach_server.auth.passwords import hash_password
-from hullbreach_server.auth.schemas import RegisterRequest, UserProfile
+from hullbreach_server.auth.passwords import hash_password, verify_password
+from hullbreach_server.auth.schemas import (
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
+    UserProfile,
+)
+from hullbreach_server.auth.sessions import (
+    clear_failed_logins,
+    current_time,
+    is_login_rate_limited,
+    issue_session,
+    record_failed_login,
+)
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
@@ -67,3 +79,41 @@ def register(
     db.refresh(user)
     _log.info("registered user %s", user.id)
     return UserProfile.from_user(user)
+
+
+# frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user  # noqa: E501
+# frob:tests tests/unit/test_auth_login.py::test_login_wrong_password_returns_401
+# frob:tests tests/unit/test_auth_login.py::test_login_unknown_username_returns_the_same_401_message_as_wrong_password  # noqa: E501
+# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
+# frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter  # noqa: E501
+# frob:doc docs/index.md#auth-api
+@router.post("/login", response_model=LoginResponse)
+def login(
+    payload: LoginRequest, db: Session = Depends(get_db)
+) -> LoginResponse | JSONResponse:
+    """Issue a bearer token for valid credentials; 401 identically for an unknown
+    user or a wrong password, 429 after too many recent failures for the
+    same username."""
+    now = current_time()
+    if is_login_rate_limited(payload.username, now):
+        _log.warning("login: rate limited for %s", payload.username)
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "too many attempts, try again later"},
+        )
+
+    user = db.execute(
+        select(User).where(User.username == payload.username)
+    ).scalar_one_or_none()
+    if user is None or not verify_password(payload.password, user.password_hash):
+        record_failed_login(payload.username, now)
+        _log.warning("login: invalid credentials for %s", payload.username)
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "invalid username or password"},
+        )
+
+    clear_failed_logins(payload.username)
+    _session_row, token = issue_session(db, user)
+    _log.info("logged in user %s", user.id)
+    return LoginResponse(token=token, user=UserProfile.from_user(user))

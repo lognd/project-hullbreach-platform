@@ -7,6 +7,8 @@ from __future__ import annotations
 import hashlib
 import os
 import secrets
+import threading
+from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session as DBSession
@@ -19,6 +21,17 @@ from hullbreach_server.logging import get_logger
 _log = get_logger(__name__)
 
 _DEFAULT_SESSION_TTL_SECONDS = 1_209_600  # 14 days
+_DEFAULT_LOGIN_RATE_LIMIT_MAX = 5
+_DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS = 60
+
+# In-process failed-login store: a deque of failure timestamps per
+# username, behind a module-level lock. Explicitly single-instance for
+# 0.1.0 (docs/design/sprint-1.md section 5) -- it does not survive a
+# process restart or work across multiple API instances; a shared store
+# (Redis, or the database itself) is open work for when the platform
+# runs more than one instance.
+_failed_attempts: dict[str, deque[datetime]] = defaultdict(deque)
+_failed_attempts_lock = threading.Lock()
 
 
 def _session_ttl_seconds() -> int:
@@ -27,6 +40,70 @@ def _session_ttl_seconds() -> int:
     if raw is None:
         return _DEFAULT_SESSION_TTL_SECONDS
     return int(raw)
+
+
+def _login_rate_limit_max() -> int:
+    """Read HULLBREACH_LOGIN_RATE_LIMIT_MAX, defaulting to 5 attempts."""
+    raw = os.environ.get("HULLBREACH_LOGIN_RATE_LIMIT_MAX")
+    if raw is None:
+        return _DEFAULT_LOGIN_RATE_LIMIT_MAX
+    return int(raw)
+
+
+def _login_rate_limit_window_seconds() -> int:
+    """Read HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS, defaulting to 60."""
+    raw = os.environ.get("HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS")
+    if raw is None:
+        return _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS
+    return int(raw)
+
+
+def _prune_stale_attempts(username: str, now: datetime) -> None:
+    """Drop `username`'s recorded failures older than the rate-limit window; caller holds the lock."""  # noqa: E501
+    window = timedelta(seconds=_login_rate_limit_window_seconds())
+    cutoff = now - window
+    attempts = _failed_attempts[username]
+    while attempts and attempts[0] <= cutoff:
+        attempts.popleft()
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_rate_limit_window_resets_after_60_seconds  # noqa: E501
+def current_time() -> datetime:
+    """Return the current UTC time; a single call site per login attempt so tests
+    can freeze/advance it by monkeypatching this module's `datetime`."""
+    return datetime.now(timezone.utc)
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
+def is_login_rate_limited(username: str, now: datetime) -> bool:
+    """True if `username` has hit the failed-login rate limit within the current window.
+
+    `now` is the caller's single `current_time()` reading for this login
+    attempt, shared with a following `record_failed_login` call so one
+    HTTP request consumes exactly one clock reading.
+    """
+    with _failed_attempts_lock:
+        _prune_stale_attempts(username, now)
+        return len(_failed_attempts[username]) >= _login_rate_limit_max()
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
+def record_failed_login(username: str, now: datetime) -> None:
+    """Record a failed login attempt for `username` at `now`, pruning entries outside the window."""  # noqa: E501
+    with _failed_attempts_lock:
+        _prune_stale_attempts(username, now)
+        _failed_attempts[username].append(now)
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter  # noqa: E501
+def clear_failed_logins(username: str) -> None:
+    """Clear `username`'s failed-login history, e.g. after a successful login."""
+    with _failed_attempts_lock:
+        _failed_attempts.pop(username, None)
 
 
 def _hash_token(token: str) -> str:
@@ -58,7 +135,6 @@ class SessionError(ErrorSet):
 # frob:tests tests/unit/test_sessions.py::test_issue_session_returns_row_and_plaintext_token_once  # noqa: E501
 # frob:tests tests/unit/test_sessions.py::test_issue_session_stores_sha256_hash_of_token
 # frob:tests tests/unit/test_sessions.py::test_issue_session_sets_expiry_from_default_ttl  # noqa: E501
-# frob:waive WIRE001 reason="no route calls issue_session yet in this ticket" follow_up="T-0020"  # noqa: E501
 def issue_session(db: DBSession, user: User) -> tuple[Session, str]:
     """Create and persist a new Session for `user`; return the row and the one-time plaintext token."""  # noqa: E501
     token = secrets.token_urlsafe(32)

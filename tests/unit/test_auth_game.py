@@ -63,7 +63,6 @@ def test_session_endpoint_returns_401_for_malformed_token(client) -> None:
 
 
 # frob:ticket T-0026
-@pytest.mark.xfail(strict=True, reason="T-0026 not implemented")
 def test_session_endpoint_omits_username_and_email(client) -> None:
     """SessionInfo is deliberately minimal: no username or email fields."""
     headers = _register_and_login(client)
