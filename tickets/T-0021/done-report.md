@@ -46,8 +46,9 @@ T-0021` reports 0 errors.
 
 ### Changed
 ```
- tickets/T-0021/ticket.md | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ tickets/T-0021/done-report.md | 58 +++++++++++++++++++++++++++++++++++++++++++
+ tickets/T-0021/ticket.md      | 37 +++++++++++++++++++++++++--
+ 2 files changed, 93 insertions(+), 2 deletions(-)
 ```
 
 ### Evidence
