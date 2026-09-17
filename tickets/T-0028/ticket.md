@@ -20,6 +20,8 @@ scope:
 - src/hullbreach_server/auth/schemas.py
 - tests/unit/test_roles.py
 - docs/index.md
+- src/hullbreach_server/db/migrations/versions/*.py
+- src/hullbreach_server/db/models/session.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -28,6 +30,20 @@ scope_changes:
 - op: add
   glob: docs/index.md
   reason: document require_admin in the Public API section
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/migrations/versions/*.py
+  reason: re-point the permanent Alembic-reflection/TypeDecorator WIRE001 waivers
+    that named T-0028 as follow_up to T-0100, since no ticket can ever statically
+    wire them and T-0028 is closing
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/db/models/session.py
+  reason: re-point the permanent Alembic-reflection/TypeDecorator WIRE001 waivers
+    that named T-0028 as follow_up to T-0100, since no ticket can ever statically
+    wire them and T-0028 is closing
   actor: logan
   at: '2026-09-16'
 evidence:
