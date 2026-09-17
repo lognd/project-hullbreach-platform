@@ -3,7 +3,7 @@ id: T-0010
 title: Require one approving review and All checks pass in branch protection; document
   it
 state: in-progress
-kind: feature
+kind: docs
 origin: human
 created: '2026-09-15'
 priority: medium
@@ -21,6 +21,17 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+triage_changes:
+- field: kind
+  old_value: feature
+  new_value: docs
+  reason: acceptance criterion is a GitHub branch-protection UI setting, not code
+    -- no pytest/vitest node id exists to bind as evidence; cmd evidence (the docs-kind
+    escape hatch) verifies the actual gh api ruleset state instead
+  actor: logan
+  at: '2026-09-16'
+kind_history:
+- 2026-09-16 feature->docs evidence=0 done_report=yes
 designated_repro_test: null
 acceptance:
 - text: given branch protection, when a PR has green CI but no approval, then merge
