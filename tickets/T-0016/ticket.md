@@ -23,6 +23,7 @@ scope:
 - tests/unit/test_roles.py
 - docs/index.md
 - design/hullbreach.strata
+- docs/design/sprint-1.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -76,6 +77,11 @@ scope_changes:
   glob: design/hullbreach.strata
   reason: add docs/index.md#auth-api section for register, and declare the api->logging
     Flow api/auth.py's module logger needs
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: AFFECT001 on the new f_api_to_logging flow needs its section-9 doc touched
   actor: logan
   at: '2026-09-16'
 evidence:
