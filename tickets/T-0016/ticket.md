@@ -66,6 +66,18 @@ scope_changes:
     Flow api/auth.py's module logger needs
   actor: logan
   at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: add docs/index.md#auth-api section for register, and declare the api->logging
+    Flow api/auth.py's module logger needs
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: add docs/index.md#auth-api section for register, and declare the api->logging
+    Flow api/auth.py's module logger needs
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
 - tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
