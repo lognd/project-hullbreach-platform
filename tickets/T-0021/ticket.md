@@ -1,7 +1,7 @@
 ---
 id: T-0021
 title: Website login page and persisted session across reloads
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
