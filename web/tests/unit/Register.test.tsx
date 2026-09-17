@@ -29,7 +29,7 @@ afterEach(() => {
 });
 
 describe("Register page", () => {
-  it.fails("shows field error next to the offending input", async () => {
+  it("shows field error next to the offending input", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -54,7 +54,7 @@ describe("Register page", () => {
     expect(errorNode).toHaveTextContent(/username already taken/i);
   });
 
-  it.fails(
+  it(
     "shows an email-taken error from a 409 response with field email",
     async () => {
       vi.stubGlobal(
@@ -78,7 +78,7 @@ describe("Register page", () => {
     },
   );
 
-  it.fails(
+  it(
     "submits register with username, email, and password fields",
     async () => {
       const fetchMock = vi
@@ -120,7 +120,7 @@ describe("Register page", () => {
     },
   );
 
-  it.fails(
+  it(
     "shows a generic validation error when the API rejects the payload with 422",
     async () => {
       vi.stubGlobal(
@@ -144,7 +144,7 @@ describe("Register page", () => {
     },
   );
 
-  it.fails(
+  it(
     "navigates away from the register form after a successful registration",
     async () => {
       vi.stubGlobal(
@@ -180,7 +180,7 @@ describe("Register page", () => {
 });
 
 describe("api/auth.ts", () => {
-  it.fails(
+  it(
     "register posts to /api/v1/auth/register with the request body",
     async () => {
       const fetchMock = vi
@@ -214,7 +214,7 @@ describe("api/auth.ts", () => {
     },
   );
 
-  it.fails(
+  it(
     "register throws an ApiError carrying the response detail and field on 409",
     async () => {
       vi.stubGlobal(
@@ -242,7 +242,7 @@ describe("api/auth.ts", () => {
     },
   );
 
-  it.fails("login posts to /api/v1/auth/login with username and password", async () => {
+  it("login posts to /api/v1/auth/login with username and password", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       jsonResponse(
         {
@@ -270,7 +270,7 @@ describe("api/auth.ts", () => {
     );
   });
 
-  it.fails(
+  it(
     "logout posts to /api/v1/auth/logout with a bearer Authorization header",
     async () => {
       const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
@@ -288,7 +288,7 @@ describe("api/auth.ts", () => {
     },
   );
 
-  it.fails(
+  it(
     "fetchSession sends a bearer Authorization header to GET /api/v1/auth/session",
     async () => {
       const fetchMock = vi
@@ -309,7 +309,7 @@ describe("api/auth.ts", () => {
     },
   );
 
-  it.fails("maps a 401 response to an ApiError with status 401", async () => {
+  it("maps a 401 response to an ApiError with status 401", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -325,7 +325,7 @@ describe("api/auth.ts", () => {
     ).rejects.toMatchObject({ status: 401 });
   });
 
-  it.fails("maps a 429 response to an ApiError with status 429", async () => {
+  it("maps a 429 response to an ApiError with status 429", async () => {
     vi.stubGlobal(
       "fetch",
       vi

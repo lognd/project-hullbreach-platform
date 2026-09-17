@@ -153,6 +153,25 @@ initializes from `loadSession()` synchronously (no signed-out flash on
 reload) and re-reads on the `storage` event, so a change in one tab is
 reflected in another.
 
+### Auth API client and the register page
+
+`web/src/api/auth.ts` is the one `fetch` wrapper every auth-facing page
+uses (docs/design/sprint-1.md sec.5/6): `register`/`login` POST their
+request body and resolve to a `UserProfile`/`LoginResponse`; `logout`/
+`fetchSession` send a `Bearer` `Authorization` header. Any non-2xx
+response is normalized into a thrown `ApiError {status, detail, field?}`
+-- `field` is present only when the server named one (409's duplicate
+username/email), letting a caller show the error next to that field
+specifically rather than as a generic banner.
+
+`web/src/pages/Register.tsx` is the first such caller: it keeps a
+`fieldErrors` map and, on submit, calls `register()`. An `ApiError` with
+a `field` sets that field's error (rendered via `aria-describedby`
+pointing at a `<p id="{field}-error">` beneath the input, so a test can
+find it either way); an `ApiError` with no `field` (422's generic
+validation failure) sets a `role="alert"` form-level banner instead.
+Success swaps the form out for a confirmation message.
+
 ## Sprint 1 design
 
 `docs/design/sprint-1.md` is the system design for milestone 0.1.0
