@@ -16,6 +16,8 @@ runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
 scope:
 - tests/unit/test_auth_game.py
+- docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -37,6 +39,20 @@ scope_changes:
     endpoint verbatim (attr 'POST /api/v1/auth/login', same as f_login_web) rather
     than a separate route -- no code change is needed in either file for T-0026's
     acceptance criterion
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: note the game client reuses POST /auth/login verbatim in the Auth API section;
+    re-point/resolve the f_login_game and f_session_token_to_game_client REL200 waivers
+    now that both the login and session endpoints are real
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: note the game client reuses POST /auth/login verbatim in the Auth API section;
+    re-point/resolve the f_login_game and f_session_token_to_game_client REL200 waivers
+    now that both the login and session endpoints are real
   actor: logan
   at: '2026-09-16'
 evidence:
