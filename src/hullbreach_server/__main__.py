@@ -31,11 +31,18 @@ def _db_upgrade() -> None:
 
 def _db_seed() -> None:
     """Load the catalog items and the first admin account (`db seed`)."""
-    # frob:todo T-0008
-    # db/seed.py::seed does not exist yet; T-0008 lands the real dispatch
-    # (build an engine from AppConfig, open a session, call seed()).
-    print("db seed is not implemented yet (T-0008)", file=sys.stderr)
-    sys.exit(1)
+    from hullbreach_server.db import get_sessionmaker
+    from hullbreach_server.db.seed import seed
+
+    session = get_sessionmaker()()
+    try:
+        result = seed(session)
+    finally:
+        session.close()
+    if result.is_err:
+        print(f"db seed failed: {result.danger_err}", file=sys.stderr)
+        sys.exit(1)
+    print("db seed completed", file=sys.stderr)
 
 
 # frob:tests tests/unit/test_main.py::test_main_prints_help_and_exits_cleanly

@@ -1,0 +1,722 @@
+[
+  {
+    "slug": "hull-skin-crimson-hull-wrap",
+    "name": "Crimson Hull Wrap",
+    "price": 199,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-void-black-plating",
+    "name": "Void Black Plating",
+    "price": 236,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-solar-flare-livery",
+    "name": "Solar Flare Livery",
+    "price": 273,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-deep-sea-camo",
+    "name": "Deep Sea Camo",
+    "price": 310,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-nebula-swirl-coat",
+    "name": "Nebula Swirl Coat",
+    "price": 347,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-ashen-steel-finish",
+    "name": "Ashen Steel Finish",
+    "price": 384,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-polar-white-armor",
+    "name": "Polar White Armor",
+    "price": 421,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-toxic-green-sheen",
+    "name": "Toxic Green Sheen",
+    "price": 458,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-royal-gold-trim",
+    "name": "Royal Gold Trim",
+    "price": 495,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-carbon-fiber-weave",
+    "name": "Carbon Fiber Weave",
+    "price": 532,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-ghost-chrome-plating",
+    "name": "Ghost Chrome Plating",
+    "price": 569,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-magma-vein-hull",
+    "name": "Magma Vein Hull",
+    "price": 606,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-aurora-prism-coat",
+    "name": "Aurora Prism Coat",
+    "price": 643,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-rustbelt-patina",
+    "name": "Rustbelt Patina",
+    "price": 680,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "hull-skin-obsidian-glass-finish",
+    "name": "Obsidian Glass Finish",
+    "price": 717,
+    "category": "hull-skin"
+  },
+  {
+    "slug": "weapon-skin-plasma-cutter-red",
+    "name": "Plasma Cutter Red",
+    "price": 754,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-ion-blaster-blue",
+    "name": "Ion Blaster Blue",
+    "price": 791,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-railgun-gold-inlay",
+    "name": "Railgun Gold Inlay",
+    "price": 828,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-cryo-cannon-frost",
+    "name": "Cryo Cannon Frost",
+    "price": 865,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-laser-array-neon",
+    "name": "Laser Array Neon",
+    "price": 902,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-pulse-rifle-camo",
+    "name": "Pulse Rifle Camo",
+    "price": 939,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-torpedo-bay-stripe",
+    "name": "Torpedo Bay Stripe",
+    "price": 976,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-flak-turret-chrome",
+    "name": "Flak Turret Chrome",
+    "price": 1013,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-beam-emitter-violet",
+    "name": "Beam Emitter Violet",
+    "price": 1050,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-mass-driver-black",
+    "name": "Mass Driver Black",
+    "price": 1087,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-shock-lance-amber",
+    "name": "Shock Lance Amber",
+    "price": 1124,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-nova-charge-skin",
+    "name": "Nova Charge Skin",
+    "price": 1161,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-quantum-rifle-wrap",
+    "name": "Quantum Rifle Wrap",
+    "price": 1198,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-photon-array-teal",
+    "name": "Photon Array Teal",
+    "price": 1235,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "weapon-skin-arc-welder-orange",
+    "name": "Arc Welder Orange",
+    "price": 1272,
+    "category": "weapon-skin"
+  },
+  {
+    "slug": "engine-trail-comet-tail-blue",
+    "name": "Comet Tail Blue",
+    "price": 1309,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-solar-wind-trail",
+    "name": "Solar Wind Trail",
+    "price": 1346,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-nebula-dust-wake",
+    "name": "Nebula Dust Wake",
+    "price": 1383,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-ion-stream-violet",
+    "name": "Ion Stream Violet",
+    "price": 1420,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-plasma-ribbon-trail",
+    "name": "Plasma Ribbon Trail",
+    "price": 1457,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-starlight-sparkle",
+    "name": "Starlight Sparkle",
+    "price": 1494,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-void-streak-black",
+    "name": "Void Streak Black",
+    "price": 1531,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-fusion-flare-trail",
+    "name": "Fusion Flare Trail",
+    "price": 1568,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-aurora-wake",
+    "name": "Aurora Wake",
+    "price": 1605,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-meteor-shower-trail",
+    "name": "Meteor Shower Trail",
+    "price": 1642,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-cryo-vapor-trail",
+    "name": "Cryo Vapor Trail",
+    "price": 1679,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-quantum-ripple-wake",
+    "name": "Quantum Ripple Wake",
+    "price": 1716,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-solar-flare-burst",
+    "name": "Solar Flare Burst",
+    "price": 1753,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-warp-streak-gold",
+    "name": "Warp Streak Gold",
+    "price": 1790,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "engine-trail-photon-contrail",
+    "name": "Photon Contrail",
+    "price": 1827,
+    "category": "engine-trail"
+  },
+  {
+    "slug": "cockpit-decal-skull-and-stars",
+    "name": "Skull and Stars",
+    "price": 1864,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-ace-pilot-insignia",
+    "name": "Ace Pilot Insignia",
+    "price": 1901,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-squadron-crest",
+    "name": "Squadron Crest",
+    "price": 1938,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-lightning-bolt-sigil",
+    "name": "Lightning Bolt Sigil",
+    "price": 1975,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-constellation-map",
+    "name": "Constellation Map",
+    "price": 2012,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-nova-wolf-emblem",
+    "name": "Nova Wolf Emblem",
+    "price": 2049,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-iron-fist-badge",
+    "name": "Iron Fist Badge",
+    "price": 2086,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-phoenix-rising-mark",
+    "name": "Phoenix Rising Mark",
+    "price": 2123,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-serpent-coil-sigil",
+    "name": "Serpent Coil Sigil",
+    "price": 2160,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-falcon-wing-crest",
+    "name": "Falcon Wing Crest",
+    "price": 2197,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-anchor-and-chain",
+    "name": "Anchor and Chain",
+    "price": 2234,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-compass-rose-decal",
+    "name": "Compass Rose Decal",
+    "price": 2271,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-warhawk-emblem",
+    "name": "Warhawk Emblem",
+    "price": 2308,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-crimson-talon-mark",
+    "name": "Crimson Talon Mark",
+    "price": 2345,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "cockpit-decal-silver-comet-badge",
+    "name": "Silver Comet Badge",
+    "price": 2382,
+    "category": "cockpit-decal"
+  },
+  {
+    "slug": "banner-founders-banner",
+    "name": "Founders Banner",
+    "price": 2419,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-veteran-squadron-flag",
+    "name": "Veteran Squadron Flag",
+    "price": 2456,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-crimson-fleet-standard",
+    "name": "Crimson Fleet Standard",
+    "price": 2493,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-void-runners-pennant",
+    "name": "Void Runners Pennant",
+    "price": 2530,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-star-marshal-banner",
+    "name": "Star Marshal Banner",
+    "price": 2567,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-ironclad-guild-flag",
+    "name": "Ironclad Guild Flag",
+    "price": 2604,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-solar-vanguard-pennant",
+    "name": "Solar Vanguard Pennant",
+    "price": 2641,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-ghost-wing-standard",
+    "name": "Ghost Wing Standard",
+    "price": 2678,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-nova-corps-banner",
+    "name": "Nova Corps Banner",
+    "price": 2715,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-deep-space-ensign",
+    "name": "Deep Space Ensign",
+    "price": 2752,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-rogue-trader-flag",
+    "name": "Rogue Trader Flag",
+    "price": 2789,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-ashen-order-pennant",
+    "name": "Ashen Order Pennant",
+    "price": 2826,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-celestial-guard-banner",
+    "name": "Celestial Guard Banner",
+    "price": 2863,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-frontier-legion-flag",
+    "name": "Frontier Legion Flag",
+    "price": 2900,
+    "category": "banner"
+  },
+  {
+    "slug": "banner-eclipse-fleet-standard",
+    "name": "Eclipse Fleet Standard",
+    "price": 2937,
+    "category": "banner"
+  },
+  {
+    "slug": "title-void-walker",
+    "name": "Void Walker",
+    "price": 2974,
+    "category": "title"
+  },
+  {
+    "slug": "title-star-marshal",
+    "name": "Star Marshal",
+    "price": 3011,
+    "category": "title"
+  },
+  {
+    "slug": "title-ace-of-the-fleet",
+    "name": "Ace of the Fleet",
+    "price": 3048,
+    "category": "title"
+  },
+  {
+    "slug": "title-nebula-nomad",
+    "name": "Nebula Nomad",
+    "price": 3085,
+    "category": "title"
+  },
+  {
+    "slug": "title-iron-captain",
+    "name": "Iron Captain",
+    "price": 3122,
+    "category": "title"
+  },
+  {
+    "slug": "title-solar-vanguard",
+    "name": "Solar Vanguard",
+    "price": 3159,
+    "category": "title"
+  },
+  {
+    "slug": "title-ghost-pilot",
+    "name": "Ghost Pilot",
+    "price": 3196,
+    "category": "title"
+  },
+  {
+    "slug": "title-comet-chaser",
+    "name": "Comet Chaser",
+    "price": 3233,
+    "category": "title"
+  },
+  {
+    "slug": "title-warhawk-commander",
+    "name": "Warhawk Commander",
+    "price": 3270,
+    "category": "title"
+  },
+  {
+    "slug": "title-nova-ranger",
+    "name": "Nova Ranger",
+    "price": 3307,
+    "category": "title"
+  },
+  {
+    "slug": "title-deep-space-drifter",
+    "name": "Deep Space Drifter",
+    "price": 3344,
+    "category": "title"
+  },
+  {
+    "slug": "title-ashen-knight",
+    "name": "Ashen Knight",
+    "price": 3381,
+    "category": "title"
+  },
+  {
+    "slug": "title-celestial-sentinel",
+    "name": "Celestial Sentinel",
+    "price": 3418,
+    "category": "title"
+  },
+  {
+    "slug": "title-rogue-ace",
+    "name": "Rogue Ace",
+    "price": 3455,
+    "category": "title"
+  },
+  {
+    "slug": "title-eclipse-warden",
+    "name": "Eclipse Warden",
+    "price": 3492,
+    "category": "title"
+  },
+  {
+    "slug": "emote-salute",
+    "name": "Salute",
+    "price": 3529,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-victory-roll-taunt",
+    "name": "Victory Roll Taunt",
+    "price": 3566,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-thumbs-up-beacon",
+    "name": "Thumbs Up Beacon",
+    "price": 3603,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-wave-signal",
+    "name": "Wave Signal",
+    "price": 3640,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-fireworks-burst",
+    "name": "Fireworks Burst",
+    "price": 3677,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-confetti-blast",
+    "name": "Confetti Blast",
+    "price": 3714,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-distress-flare-wave",
+    "name": "Distress Flare Wave",
+    "price": 3751,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-cheer-signal",
+    "name": "Cheer Signal",
+    "price": 3788,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-bow-animation",
+    "name": "Bow Animation",
+    "price": 3825,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-clap-sequence",
+    "name": "Clap Sequence",
+    "price": 3862,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-backflip-trick",
+    "name": "Backflip Trick",
+    "price": 3899,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-spotlight-pose",
+    "name": "Spotlight Pose",
+    "price": 3936,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-laugh-emote",
+    "name": "Laugh Emote",
+    "price": 3973,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-heart-beacon",
+    "name": "Heart Beacon",
+    "price": 4010,
+    "category": "emote"
+  },
+  {
+    "slug": "emote-star-salute",
+    "name": "Star Salute",
+    "price": 4047,
+    "category": "emote"
+  },
+  {
+    "slug": "badge-first-blood-badge",
+    "name": "First Blood Badge",
+    "price": 4084,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-survivor-medal",
+    "name": "Survivor Medal",
+    "price": 4121,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-marksman-pin",
+    "name": "Marksman Pin",
+    "price": 4158,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-speed-demon-badge",
+    "name": "Speed Demon Badge",
+    "price": 4195,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-tactician-medal",
+    "name": "Tactician Medal",
+    "price": 4232,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-loyalty-star",
+    "name": "Loyalty Star",
+    "price": 4269,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-explorer-badge",
+    "name": "Explorer Badge",
+    "price": 4306,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-defender-medal",
+    "name": "Defender Medal",
+    "price": 4343,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-saboteur-pin",
+    "name": "Saboteur Pin",
+    "price": 4380,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-champion-star",
+    "name": "Champion Star",
+    "price": 4417,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-endurance-badge",
+    "name": "Endurance Badge",
+    "price": 4454,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-precision-medal",
+    "name": "Precision Medal",
+    "price": 4491,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-boarding-party-pin",
+    "name": "Boarding Party Pin",
+    "price": 4528,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-salvager-badge",
+    "name": "Salvager Badge",
+    "price": 4565,
+    "category": "badge"
+  },
+  {
+    "slug": "badge-guardian-star",
+    "name": "Guardian Star",
+    "price": 4602,
+    "category": "badge"
+  }
+]
