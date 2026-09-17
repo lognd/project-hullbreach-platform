@@ -1,11 +1,12 @@
-"""Unit tests for the planned POST /api/v1/auth/register endpoint
-(T-0016). `hullbreach_server.api.auth`/`auth.schemas` do not exist yet;
-imports are lazy inside each test body so collection succeeds.
-"""
+"""Unit tests for the POST /api/v1/auth/register endpoint (T-0016)."""
 
 from __future__ import annotations
 
-import pytest
+# Import at module scope (not lazily) so `User` is registered on
+# Base.metadata before conftest's `db_session` fixture runs
+# `Base.metadata.create_all(engine)`, regardless of test collection
+# order (same fix as tests/unit/test_sessions.py, T-0019).
+from hullbreach_server.db.models.user import User  # noqa: F401
 
 
 # frob:ticket T-0098
@@ -20,7 +21,6 @@ def _register_payload(**overrides: object) -> dict:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_valid_request_returns_201_with_player_defaults(client) -> None:
     """Given a valid request, register returns 201 with role Player, currency 0, and a default rating."""
     response = client.post("/api/v1/auth/register", json=_register_payload())
@@ -33,7 +33,6 @@ def test_register_valid_request_returns_201_with_player_defaults(client) -> None
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_duplicate_username_returns_409_with_field(client) -> None:
     """Given a duplicate username, register returns 409 naming the username field."""
     client.post("/api/v1/auth/register", json=_register_payload())
@@ -51,7 +50,6 @@ def test_register_duplicate_username_returns_409_with_field(client) -> None:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_duplicate_email_returns_409_with_field(client) -> None:
     """Given a duplicate email, register returns 409 naming the email field."""
     client.post("/api/v1/auth/register", json=_register_payload())
@@ -66,7 +64,6 @@ def test_register_duplicate_email_returns_409_with_field(client) -> None:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_password_too_short_returns_422(client) -> None:
     """A password under 8 characters fails pydantic validation with 422."""
     response = client.post(
@@ -77,7 +74,6 @@ def test_register_password_too_short_returns_422(client) -> None:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_malformed_email_returns_422(client) -> None:
     """A malformed email fails pydantic's EmailStr validation with 422."""
     response = client.post(
@@ -88,7 +84,6 @@ def test_register_malformed_email_returns_422(client) -> None:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_role_field_is_never_accepted_as_input(client) -> None:
     """Passing role=admin in the request body is ignored; the created user is still a Player."""
     response = client.post(
@@ -100,7 +95,6 @@ def test_register_role_field_is_never_accepted_as_input(client) -> None:
 
 
 # frob:ticket T-0016
-@pytest.mark.xfail(strict=True, reason="T-0016 not implemented")
 def test_register_response_never_exposes_password_hash(client) -> None:
     """UserProfile never includes password_hash or the raw password anywhere in the body."""
     response = client.post("/api/v1/auth/register", json=_register_payload())
