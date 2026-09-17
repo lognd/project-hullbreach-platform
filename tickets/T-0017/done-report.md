@@ -45,8 +45,10 @@ T-0017` reports 0 errors.
 
 ### Changed
 ```
- tickets/T-0017/ticket.md | 40 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ tickets/T-0017/done-report.md | 57 +++++++++++++++++++++++++++++++++++++++++++
+ tickets/T-0017/ticket.md      | 40 ++++++++++++++++++++++++++++--
+ tickets/T-0102/ticket.md      | 29 ++++++++++++++++++++++
+ 3 files changed, 124 insertions(+), 2 deletions(-)
 ```
 
 ### Evidence
