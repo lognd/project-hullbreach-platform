@@ -1,7 +1,7 @@
 ---
 id: T-0019
 title: Session model with expiry and revocation, and the current-user auth dependency
-state: in-progress
+state: done
 kind: feature
 origin: human
 created: '2026-09-15'
@@ -92,57 +92,3 @@ anchor: false
 anchor_reason: null
 land_commit: null
 ---
-
-## Done report
-
-Changed:
-src/hullbreach_server/db/models/session.py::Session
-src/hullbreach_server/db/models/session.py::_UTCDateTime
-src/hullbreach_server/db/models/__init__.py (re-export Session)
-src/hullbreach_server/auth/sessions.py::issue_session
-src/hullbreach_server/auth/sessions.py::resolve_session
-src/hullbreach_server/auth/sessions.py::revoke_session
-src/hullbreach_server/auth/sessions.py::revoke_all_sessions
-src/hullbreach_server/auth/sessions.py::SessionError
-src/hullbreach_server/auth/deps.py::get_current_user
-src/hullbreach_server/auth/deps.py::AuthContext
-src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py
-.env.example (HULLBREACH_SESSION_TTL_SECONDS)
-docs/index.md (public-api + database-migrations sections)
-design/hullbreach.strata (env.read capability, f_auth_to_logging flow,
-  re-pointed REL200 waivers: f_api_to_auth/session_token__issue/
-  f_session_token_to_browser -> T-0020, session_token__revoke -> T-0023,
-  f_auth_to_db -> T-0100)
-docs/design/sprint-1.md (section 9 note for f_auth_to_logging + env.read)
-docs/design/registry/capability-via-ratchet.lock.json
-  (hullbreach_server_auth::env.read accepted_count 1)
-
-Evidence:
-tests/unit/test_sessions.py::test_issue_session_returns_row_and_plaintext_token_once
-tests/unit/test_sessions.py::test_issue_session_stores_sha256_hash_of_token
-tests/unit/test_sessions.py::test_issue_session_sets_expiry_from_default_ttl
-tests/unit/test_sessions.py::test_resolve_session_succeeds_for_a_valid_token
-tests/unit/test_sessions.py::test_resolve_session_fails_for_an_expired_token
-tests/unit/test_sessions.py::test_resolve_session_fails_for_a_revoked_token
-tests/unit/test_sessions.py::test_revoke_session_sets_revoked_at
-tests/unit/test_sessions.py::test_revoke_all_sessions_revokes_every_non_revoked_session_for_user
-tests/unit/test_sessions.py::test_expired_token_returns_401
-tests/unit/test_sessions.py::test_revoked_token_returns_401
-tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403
-tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata (sessions migration)
-
-Filed: none
-
-Gates: frob check --ticket T-0019 clean, 0 errors (gate:AFFECT, gate:SCOPE,
-gate:SELFAUDIT, gate:SYS, gate:REF, gate:WIRE, gate:TEST, gate:LANDPARITY,
-gate:PRE all pass). ruff, ruff format, ty, typani.lint, full pytest and
-vitest suites all clean. Migration files' WIRE001 follow_up re-pointed
-from T-0019 to T-0020 so closing doesn't leave a dangling tracker.
-Waivers: REF002 on the sessions migration (single-anchor leaf, same
-shape as the pre-existing migrations); WIRE001 on issue_session,
-get_current_user, revoke_session, revoke_all_sessions,
-_UTCDateTime.process_result_value, and the migration upgrade/downgrade
-(no route wires session issuance/revocation yet -- T-0020/T-0023
-follow-ups); TEST001 on _UTCDateTime.process_result_value (SQLAlchemy's
-own TypeDecorator interface, exercised indirectly by every Session
-round-trip test).
