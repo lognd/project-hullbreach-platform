@@ -321,7 +321,11 @@ Things frob says that look scary and are not:
 ## Making a change
 
 `main` is protected. Nobody pushes to it, me included. Every change is a
-branch, then a PR, green CI, one approval, merge. Every time.
+branch, then a PR, green CI (all three checks -- `server (python)`,
+`web (typescript)`, `frob check`), one approval, merge. Every time. The
+Scrum Master is on the branch ruleset's bypass list, for an urgent fix
+when nobody is around to review, but does not push to `main` outside
+that case.
 
 ```
 git switch main && git pull
@@ -334,9 +338,10 @@ git push -u origin feat/login-form
 
 Commit messages are [Conventional Commits](https://www.conventionalcommits.org/):
 type, colon, short imperative sentence. Git prints a link to open the PR;
-fill in the template, wait for "All checks pass", ask someone in chat for
-a review, address comments by pushing more commits, then "Squash and
-merge" and delete the branch. Back home: `git switch main && git pull`.
+fill in the template, wait for all three checks to go green, ask someone
+in chat for a review, address comments by pushing more commits, then
+"Merge pull request" (a merge commit, not squash or rebase) and delete
+the branch. Back home: `git switch main && git pull`.
 
 <details>
 <summary>if that broke: git and PR problems</summary>
@@ -354,7 +359,7 @@ merge" and delete the branch. Back home: `git switch main && git pull`.
   `git switch main && git reset --hard origin/main`.
 - CI red but green locally: "Details" on the failing job, read the last
   30 lines. Usually a file you forgot to `git add`.
-- "All checks pass" stuck yellow for 10+ minutes: GitHub being slow.
+- A check stuck yellow for 10+ minutes: GitHub being slow.
 
 </details>
 

@@ -6,9 +6,13 @@ rules for the team.
 ## Branching
 
 `main` is protected: it only moves by pull request, and the pull request
-must be green. Nobody pushes to `main` directly, including the Scrum
-Master. Branch protection is configured in the GitHub repository settings
-(require a pull request and the `All checks pass` status check).
+must be green. Nobody pushes to `main` directly. Branch protection is
+configured in the GitHub repository settings (Settings -> Rules ->
+Rulesets) and requires one approving review plus all three CI status
+checks -- `server (python)`, `web (typescript)`, `frob check` -- before
+merge; the Scrum Master is on the ruleset's bypass list, for an urgent fix
+when no reviewer is available, but does not push to `main` outside that
+case.
 
 Branch from `main` for every piece of work, one concern per branch:
 
@@ -17,16 +21,16 @@ git switch main && git pull
 git switch -c <type>/<short-description>      # feat/login-form, fix/elo-rounding
 ```
 
-Rebase onto `main` before opening the PR so the merge is linear. Squash or
-rebase merges only; no merge commits.
+Rebase onto `main` before opening the PR so the merge is linear. Merge by
+merge commit, as practiced so far -- not squash or rebase, so a ticket's
+full commit history stays intact on `main`.
 
 ## What "green" means
 
 The CI workflow runs three jobs on every pull request -- `server`
 (ruff, ty, pytest), `web` (eslint, prettier, crunk, tsc, vitest, vite
-build), and `frob check` -- and a final `All checks pass` job that fails
-if any of them did not succeed. That last job is the single required
-status check.
+build), and `frob check` -- and branch protection requires all three by
+name, so a PR cannot merge while any one of them is red or still running.
 
 Within pytest, an `xfail` counts as a pass and a strict `xpass` counts as a
 failure; use `@pytest.mark.xfail(strict=True, reason=...)` for a known,
