@@ -2,7 +2,7 @@
 id: T-0028
 title: Role enum on User, require_admin dependency returning 403, and role excluded
   from register/profile schemas
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-15'
