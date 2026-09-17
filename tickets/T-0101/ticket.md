@@ -1,7 +1,7 @@
 ---
 id: T-0101
 title: Add Alembic migration for the items table
-state: queued
+state: in-progress
 kind: feature
 origin: human
 created: '2026-09-16'
