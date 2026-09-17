@@ -16,10 +16,18 @@ runs_last_parallel_safe_reason: null
 scope:
 - web/src/components/Header.tsx
 - web/tests/unit/Header.test.tsx
+- web/src/api/auth.ts
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: web/src/api/auth.ts
+  reason: removing the WIRE001 waiver on logout() now that Header.tsx calls it, and
+    adding a frob:tests citation to Header.test.tsx
+  actor: logan
+  at: '2026-09-16'
 designated_repro_test: null
 acceptance:
 - text: given a signed-in header, when logout is clicked, then the session is cleared
