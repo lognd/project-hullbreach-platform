@@ -40,8 +40,9 @@ frob test --base main. `frob check --ticket T-0024` reports 0 errors.
 
 ### Changed
 ```
- tickets/T-0024/ticket.md | 31 +++++++++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
+ tickets/T-0024/done-report.md | 52 +++++++++++++++++++++++++++++++++++++++++++
+ tickets/T-0024/ticket.md      | 39 ++++++++++++++++++++++++++++++--
+ 2 files changed, 89 insertions(+), 2 deletions(-)
 ```
 
 ### Evidence
