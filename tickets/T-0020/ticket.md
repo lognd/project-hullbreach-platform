@@ -18,6 +18,7 @@ scope:
 - tests/unit/test_auth_login.py
 - src/hullbreach_server/auth/sessions.py
 - .env.example
+- src/hullbreach_server/auth/schemas.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -36,6 +37,12 @@ scope_changes:
   glob: .env.example
   reason: document HULLBREACH_LOGIN_RATE_LIMIT_MAX and HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS,
     per docs/design/sprint-1.md section 3, brief-allowed config exception
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/schemas.py
+  reason: add LoginRequest/LoginResponse pydantic schemas for POST /api/v1/auth/login,
+    matching web/src/api/auth.ts's existing types
   actor: logan
   at: '2026-09-16'
 evidence:
