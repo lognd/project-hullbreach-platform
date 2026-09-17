@@ -18,6 +18,7 @@ scope:
 - web/src/api/auth.ts
 - web/tests/unit/Register.test.tsx
 - web/src/router.tsx
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -27,6 +28,12 @@ scope_changes:
   glob: web/src/router.tsx
   reason: wire the new Register page into the / -> /register route now that it exists,
     replacing T-0044's inline placeholder
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: documenting web/src/api/auth.ts and web/src/pages/Register.tsx in the same
+    change, per the doc-as-you-go convention
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
