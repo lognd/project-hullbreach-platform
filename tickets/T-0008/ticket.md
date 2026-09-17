@@ -19,6 +19,10 @@ scope:
 - tests/unit/test_seed.py
 - src/hullbreach_server/__main__.py
 - src/hullbreach_server/auth/passwords.py
+- docs/index.md
+- design/hullbreach.strata
+- docs/design/sprint-1.md
+- .env.example
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -34,6 +38,34 @@ scope_changes:
   glob: src/hullbreach_server/auth/passwords.py
   reason: seed() now calls hash_password, making its WIRE001 waiver (follow_up=T-0016)
     stale; remove it
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: seed.py needs docs/index.md's public API/db-seed paragraph updated, a declared
+    f_db_to_auth flow and fs.read capability in the strata model, a sprint-1.md note
+    about the items-table runtime create, and .env.example's HULLBREACH_ADMIN_* documentation
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: seed.py needs docs/index.md's public API/db-seed paragraph updated, a declared
+    f_db_to_auth flow and fs.read capability in the strata model, a sprint-1.md note
+    about the items-table runtime create, and .env.example's HULLBREACH_ADMIN_* documentation
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/sprint-1.md
+  reason: seed.py needs docs/index.md's public API/db-seed paragraph updated, a declared
+    f_db_to_auth flow and fs.read capability in the strata model, a sprint-1.md note
+    about the items-table runtime create, and .env.example's HULLBREACH_ADMIN_* documentation
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: .env.example
+  reason: seed.py needs docs/index.md's public API/db-seed paragraph updated, a declared
+    f_db_to_auth flow and fs.read capability in the strata model, a sprint-1.md note
+    about the items-table runtime create, and .env.example's HULLBREACH_ADMIN_* documentation
   actor: logan
   at: '2026-09-16'
 evidence:
