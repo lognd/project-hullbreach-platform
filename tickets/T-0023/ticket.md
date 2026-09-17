@@ -16,10 +16,37 @@ runs_last_parallel_safe_reason: null
 scope:
 - src/hullbreach_server/api/auth.py
 - tests/unit/test_auth_logout.py
+- src/hullbreach_server/auth/schemas.py
+- tests/unit/test_auth_game.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: add
+  glob: src/hullbreach_server/auth/schemas.py
+  reason: tests/unit/test_auth_logout.py's own revocation checks (3 of its 5 tests)
+    call GET /api/v1/auth/session as the only existing protected endpoint to prove
+    a token is now rejected; that route does not exist yet (T-0026's ticket), so T-0023
+    implements the minimal GET /session (SessionInfo schema + route via get_current_user)
+    needed to make its own tests runnable, which trivially satisfies 3 of T-0026's
+    own pre-written xfail tests in test_auth_game.py (player_id/role, missing token,
+    malformed token) since get_current_user already handles all three cases uniformly;
+    T-0026's remaining scope (the game-client login path) is untouched
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_auth_game.py
+  reason: tests/unit/test_auth_logout.py's own revocation checks (3 of its 5 tests)
+    call GET /api/v1/auth/session as the only existing protected endpoint to prove
+    a token is now rejected; that route does not exist yet (T-0026's ticket), so T-0023
+    implements the minimal GET /session (SessionInfo schema + route via get_current_user)
+    needed to make its own tests runnable, which trivially satisfies 3 of T-0026's
+    own pre-written xfail tests in test_auth_game.py (player_id/role, missing token,
+    malformed token) since get_current_user already handles all three cases uniformly;
+    T-0026's remaining scope (the game-client login path) is untouched
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
 designated_repro_test: null
