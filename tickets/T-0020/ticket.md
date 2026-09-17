@@ -19,6 +19,7 @@ scope:
 - src/hullbreach_server/auth/sessions.py
 - .env.example
 - src/hullbreach_server/auth/schemas.py
+- src/hullbreach_server/auth/passwords.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -43,6 +44,12 @@ scope_changes:
   glob: src/hullbreach_server/auth/schemas.py
   reason: add LoginRequest/LoginResponse pydantic schemas for POST /api/v1/auth/login,
     matching web/src/api/auth.ts's existing types
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: src/hullbreach_server/auth/passwords.py
+  reason: login now calls verify_password, resolving its WIRE001 waiver that named
+    T-0020 as follow_up; remove the now-satisfied waiver
   actor: logan
   at: '2026-09-16'
 evidence:
