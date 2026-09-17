@@ -25,6 +25,7 @@ scope:
 - design/hullbreach.strata
 - docs/design/sprint-1.md
 - docs/design/registry/capability-via-ratchet.lock.json
+- tests/unit/test_roles.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -74,6 +75,15 @@ scope_changes:
   reason: AFFECT001 on the new f_auth_to_logging flow needs its section-9 doc touched,
     and SELFAUDIT001/SYS111's env.read ratchet on hullbreach_server_auth needs raising
     to 1 with a reason
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: tests/unit/test_roles.py
+  reason: T-0019 makes hullbreach_server.auth.sessions importable for the first time,
+    which flips ruff's I001 classification of this pre-existing xfail test's import
+    block from unresolvable to first-party-but-unsorted, turning a previously-latent
+    lint bug into a real CI failure on main; fixing only the import order (no xfail/logic
+    change, T-0028's own test content untouched)
   actor: logan
   at: '2026-09-16'
 evidence:
