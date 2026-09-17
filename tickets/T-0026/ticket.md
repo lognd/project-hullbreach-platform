@@ -15,13 +15,30 @@ milestone: 0.1.0
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
 scope:
-- src/hullbreach_server/api/auth.py
-- src/hullbreach_server/auth/deps.py
 - tests/unit/test_auth_game.py
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+scope_changes:
+- op: remove
+  glob: src/hullbreach_server/api/auth.py
+  reason: GET /api/v1/auth/session was already implemented and fully tested by T-0023
+    (merged), and the design's f_login_game flow reuses the existing POST /auth/login
+    endpoint verbatim (attr 'POST /api/v1/auth/login', same as f_login_web) rather
+    than a separate route -- no code change is needed in either file for T-0026's
+    acceptance criterion
+  actor: logan
+  at: '2026-09-16'
+- op: remove
+  glob: src/hullbreach_server/auth/deps.py
+  reason: GET /api/v1/auth/session was already implemented and fully tested by T-0023
+    (merged), and the design's f_login_game flow reuses the existing POST /auth/login
+    endpoint verbatim (attr 'POST /api/v1/auth/login', same as f_login_web) rather
+    than a separate route -- no code change is needed in either file for T-0026's
+    acceptance criterion
+  actor: logan
+  at: '2026-09-16'
 evidence:
 - tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
 designated_repro_test: null
