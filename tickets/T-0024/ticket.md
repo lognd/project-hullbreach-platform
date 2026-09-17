@@ -18,6 +18,7 @@ scope:
 - web/tests/unit/Header.test.tsx
 - web/src/api/auth.ts
 - web/src/auth/session.ts
+- docs/index.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -33,6 +34,12 @@ scope_changes:
   glob: web/src/auth/session.ts
   reason: removing the WIRE001 waiver on clearSession() now that Header.tsx calls
     it on logout, and adding a frob:tests citation to Header.test.tsx
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: documenting the real logout behavior in Header.tsx, per the doc-as-you-go
+    convention
   actor: logan
   at: '2026-09-16'
 designated_repro_test: null
