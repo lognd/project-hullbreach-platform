@@ -20,10 +20,11 @@
     "src/hullbreach_server/db/models/__init__.py": 0.0,
     "src/hullbreach_server/db/models/session.py": 0.0,
     "src/hullbreach_server/db/models/user.py": 0.0,
+    "src/hullbreach_server/db/seed.py": 0.0,
     "src/hullbreach_server/logging/__init__.py": 0.0,
     "src/hullbreach_server/logging/filter.py": 0.0,
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "c441e6c283f1a1438ff050b9402f640edacbf18c40beb4ca94fcac120ac755ed"
+  "source_sha": "b48d51cef3133ca12d3561658b44d891ef5a5ff39cc00c697fe9942cd5bf9a41"
 }

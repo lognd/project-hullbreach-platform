@@ -35,6 +35,8 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
+<!-- frob:describes src/hullbreach_server/db/seed.py::SeedError -->
+<!-- frob:describes src/hullbreach_server/db/seed.py::seed -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
 
@@ -124,9 +126,17 @@ credential).
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
-every pending migration up to head; `db seed` builds on the item catalog
-and admin-account loader <!-- frob:until T-0008 -->
-that lands in T-0008. `db/migrations/env.py::run_migrations_online`
+every pending migration up to head; `db seed` calls
+`db/seed.py::seed(session)` (T-0008), which idempotently upserts
+`db/seed_items.json`'s catalog (120 cosmetic entries across 8
+categories, matched by `slug` so a re-run never duplicates a row) into
+a hand-declared `items` table it creates on demand
+(`Table.create(checkfirst=True)`, since no items migration has landed
+yet -- T-0101 tracks adding one), and creates the first admin account
+via `auth.passwords.hash_password` when no `User` with `role ==
+Role.admin` exists, reading `HULLBREACH_ADMIN_USERNAME`/`_EMAIL`/
+`_PASSWORD` and returning `Err(SeedError.MissingAdminPassword)` rather
+than inventing one. `db/migrations/env.py::run_migrations_online`
 resolves `HULLBREACH_DATABASE_URL` via `AppConfig` the same way every
 other entrypoint does and runs against a caller-supplied connection
 (tests) or a fresh engine; `run_migrations_offline` always refuses,

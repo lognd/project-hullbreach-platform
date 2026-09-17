@@ -99,6 +99,8 @@ node hullbreach_server_auth : trusted {
 node hullbreach_server_db : trusted {
     code "src/hullbreach_server/db/**";
     may "sql" via "src/hullbreach_server/db/engine.py::check_connectivity";
+    may "fs.read" via "src/hullbreach_server/db/seed.py::_load_seed_items";
+    may "env.read" via "src/hullbreach_server/db/seed.py::_create_first_admin";
     // users.email (contact) is account identity; users.password_hash
     // (credentials) is a credential at rest, never the raw password.
     // Both are covered by the data policy tracked in T-0049.
@@ -285,6 +287,14 @@ flow f_db_to_logging : hullbreach_server_db -> hullbreach_server_logging {
     label Internal;
     attr local;
     attr "db/engine.py and db/__init__.py use the module logger convention";
+}
+
+// frob:ticket T-0008
+// frob:doc docs/design/sprint-1.md#seed-idempotency-and-the-items-problem-t-0008
+flow f_db_to_auth : hullbreach_server_db -> hullbreach_server_auth {
+    label Internal;
+    attr local;
+    attr "db/seed.py imports hash_password to create the first admin account";
 }
 
 // frob:ticket T-0019
