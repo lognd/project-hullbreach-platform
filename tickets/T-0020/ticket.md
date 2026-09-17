@@ -24,6 +24,7 @@ scope:
 - docs/index.md
 - design/hullbreach.strata
 - docs/design/sprint-1.md
+- docs/design/registry/capability-via-ratchet.lock.json
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -81,6 +82,12 @@ scope_changes:
 - op: add
   glob: docs/design/sprint-1.md
   reason: AFFECT001 needs section-9 doc touched for the env.read capability grant
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/design/registry/capability-via-ratchet.lock.json
+  reason: 'SYS111 ratchet: hullbreach_server_auth''s env.read via-list grew from 1
+    to 3 sites with the two new rate-limit env readers'
   actor: logan
   at: '2026-09-16'
 evidence:
