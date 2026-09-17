@@ -19,6 +19,7 @@ scope:
 - web/src/api/auth.ts
 - web/src/auth/session.ts
 - docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -40,6 +41,13 @@ scope_changes:
   glob: docs/index.md
   reason: documenting the real logout behavior in Header.tsx, per the doc-as-you-go
     convention
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: T-0024 implemented the logout fetch call (web/src/api/auth.ts::logout) without
+    a request timeout; re-pointing the REL200:f_logout waiver at T-0102 (already filed
+    for auth.ts's timeout follow-up) instead of this ticket
   actor: logan
   at: '2026-09-16'
 evidence:
