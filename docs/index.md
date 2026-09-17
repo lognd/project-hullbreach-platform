@@ -35,16 +35,8 @@ both authenticate against it. Real-time match traffic never touches it.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
 <!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
-<!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
@@ -85,12 +77,28 @@ native enum), and `created_at`.
 `src/hullbreach_server/auth/passwords.py` provides `hash_password`/
 `verify_password`, Argon2id via `pwdlib.PasswordHash.recommended()`.
 
+### Auth sessions
+
+<!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
+<!-- frob:describes src/hullbreach_server/db/models/session.py::_UTCDateTime.process_result_value -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_session -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
+<!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
+<!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
+
 `src/hullbreach_server/db/models/session.py` holds `Session` (table
 `sessions`) -- `id` (UUID), `user_id` (FK to `users.id`, `ON DELETE
 CASCADE`, indexed), a unique `token_hash` (sha256 of the bearer token,
 hex-encoded; the plaintext token is never stored), `created_at`,
 `expires_at`, and a nullable `revoked_at`. A session is valid iff
-`revoked_at is None and expires_at > now()`.
+`revoked_at is None and expires_at > now()`. Those two timestamp columns
+use the private `_UTCDateTime` type decorator, whose
+`process_result_value` re-attaches UTC tzinfo to a value SQLite returns
+naive, so expiry/revocation comparisons never mix naive and aware
+datetimes regardless of the backing database.
 `src/hullbreach_server/auth/sessions.py` provides `issue_session(db,
 user)` (creates a `Session`, returns the row plus the one-time plaintext
 token, `secrets.token_urlsafe(32)`; expiry is

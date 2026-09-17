@@ -23,6 +23,11 @@ node browser : foreign {
     code "web/src/**";
     may "client_storage" via "web/src/auth/session.ts";
     may "fetch_url" via "web/src/api/auth.ts";
+    // web/src/auth/session.ts's StoredSession.token is the bearer session
+    // token persisted to localStorage (T-0019's issue_session, mirrored
+    // client-side); PII category "credentials", same declaration form
+    // T-0015 used for db.password_hash.
+    carries "credentials";
     waive "REL200:f_register" reason "T-0017 implemented the register form/fetch call (web/src/api/auth.ts::register) without a request timeout; T-0102 adds one and will declare/prove it there" ticket "T-0102";
     waive "REL200:f_login_web" reason "T-0021 implemented the login form/fetch call (web/src/api/auth.ts::login) without a request timeout; T-0102 adds one to every fetch call in that file and will declare/prove it there" ticket "T-0102";
     waive "REL200:f_logout" reason "design-only pass; T-0024 implements the logout control's fetch call and will declare/prove a real request timeout there" ticket "T-0024";

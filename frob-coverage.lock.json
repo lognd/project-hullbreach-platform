@@ -7,7 +7,7 @@
     "src/hullbreach_server/app/__init__.py": 0.0,
     "src/hullbreach_server/app/app.py": 0.0,
     "src/hullbreach_server/app/config.py": 0.0,
-    "src/hullbreach_server/auth/__init__.py": 100.0,
+    "src/hullbreach_server/auth/__init__.py": 0.0,
     "src/hullbreach_server/auth/deps.py": 0.0,
     "src/hullbreach_server/auth/passwords.py": 0.0,
     "src/hullbreach_server/auth/sessions.py": 0.0,
@@ -25,5 +25,5 @@
     "src/hullbreach_server/logging/formatter.py": 0.0,
     "src/hullbreach_server/logging/logger.py": 0.0
   },
-  "source_sha": "83e524f8bfcbda351fdd0155391dcb76d31ef7362bb361570967e54ab29943d0"
+  "source_sha": "869b66f38d6d3c78c522b22739cc88c898dcc57dd6de9f489d4545a9f5f6397a"
 }

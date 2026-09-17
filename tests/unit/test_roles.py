@@ -33,6 +33,7 @@ def _register_and_login(client, username: str = "player_one") -> dict:
 # frob:ticket T-0098
 def _mount_admin_route(app):
     from fastapi import Depends
+
     from hullbreach_server.auth.deps import require_admin
 
     @app.get("/__test_admin_only__")
@@ -79,9 +80,8 @@ def test_player_token_on_admin_route_returns_403_with_permissions_message(
 @pytest.mark.xfail(strict=True, reason="T-0028 not implemented")
 def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None:
     """Given an Admin token, the same admin route succeeds."""
-    from hullbreach_server.auth.sessions import issue_session
-
     from hullbreach_server.auth.passwords import hash_password
+    from hullbreach_server.auth.sessions import issue_session
     from hullbreach_server.db.models.user import Role, User
 
     _mount_admin_route(app)
