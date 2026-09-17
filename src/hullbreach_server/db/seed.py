@@ -2,11 +2,16 @@
 docs/design/sprint-1.md section 4 ("Seed idempotency and the items
 problem") and decision D3.
 
-`items` has no ORM model yet (T-0066, milestone 0.3.0 owns that): this
-module hand-declares the table on its own `MetaData` (never `Base`'s) and
-creates it with `checkfirst=True` if a migration has not already done so,
-so `seed()` works the same way whether or not the items migration has
-landed yet.
+`items` has no ORM model yet (T-0066, milestone 0.3.0 owns that), so this
+module hand-declares the table on its own `MetaData` (never `Base`'s).
+The table itself is owned by the Alembic migration
+(`db/migrations/versions/abbcc4cb6b34_create_items_table.py`, T-0101) --
+`db upgrade` creates it in every real environment. `_upsert_items`'s
+`Table.create(bind=..., checkfirst=True)` call is a no-op there; it
+exists only because `tests/unit/test_seed.py`'s SQLite fixture
+(`tests/unit/conftest.py::db_session`) builds its schema from
+`Base.metadata.create_all`, not from running Alembic, and `items` is
+deliberately not on `Base.metadata`.
 """
 
 from __future__ import annotations
@@ -58,7 +63,12 @@ def _load_seed_items() -> list[dict[str, object]]:
 
 
 def _upsert_items(session: Session, items: list[dict[str, object]]) -> None:
-    """Create `items` if missing, then upsert every row by `slug`."""
+    """Upsert every catalog row by `slug`.
+
+    `Table.create(checkfirst=True)` is a no-op once T-0101's migration has
+    run (the normal case); it exists so the unit-test SQLite fixture,
+    which never runs Alembic, still has the table.
+    """
     bind = session.get_bind()
     _items_table.create(bind=bind, checkfirst=True)
 
