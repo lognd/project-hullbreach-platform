@@ -21,6 +21,8 @@ scope:
 - pyproject.toml
 - uv.lock
 - tests/unit/test_roles.py
+- docs/index.md
+- design/hullbreach.strata
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
@@ -50,6 +52,18 @@ scope_changes:
     T-0028's pre-existing xfail(strict=True) test_role_is_never_accepted_as_an_input_field_on_register_schema
     an unexpected strict xpass; dropping only that test's xfail marker, no other T-0028
     test touched
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: docs/index.md
+  reason: add docs/index.md#auth-api section for register, and declare the api->logging
+    Flow api/auth.py's module logger needs
+  actor: logan
+  at: '2026-09-16'
+- op: add
+  glob: design/hullbreach.strata
+  reason: add docs/index.md#auth-api section for register, and declare the api->logging
+    Flow api/auth.py's module logger needs
   actor: logan
   at: '2026-09-16'
 evidence:
