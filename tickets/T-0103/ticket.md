@@ -2,7 +2,7 @@
 id: T-0103
 title: 'Leave teammate breadcrumbs: pick-up guide and frob:todo markers at every plug-in
   point'
-state: queued
+state: in-progress
 kind: docs
 origin: human
 created: '2026-09-20'
