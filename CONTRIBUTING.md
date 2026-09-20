@@ -3,6 +3,12 @@
 This repository is private to Company of Theseus. These are the working
 rules for the team.
 
+## Picking a ticket
+
+Open work is mapped in [docs/picking-up-work.md](docs/picking-up-work.md):
+claim a ticket with `frob ticket start`, branch as `T-####-name`, and grep
+for `frob:todo T-####` to find where it plugs in.
+
 ## Branching
 
 `main` is protected: it only moves by pull request, and the pull request

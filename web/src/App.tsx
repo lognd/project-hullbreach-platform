@@ -10,6 +10,7 @@ export function App() {
   return (
     <>
       <Header />
+      {/* frob:todo T-0048 note="render <CookieNotice /> here, above the Outlet, until dismissed" */}
       <Outlet />
       <Footer />
     </>

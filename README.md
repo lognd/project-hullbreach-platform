@@ -320,6 +320,9 @@ Things frob says that look scary and are not:
 
 ## Making a change
 
+Looking for something to do? [docs/picking-up-work.md](docs/picking-up-work.md)
+lists the open tickets by lane and which finished file to copy for each.
+
 `main` is protected. Nobody pushes to it, me included. Every change is a
 branch, then a PR, green CI (all three checks -- `server (python)`,
 `web (typescript)`, `frob check`), one approval, merge. Every time. The
