@@ -1,5 +1,5 @@
 ---
-id: T-draft-39155f97
+id: T-0130
 title: 'S13-2: Publish a downloadable game release and link it'
 state: queued
 kind: feature
