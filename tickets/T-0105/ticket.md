@@ -1,5 +1,5 @@
 ---
-id: T-draft-ac32042d
+id: T-0105
 title: 'P1-1: Sprint planning and Jira grooming (backlog into sprint, owners assigned)'
 state: queued
 kind: docs
