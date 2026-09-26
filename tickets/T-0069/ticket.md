@@ -11,8 +11,20 @@ tier: story
 sprint: sprint-3
 runs_last: false
 milestone: 0.3.0
+flavour: null
+due: null
+rank: null
+points: null
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - src/hullbreach_server/db/models/ledger.py
 - src/hullbreach_server/services/currency.py
@@ -32,6 +44,9 @@ acceptance:
   evidence: []
 threat: null
 component: null
+labels:
+- jira:SCRUM-42
+- owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null
