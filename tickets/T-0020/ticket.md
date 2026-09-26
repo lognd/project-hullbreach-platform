@@ -14,7 +14,7 @@ milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: null
+points: 3
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -129,6 +129,13 @@ scope_changes:
     re-pointed to T-0023'
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '3'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 designated_repro_test: null
