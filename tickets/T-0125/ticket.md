@@ -1,5 +1,5 @@
 ---
-id: T-draft-31a477af
+id: T-0125
 title: 'S04-4: Tests for duplicate username/email and short-password rejection'
 state: queued
 kind: feature
