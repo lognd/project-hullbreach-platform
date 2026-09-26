@@ -1,20 +1,21 @@
 ---
-id: T-0062
-title: GET /api/v1/leaderboard with the caller's own rank
+id: T-0121
+title: 'S02-1: GitHub Actions workflow running lint, type checks, and tests for both
+  the Python and TypeScript halves'
 state: queued
 kind: feature
 origin: human
-created: '2026-09-15'
-priority: medium
-parent: T-0061
+created: '2026-09-26'
+priority: critical
+parent: T-0009
 tier: ticket
-sprint: sprint-3
+sprint: sprint-1
 runs_last: false
-milestone: 0.3.0
+milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: 2
+points: null
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -26,31 +27,25 @@ runs_last_parallel_safe_reason: null
 worktree: null
 branch: null
 scope:
-- src/hullbreach_server/api/leaderboard.py
-- src/hullbreach_server/services/leaderboard.py
-- tests/unit/test_leaderboard.py
+- CONTRIBUTING.md
+- README.md
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
-triage_changes:
-- field: points
-  old_value: null
-  new_value: '2'
-  reason: ticket sizing
-  actor: logan
-  at: '2026-09-26'
 designated_repro_test: null
-acceptance:
-- text: given a player ranked 340, when they fetch the top 100, then the response
-    includes their rank 340
-  evidence: []
 threat: null
 component: null
 labels:
-- jira:SCRUM-190
+- infra
+- platform
+- jira:SCRUM-79
 - owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null
 ---
+https://aliens-against-humanity.atlassian.net/browse/SCRUM-79
+
+GitHub Actions workflow running lint, type checks, and tests for both the Python and TypeScript halves
+Parent story: SCRUM-23

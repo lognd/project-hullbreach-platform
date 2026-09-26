@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: 1
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - src/hullbreach_server/api/auth.py
 - tests/unit/test_auth_logout.py
@@ -101,6 +113,13 @@ scope_changes:
     T-0026'
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '1'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
 designated_repro_test: null
@@ -111,6 +130,9 @@ acceptance:
   - tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
 threat: null
 component: null
+labels:
+- jira:SCRUM-93
+- owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null

@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: 3
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - src/hullbreach_server/api/auth.py
 - src/hullbreach_server/auth/schemas.py
@@ -91,6 +103,13 @@ scope_changes:
     that named T-0016 as its follow_up; remove the now-satisfied waiver
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '3'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
 - tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
@@ -106,6 +125,9 @@ acceptance:
   - tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
 threat: null
 component: null
+labels:
+- jira:SCRUM-87
+- owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null

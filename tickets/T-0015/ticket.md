@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: 2
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - src/hullbreach_server/db/models/user.py
 - src/hullbreach_server/auth/passwords.py
@@ -115,6 +127,13 @@ scope_changes:
     the baseline migration''s waivers need a new open-ticket follow_up'
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '2'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 - tests/unit/test_passwords.py::test_verify_password_rejects_wrong_password
@@ -131,6 +150,9 @@ acceptance:
   - tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 threat: null
 component: null
+labels:
+- jira:SCRUM-86
+- owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null
