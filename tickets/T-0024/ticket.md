@@ -14,7 +14,7 @@ milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: null
+points: 1
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -62,6 +62,13 @@ scope_changes:
     for auth.ts's timeout follow-up) instead of this ticket
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '1'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - web/tests/unit/Header.test.tsx::Header (signed in) > clears session and navigates
   home on logout click
