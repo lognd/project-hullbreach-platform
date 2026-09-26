@@ -14,7 +14,7 @@ milestone: null
 flavour: null
 due: null
 rank: null
-points: null
+points: 5
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -33,6 +33,13 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '5'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 designated_repro_test: null
 acceptance:
 - text: given a recorded input log, when uploaded, then the replay page renders both
