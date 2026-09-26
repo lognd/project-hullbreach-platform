@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: null
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - src/hullbreach_server/db/seed.py
 - src/hullbreach_server/db/seed_items.json
@@ -89,6 +101,9 @@ acceptance:
   - tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run
 threat: null
 component: null
+labels:
+- jira:SCRUM-76
+- owner:lognd
 anchor: false
 anchor_reason: null
 land_commit: null
