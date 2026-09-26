@@ -15,7 +15,7 @@ milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: null
+points: 2
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -66,6 +66,13 @@ scope_changes:
     that both cited T-0012 as their resolving ticket
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '2'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 - tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
