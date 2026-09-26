@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: null
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - docs/design/sprint-1.md
 - design/hullbreach.strata
@@ -70,6 +82,8 @@ acceptance:
   - cmd:grep -n 'module hullbreach_sprint1' design/hullbreach.strata exit=0 sha256=4619336c0007
 threat: null
 component: null
+labels:
+- jira:none
 anchor: false
 anchor_reason: null
 land_commit: null

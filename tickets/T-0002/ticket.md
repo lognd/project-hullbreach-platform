@@ -11,8 +11,20 @@ tier: ticket
 sprint: null
 runs_last: false
 milestone: null
+flavour: null
+due: null
+rank: null
+points: null
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - .github/workflows/ci.yml
 - src/hullbreach_server/api/health.py
@@ -58,6 +70,8 @@ acceptance:
   - tests/unit/test_logging.py::test_simple_formatter_prefixes_level_at_warning_and_above
 threat: null
 component: null
+labels:
+- jira:none
 anchor: false
 anchor_reason: null
 land_commit: null
