@@ -15,7 +15,7 @@ milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: null
+points: 1
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -42,6 +42,12 @@ triage_changes:
     escape hatch) verifies the actual gh api ruleset state instead
   actor: logan
   at: '2026-09-16'
+- field: points
+  old_value: null
+  new_value: '1'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - cmd:gh api repos/lognd/project-hullbreach-platform/rules/branches/main exit=0 sha256=df8956df9a54
 kind_history:
