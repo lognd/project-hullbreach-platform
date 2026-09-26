@@ -10,7 +10,7 @@ parent: null
 tier: epic
 sprint: null
 runs_last: false
-milestone: null
+milestone: 0.3.0
 flavour: null
 due: null
 rank: null
@@ -29,6 +29,13 @@ scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: true
 no_scope_declared_reason: epic rollup for process tasks, no file scope
+triage_changes:
+- field: milestone
+  old_value: null
+  new_value: 0.3.0
+  reason: milestone set via `frob ticket milestone`
+  actor: logan
+  at: '2026-09-26'
 designated_repro_test: null
 threat: null
 component: null
