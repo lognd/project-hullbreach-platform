@@ -1,5 +1,5 @@
 ---
-id: T-draft-b638a01e
+id: T-0123
 title: 'S03-1: Unauthenticated GET /api/v1/health returning the running version'
 state: queued
 kind: feature
