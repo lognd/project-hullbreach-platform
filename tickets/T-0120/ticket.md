@@ -1,5 +1,5 @@
 ---
-id: T-draft-db8c7406
+id: T-0120
 title: 'S01-5: Document the local Docker PostgreSQL setup and the hosted database
   switch in the README'
 state: queued
