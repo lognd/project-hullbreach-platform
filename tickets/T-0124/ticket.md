@@ -1,5 +1,5 @@
 ---
-id: T-draft-dd69fa2b
+id: T-0124
 title: 'S03-3: Response-time test for the health endpoint'
 state: queued
 kind: feature
