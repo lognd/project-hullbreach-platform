@@ -11,8 +11,20 @@ tier: ticket
 sprint: sprint-1
 runs_last: false
 milestone: 0.1.0
+flavour: null
+due: null
+rank: null
+points: 3
+unsized_ack: false
+unsized_ack_reason: null
+tokens_in: null
+tokens_out: null
+tokens_cache_read: null
+usage: null
 runs_last_parallel_safe: false
 runs_last_parallel_safe_reason: null
+worktree: null
+branch: null
 scope:
 - web/src/pages/Login.tsx
 - web/src/auth/session.ts
@@ -51,6 +63,13 @@ scope_changes:
     (already filed for auth.ts's timeout follow-up) instead of this ticket
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '3'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 designated_repro_test: null
@@ -61,6 +80,9 @@ acceptance:
   - web/tests/unit/Login.test.tsx::Login page > keeps user signed in after reload
 threat: null
 component: null
+labels:
+- jira:SCRUM-92
+- owner:a-carten
 anchor: false
 anchor_reason: null
 land_commit: null

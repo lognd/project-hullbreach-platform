@@ -1,20 +1,20 @@
 ---
-id: T-0035
-title: Website account settings form
+id: T-0128
+title: 'S15-2: Keyboard-only navigation pass on the header and footer'
 state: queued
 kind: feature
 origin: human
-created: '2026-09-15'
-priority: medium
-parent: T-0033
+created: '2026-09-26'
+priority: high
+parent: T-0043
 tier: ticket
-sprint: sprint-2
+sprint: sprint-1
 runs_last: false
-milestone: 0.2.0
+milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: 2
+points: null
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -26,30 +26,28 @@ runs_last_parallel_safe_reason: null
 worktree: null
 branch: null
 scope:
-- web/src/pages/Settings.tsx
-- web/tests/unit/Settings.test.tsx
+- web/src/App.tsx
+- web/src/components/Footer.tsx
+- web/src/components/Header.tsx
+- web/src/router.tsx
+- web/tests/unit/Header.test.tsx
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
 no_scope_declared: false
 no_scope_declared_reason: null
-triage_changes:
-- field: points
-  old_value: null
-  new_value: '2'
-  reason: ticket sizing
-  actor: logan
-  at: '2026-09-26'
 designated_repro_test: null
-acceptance:
-- text: given a wrong current password, when saving, then the error is shown and nothing
-    changes
-  evidence: []
 threat: null
 component: null
 labels:
-- jira:SCRUM-148
+- platform
+- web
+- jira:SCRUM-98
 - owner:a-carten
 anchor: false
 anchor_reason: null
 land_commit: null
 ---
+https://aliens-against-humanity.atlassian.net/browse/SCRUM-98
+
+Keyboard-only navigation pass on the header and footer
+Parent story: SCRUM-36
