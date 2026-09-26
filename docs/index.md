@@ -6,7 +6,9 @@ the item catalog and cosmetic store, and admin moderation. The game server
 reports match results here over REST; the web frontend and the game client
 both authenticate against it. Real-time match traffic never touches it.
 
-New here? Start at [picking-up-work.md](picking-up-work.md).
+New here? Start at [picking-up-work.md](picking-up-work.md). The Jira
+cross-reference for every ticket in this repo lives in
+[backlog.md](backlog.md).
 
 ## Public API
 
