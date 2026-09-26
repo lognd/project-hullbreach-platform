@@ -27,8 +27,8 @@ worktree: null
 branch: null
 scope_breadth_ack: false
 scope_breadth_ack_reason: null
-no_scope_declared: false
-no_scope_declared_reason: null
+no_scope_declared: true
+no_scope_declared_reason: epic rollup for process tasks, no file scope
 designated_repro_test: null
 threat: null
 component: null
