@@ -1,5 +1,5 @@
 ---
-id: T-draft-188c346f
+id: T-0126
 title: 'S08-2: Exclude role from the registration and profile-edit paths and test
   it'
 state: queued
