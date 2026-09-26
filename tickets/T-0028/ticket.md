@@ -15,7 +15,7 @@ milestone: 0.1.0
 flavour: null
 due: null
 rank: null
-points: null
+points: 2
 unsized_ack: false
 unsized_ack_reason: null
 tokens_in: null
@@ -58,6 +58,13 @@ scope_changes:
     wire them and T-0028 is closing
   actor: logan
   at: '2026-09-16'
+triage_changes:
+- field: points
+  old_value: null
+  new_value: '2'
+  reason: ticket sizing
+  actor: logan
+  at: '2026-09-26'
 evidence:
 - tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message
 designated_repro_test: null
