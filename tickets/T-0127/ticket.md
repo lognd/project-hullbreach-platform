@@ -1,5 +1,5 @@
 ---
-id: T-draft-334cefd3
+id: T-0127
 title: 'S17-3: Elo unit tests (winner never loses, loser never gains)'
 state: queued
 kind: feature
