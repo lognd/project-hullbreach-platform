@@ -1,5 +1,5 @@
 ---
-id: T-draft-f69dfdfd
+id: T-0121
 title: 'S02-1: GitHub Actions workflow running lint, type checks, and tests for both
   the Python and TypeScript halves'
 state: queued
