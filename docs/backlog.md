@@ -41,7 +41,7 @@ Jira -> frob reconciliation for the platform repo (unit B6 of [project-hullbreac
 | [SCRUM-138](https://aliens-against-humanity.atlassian.net/browse/SCRUM-138) | T-0054 | ticket | T-0051 | 3 | sprint-2 | lognd |
 | [SCRUM-140](https://aliens-against-humanity.atlassian.net/browse/SCRUM-140) | T-0056 | ticket | T-0055 | 2 | sprint-2 | lognd |
 | [SCRUM-141](https://aliens-against-humanity.atlassian.net/browse/SCRUM-141) | T-0057 | ticket | T-0055 | 2 | sprint-2 | lognd |
-| [SCRUM-142](https://aliens-against-humanity.atlassian.net/browse/SCRUM-142) | T-0127 | ticket | T-0055 | - | sprint-2 | lognd |
+| [SCRUM-142](https://aliens-against-humanity.atlassian.net/browse/SCRUM-142) | T-0127 | ticket | T-0055 | 1 | sprint-2 | lognd |
 | [SCRUM-143](https://aliens-against-humanity.atlassian.net/browse/SCRUM-143) | T-0059 | ticket | T-0058 | 2 | sprint-2 | lognd |
 | [SCRUM-144](https://aliens-against-humanity.atlassian.net/browse/SCRUM-144) | T-0060 | ticket | T-0058 | 3 | sprint-2 | a-carten |
 | [SCRUM-145](https://aliens-against-humanity.atlassian.net/browse/SCRUM-145) | T-0031 | ticket | T-0030 | 2 | sprint-2 | lognd |
@@ -71,7 +71,7 @@ Jira -> frob reconciliation for the platform repo (unit B6 of [project-hullbreac
 | [SCRUM-198](https://aliens-against-humanity.atlassian.net/browse/SCRUM-198) | T-0084 | ticket | T-0082 | 3 | sprint-3 | a-carten |
 | [SCRUM-204](https://aliens-against-humanity.atlassian.net/browse/SCRUM-204) | T-0091 | ticket | T-0090 | 2 | sprint-3 | lognd |
 | [SCRUM-207](https://aliens-against-humanity.atlassian.net/browse/SCRUM-207) | T-0046 | ticket | T-0045 | 3 | sprint-3 | a-carten |
-| [SCRUM-208](https://aliens-against-humanity.atlassian.net/browse/SCRUM-208) | T-0130 | ticket | T-0045 | - | sprint-3 | mcnairrobotics |
+| [SCRUM-208](https://aliens-against-humanity.atlassian.net/browse/SCRUM-208) | T-0130 | ticket | T-0045 | 1 | sprint-3 | mcnairrobotics |
 | [SCRUM-209](https://aliens-against-humanity.atlassian.net/browse/SCRUM-209) | T-0048 | ticket | T-0047 | 1 | sprint-3 | a-carten |
 | [SCRUM-210](https://aliens-against-humanity.atlassian.net/browse/SCRUM-210) | T-0049 | ticket | T-0047 | 2 | sprint-3 | a-carten |
 | [SCRUM-215](https://aliens-against-humanity.atlassian.net/browse/SCRUM-215) | T-0094 | ticket | T-0093 | 5 | - | lognd |
@@ -92,28 +92,28 @@ Jira -> frob reconciliation for the platform repo (unit B6 of [project-hullbreac
 | [SCRUM-74](https://aliens-against-humanity.atlassian.net/browse/SCRUM-74) | T-0006 | ticket | T-0005 | 3 | sprint-1 | lognd |
 | [SCRUM-75](https://aliens-against-humanity.atlassian.net/browse/SCRUM-75) | T-0007 | ticket | T-0005 | 3 | sprint-1 | lognd |
 | [SCRUM-76](https://aliens-against-humanity.atlassian.net/browse/SCRUM-76) | T-0008 | ticket | T-0005 | 3 | sprint-1 | lognd |
-| [SCRUM-77](https://aliens-against-humanity.atlassian.net/browse/SCRUM-77) | T-0119 | ticket | T-0005 | - | sprint-1 | lognd |
-| [SCRUM-78](https://aliens-against-humanity.atlassian.net/browse/SCRUM-78) | T-0120 | ticket | T-0005 | - | sprint-1 | lognd |
-| [SCRUM-79](https://aliens-against-humanity.atlassian.net/browse/SCRUM-79) | T-0121 | ticket | T-0009 | - | sprint-1 | lognd |
-| [SCRUM-80](https://aliens-against-humanity.atlassian.net/browse/SCRUM-80) | T-0122 | ticket | T-0009 | - | sprint-1 | lognd |
+| [SCRUM-77](https://aliens-against-humanity.atlassian.net/browse/SCRUM-77) | T-0119 | ticket | T-0005 | 2 | sprint-1 | lognd |
+| [SCRUM-78](https://aliens-against-humanity.atlassian.net/browse/SCRUM-78) | T-0120 | ticket | T-0005 | 1 | sprint-1 | lognd |
+| [SCRUM-79](https://aliens-against-humanity.atlassian.net/browse/SCRUM-79) | T-0121 | ticket | T-0009 | 3 | sprint-1 | lognd |
+| [SCRUM-80](https://aliens-against-humanity.atlassian.net/browse/SCRUM-80) | T-0122 | ticket | T-0009 | 2 | sprint-1 | lognd |
 | [SCRUM-81](https://aliens-against-humanity.atlassian.net/browse/SCRUM-81) | T-0010 | ticket | T-0009 | 1 | sprint-1 | lognd |
-| [SCRUM-82](https://aliens-against-humanity.atlassian.net/browse/SCRUM-82) | T-0129 | ticket | T-0009 | - | sprint-1 | mcnairrobotics |
-| [SCRUM-83](https://aliens-against-humanity.atlassian.net/browse/SCRUM-83) | T-0123 | ticket | T-0011 | - | sprint-1 | lognd |
+| [SCRUM-82](https://aliens-against-humanity.atlassian.net/browse/SCRUM-82) | T-0129 | ticket | T-0009 | 3 | sprint-1 | mcnairrobotics |
+| [SCRUM-83](https://aliens-against-humanity.atlassian.net/browse/SCRUM-83) | T-0123 | ticket | T-0011 | 1 | sprint-1 | lognd |
 | [SCRUM-84](https://aliens-against-humanity.atlassian.net/browse/SCRUM-84) | T-0012 | ticket | T-0011 | 2 | sprint-1 | lognd |
-| [SCRUM-85](https://aliens-against-humanity.atlassian.net/browse/SCRUM-85) | T-0124 | ticket | T-0011 | - | sprint-1 | lognd |
+| [SCRUM-85](https://aliens-against-humanity.atlassian.net/browse/SCRUM-85) | T-0124 | ticket | T-0011 | 1 | sprint-1 | lognd |
 | [SCRUM-86](https://aliens-against-humanity.atlassian.net/browse/SCRUM-86) | T-0015 | ticket | T-0014 | 2 | sprint-1 | lognd |
 | [SCRUM-87](https://aliens-against-humanity.atlassian.net/browse/SCRUM-87) | T-0016 | ticket | T-0014 | 3 | sprint-1 | lognd |
 | [SCRUM-88](https://aliens-against-humanity.atlassian.net/browse/SCRUM-88) | T-0017 | ticket | T-0014 | 3 | sprint-1 | a-carten |
-| [SCRUM-89](https://aliens-against-humanity.atlassian.net/browse/SCRUM-89) | T-0125 | ticket | T-0014 | - | sprint-1 | lognd |
+| [SCRUM-89](https://aliens-against-humanity.atlassian.net/browse/SCRUM-89) | T-0125 | ticket | T-0014 | 2 | sprint-1 | lognd |
 | [SCRUM-90](https://aliens-against-humanity.atlassian.net/browse/SCRUM-90) | T-0019 | ticket | T-0018 | 3 | sprint-1 | lognd |
 | [SCRUM-91](https://aliens-against-humanity.atlassian.net/browse/SCRUM-91) | T-0020 | ticket | T-0018 | 3 | sprint-1 | lognd |
 | [SCRUM-92](https://aliens-against-humanity.atlassian.net/browse/SCRUM-92) | T-0021 | ticket | T-0018 | 3 | sprint-1 | a-carten |
 | [SCRUM-93](https://aliens-against-humanity.atlassian.net/browse/SCRUM-93) | T-0023 | ticket | T-0022 | 1 | sprint-1 | lognd |
 | [SCRUM-94](https://aliens-against-humanity.atlassian.net/browse/SCRUM-94) | T-0024 | ticket | T-0022 | 1 | sprint-1 | a-carten |
 | [SCRUM-95](https://aliens-against-humanity.atlassian.net/browse/SCRUM-95) | T-0028 | ticket | T-0027 | 2 | sprint-1 | lognd |
-| [SCRUM-96](https://aliens-against-humanity.atlassian.net/browse/SCRUM-96) | T-0126 | ticket | T-0027 | - | sprint-1 | lognd |
+| [SCRUM-96](https://aliens-against-humanity.atlassian.net/browse/SCRUM-96) | T-0126 | ticket | T-0027 | 1 | sprint-1 | lognd |
 | [SCRUM-97](https://aliens-against-humanity.atlassian.net/browse/SCRUM-97) | T-0044 | ticket | T-0043 | 3 | sprint-1 | a-carten |
-| [SCRUM-98](https://aliens-against-humanity.atlassian.net/browse/SCRUM-98) | T-0128 | ticket | T-0043 | - | sprint-1 | a-carten |
+| [SCRUM-98](https://aliens-against-humanity.atlassian.net/browse/SCRUM-98) | T-0128 | ticket | T-0043 | 1 | sprint-1 | a-carten |
 | [SCRUM-99](https://aliens-against-humanity.atlassian.net/browse/SCRUM-99) | T-0026 | ticket | T-0025 | 2 | sprint-1 | lognd |
 
 ## Tickets with no Jira counterpart
