@@ -8,7 +8,7 @@ points = 2
 parent = "01M2H5T11QP42D39KC9ZNW0G2J"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-09T03:59:48Z"
+updated = "2026-10-09T03:59:49Z"
 aliases = ["T-0056"]
 labels = ["jira:SCRUM-140", "owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_server/rating/__init__.py"]
 scope = ["src/hullbreach_server/rating/elo.py", "docs/index.md", "tests/unit/test_elo.py", "src/hullbreach_server/rating/__init__.py"]
@@ -23,5 +23,5 @@ bound = true
 
 [[acceptance]]
 text = "Given a loser whose rating is at or near the floor, when ratings update, then the loser's new rating is never below the floor"
-bound = false
+bound = true
 +++
