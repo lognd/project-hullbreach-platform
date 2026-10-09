@@ -2,11 +2,12 @@
 id = "01M4GR0Z9VQSWTANN283DZVC11"
 title = "__main__ _db_upgrade: cwd-relative alembic.ini and swallowed result; Session/User created_at tz handling inconsistent"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "low"
 reporter = "lognd"
 created = "2026-10-09T16:30:31Z"
-updated = "2026-10-09T17:11:15Z"
+updated = "2026-10-09T17:11:19Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/__main__.py"]
 
