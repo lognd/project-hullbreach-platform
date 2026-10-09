@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "fixed"
+reason = "In-memory session store; regression test asserts localStorage and sessionStorage hold no token after login"
+at = "2026-10-09T16:52:17Z"
+actor = "a-carten"
+rev = 1

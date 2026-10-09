@@ -2,11 +2,12 @@
 id = "01M4GR6ES87DSS119XV7PR4BF7"
 title = "Session token persisted in localStorage is readable by any XSS"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T16:52:08Z"
+updated = "2026-10-09T16:52:17Z"
 labels = ["origin:auditor", "creates:changelog.d/01M4GR6ES87DSS119XV7PR4BF7.changed.md"]
 scope = ["web/src/auth/session.ts", "web/tests/setup.ts", "web/tests/unit/Login.test.tsx", "docs/index.md", "docs/design/sprint-1.md", "changelog.d/01M4GR6ES87DSS119XV7PR4BF7.changed.md"]
 
