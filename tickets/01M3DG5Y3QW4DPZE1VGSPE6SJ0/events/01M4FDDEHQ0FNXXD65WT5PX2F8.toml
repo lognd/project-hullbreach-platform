@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-09T04:05:49Z"
+digest = "ee276f45fa8987a1792da1d9681d270ac45b0fea5f428c60c8a16d84ebd1f495"
+exit_code = 0
+inline = """
+....                                                                     [100%]
+4 passed in 0.91s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_seed.py"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin", "tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run", "tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists", "tests/unit/test_seed.py::test_seed_items_are_upserted_by_slug_not_duplicated_by_name"]
+at = "2026-10-09T04:05:49Z"
+actor = "lognd"
+rev = 1
