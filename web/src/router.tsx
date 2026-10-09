@@ -27,11 +27,7 @@ function NotFound() {
   );
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#routing-and-page-shell
-// frob:waive REF002 reason="single-anchor by design: wired only from web/src/main.tsx \
-// (the app's one entry point) plus this one doc anchor -- a second consumer would be \
-// an unused, invented import"
 /** The app's data router: App is the page shell, its children are routed under the Outlet. */
 export const router = createBrowserRouter([
   {
@@ -47,11 +43,11 @@ export const router = createBrowserRouter([
       // Each queued page is one more route here plus a pages/<Name>.tsx and
       // a tests/unit/<Name>.test.tsx; copy pages/Login.tsx. Add this file to
       // the ticket's scope first (`frob ticket scope T-#### --add`).
-      // frob:todo T-0046 note="index route -> pages/Landing.tsx replaces the stub above"
-      // frob:todo T-0049 note="path data-policy -> pages/DataPolicy.tsx (Footer already links it)"
-      // frob:todo T-0063 note="path leaderboard -> pages/Leaderboard.tsx"
-      // frob:todo T-0068 note="path store -> pages/Store.tsx"
-      // frob:todo T-0078 note="path admin/* -> pages/admin/, gated on role is admin"
+      // frob:todo T-0046 index route -> pages/Landing.tsx replaces the stub above
+      // frob:todo T-0049 path data-policy -> pages/DataPolicy.tsx (Footer already links it)
+      // frob:todo T-0063 path leaderboard -> pages/Leaderboard.tsx
+      // frob:todo T-0068 path store -> pages/Store.tsx
+      // frob:todo T-0078 path admin/* -> pages/admin/, gated on role is admin
       { path: "*", element: <NotFound /> },
     ],
   },

@@ -4,9 +4,7 @@ import { ApiError, register } from "@/api/auth";
 /** Field-keyed validation errors, e.g. `{ username: "username already taken" }`. */
 type FieldErrors = Record<string, string>;
 
-// frob:tests web/tests/unit/Register.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
-// frob:waive REF002 reason="single-anchor by design: wired only from web/src/router.tsx's /register route plus this one doc anchor -- a second consumer would be an unused, invented import"
 /** Registration form: submits to POST /api/v1/auth/register and shows errors inline next to the offending field, or a form-level banner for a non-field error. */
 export function Register() {
   const [username, setUsername] = useState("");

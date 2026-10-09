@@ -53,7 +53,6 @@ export class ApiError extends Error {
   detail: string;
   field?: string;
 
-  // frob:tests web/tests/unit/Register.test.tsx kind="unit"
   // frob:doc docs/index.md#auth-api-client-and-the-register-page
   constructor(status: number, detail: string, field?: string) {
     super(detail);
@@ -90,7 +89,7 @@ async function parseErrorBody(
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response; shared by every API client module. */
 export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  // frob:todo T-0102 note="pass AbortSignal.timeout(...) in init so a hung server cannot hang the page"
+  // frob:todo T-0102 pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
   const response = await fetch(path, init);
   if (!response.ok) {
     const { detail, field } = await parseErrorBody(response);
@@ -105,7 +104,6 @@ export function bearerHeaders(token: string): Record<string, string> {
   return { Authorization: `Bearer ${token}` };
 }
 
-// frob:tests web/tests/unit/Register.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/register; 201 UserProfile on success, 409/422 rejects with an ApiError. */
 export async function register(payload: RegisterRequest): Promise<UserProfile> {
@@ -116,8 +114,6 @@ export async function register(payload: RegisterRequest): Promise<UserProfile> {
   });
 }
 
-// frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:tests web/tests/unit/Login.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/login; 200 LoginResponse on success, 401/429 rejects with an ApiError. */
 export async function login(payload: LoginRequest): Promise<LoginResponse> {
@@ -128,8 +124,6 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
   });
 }
 
-// frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/logout with the caller's bearer token; 204 on success, throws an ApiError otherwise. */
 export async function logout(token: string): Promise<void> {
@@ -143,11 +137,6 @@ export async function logout(token: string): Promise<void> {
   }
 }
 
-// frob:tests web/tests/unit/Register.test.tsx kind="unit"
-// frob:waive WIRE001 reason="no web production call site -- GET \
-// /api/v1/auth/session (docs/design/sprint-1.md sec.5) is designed for the game \
-// server to call directly, never this web client (T-0026); kept here for \
-// API-surface completeness and T-0017's test suite" follow_up="T-0100"
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** GET /api/v1/auth/session with the caller's bearer token; 200 SessionInfo on success, throws an ApiError otherwise. */
 export async function fetchSession(token: string): Promise<SessionInfo> {
