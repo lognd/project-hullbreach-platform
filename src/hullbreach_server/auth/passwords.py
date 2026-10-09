@@ -28,7 +28,6 @@ def hash_password(plain: str) -> str:
 # frob:doc docs/index.md#public-api
 # frob:tests tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext  # noqa: E501
 # frob:tests tests/unit/test_passwords.py::test_verify_password_rejects_wrong_password
-# frob:tests tests/unit/test_passwords.py::test_verify_password_returns_false_for_a_malformed_stored_hash  # noqa: E501
 def verify_password(plain: str, hashed: str) -> bool:
     """Check a plaintext password against a stored Argon2id hash.
 
@@ -51,7 +50,6 @@ def _dummy_hash() -> str:
 
 # frob:invariant INV-001
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_passwords.py::test_verify_against_dummy_hash_always_returns_false  # noqa: E501
 def verify_against_dummy_hash(plain: str) -> bool:
     """Run one full Argon2 verify against a dummy hash and return False.
 

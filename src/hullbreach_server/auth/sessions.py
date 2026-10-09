@@ -47,7 +47,6 @@ _failed_attempts_lock = threading.Lock()
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back  # noqa: E501
 class AuthEnvError(BaseModel):
     """A startup-time complaint about an unusable auth environment variable."""
 
@@ -85,7 +84,6 @@ def _env_int(name: str, default: int) -> int:
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back  # noqa: E501
 def validate_auth_env() -> Result[None, AuthEnvError]:
     """Check every auth env var is a positive integer; Err names the first bad one."""
     for name, default in (
@@ -157,7 +155,6 @@ class LoginRateLimited(BaseModel):
 # frob:invariant INV-002
 # frob:doc docs/index.md#auth-api
 # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
-# frob:tests tests/unit/test_auth_login.py::test_concurrent_login_attempts_never_exceed_the_limit  # noqa: E501
 def reserve_login_attempt(
     username: str, now: datetime
 ) -> Result[None, LoginRateLimited]:

@@ -41,7 +41,6 @@ _LOG_VALUE_MAX = 64
 
 
 # frob:invariant INV-003
-# frob:tests tests/unit/test_logging.py::test_sanitize_for_log_escapes_control_characters_and_caps_length  # noqa: E501
 # frob:doc docs/index.md#public-api
 def sanitize_for_log(value: str, limit: int = _LOG_VALUE_MAX) -> str:
     """Return `value` as a length-capped repr, safe to log from unauthenticated input.

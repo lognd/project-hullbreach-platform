@@ -127,7 +127,6 @@ class SessionInfo(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_register.py::test_openapi_declares_the_error_responses  # noqa: E501
 class ErrorDetail(BaseModel):
     """Body of a plain auth failure (401, 403, 429): a single `detail` message."""
 
@@ -137,7 +136,6 @@ class ErrorDetail(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_register.py::test_openapi_declares_the_error_responses  # noqa: E501
 class ConflictResponse(BaseModel):
     """Body of register's 409: which field is already taken, and a message."""
 

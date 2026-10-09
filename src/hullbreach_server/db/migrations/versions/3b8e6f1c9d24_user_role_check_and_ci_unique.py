@@ -26,8 +26,6 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
-# frob:tests tests/system/test_build.py::test_migrated_users_table_enforces_role_check_and_ci_uniqueness  # noqa: E501
 # frob:doc docs/index.md#database-migrations
 def upgrade() -> None:
     """Upgrade schema: add ck_users_role and the lower() unique indexes."""
