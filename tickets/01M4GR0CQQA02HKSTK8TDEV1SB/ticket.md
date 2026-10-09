@@ -1,0 +1,14 @@
++++
+id = "01M4GR0CQQA02HKSTK8TDEV1SB"
+title = "login: unknown-username path skips password hashing (timing user enumeration) and failed-attempt store grows unbounded"
+type = "security"
+category = "todo"
+priority = "high"
+reporter = "lognd"
+created = "2026-10-09T16:30:12Z"
+updated = "2026-10-09T16:34:00Z"
+labels = ["origin:auditor", "interface-audit"]
+scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/sessions.py"]
++++
+
+api/auth.py:132-141 login(). Contract: docstring and test promise 401 'identically' for unknown user vs wrong password. (1) When user is None the short-circuit at :135 never calls verify_password, so unknown users answer in microseconds versus an Argon2id verify for real users: timing oracle for username enumeration. Fix: verify against a module-level dummy Argon2 hash when user is None. (2) :136 record_failed_login(payload.username) keys the in-process dict (auth/sessions.py:116) by attacker-chosen strings; _prune_stale_attempts only prunes on a later call for the same key and empty deques are never deleted, so spraying unique usernames grows memory without bound (and LoginRequest.username has no max_length). Fix: drop the key when its deque empties, cap username length in LoginRequest, bound the dict size or key by (ip, username). (3) 429 at :127 carries no Retry-After header; add it using the window.

@@ -30,6 +30,7 @@ _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS = 60
 # process restart or work across multiple API instances; a shared store
 # (Redis, or the database itself) is open work for when the platform
 # runs more than one instance.
+# frob:invariant INV-002
 _failed_attempts: dict[str, deque[datetime]] = defaultdict(deque)
 _failed_attempts_lock = threading.Lock()
 

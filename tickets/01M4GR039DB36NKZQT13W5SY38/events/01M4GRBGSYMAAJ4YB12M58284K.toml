@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "duplicate"
+reason = "duplicate of 01M4GR0CQQA02HKSTK8TDEV1SB (login timing leak on unknown username; INV-001)"
+at = "2026-10-09T16:36:16Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,22 @@
++++
+id = "01M4GR6EGFEXV770648K7YTHGG"
+title = "Dev database exposed on all interfaces with a well-known default credential"
+type = "security"
+category = "todo"
+priority = "high"
+reporter = "lognd"
+created = "2026-10-09T16:33:30Z"
+updated = "2026-10-09T16:33:30Z"
+labels = ["origin:auditor"]
+scope = ["docker-compose.yml", "src/hullbreach_server/app/config.py"]
+
+[[acceptance]]
+text = "given no POSTGRES_PASSWORD, when docker compose up, then compose refuses to start"
+bound = false
+
+[[acceptance]]
+text = "given no database_url configured, when AppConfig is built, then it fails with a clear error instead of using a default credential"
+bound = false
++++
+
+origin: auditor. Invariant INV-005 (policy rule: none expressible, no pattern engine; see invariants/INV-005.md). docker-compose.yml publishes '5432:5432' (all interfaces) and defaults POSTGRES_USER/PASSWORD/DB to 'hullbreach'; app/config.py AppConfig.database_url defaults to postgresql://hullbreach:hullbreach@localhost:5432/hullbreach, so a missing env silently uses the known credential. Fix: publish '127.0.0.1:5432:5432'; use ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD} with no default; make database_url required (no credentialed default) and keep the fail-fast connectivity check. Update README/docs setup steps in the same change.

@@ -98,6 +98,8 @@ def login(
     """Issue a bearer token for valid credentials; 401 identically for an unknown
     user or a wrong password, 429 after too many recent failures for the
     same username."""
+    # frob:invariant INV-001
+    # frob:invariant INV-003
     now = current_time()
     if is_login_rate_limited(payload.username, now):
         _log.warning("login: rate limited for %s", payload.username)

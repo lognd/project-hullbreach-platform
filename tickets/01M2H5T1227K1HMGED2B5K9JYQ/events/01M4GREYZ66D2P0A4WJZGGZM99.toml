@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Decision (Logan, 2026-10-09): skins are per block type; v1 cosmetic categories are ship skins, thruster trails, banners/nameplates and projectile effects. Game-side epic: game E15 (01M4GRD8ZV5ZNB70YTSK7RH036). Item needs a category enum (ship_skin, thruster_trail, banner, projectile_effect) and ship_skin items need a target block type."
+at = "2026-10-09T16:38:09Z"
+actor = "lognd"
+rev = 1

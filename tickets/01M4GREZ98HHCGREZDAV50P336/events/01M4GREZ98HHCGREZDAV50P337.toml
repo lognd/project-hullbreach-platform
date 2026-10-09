@@ -1,0 +1,16 @@
+kind = "create"
+title = "Cosmetic loadout model and migration (per-block-type skins plus trail, banner and projectile-effect slots)"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T117A35Q8AA9THRZTTYB"
+labels = ["owner:lognd", "needs-game", "milestone:0.3.0"]
+acceptance = ["A loadout row per user stores block type -> skin item id and one id per other category, each a foreign key to an owned inventory item.", "The database rejects a skin whose target block type differs from its slot, and an item in the wrong category slot.", "Retiring or losing an item resets its slot to the default."]
+at = "2026-10-09T16:38:09Z"
+actor = "lognd"
+rev = 1
+
+[[links]]
+kind = "blocked-by"
+target = "01M2H5T1227K1HMGED2B5K9JYQ"
