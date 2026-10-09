@@ -6,13 +6,17 @@ category = "todo"
 priority = "high"
 reporter = "human"
 created = "2026-09-20T00:00:00Z"
-updated = "2026-09-20T00:00:00Z"
+updated = "2026-10-09T04:06:58Z"
 aliases = ["T-0103"]
 labels = ["jira:none"]
 scope = ["docs/picking-up-work.md", "README.md", "CONTRIBUTING.md", "docs/index.md", "src/hullbreach_server/api/__init__.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/api/auth.py", "web/src/router.tsx", "web/src/App.tsx", "web/src/components/Footer.tsx", "web/src/api/auth.ts"]
 
 [[acceptance]]
 text = "given a new teammate, when they read docs/picking-up-work.md, then they can claim a queued ticket and know which file and example to start from"
+bound = false
+
+[[acceptance]]
+text = "Given each code site a queued ticket plugs into, when a teammate opens the file, then a frob:todo marker names the owning ticket"
 bound = false
 +++
 

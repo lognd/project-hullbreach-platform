@@ -1,0 +1,8 @@
+kind = "field"
+field = "acceptance"
+old = ["given a new teammate, when they read docs/picking-up-work.md, then they can claim a queued ticket and know which file and example to start from"]
+new = ["given a new teammate, when they read docs/picking-up-work.md, then they can claim a queued ticket and know which file and example to start from", "Given each code site a queued ticket plugs into, when a teammate opens the file, then a frob:todo marker names the owning ticket"]
+moved = [1]
+at = "2026-10-09T04:06:58Z"
+actor = "lognd"
+rev = 1
