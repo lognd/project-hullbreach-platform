@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:11:04Z"
+digest = "6f0b3bcb7a51ff776749d2063527b34d892b65e8f50e66dd1ed0d955a0704445"
+exit_code = 0
+inline = """
+....                                                                     [100%]
+4 passed in 1.13s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_seed.py::test_seed_returns_err_for_a_username_taken_by_a_non_admin tests/unit/test_seed.py::test_seed_returns_err_for_invalid_admin_credentials tests/unit/test_seed.py::test_seed_returns_err_for_malformed_seed_data tests/unit/test_seed.py::test_seed_returns_err_and_rolls_back_on_a_database_failure"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_seed.py::test_seed_returns_err_for_a_username_taken_by_a_non_admin", "tests/unit/test_seed.py::test_seed_returns_err_for_invalid_admin_credentials", "tests/unit/test_seed.py::test_seed_returns_err_for_malformed_seed_data", "tests/unit/test_seed.py::test_seed_returns_err_and_rolls_back_on_a_database_failure"]
+at = "2026-10-09T17:11:04Z"
+actor = "lognd"
+rev = 1
