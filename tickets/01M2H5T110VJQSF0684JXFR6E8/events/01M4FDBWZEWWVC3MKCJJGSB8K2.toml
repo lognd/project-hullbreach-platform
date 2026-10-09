@@ -1,0 +1,48 @@
+kind = "evidence"
+captured_at = "2026-10-09T04:04:55Z"
+digest = "1d32d48857c0f0ec5da037c166e1f1a4bb3c022c99e99cf7f940311b4d6cc672"
+exit_code = 4
+failed_tests = ["tests/system/test_build.py::tests.system.test_build"]
+inline = """
+
+==================================== ERRORS ====================================
+_________________ ERROR collecting tests/system/test_build.py __________________
+ImportError while importing test module '<worktree>/tests/system/test_build.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+~/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/system/test_build.py:12: in <module>
+    from alembic import command
+E   ModuleNotFoundError: No module named 'alembic'
+-------------- generated xml file: /tmp/frob-pytest-350460-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/system/test_build.py
+1 error in 0.04s
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_app_builds_and_serves_health
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_cli_help
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_logging_package_wires_end_to_end
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_no_syntax_errors_in_src
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_openapi_schema_is_served
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_package_imports
+
+ERROR: found no collectors for <worktree>/tests/system/test_build.py::test_py_typed_marker_present
+
+"""
+passed = false
+provider = "pytest"
+ref = "tests/system/test_build.py::test_app_builds_and_serves_health tests/system/test_build.py::test_cli_help tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata tests/system/test_build.py::test_logging_package_wires_end_to_end tests/system/test_build.py::test_no_syntax_errors_in_src tests/system/test_build.py::test_openapi_schema_is_served tests/system/test_build.py::test_package_imports tests/system/test_build.py::test_py_typed_marker_present"
+size = 1720
+status = "measured"
+tests = ["tests/system/test_build.py::tests.system.test_build"]
+at = "2026-10-09T04:04:55Z"
+actor = "a-carten"
+rev = 1
