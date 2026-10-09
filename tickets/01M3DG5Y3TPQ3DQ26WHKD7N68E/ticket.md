@@ -19,7 +19,7 @@ bound = true
 
 [[acceptance]]
 text = "Given a contributor reading CONTRIBUTING.md, when they look for what merges a PR, then frob check is named as one of the required status checks"
-bound = false
+bound = true
 +++
 
 https://aliens-against-humanity.atlassian.net/browse/SCRUM-80
