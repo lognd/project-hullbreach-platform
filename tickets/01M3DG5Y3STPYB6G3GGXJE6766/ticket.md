@@ -15,7 +15,7 @@ scope = ["CONTRIBUTING.md", "README.md"]
 
 [[acceptance]]
 text = "Given a pull request to main, when CI runs, then the server job runs ruff check, ruff format --check, ty check and pytest"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "Given a pull request to main, when CI runs, then the web job runs eslint, prettier, crunk, tsc, vitest and the vite build"
