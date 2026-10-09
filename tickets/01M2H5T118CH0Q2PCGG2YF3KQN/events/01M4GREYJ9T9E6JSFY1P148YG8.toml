@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Decision (Logan, 2026-10-09): skins are per block type; v1 cosmetic categories are ship skins, thruster trails, banners/nameplates and projectile effects. Game-side epic: game E15 (01M4GRD8ZV5ZNB70YTSK7RH036). Reshape: the endpoint stores a loadout (block type -> skin id, plus trail/banner/projectile-effect slots) rather than one active skin, validates every id against the user's inventory and category, and the session endpoint exposes the whole loadout to the game (game S12-5)."
+at = "2026-10-09T16:38:09Z"
+actor = "lognd"
+rev = 1
