@@ -33,9 +33,10 @@ which proxies `/api` to uvicorn on 8000, which talks SQL to Postgres on 5432. Th
 Three tools sit on top and are not optional:
 
 - **uv** installs Python and all Python packages into `.venv/` in the repo.
-- **frob** is the quality gate. One command runs every linter, type
-  checker, and test for both languages. CI runs the same thing and a PR
-  cannot merge until it is green.
+- **frob** (v2) is the structural gate and the ticket tracker: directives,
+  doc links, coverage and the ticket ledger. CI runs `frob check` next to
+  the ruff/ty/pytest and eslint/vitest jobs, and a PR cannot merge until
+  all are green.
 - **crunk** lints the website design system. Colors, spacing, and type
   scales are declared once in `crunk.toml` and every stylesheet and
   `className` is checked against them.
@@ -157,10 +158,10 @@ shared database string.
 ### frob
 
 ```
-uv tool install frob
+uv tool install frob==0.532.0
 ```
 
-`frob --version` to check. `uv tool install` puts a program on your PATH
+CI pins the same version. `frob --version` to check. `uv tool install` puts a program on your PATH
 in its own little environment, separate from any project, which is what
 you want for a tool you run on projects. crunk is different: it is a dev
 dependency of this repo, so it lives in `.venv` and runs as `uv run crunk`.
@@ -297,23 +298,25 @@ Before pushing, run what CI runs, from the repo root:
 
 ```
 frob check
+uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+uv run ty check src/
+npm run lint && npm run typecheck
 uv run crunk check
 uv run crunk tokens --check
 ```
 
-`frob check` covers ruff, ty, pytest, tsc, eslint, prettier, vitest, and
-frob's own structural gates. The last line is `[OK]` or `[FAIL]` with a
-count, and the `## Errors` block above it says what to fix. Most
-formatting noise goes away with `frob format` and
+`frob check` (frob v2) runs frob's own structural gates: directives, doc
+links, COV001 coverage, ticket-ledger rules. It does not wrap ruff, ty, tsc,
+eslint, prettier or vitest any more, so run those as above. It prints one
+finding per line (`path:line:col: severity RULE message`) and exits 1 on an
+error. Fix formatting with `uv run ruff format src/ tests/` and
 `npx prettier --write .`.
 
 Things frob says that look scary and are not:
 
-- "no coverage stamp found": `frob coverage --full --fail-on-degraded`,
-  then `frob check` again. Happens on a fresh clone.
-- "PRE001 / SCOPE001 ... no active ticket is derivable": you have
-  uncommitted changes on a branch frob cannot tie to a ticket. It clears
-  once you are on a `T-####-name` branch or pass `--ticket`. See
+- "SCOPE001 ...": only appears with `frob check --ticket`, when you
+  edited a file outside the ticket's leased scope. Widen it with
+  `frob ticket update <ticket> --add-scope GLOB`. See
   [CONTRIBUTING.md](CONTRIBUTING.md).
 - A test you did not touch fails: pull `main` and rerun. If it still
   fails somebody broke it; say so in chat instead of working around it.
@@ -398,9 +401,7 @@ uv run hullbreach_server         # API      http://127.0.0.1:8000/api/docs
 npm run dev                      # website  http://localhost:5173
 
 frob check                       # the full gate
-frob format                      # fix Python formatting + frob directives
-frob test                        # tests for what you touched (or --all)
-frob coverage --full             # refresh the coverage stamp
+frob test --base main            # tests for what you touched (or --all)
 uv run pytest                    # just Python tests
 npm run test                     # just website tests
 uv run crunk check               # design-system lint
@@ -434,9 +435,6 @@ make clean                       # delete build output and caches
   See Styling.
 - `ORG005 ... is a CSS file outside web/src/styles`: new CSS goes in
   `web/src/styles/<bucket>/`.
-- `REF001 ... has no inbound references`: frob found a file nothing
-  points at. Import it, or for config files add a `[[refs.entrypoint]]`
-  entry in `frob.toml` like the existing ones.
 - `^M` in diffs and prettier mad at every line: Windows line endings.
   `git config --global core.autocrlf input` and re-clone.
 - VS Code red squiggles but `frob check` green: VS Code picked the wrong
