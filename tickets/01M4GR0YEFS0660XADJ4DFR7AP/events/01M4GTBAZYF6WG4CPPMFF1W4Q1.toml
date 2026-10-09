@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a changed item price, when seed runs again, then the row is updated"]
+moved = []
+at = "2026-10-09T17:11:07Z"
+actor = "lognd"
+rev = 1
