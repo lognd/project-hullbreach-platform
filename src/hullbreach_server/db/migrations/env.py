@@ -36,7 +36,7 @@ def _resolve_database_url() -> str:
 
 
 # frob:doc docs/index.md#database-migrations
-# frob:waive TEST001 reason="untestable in isolation without Alembic's own execution context; this module is exec'd exclusively by Alembic's own runner, never imported directly outside it"  # noqa: E501
+# frob:accept TEST001 because="untestable in isolation without Alembic's own execution context; this module is exec'd exclusively by Alembic's own runner, never imported directly outside it"  # noqa: E501
 def run_migrations_offline() -> None:
     """Refuse: only online (connected) migrations are supported for 0.1.0."""
     raise NotImplementedError(

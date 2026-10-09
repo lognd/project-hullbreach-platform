@@ -130,7 +130,6 @@ def login(
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session  # noqa: E501
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401  # noqa: E501
 # frob:doc docs/index.md#auth-api
-# frob:waive WIRE001 reason="already called from web/src/components/Header.tsx via api/auth.ts's logout() (T-0024, merged); this Python-only gate cannot trace the cross-language call site, only the strata f_logout flow declares it" follow_up="T-0100"  # noqa: E501
 @router.post("/logout", status_code=204)
 def logout(
     all: bool = False,

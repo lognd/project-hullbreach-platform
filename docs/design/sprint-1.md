@@ -1,7 +1,5 @@
 # Sprint 1 system design (milestone 0.1.0)
 
-<!-- frob:waive REF002 reason="a design doc naturally has one primary anchor (docs/index.md#sprint-1-design); the sixteen tickets it specs (T-0006..T-0044) reference it by path in their own bodies, but tickets/ is excluded from ref tracking so those mentions cannot count as a second consumer" -->
-
 Status: design accepted before implementation. This document is the spec
 for T-0006, T-0007, T-0008, T-0010, T-0012, T-0015, T-0016, T-0017, T-0019,
 T-0020, T-0021, T-0023, T-0024, T-0026, T-0028, T-0044. Ticket bodies are
@@ -23,29 +21,29 @@ symbol's test.
 
 ### Python (`src/hullbreach_server/`)
 
-- `db/__init__.py` -- exports `Base`, `get_engine`, `get_sessionmaker`, <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/__init__.py` -- exports `Base`, `get_engine`, `get_sessionmaker`,
   `get_db` (FastAPI dependency), `DatabaseError`. Owns nothing else; it is
   the package surface other modules import from.
-- `db/engine.py` -- owns engine construction: `create_db_engine(url)` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/engine.py` -- owns engine construction: `create_db_engine(url)`
   builds a SQLAlchemy 2.x `Engine` (or `AsyncEngine` -- decision D1, see
   section 8) from `HULLBREACH_DATABASE_URL`, and `check_connectivity(engine)`
   runs `SELECT 1` and returns a typani `Result[None, DatabaseError]`.
   `Base` (the `DeclarativeBase` subclass) lives here so `db/models/*.py`
-  and `alembic/env.py` both import it from one place with no cycle back <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-  to `db/__init__.py`. `db/__init__.py` re-exports it. <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-- `db/models/user.py` -- the `User` ORM model and the `Role` enum <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  and `alembic/env.py` both import it from one place with no cycle back
+  to `db/__init__.py`. `db/__init__.py` re-exports it.
+- `db/models/user.py` -- the `User` ORM model and the `Role` enum
   (T-0015, T-0028).
-- `db/models/session.py` -- the `Session` ORM model (T-0019). <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/models/session.py` -- the `Session` ORM model (T-0019).
 - `db/migrations/` -- an Alembic environment: `alembic.ini` lives at the
   package root of this folder is not possible (Alembic wants its ini next
   to the script location or referenced by path), so the layout is:
-- `db/migrations/env.py` -- imports `Base` and every model module from <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/migrations/env.py` -- imports `Base` and every model module from
   `db/models/` so `Base.metadata` is fully populated, reads
   `HULLBREACH_DATABASE_URL` the same way `AppConfig` does (env var
   first, falling back to the config's default) rather than hardcoding
   a URL, and runs in "online" mode only (no offline SQL generation
   needed for 0.1.0 -- recorded as an open question in section 8).
-- `db/migrations/script.py.mako` -- the standard Alembic template. <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/migrations/script.py.mako` -- the standard Alembic template.
 - `db/migrations/versions/` -- one revision file per migration; the
   first revision creates `users`; a second (from T-0019) adds
   `sessions`; a third (from T-0008's seed, see section 4) adds the
@@ -56,27 +54,27 @@ symbol's test.
   `pyproject.toml`/config-file exception the brief allows ("dependency
   additions and config wiring... allowed when the ticket needs them"),
   or files a scope-add if the gate objects.
-- `db/seed.py` -- `seed(session) -> Result[SeedReport, DatabaseError]`: <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-  idempotent load of `db/seed_items.json` into the `items` table and <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/seed.py` -- `seed(session) -> Result[SeedReport, DatabaseError]`:
+  idempotent load of `db/seed_items.json` into the `items` table and
   creation of exactly one admin account if none exists (T-0008).
-- `db/seed_items.json` -- static catalog data, >= 100 entries, each <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `db/seed_items.json` -- static catalog data, >= 100 entries, each
   `{"slug": str, "name": str, "price": int}` (slug is the natural key
   seed uses for idempotency).
-- `auth/passwords.py` -- `hash_password(plain) -> str`, <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `auth/passwords.py` -- `hash_password(plain) -> str`,
   `verify_password(plain, hashed) -> bool` (T-0015).
-- `auth/sessions.py` -- `issue_session(db, user) -> tuple[Session, str]` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `auth/sessions.py` -- `issue_session(db, user) -> tuple[Session, str]`
   (returns the ORM row and the one-time plaintext token),
   `hash_token(token) -> str`, `resolve_session(db, token) ->
 Result[Session, SessionError]` checking expiry and revocation, and
   `revoke_session` / `revoke_all_sessions` (T-0019, used by T-0023).
-- `auth/deps.py` -- FastAPI dependencies: `get_current_user` (401 on <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `auth/deps.py` -- FastAPI dependencies: `get_current_user` (401 on
   missing/invalid/expired/revoked token) and `require_admin` (403 if the
   resolved user's role is not `admin`) (T-0019, T-0028).
-- `auth/schemas.py` -- pydantic request/response models for register, <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `auth/schemas.py` -- pydantic request/response models for register,
   login, session, and the profile view. `role` is never an input field
   and never appears in any response schema that a non-admin caller sees
   (T-0016, T-0028).
-- `api/auth.py` -- `router` with `/register`, `/login`, `/logout`, <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- `api/auth.py` -- `router` with `/register`, `/login`, `/logout`,
   `/session` (T-0016, T-0020, T-0023, T-0026).
 - `api/health.py` -- gains `/ready` alongside the existing `/health`
   (T-0012); no new file, existing scope.
@@ -169,7 +167,7 @@ hex-encoded (64 chars), looked up by exact match on login-protected
 routes so no plaintext token round-trips into the database. A session is
 valid iff `revoked_at is None and expires_at > now()`; `resolve_session`
 checks both in one query rather than two round trips.
-Both models import `Base` from `hullbreach_server.db.engine` (re-exported <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+Both models import `Base` from `hullbreach_server.db.engine` (re-exported
 by `hullbreach_server.db`), never redefine it -- this is the reason `Base`
 lives in `engine.py` rather than in each model module: T-0006 lands before
 the models exist, so the base needs a home that does not depend on them.
@@ -187,7 +185,7 @@ still gets a URL without touching `app/config.py`).
   called the same way `__main__.py` already does, not via a second
   ad-hoc `os.environ.get`.
 - `HULLBREACH_SESSION_TTL_SECONDS` (new, default `1209600` = 14 days) --
-  read directly by `auth/sessions.py` with `os.environ.get`, following the <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  read directly by `auth/sessions.py` with `os.environ.get`, following the
   same `HULLBREACH_` prefix convention as `AppConfig`, since it is
   auth-specific rather than a wiring concern (documented in `.env.example`
   next to the existing keys).
@@ -257,7 +255,6 @@ returns no diffs.
 
 ### Seed idempotency and the items problem (T-0008)
 
-<!-- frob:until T-0066 -->
 
 T-0066 (Item model, milestone 0.3.0) does not exist yet, so `db/seed.py`
 cannot seed rows into a model owned by a future ticket. Decision (see D3
@@ -326,7 +323,6 @@ is `HULLBREACH_SESSION_TTL_SECONDS` (default 14 days), set at issuance as
 
 ### Endpoints
 
-<!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
 
 All four routes below live in `api/auth.py` and share the pattern: pydantic request model, pydantic response
 model, `Depends(get_db)` for a `Session` (SQLAlchemy) from `db.get_db`.
@@ -364,7 +360,6 @@ username = :u OR email = :e`) so the specific field is knowable before
 
 **POST /api/v1/auth/login**
 
-<!-- frob:until T-0020 -->
 
 - Request `LoginRequest {username: str, password: str}`.
 - Response `LoginResponse {token: str, user: UserProfile}`, 200.
@@ -375,7 +370,7 @@ username = :u OR email = :e`) so the specific field is knowable before
   attempts within a 60-second window for the same username (config
   values from section 3). Store: an in-process
   `dict[str, deque[datetime]]` behind a module-level lock in
-  `auth/sessions.py` (`_failed_attempts`), explicitly acceptable for <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  `auth/sessions.py` (`_failed_attempts`), explicitly acceptable for
   0.1.0 per the brief (no Redis dependency yet); a successful login
   clears that username's deque. This does not survive a process restart
   or work across multiple API instances -- noted as an open question in
@@ -406,7 +401,7 @@ username = :u OR email = :e`) so the specific field is knowable before
 
 ### `get_current_user` / `require_admin` (T-0019, T-0028)
 
-Both are FastAPI dependencies in `auth/deps.py`: <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+Both are FastAPI dependencies in `auth/deps.py`:
 
 ```python
 async def get_current_user(
@@ -458,9 +453,9 @@ loaders are available to later tickets without a rewrite).
 
 ### Header / Footer signed-in vs signed-out (T-0044, T-0024)
 
-`Header` reads `useSession()` from `auth/session.ts`. Signed-out: brand <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+`Header` reads `useSession()` from `auth/session.ts`. Signed-out: brand
 plus "Register" and "Login" links. Signed-in: brand plus the username and
-a "Log out" button. The button calls `api/auth.ts`'s `logout()`, then <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+a "Log out" button. The button calls `api/auth.ts`'s `logout()`, then
 `session.ts`'s `clearSession()`, then navigates to `/` -- matching
 T-0024's acceptance criterion exactly (session cleared, landing page
 shown). Every interactive element in `Header` is a real `<a>`/`<button>`
@@ -470,7 +465,7 @@ patch.
 
 ### Session persistence (T-0021)
 
-`auth/session.ts`: <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+`auth/session.ts`:
 
 ```ts
 export type StoredSession = {
@@ -491,12 +486,12 @@ flash of signed-out state on reload) and subscribes to the `storage`
 event so a logout in one tab reflects in another -- this is also how
 `Header` "just re-renders" without prop drilling from `Login`/`Register`.
 On mount, `Login.tsx`'s success handler calls `saveSession(...)` with the
-`LoginResponse` from `api/auth.ts`, satisfying T-0021's reload criterion. <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+`LoginResponse` from `api/auth.ts`, satisfying T-0021's reload criterion.
 
 ### Forms with inline validation errors (T-0017, T-0021)
 
 Both `Register.tsx` and `Login.tsx` keep a `fieldErrors: Record<string,
-string>`state. On submit,`api/auth.ts`throws a typed`ApiError {status: <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+string>`state. On submit,`api/auth.ts`throws a typed`ApiError {status:
 number, detail: string, field?: string}`when the response is not ok;
 the catch block sets`fieldErrors[field] = detail`when`field`is
 present (409 on register, e.g.`{field: "username"}`) and a
@@ -512,8 +507,8 @@ accessibility and because it gives the test a stable query target via
 ## 7. Test strategy
 
 Unit tests use SQLite through a URL override: a `conftest.py` fixture
-(`tests/unit/conftest.py`, new file, in scope for whichever ticket first <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-needs it -- T-0006's `tests/unit/test_db_engine.py` is scope-eligible to <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+(`tests/unit/conftest.py`, new file, in scope for whichever ticket first
+needs it -- T-0006's `tests/unit/test_db_engine.py` is scope-eligible to
 add it since fixtures shared across `tests/unit/` conventionally live
 there) provides -- `tests/unit/test_db_engine.py` and this fixture file
 are the direct imports of `hullbreach_server.db`/`db.engine` that
@@ -558,23 +553,23 @@ file:
 
 | Ticket | Acceptance criterion                                            | Planned test node id                                                                                                                                    |
 | ------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| T-0006 | unreachable URL fails startup naming the host                   | `tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url`                                                                   | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0007 | upgrade head matches models                                     | `tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata`                                                                         | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0008 | seed reaches >=100 items and one admin                          | `tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin`                                                                                    | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0008 | re-running seed does not duplicate                              | `tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run`                                                                                        | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
+| T-0006 | unreachable URL fails startup naming the host                   | `tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url`                                                                   | |
+| T-0007 | upgrade head matches models                                     | `tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata`                                                                         | |
+| T-0008 | seed reaches >=100 items and one admin                          | `tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin`                                                                                    | |
+| T-0008 | re-running seed does not duplicate                              | `tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run`                                                                                        | |
 | T-0010 | green CI without approval is blocked                            | (process control, not a code test -- verified by a documented manual check in CONTRIBUTING.md; no test node id)                                         |
-| T-0012 | ready is 200 when reachable, 503 when not                       | `tests/unit/test_api.py::test_ready_returns_200_when_database_reachable` and `tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable` | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0015 | hash then verify succeeds, stored value is not the password     | `tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext`                                                                | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0016 | duplicate username gets 409 with field-specific message         | `tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field`                                                             | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0016 | valid request gets 201, role Player, currency 0, rating default | `tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults`                                                        | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
+| T-0012 | ready is 200 when reachable, 503 when not                       | `tests/unit/test_api.py::test_ready_returns_200_when_database_reachable` and `tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable` | |
+| T-0015 | hash then verify succeeds, stored value is not the password     | `tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext`                                                                | |
+| T-0016 | duplicate username gets 409 with field-specific message         | `tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field`                                                             | |
+| T-0016 | valid request gets 201, role Player, currency 0, rating default | `tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults`                                                        | |
 | T-0017 | field error is shown next to the field                          | `web/tests/unit/Register.test.tsx::shows field error next to the offending input`                                                                       |
-| T-0019 | expired or revoked token gets 401 on protected route            | `tests/unit/test_sessions.py::test_expired_token_returns_401` and `tests/unit/test_sessions.py::test_revoked_token_returns_401`                         | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0020 | sixth failed attempt in a minute gets 429                       | `tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429`                                                                  | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
+| T-0019 | expired or revoked token gets 401 on protected route            | `tests/unit/test_sessions.py::test_expired_token_returns_401` and `tests/unit/test_sessions.py::test_revoked_token_returns_401`                         | |
+| T-0020 | sixth failed attempt in a minute gets 429                       | `tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429`                                                                  | |
 | T-0021 | session persists across reload                                  | `web/tests/unit/Login.test.tsx::keeps user signed in after reload`                                                                                      |
-| T-0023 | token rejected after logout                                     | `tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward`                                                                 | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
+| T-0023 | token rejected after logout                                     | `tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward`                                                                 | |
 | T-0024 | logout clears session and shows landing page                    | `web/tests/unit/Header.test.tsx::clears session and navigates home on logout click`                                                                     |
-| T-0026 | game server session lookup returns player id and role           | `tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token`                                                        | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
-| T-0028 | Player token on admin route gets 403 with permissions message   | `tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message`                                                       | <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" --> |
+| T-0026 | game server session lookup returns player id and role           | `tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token`                                                        | |
+| T-0028 | Player token on admin route gets 403 with permissions message   | `tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message`                                                       | |
 | T-0044 | tab order matches visual order, Enter activates every control   | `web/tests/unit/Header.test.tsx::tab order matches visual order and Enter activates each control`                                                       |
 
 ## 8. Open questions and decisions made
@@ -583,14 +578,14 @@ file:
   (`sqlalchemy.create_engine`, `psycopg[binary]` as the driver, not
   `asyncpg`). Reason: `create_app` and every route in `api/health.py`
   today are sync `def`, FastAPI runs sync routes in a threadpool without
-  penalty at this traffic scale, and a sync engine keeps `db/engine.py` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-  and every dependency in `auth/deps.py` free of an async/await split <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  penalty at this traffic scale, and a sync engine keeps `db/engine.py`
+  and every dependency in `auth/deps.py` free of an async/await split
   that buys nothing until the platform has real concurrency pressure --
   revisit only if profiling says otherwise.
 
 - **D2 -- where fail-fast startup is invoked without T-0006 touching
   `app/config.py` or `app/app.py` (both outside T-0006's declared
-  scope).** Decision: `db/engine.py` exposes <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  scope).** Decision: `db/engine.py` exposes
   `create_db_engine_from_config(cfg: AppConfig) -> Engine` plus
   `check_connectivity`, and T-0006 itself only adds a unit test proving
   `check_connectivity` fails correctly (its acceptance criterion is about
@@ -610,7 +605,7 @@ file:
   yet (section 4). Reason: waiting for T-0066 would block sprint-1's
   acceptance criteria (>=100 items seeded) on a 0.3.0 ticket; a
   hand-declared `sqlalchemy.Table` confines the temporary shape to
-  `db/seed.py` and one migration file, so T-0066 has a clean, additive <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+  `db/seed.py` and one migration file, so T-0066 has a clean, additive
   path (either adopt the same table or migrate it) instead of a second
   parallel items concept to reconcile later.
 
@@ -624,13 +619,13 @@ file:
   later runs more than one API process behind a load balancer, the
   limiter needs a shared store (Redis, or the database itself); tracked
   as a note for whoever files that ticket, not solved speculatively now.
-- **Open, not decided here -- web/API schema drift.** `api/auth.ts`'s <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
-  request/response shapes are hand-mirrored from `auth/schemas.py` with <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- **Open, not decided here -- web/API schema drift.** `api/auth.ts`'s
+  request/response shapes are hand-mirrored from `auth/schemas.py` with
   no codegen in 0.1.0. This is an accepted manual-sync cost for this
   sprint; an OpenAPI-client-generation step (FastAPI already serves
   `/api/openapi.json`) is a reasonable later addition but out of scope
   here.
-- **Open, not decided here -- Alembic offline mode.** `db/migrations/env.py` <!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
+- **Open, not decided here -- Alembic offline mode.** `db/migrations/env.py`
   only implements online (connected) migration runs for 0.1.0, since
   `hullbreach_server db upgrade` always has a live connection available.
   Offline SQL-script generation (`alembic upgrade --sql`) is not
@@ -676,7 +671,6 @@ fresh-`uv sync` smoke test legitimately exercises and the `fs.write`
 capability `tests/unit/test_app.py`'s config-file fixture exercises, so
 the test tree is not simply unbound; and three `secret` declarations
 (`session_token`, `password_hash`,
-<!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
 
 `database_url`) per `docs/strata/surface.md`'s `std.secrets`
 cache-of-authority model, each with `issued_by`, `lifetime`, and a
@@ -685,7 +679,6 @@ mandatory `revoke` bound.
 This design pass is tracked as **T-0095** (kind `docs`; scope: this
 document, `design/hullbreach.strata`, `docs/index.md`,
 `docs/design/registry/capability-via-ratchet.lock.json`, and
-<!-- frob:waive DOC006 reason="planned file per this design's own module map (section 1) -- named ahead of the ticket that creates it, not a claim that it exists yet" -->
 
 `frob.toml`). Filing that ticket, adding `frob:ticket T-0095` to every
 node/flow/secret in the strata file, `frob:doc` anchors on the module and
@@ -709,7 +702,6 @@ upstream language gap remain, both disclosed here rather than papered
 over:
 
 - **`std.secrets`' auto-generated "reads" flows have no `waive` slot.**
-  <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
   `docs/strata/surface.md`'s `secret_prop` grammar
   (`issued_by`/`audience`/`lifetime`/`revoke`) has no `waive` clause,
   unlike `node`/`store`; `std.secrets` auto-generates one "reads" flow
@@ -729,7 +721,7 @@ over:
   ledger) as a language gap, titled "strata: secret_prop reads-flows
   cannot carry a waive or timeout so REL200 is unfixable", draft id
   suffix `deb011e5`.
-- **The six-phase `boundary` construct** <!-- frob:waive DOC006 reason="external repo path (frob's own docs/strata/*.md, cited for the design language spec, not a file this platform repo tracks)" -->
+- **The six-phase `boundary` construct**
   (`docs/strata/boundary.md`,
   admit/parse/judge/effect/record/refuse plus `operation`/`atomic`
   framing) was judged infeasible to model correctly in the time available
