@@ -15,7 +15,7 @@ scope = ["src/hullbreach_server/api/health.py", "tests/unit/test_api.py"]
 
 [[acceptance]]
 text = "Given no credentials, when GET /api/v1/health is called, then it returns 200 with status ok and the running version"
-bound = false
+bound = true
 +++
 
 https://aliens-against-humanity.atlassian.net/browse/SCRUM-83
