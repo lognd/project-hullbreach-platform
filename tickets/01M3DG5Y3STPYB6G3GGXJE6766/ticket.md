@@ -19,7 +19,7 @@ bound = true
 
 [[acceptance]]
 text = "Given a pull request to main, when CI runs, then the web job runs eslint, prettier, crunk, tsc, vitest and the vite build"
-bound = false
+bound = true
 +++
 
 https://aliens-against-humanity.atlassian.net/browse/SCRUM-79
