@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given an App config, when it serves, then requests use the engine it health-checked, built once even under concurrent first use, and dispose resets it"]
+moved = []
+at = "2026-10-09T17:11:12Z"
+actor = "lognd"
+rev = 1
