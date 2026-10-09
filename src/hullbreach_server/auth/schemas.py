@@ -9,7 +9,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from hullbreach_server.db.models.user import Role, User
 
@@ -17,6 +17,13 @@ from hullbreach_server.db.models.user import Role, User
 # persisted column (currency/rating land in a later milestone), see
 # docs/design/sprint-1.md section 5.
 _DEFAULT_RATING = 1200
+
+# Bounds on every unauthenticated field (INV-002): they match the users
+# columns (String(32) / String(254)) and cap what reaches the Argon2 hasher.
+USERNAME_MAX_LENGTH = 32
+EMAIL_MAX_LENGTH = 254
+PASSWORD_MAX_LENGTH = 128
+_USERNAME_PATTERN = r"^[A-Za-z0-9_.-]+$"
 
 
 # frob:doc docs/index.md#auth-api
@@ -28,10 +35,19 @@ class RegisterRequest(BaseModel):
 
     model_config = {}
 
-    username: str
-    email: EmailStr
     # frob:invariant INV-002
-    password: str = Field(min_length=8)
+    username: str = Field(
+        min_length=3, max_length=USERNAME_MAX_LENGTH, pattern=_USERNAME_PATTERN
+    )
+    email: EmailStr = Field(max_length=EMAIL_MAX_LENGTH)
+    # frob:invariant INV-002
+    password: str = Field(min_length=8, max_length=PASSWORD_MAX_LENGTH)
+
+    @field_validator("email")
+    @classmethod
+    def _lowercase_email(cls, value: str) -> str:
+        """Store emails lower-cased so uniqueness is case-insensitive."""
+        return value.lower()
 
 
 # frob:doc docs/index.md#auth-api
@@ -73,12 +89,14 @@ class UserProfile(BaseModel):
 # frob:doc docs/index.md#auth-api
 # frob:tests tests/unit/test_auth_login.py::test_login_password_min_length_still_enforced_by_schema  # noqa: E501
 class LoginRequest(BaseModel):
-    """POST /api/v1/auth/login's request body; no min_length on password (shape only)."""  # noqa: E501
+    """POST /api/v1/auth/login's request body; bounded (INV-002), no password min_length."""  # noqa: E501
 
     model_config = {}
 
-    username: str
-    password: str
+    # frob:invariant INV-002
+    username: str = Field(min_length=1, max_length=USERNAME_MAX_LENGTH)
+    # frob:invariant INV-002
+    password: str = Field(max_length=PASSWORD_MAX_LENGTH)
 
 
 # frob:doc docs/index.md#auth-api
@@ -106,3 +124,24 @@ class SessionInfo(BaseModel):
 
     user_id: uuid.UUID
     role: Role
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_register.py::test_openapi_declares_the_error_responses  # noqa: E501
+class ErrorDetail(BaseModel):
+    """Body of a plain auth failure (401, 403, 429): a single `detail` message."""
+
+    model_config = {}
+
+    detail: str
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_register.py::test_openapi_declares_the_error_responses  # noqa: E501
+class ConflictResponse(BaseModel):
+    """Body of register's 409: which field is already taken, and a message."""
+
+    model_config = {}
+
+    detail: str
+    field: str

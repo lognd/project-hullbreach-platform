@@ -43,6 +43,9 @@ cross-reference for every ticket in this repo lives in
 <!-- frob:describes src/hullbreach_server/db/seed.py::seed -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
 <!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
+<!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_against_dummy_hash -->
+<!-- frob:describes src/hullbreach_server/logging/logger.py::sanitize_for_log -->
+<!-- frob:describes src/hullbreach_server/api/health.py::NotReadyResponse -->
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
@@ -59,10 +62,14 @@ resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
 `health` is the liveness probe, which never touches the database; `ready`
 is the readiness probe, returning 200 with `{"status": "ready", "database":
 "ok"}` when `check_connectivity` succeeds against the request's database
-session, or 503 with `{"status": "not_ready", "database": "unreachable"}`
-otherwise. The `logging` subpackage provides
+session, or 503 (`NotReadyResponse`, declared in the OpenAPI schema) with
+`{"status": "not_ready", "database": "unreachable"}` otherwise. The `logging` subpackage provides
 `get_logger`, wired per the house logging convention (stdout for DEBUG/INFO,
-stderr for WARNING+).
+stderr for WARNING+). `SimpleFormatter` appends tracebacks and
+`stack_info` like the stdlib formatter; `BelowLevelFilter` raises
+`ValueError` for an unknown level name; `get_logger` loads
+`logging/config.toml` once (lock-guarded) and a missing or invalid file
+raises from every importing module, by design.
 
 The `db` package is the SQLAlchemy 2.x surface: `create_db_engine(url)`
 builds an `Engine` (normalizing a bare `postgresql://` URL to the
@@ -78,10 +85,18 @@ yields a session per request and closes it afterward.
 `src/hullbreach_server/db/models/user.py` holds the first ORM model:
 `User` (table `users`) -- `id` (UUID), unique `username`/`email`,
 `password_hash`, a `role` (`Role.player` default, stored as a `VARCHAR`
-with a CHECK constraint via `native_enum=False` rather than a Postgres
-native enum), and `created_at`.
+with a real `ck_users_role` CHECK constraint via `native_enum=False` rather
+than a Postgres native enum), and `created_at`.
 `src/hullbreach_server/auth/passwords.py` provides `hash_password`/
 `verify_password`, Argon2id via `pwdlib.PasswordHash.recommended()`.
+`verify_password` never raises for bad stored data: an unrecognised or
+corrupt hash is logged at ERROR and answers `False`, so login returns an
+ordinary 401. `verify_against_dummy_hash` burns one full Argon2 verify
+against a throwaway hash and returns `False`; login calls it for an
+unknown username so response time is not an account-existence oracle
+(INV-001). `logging.sanitize_for_log(value)` returns a length-capped
+`repr`, the only way unauthenticated input (e.g. a login username) may
+reach a log line (INV-003).
 
 ### Auth sessions
 
@@ -120,7 +135,9 @@ that user).
 header via `resolve_session` and returns an `AuthContext(user, session)`,
 raising 401 uniformly for a missing header, an unknown token, an expired
 session, or a revoked session (never FastAPI's default 403 on a missing
-credential). `require_admin` composes `get_current_user`: it raises 403
+credential). Both are plain `def` dependencies so FastAPI runs them in the
+threadpool next to the sync `get_db` session, not on the event loop.
+`require_admin` composes `get_current_user`: it raises 403
 `{"detail": "admin role required"}` if the resolved caller's role is
 not `Role.admin`, and otherwise returns the same `AuthContext`. 401
 means "I don't know who you are"; 403 means "I know who you are and the
@@ -140,50 +157,72 @@ directly on the test app fixture (`tests/unit/test_roles.py`).
 <!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginResponse -->
 <!-- frob:describes src/hullbreach_server/api/auth.py::login -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::current_time -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::is_login_rate_limited -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::record_failed_login -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::reserve_login_attempt -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::LoginRateLimited -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::AuthEnvError -->
+<!-- frob:describes src/hullbreach_server/auth/sessions.py::validate_auth_env -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::ErrorDetail -->
+<!-- frob:describes src/hullbreach_server/auth/schemas.py::ConflictResponse -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::clear_failed_logins -->
 <!-- frob:describes src/hullbreach_server/api/auth.py::logout -->
 <!-- frob:describes src/hullbreach_server/api/auth.py::session -->
 <!-- frob:describes src/hullbreach_server/auth/schemas.py::SessionInfo -->
 
 `POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
-takes a `RegisterRequest` (`username`, `email` as `EmailStr`, `password`
-with `Field(min_length=8)`; `role` is deliberately not a field at all,
-never merely ignored) and returns a `UserProfile` (`id`, `username`,
+takes a `RegisterRequest` (`username` 3-32 chars of `[A-Za-z0-9_.-]`,
+`email` as `EmailStr` of at most 254 chars (lower-cased on input),
+`password` 8-128 chars; every bound is a 422 before any hashing, INV-002;
+`role` is deliberately not a field at all, never merely ignored) and returns a `UserProfile` (`id`, `username`,
 `email`, `role`, `currency`, `rating`, `created_at`) with 201 on success.
 `UserProfile.from_user` builds the response from the persisted `User`
 row, filling in `currency=0` and the default starting `rating` (1200) --
 neither is a real column yet (ELO and currency land in later
-milestones). A pre-query (`_duplicate_field`) checks for an existing
-`username` or `email` before the insert, so a 409 response can name the
-specific offending field (`{"detail": "username already taken",
-"field": "username"}` or the `email` equivalent) rather than parsing a
-driver `IntegrityError`. A too-short password or malformed email fails
+milestones). A pre-query (`_duplicate_field`, case-insensitive) checks for
+an existing `username` or `email` before the insert, so a 409 response
+can name the specific offending field (`{"detail": "username already
+taken", "field": "username"}` or the `email` equivalent). The database's
+`lower()` unique indexes stay authoritative: a concurrent registration
+that loses the insert race hits `IntegrityError`, which is rolled back
+and mapped to the same 409. The 401/409/429/503 bodies are declared on
+the route decorators (`ErrorDetail`, `ConflictResponse`,
+`NotReadyResponse`), so `/api/openapi.json` describes the failure
+contract. A too-short password or malformed email fails
 pydantic validation with FastAPI's default 422, no custom body needed.
 
 `POST /api/v1/auth/login` (`src/hullbreach_server/api/auth.py::login`)
-takes a `LoginRequest` (`username`, `password`; no `min_length` on
-password, shape only) and, on valid credentials, returns a
+takes a `LoginRequest` (`username` 1-32 chars, `password` at most 128
+chars, no `min_length`; both bounded, INV-002) and, on valid credentials, returns a
 `LoginResponse` (`token`, `user: UserProfile`) with 200 -- the token
 comes from `auth/sessions.py::issue_session` (T-0019). An unknown
 username and a wrong password both get the identical 401
-`{"detail": "invalid username or password"}`, so the endpoint never
-confirms account existence. A failed-login rate limiter guards every
-attempt: `is_login_rate_limited`/`record_failed_login`/
-`clear_failed_logins` share an in-process `dict[str, deque[datetime]]`
-keyed by username (`HULLBREACH_LOGIN_RATE_LIMIT_MAX`/
-`_WINDOW_SECONDS`, default 5 attempts / 60 seconds), explicitly
+`{"detail": "invalid username or password"}`, and both run exactly one
+Argon2 verify (the unknown-user path against a dummy hash), so neither
+the body nor the response time confirms account existence (INV-001).
+Username lookup is case-insensitive. A failed-login rate limiter guards
+every attempt: `reserve_login_attempt` atomically checks the limit and
+records the attempt under one lock; `clear_failed_logins` (on success)
+undoes it. State is an in-process `dict[str, deque[datetime]]` keyed by
+lower-cased username (`HULLBREACH_LOGIN_RATE_LIMIT_MAX`/
+`_WINDOW_SECONDS`, default 5 attempts / 60 seconds). A key exists only
+while it holds in-window attempts and at most 10,000 usernames are
+tracked (expired keys are swept first, then the oldest is evicted), so
+spraying unique usernames cannot grow memory (INV-002). Over the limit
+the route answers 429 with a `Retry-After` header (seconds until the
+oldest attempt leaves the window). The store is explicitly
 single-instance for 0.1.0 -- it does not survive a process restart or
 work across multiple API instances. `current_time()` is the limiter's
-one clock read per request, called once in the route and threaded
-through both the check and the record call, so a single frozen instant
-governs one HTTP request. A successful login calls `clear_failed_logins`
-so the next failure does not immediately trip the limit.
+one clock read per request. The username in log lines always goes
+through `sanitize_for_log` (INV-003). `HULLBREACH_SESSION_TTL_SECONDS`
+and the two rate-limit variables must be positive integers:
+`validate_auth_env()` returns an `Err(AuthEnvError)` naming the bad
+variable (the server checks it at startup and exits non-zero), and the
+request-time readers fall back to the default with an ERROR log instead
+of raising a 500.
 
 `POST /api/v1/auth/logout` (`src/hullbreach_server/api/auth.py::logout`)
 requires `Authorization: Bearer <token>` (via `get_current_user`) and
-revokes it: `all=false` (the default query param) revokes only the
+revokes it: `all=false` (the default query param, bound to the
+`all_sessions` argument) revokes only the
 presented session (`revoke_session`); `all=true` revokes every
 non-revoked session for that user (`revoke_all_sessions`, T-0019). 204
 No Content on success; 401 (via `get_current_user`) if the token is
@@ -257,6 +296,8 @@ T-0057 and T-0070.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -299,7 +340,12 @@ deliberately not backed by an ORM model yet (T-0066 owns that), so
 an `include_object` filter rather than reporting a false "extra table"
 diff. The fifth revision
 (`7d2c4a91e0b3_create_matches_tables.py`, T-0053) creates `matches` and
-`match_player_stats` matching `db/models/match.py` exactly.
+`match_player_stats` matching `db/models/match.py` exactly. The sixth
+revision (`3b8e6f1c9d24_user_role_check_and_ci_unique.py`) adds the
+`ck_users_role` CHECK the users migration only promised (SQLAlchemy's
+`Enum(native_enum=False)` does not create one by default) and unique
+indexes on `lower(username)` / `lower(email)`; it fails on existing rows
+that already collide case-insensitively or hold an unknown role.
 
 ### Elo rating
 

@@ -103,3 +103,13 @@ def test_config_toml_routes_info_to_stdout_and_warnings_to_stderr() -> None:
     assert proc.stderr.count("warn-line") == 1
     assert "ERROR: exc-line" in proc.stderr
     assert "RuntimeError: boom" in proc.stderr
+
+
+def test_sanitize_for_log_escapes_control_characters_and_caps_length() -> None:
+    # frob:tests src/hullbreach_server/logging/logger.py::sanitize_for_log kind="unit"
+    from hullbreach_server.logging import sanitize_for_log
+
+    assert sanitize_for_log("a\r\nWARNING: forged") == "'a\\r\\nWARNING: forged'"
+    capped = sanitize_for_log("x" * 500)
+    assert len(capped) < 120
+    assert capped.endswith("(+436 chars)")

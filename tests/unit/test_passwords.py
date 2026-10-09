@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from hullbreach_server.auth.passwords import hash_password, verify_password
+from hullbreach_server.auth.passwords import (
+    hash_password,
+    verify_against_dummy_hash,
+    verify_password,
+)
 
 
 # frob:ticket T-0015
@@ -38,3 +42,14 @@ def test_hash_password_is_salted_so_two_hashes_of_the_same_password_differ() -> 
     second = hash_password("correct horse battery staple")
 
     assert first != second
+
+
+def test_verify_password_returns_false_for_a_malformed_stored_hash() -> None:
+    # frob:tests src/hullbreach_server/auth/passwords.py::verify_password kind="unit"
+    assert verify_password("anything", "not-a-hash") is False
+    assert verify_password("anything", "") is False
+
+
+def test_verify_against_dummy_hash_always_returns_false() -> None:
+    # frob:tests src/hullbreach_server/auth/passwords.py::verify_against_dummy_hash kind="unit"
+    assert verify_against_dummy_hash("anything") is False

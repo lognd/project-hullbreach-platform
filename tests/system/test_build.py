@@ -128,3 +128,37 @@ def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
         diffs = compare_metadata(context, Base.metadata)
 
     assert diffs == []
+
+
+def test_migrated_users_table_enforces_role_check_and_ci_uniqueness(tmp_path):
+    """After `upgrade head` the database itself rejects an unknown role and a
+    case-variant duplicate username/email (not just the ORM and the API)."""
+    # frob:tests src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::upgrade kind="integration"  # noqa: E501
+    import pytest
+    from sqlalchemy import text
+    from sqlalchemy.exc import IntegrityError
+
+    engine = create_db_engine(
+        f"sqlite:///{tmp_path / 'ck.db'}",
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
+    alembic_cfg = Config(str(_SRC_ROOT.parent.parent / "alembic.ini"))
+    alembic_cfg.attributes["connection"] = engine.connect()
+    command.upgrade(alembic_cfg, "head")
+
+    insert = text(
+        "INSERT INTO users (id, username, email, password_hash, role) "
+        "VALUES (:id, :u, :e, 'h', :r)"
+    )
+    with engine.begin() as conn:
+        conn.execute(
+            insert, {"id": "1" * 32, "u": "Bob", "e": "Bob@x.com", "r": "player"}
+        )
+    for params in (
+        {"id": "2" * 32, "u": "other", "e": "o@x.com", "r": "superadmin"},
+        {"id": "3" * 32, "u": "bob", "e": "new@x.com", "r": "player"},
+        {"id": "4" * 32, "u": "new", "e": "bob@x.com", "r": "player"},
+    ):
+        with pytest.raises(IntegrityError), engine.begin() as conn:
+            conn.execute(insert, params)

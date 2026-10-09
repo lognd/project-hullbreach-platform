@@ -4,32 +4,35 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Query, Response
 from fastapi.responses import JSONResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from hullbreach_server.auth.deps import AuthContext, get_current_user
-from hullbreach_server.auth.passwords import hash_password, verify_password
-from hullbreach_server.auth.schemas import (
+from hullbreach_server.auth import (
+    AuthContext,
+    ConflictResponse,
+    ErrorDetail,
     LoginRequest,
     LoginResponse,
     RegisterRequest,
     SessionInfo,
     UserProfile,
-)
-from hullbreach_server.auth.sessions import (
     clear_failed_logins,
     current_time,
-    is_login_rate_limited,
+    get_current_user,
+    hash_password,
     issue_session,
-    record_failed_login,
+    reserve_login_attempt,
     revoke_all_sessions,
     revoke_session,
+    verify_against_dummy_hash,
+    verify_password,
 )
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
-from hullbreach_server.logging import get_logger
+from hullbreach_server.logging import get_logger, sanitize_for_log
 
 _log = get_logger(__name__)
 
@@ -39,28 +42,42 @@ router = APIRouter()
 def _duplicate_field(db: Session, username: str, email: str) -> str | None:
     """Return "username" or "email" if either is already taken, else None.
 
-    A pre-query (rather than catching the driver's IntegrityError) so the
-    specific offending field is known before any insert is attempted, per
-    docs/design/sprint-1.md section 5.
+    Matches case-insensitively. A pre-query so the specific offending field
+    can be named in the 409; the database's unique indexes remain the
+    authority, and `register` also maps a lost insert race onto the same 409.
     """
     existing = db.execute(
         select(User.username, User.email).where(
-            (User.username == username) | (User.email == email)
+            (func.lower(User.username) == username.lower())
+            | (func.lower(User.email) == email.lower())
         )
     ).first()
     if existing is None:
         return None
-    existing_username, existing_email = existing
-    if existing_username == username:
+    existing_username, _existing_email = existing
+    if existing_username.lower() == username.lower():
         return "username"
     return "email"
+
+
+def _conflict(field: str) -> JSONResponse:
+    """Build register's 409 response naming the already-taken `field`."""
+    return JSONResponse(
+        status_code=409,
+        content={"detail": f"{field} already taken", "field": field},
+    )
 
 
 # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults  # noqa: E501
 # frob:tests tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field  # noqa: E501
 # frob:tests tests/unit/test_auth_register.py::test_register_duplicate_email_returns_409_with_field  # noqa: E501
 # frob:doc docs/index.md#auth-api
-@router.post("/register", response_model=UserProfile, status_code=201)
+@router.post(
+    "/register",
+    response_model=UserProfile,
+    status_code=201,
+    responses={409: {"model": ConflictResponse, "description": "Field already taken"}},
+)
 def register(
     payload: RegisterRequest, db: Session = Depends(get_db)
 ) -> UserProfile | JSONResponse:
@@ -68,10 +85,7 @@ def register(
     field = _duplicate_field(db, payload.username, payload.email)
     if field is not None:
         _log.warning("register: duplicate %s", field)
-        return JSONResponse(
-            status_code=409,
-            content={"detail": f"{field} already taken", "field": field},
-        )
+        return _conflict(field)
 
     user = User(
         username=payload.username,
@@ -79,7 +93,17 @@ def register(
         password_hash=hash_password(payload.password),
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # Lost a race with a concurrent registration: the unique index fired
+        # after our pre-check passed. Same 409 as the sequential case.
+        db.rollback()
+        field = _duplicate_field(db, payload.username, payload.email)
+        if field is None:
+            raise
+        _log.warning("register: duplicate %s (lost insert race)", field)
+        return _conflict(field)
     db.refresh(user)
     _log.info("registered user %s", user.id)
     return UserProfile.from_user(user)
@@ -91,29 +115,45 @@ def register(
 # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
 # frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter  # noqa: E501
 # frob:doc docs/index.md#auth-api
-@router.post("/login", response_model=LoginResponse)
+@router.post(
+    "/login",
+    response_model=LoginResponse,
+    responses={
+        401: {"model": ErrorDetail, "description": "Invalid username or password"},
+        429: {"model": ErrorDetail, "description": "Too many failed attempts"},
+    },
+)
 def login(
     payload: LoginRequest, db: Session = Depends(get_db)
 ) -> LoginResponse | JSONResponse:
     """Issue a bearer token for valid credentials; 401 identically for an unknown
-    user or a wrong password, 429 after too many recent failures for the
-    same username."""
-    # frob:invariant INV-001
-    # frob:invariant INV-003
+    user or a wrong password, 429 (with Retry-After) after too many recent
+    attempts for the same username."""
     now = current_time()
-    if is_login_rate_limited(payload.username, now):
-        _log.warning("login: rate limited for %s", payload.username)
+    # frob:invariant INV-003
+    shown = sanitize_for_log(payload.username)
+    reserved = reserve_login_attempt(payload.username, now)
+    if reserved.is_err:
+        retry_after = reserved.danger_err.retry_after_seconds
+        _log.warning("login: rate limited for %s", shown)
         return JSONResponse(
             status_code=429,
             content={"detail": "too many attempts, try again later"},
+            headers={"Retry-After": str(retry_after)},
         )
 
     user = db.execute(
-        select(User).where(User.username == payload.username)
+        select(User).where(func.lower(User.username) == payload.username.lower())
     ).scalar_one_or_none()
-    if user is None or not verify_password(payload.password, user.password_hash):
-        record_failed_login(payload.username, now)
-        _log.warning("login: invalid credentials for %s", payload.username)
+    # frob:invariant INV-001
+    # Exactly one Argon2 verify on every path, so response time does not
+    # reveal whether the username exists.
+    if user is None:
+        verified = verify_against_dummy_hash(payload.password)
+    else:
+        verified = verify_password(payload.password, user.password_hash)
+    if user is None or not verified:
+        _log.warning("login: invalid credentials for %s", shown)
         return JSONResponse(
             status_code=401,
             content={"detail": "invalid username or password"},
@@ -132,15 +172,19 @@ def login(
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session  # noqa: E501
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401  # noqa: E501
 # frob:doc docs/index.md#auth-api
-@router.post("/logout", status_code=204)
+@router.post(
+    "/logout",
+    status_code=204,
+    responses={401: {"model": ErrorDetail, "description": "Token invalid"}},
+)
 def logout(
-    all: bool = False,
+    all_sessions: bool = Query(False, alias="all"),
     db: Session = Depends(get_db),
     ctx: AuthContext = Depends(get_current_user),
 ) -> Response:
     """Revoke the presented session (`all=false`, default) or every session
     for the caller (`all=true`); 401 if the token is already invalid."""
-    if all:
+    if all_sessions:
         revoke_all_sessions(db, ctx.user)
         _log.info("logged out user %s (all sessions)", ctx.user.id)
     else:
@@ -152,7 +196,11 @@ def logout(
 # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token  # noqa: E501
 # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email  # noqa: E501
 # frob:doc docs/index.md#auth-api
-@router.get("/session", response_model=SessionInfo)
+@router.get(
+    "/session",
+    response_model=SessionInfo,
+    responses={401: {"model": ErrorDetail, "description": "Token invalid"}},
+)
 def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
     """Validate a client-presented token; used by the game server (T-0026).
 

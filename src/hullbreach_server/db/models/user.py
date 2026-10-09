@@ -8,7 +8,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, String, Uuid, func
+from sqlalchemy import DateTime, Enum, Index, String, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from hullbreach_server.db.engine import Base
@@ -45,6 +45,9 @@ class User(Base):
             Role,
             name="role",
             native_enum=False,
+            # A real CHECK (ck_users_role): without it the database accepts
+            # any role string written outside the ORM.
+            create_constraint=True,
             values_callable=lambda enum_cls: [member.value for member in enum_cls],
         ),
         nullable=False,
@@ -53,3 +56,10 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+
+# Case-insensitive uniqueness (the exact-match unique constraints on the
+# columns cannot see "Bob" vs "bob"); enforced by the database, so it also
+# holds under concurrent registration.
+Index("uq_users_username_lower", func.lower(User.username), unique=True)
+Index("uq_users_email_lower", func.lower(User.email), unique=True)

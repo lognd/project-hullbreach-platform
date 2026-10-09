@@ -5,12 +5,14 @@ docs/design/sprint-1.md section 5 ("Token format").
 from __future__ import annotations
 
 import hashlib
+import math
 import os
 import secrets
 import threading
-from collections import defaultdict, deque
+from collections import deque
 from datetime import datetime, timedelta, timezone
 
+from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
 from typani import Err, ErrorSet, Ok, Result
 
@@ -23,49 +25,117 @@ _log = get_logger(__name__)
 _DEFAULT_SESSION_TTL_SECONDS = 1_209_600  # 14 days
 _DEFAULT_LOGIN_RATE_LIMIT_MAX = 5
 _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS = 60
+# Hard cap on distinct usernames tracked at once, so spraying unique names
+# cannot grow the store without bound (INV-002).
+_MAX_TRACKED_USERNAMES = 10_000
 
-# In-process failed-login store: a deque of failure timestamps per
-# username, behind a module-level lock. Explicitly single-instance for
-# 0.1.0 (docs/design/sprint-1.md section 5) -- it does not survive a
-# process restart or work across multiple API instances; a shared store
-# (Redis, or the database itself) is open work for when the platform
-# runs more than one instance.
+_ENV_SESSION_TTL = "HULLBREACH_SESSION_TTL_SECONDS"
+_ENV_RATE_LIMIT_MAX = "HULLBREACH_LOGIN_RATE_LIMIT_MAX"
+_ENV_RATE_LIMIT_WINDOW = "HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS"
+
+# In-process failed-login store: a deque of attempt timestamps per
+# lower-cased username, behind a module-level lock. A key exists only while
+# it holds at least one in-window attempt, and at most
+# _MAX_TRACKED_USERNAMES keys exist (oldest evicted first). Explicitly
+# single-instance for 0.1.0 (docs/design/sprint-1.md section 5) -- it does
+# not survive a process restart or work across multiple API instances; a
+# shared store (Redis, or the database itself) is open work for when the
+# platform runs more than one instance.
 # frob:invariant INV-002
-_failed_attempts: dict[str, deque[datetime]] = defaultdict(deque)
+_failed_attempts: dict[str, deque[datetime]] = {}
 _failed_attempts_lock = threading.Lock()
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back  # noqa: E501
+class AuthEnvError(BaseModel):
+    """A startup-time complaint about an unusable auth environment variable."""
+
+    message: str
+
+    def __str__(self) -> str:
+        return self.message
+
+
+def _parse_positive_int(name: str, default: int) -> Result[int, AuthEnvError]:
+    """Read env var `name` as a positive int: `default` if unset, Err if unusable."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return Ok(default)
+    try:
+        value = int(raw)
+    except ValueError:
+        return Err(AuthEnvError(message=f"{name} must be a positive integer"))
+    if value < 1:
+        return Err(AuthEnvError(message=f"{name} must be a positive integer"))
+    return Ok(value)
+
+
+def _env_int(name: str, default: int) -> int:
+    """Return the validated env value, or `default` (logged at ERROR) when unusable.
+
+    A bad value must never turn into a 500 on a login; `validate_auth_env`
+    is what makes it fail fast at startup.
+    """
+    result = _parse_positive_int(name, default)
+    if result.is_err:
+        _log.error("%s; using default %d", result.danger_err, default)
+        return default
+    return result.danger_ok
+
+
+# frob:doc docs/index.md#auth-api
+# frob:tests tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back  # noqa: E501
+def validate_auth_env() -> Result[None, AuthEnvError]:
+    """Check every auth env var is a positive integer; Err names the first bad one."""
+    for name, default in (
+        (_ENV_SESSION_TTL, _DEFAULT_SESSION_TTL_SECONDS),
+        (_ENV_RATE_LIMIT_MAX, _DEFAULT_LOGIN_RATE_LIMIT_MAX),
+        (_ENV_RATE_LIMIT_WINDOW, _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS),
+    ):
+        result = _parse_positive_int(name, default)
+        if result.is_err:
+            return Err(result.danger_err)
+    return Ok(None)
 
 
 def _session_ttl_seconds() -> int:
     """Read HULLBREACH_SESSION_TTL_SECONDS, defaulting to 14 days."""
-    raw = os.environ.get("HULLBREACH_SESSION_TTL_SECONDS")
-    if raw is None:
-        return _DEFAULT_SESSION_TTL_SECONDS
-    return int(raw)
+    return _env_int(_ENV_SESSION_TTL, _DEFAULT_SESSION_TTL_SECONDS)
 
 
 def _login_rate_limit_max() -> int:
     """Read HULLBREACH_LOGIN_RATE_LIMIT_MAX, defaulting to 5 attempts."""
-    raw = os.environ.get("HULLBREACH_LOGIN_RATE_LIMIT_MAX")
-    if raw is None:
-        return _DEFAULT_LOGIN_RATE_LIMIT_MAX
-    return int(raw)
+    return _env_int(_ENV_RATE_LIMIT_MAX, _DEFAULT_LOGIN_RATE_LIMIT_MAX)
 
 
 def _login_rate_limit_window_seconds() -> int:
     """Read HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS, defaulting to 60."""
-    raw = os.environ.get("HULLBREACH_LOGIN_RATE_LIMIT_WINDOW_SECONDS")
-    if raw is None:
-        return _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS
-    return int(raw)
+    return _env_int(_ENV_RATE_LIMIT_WINDOW, _DEFAULT_LOGIN_RATE_LIMIT_WINDOW_SECONDS)
 
 
-def _prune_stale_attempts(username: str, now: datetime) -> None:
-    """Drop `username`'s recorded failures older than the rate-limit window; caller holds the lock."""  # noqa: E501
-    window = timedelta(seconds=_login_rate_limit_window_seconds())
-    cutoff = now - window
-    attempts = _failed_attempts[username]
+def _prune_stale_attempts(key: str, now: datetime) -> None:
+    """Drop `key`'s attempts older than the window and delete the key when empty; caller holds the lock."""  # noqa: E501
+    attempts = _failed_attempts.get(key)
+    if attempts is None:
+        return
+    cutoff = now - timedelta(seconds=_login_rate_limit_window_seconds())
     while attempts and attempts[0] <= cutoff:
         attempts.popleft()
+    if not attempts:
+        del _failed_attempts[key]
+
+
+def _make_room(now: datetime) -> None:
+    """Keep the store under its key cap: sweep expired keys, then evict the oldest; caller holds the lock."""  # noqa: E501
+    if len(_failed_attempts) < _MAX_TRACKED_USERNAMES:
+        return
+    for key in list(_failed_attempts):
+        _prune_stale_attempts(key, now)
+    while len(_failed_attempts) >= _MAX_TRACKED_USERNAMES:
+        evicted = next(iter(_failed_attempts))
+        del _failed_attempts[evicted]
+        _log.warning("failed-login store full: evicted the oldest tracked username")
 
 
 # frob:doc docs/index.md#auth-api
@@ -78,25 +148,40 @@ def current_time() -> datetime:
 
 # frob:doc docs/index.md#auth-api
 # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
-def is_login_rate_limited(username: str, now: datetime) -> bool:
-    """True if `username` has hit the failed-login rate limit within the current window.
+class LoginRateLimited(BaseModel):
+    """Why a login attempt was refused, and how long until the window frees a slot."""
 
-    `now` is the caller's single `current_time()` reading for this login
-    attempt, shared with a following `record_failed_login` call so one
-    HTTP request consumes exactly one clock reading.
-    """
-    with _failed_attempts_lock:
-        _prune_stale_attempts(username, now)
-        return len(_failed_attempts[username]) >= _login_rate_limit_max()
+    retry_after_seconds: int
 
 
+# frob:invariant INV-002
 # frob:doc docs/index.md#auth-api
 # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
-def record_failed_login(username: str, now: datetime) -> None:
-    """Record a failed login attempt for `username` at `now`, pruning entries outside the window."""  # noqa: E501
+# frob:tests tests/unit/test_auth_login.py::test_concurrent_login_attempts_never_exceed_the_limit  # noqa: E501
+def reserve_login_attempt(
+    username: str, now: datetime
+) -> Result[None, LoginRateLimited]:
+    """Atomically check the rate limit and record one attempt for `username` at `now`.
+
+    Check and record share one lock acquisition, so concurrent requests cannot
+    both slip under the limit. Err carries the Retry-After seconds. The caller
+    must `clear_failed_logins` on a successful login; an attempt that is not
+    cleared counts as a failure. `now` is the caller's single `current_time()`
+    reading for this request. Usernames are matched case-insensitively.
+    """
+    key = username.lower()
     with _failed_attempts_lock:
-        _prune_stale_attempts(username, now)
-        _failed_attempts[username].append(now)
+        _prune_stale_attempts(key, now)
+        attempts = _failed_attempts.get(key)
+        if attempts is not None and len(attempts) >= _login_rate_limit_max():
+            window = timedelta(seconds=_login_rate_limit_window_seconds())
+            wait = (attempts[0] + window - now).total_seconds()
+            return Err(LoginRateLimited(retry_after_seconds=max(1, math.ceil(wait))))
+        if attempts is None:
+            _make_room(now)
+            attempts = _failed_attempts.setdefault(key, deque())
+        attempts.append(now)
+    return Ok(None)
 
 
 # frob:doc docs/index.md#auth-api
@@ -104,7 +189,7 @@ def record_failed_login(username: str, now: datetime) -> None:
 def clear_failed_logins(username: str) -> None:
     """Clear `username`'s failed-login history, e.g. after a successful login."""
     with _failed_attempts_lock:
-        _failed_attempts.pop(username, None)
+        _failed_attempts.pop(username.lower(), None)
 
 
 def _hash_token(token: str) -> str:
