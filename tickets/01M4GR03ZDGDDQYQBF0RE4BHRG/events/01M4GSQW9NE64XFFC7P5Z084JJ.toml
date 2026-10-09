@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a malformed stored hash, when verify_password runs, then it returns False without raising"]
+moved = []
+at = "2026-10-09T17:00:30Z"
+actor = "lognd"
+rev = 1
