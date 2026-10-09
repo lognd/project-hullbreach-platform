@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:01:52Z"
+digest = "6e052da540482b0af166e75074edd4dbd90a068e3f8af8450bc7b9d6435c9599"
+exit_code = 0
+inline = """
+..                                                                       [100%]
+=============================== warnings summary ===============================
+tests/unit/test_auth_login.py::test_login_log_line_cannot_be_forged_by_a_newline_username
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_auth_login.py::test_login_log_line_cannot_be_forged_by_a_newline_username
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 2 warnings in 1.93s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_auth_login.py::test_login_log_line_cannot_be_forged_by_a_newline_username tests/unit/test_logging.py::test_sanitize_for_log_escapes_control_characters_and_caps_length"
+size = 980
+status = "measured"
+tests = ["tests/unit/test_auth_login.py::test_login_log_line_cannot_be_forged_by_a_newline_username", "tests/unit/test_logging.py::test_sanitize_for_log_escapes_control_characters_and_caps_length"]
+at = "2026-10-09T17:01:52Z"
+actor = "lognd"
+rev = 1
