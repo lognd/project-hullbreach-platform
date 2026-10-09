@@ -2,7 +2,7 @@
 id = "01M3DG5Y3ZT86KZDX76GNG69PQ"
 title = "S17-3: Elo unit tests (winner never loses, loser never gains)"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "high"
 points = 1
 parent = "01M2H5T11QP42D39KC9ZNW0G2J"
