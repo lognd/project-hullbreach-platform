@@ -11,7 +11,7 @@ scope = ["src/hullbreach_server/auth/sessions.py"]
 
 [[acceptance]]
 text = "given spraying of unique usernames, when the store is full, then it stays under its cap, holds no empty keys and never exceeds the attempt limit under concurrency"
-bound = false
+bound = true
 +++
 
 origin: auditor. auth/sessions.py:166,194-231 -- _failed_attempts is a defaultdict(deque); _prune_stale_attempts empties a deque but never deletes the key, and is_login_rate_limited (line 222) creates a key for any probed name via defaultdict indexing. An attacker posting random usernames to /login grows memory without bound. Also the check (api/auth.py:102) and record (line 113) are separate lock acquisitions, so concurrent requests can exceed the max. Fix: delete the key when its deque is empty after pruning, use _failed_attempts.get in is_login_rate_limited, cap total keys, and consider a single atomic check_and_record function.
