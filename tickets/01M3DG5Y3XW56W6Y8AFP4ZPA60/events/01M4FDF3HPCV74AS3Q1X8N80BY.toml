@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given an existing username or email, when a second account registers with it, then the API answers 409 naming the offending field", "Given a password shorter than 8 characters, when an account registers, then the API answers 422"]
+moved = []
+at = "2026-10-09T04:06:45Z"
+actor = "lognd"
+rev = 1
