@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Auditor sweep: enforces invariant INV-002 (invariants/INV-002.md, anchored in source). No POL rule exists for this finding: this frob version has no pattern-rule engine (only [invariants] forbid_imports). Fix must keep the frob:invariant anchor."
+at = "2026-10-09T16:34:00Z"
+actor = "lognd"
+rev = 1
