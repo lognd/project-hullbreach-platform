@@ -2,11 +2,12 @@
 id = "01M4GR06TFXSBFG1B7SN4GWGZY"
 title = "Login logs attacker-controlled username unescaped (log injection, mistyped-password leak)"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:06Z"
-updated = "2026-10-09T17:01:52Z"
+updated = "2026-10-09T17:01:57Z"
 labels = ["origin:auditor", "audit:logging"]
 scope = ["src/hullbreach_server/api/auth.py"]
 
