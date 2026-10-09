@@ -29,6 +29,7 @@ afterEach(() => {
 });
 
 describe("Register page", () => {
+  // frob:tests web/src/pages/Register.tsx::Register kind="unit"
   it("shows field error next to the offending input", async () => {
     vi.stubGlobal(
       "fetch",
@@ -180,6 +181,7 @@ describe("Register page", () => {
 });
 
 describe("api/auth.ts", () => {
+  // frob:tests web/src/api/auth.ts::register kind="unit"
   it(
     "register posts to /api/v1/auth/register with the request body",
     async () => {
@@ -214,6 +216,7 @@ describe("api/auth.ts", () => {
     },
   );
 
+  // frob:tests web/src/api/auth.ts::ApiError kind="unit"
   it(
     "register throws an ApiError carrying the response detail and field on 409",
     async () => {
@@ -242,6 +245,7 @@ describe("api/auth.ts", () => {
     },
   );
 
+  // frob:tests web/src/api/auth.ts::login kind="unit"
   it("login posts to /api/v1/auth/login with username and password", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       jsonResponse(
@@ -270,6 +274,7 @@ describe("api/auth.ts", () => {
     );
   });
 
+  // frob:tests web/src/api/auth.ts::logout kind="unit"
   it(
     "logout posts to /api/v1/auth/logout with a bearer Authorization header",
     async () => {
@@ -288,6 +293,7 @@ describe("api/auth.ts", () => {
     },
   );
 
+  // frob:tests web/src/api/auth.ts::fetchSession kind="unit"
   it(
     "fetchSession sends a bearer Authorization header to GET /api/v1/auth/session",
     async () => {

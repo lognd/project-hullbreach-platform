@@ -1,4 +1,3 @@
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#routing-and-page-shell
 /** Site footer with links to the cookie notice and data policy pages. */
 export function Footer() {

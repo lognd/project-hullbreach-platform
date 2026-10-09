@@ -47,6 +47,7 @@ afterEach(() => {
 });
 
 describe("Login page", () => {
+  // frob:tests web/src/pages/Login.tsx::Login kind="unit"
   it("submits login with username and password fields", async () => {
     const fetchMock = vi
       .fn()
@@ -71,6 +72,8 @@ describe("Login page", () => {
     );
   });
 
+  // frob:tests web/src/api/auth.ts::login kind="unit"
+  // frob:tests web/src/auth/session.ts::saveSession kind="unit"
   it(
     "persists the session to localStorage on successful login",
     async () => {
@@ -185,6 +188,8 @@ describe("Login page", () => {
 });
 
 describe("auth/session.ts", () => {
+  // frob:tests web/src/auth/session.ts::loadSession kind="unit"
+  // frob:tests web/src/auth/session.ts::useSession kind="unit"
   it(
     "restores the session from localStorage synchronously on mount",
     async () => {
@@ -208,6 +213,7 @@ describe("auth/session.ts", () => {
     },
   );
 
+  // frob:tests web/src/auth/session.ts::clearSession kind="unit"
   it(
     "clears the stored session so loadSession returns null after clearSession",
     async () => {

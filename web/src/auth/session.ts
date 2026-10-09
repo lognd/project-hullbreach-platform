@@ -26,15 +26,12 @@ function isStoredSession(value: unknown): value is StoredSession {
   );
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
-// frob:tests web/tests/unit/Login.test.tsx kind="unit"
 // frob:doc docs/index.md#session-persistence
 /** Persists the given session to localStorage so it survives a reload. */
 export function saveSession(session: StoredSession): void {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 }
 
-// frob:tests web/tests/unit/Login.test.tsx kind="unit"
 // frob:doc docs/index.md#session-persistence
 /** Reads the persisted session back, or null if absent or corrupt. */
 export function loadSession(): StoredSession | null {
@@ -50,16 +47,12 @@ export function loadSession(): StoredSession | null {
   }
 }
 
-// frob:tests web/tests/unit/Login.test.tsx kind="unit"
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#session-persistence
 /** Removes the persisted session, e.g. on logout. */
 export function clearSession(): void {
   window.localStorage.removeItem(STORAGE_KEY);
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
-// frob:tests web/tests/unit/Login.test.tsx kind="unit"
 // frob:doc docs/index.md#session-persistence
 /** React hook exposing the current session, live-updated across tabs via the storage event. */
 export function useSession(): StoredSession | null {

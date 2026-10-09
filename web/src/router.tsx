@@ -24,7 +24,6 @@ function NotFound() {
   );
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#routing-and-page-shell
 // frob:waive REF002 reason="single-anchor by design: wired only from web/src/main.tsx \
 // (the app's one entry point) plus this one doc anchor -- a second consumer would be \
