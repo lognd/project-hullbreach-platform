@@ -15,7 +15,7 @@ scope = ["CONTRIBUTING.md", "README.md"]
 
 [[acceptance]]
 text = "Given a pull request to main, when CI runs, then a dedicated frob check job runs frob ticket doctor and frob check, and fails the PR on a finding at or above fail_on"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "Given a contributor reading CONTRIBUTING.md, when they look for what merges a PR, then frob check is named as one of the required status checks"
