@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given an unknown username, when login runs, then one Argon2 verify still runs; and a 429 carries Retry-After"]
+moved = []
+at = "2026-10-09T17:01:41Z"
+actor = "lognd"
+rev = 1
