@@ -2,7 +2,7 @@
 id = "01M2H5T113RYF18J14Y8A886W6"
 title = "Website account settings form"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 2
 parent = "01M2H5T11109WWPFDDD0ZX7K9V"
