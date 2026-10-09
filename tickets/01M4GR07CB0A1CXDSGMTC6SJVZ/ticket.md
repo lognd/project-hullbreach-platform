@@ -2,11 +2,12 @@
 id = "01M4GR07CB0A1CXDSGMTC6SJVZ"
 title = "No integration test for logging config.toml routing; get_logger init contract undocumented"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:06Z"
-updated = "2026-10-09T16:53:16Z"
+updated = "2026-10-09T16:53:18Z"
 labels = ["origin:auditor", "audit:logging"]
 scope = ["tests/unit/test_logging.py"]
 
