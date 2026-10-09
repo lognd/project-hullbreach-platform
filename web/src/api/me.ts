@@ -31,7 +31,6 @@ export type MeResponse = UserProfile & {
   recent_matches: MatchSummary[];
 };
 
-// frob:tests web/tests/unit/Profile.test.tsx kind="unit"
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
 /** GET /api/v1/me with the caller's bearer token; 200 MeResponse on success, 401 rejects with an ApiError. */
 export async function fetchMe(token: string): Promise<MeResponse> {

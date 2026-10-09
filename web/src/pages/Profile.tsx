@@ -10,7 +10,6 @@ type ProfileState =
   | { status: "ready"; me: MeResponse }
   | { status: "error"; message: string };
 
-// frob:tests web/tests/unit/Profile.test.tsx kind="unit"
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
 /** Profile page: loads GET /api/v1/me for the signed-in player and shows rating, currency, owned skins and the last five matches in a single column that fits a phone. */
 export function Profile() {

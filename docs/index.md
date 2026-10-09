@@ -278,7 +278,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/me` (the profile page), and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -337,6 +337,36 @@ since `useSession` reads that same localStorage key back on mount. Any
 `role="alert"` form-level banner with the server's `detail` message;
 Login has no field-level errors (the login contract never names a
 `field`).
+
+### Player API client and the profile page
+
+`web/src/api/me.ts` is the client for the signed-in player's own
+resources under `/api/v1/me`. It reuses `api/auth.ts`'s `requestJson`
+(one `fetch` wrapper, one `ApiError` shape) and `bearerHeaders`. The
+`MeResponse` type is the _planned_ contract of `GET /api/v1/me` (T-0031),
+which does not exist yet: the `UserProfile` fields (`currency` is the
+balance, `rating` the Elo) plus `inventory` (owned skins) and
+`recent_matches` (newest first). `MatchSummary` is shared with the match
+history (T-0059). The shared fixture `web/tests/fixtures/me.ts` is a typed
+instance of that contract, so pages are built and tested before the
+endpoint ships.
+
+`web/src/pages/Profile.tsx` is routed at `/me`. It reads the token from
+`useSession()`; signed out it shows a log-in link and makes no request.
+Signed in it loads `fetchMe` and renders the username, rating, currency,
+owned skins and at most five recent matches (`web/src/components/
+MatchItem.tsx`, one row per match), or an empty-state line for each empty
+section. A rejected request shows the server's `detail` in a `role="alert"`
+paragraph. The layout is a single column capped at 40rem with wrapping
+flex rows, and every user-supplied string carries `wrap-anywhere`, so it
+fits a 400px phone. jsdom has no layout engine, so the test asserts that
+contract (`web/tests/support/layout.ts` `overflowRisks`: no fixed width
+above the viewport, no unwrappable text) rather than measuring
+`scrollWidth`.
+
+Known gap: the live-server test in `web/tests/unit/Profile.test.tsx` is
+`it.fails` until T-0031 lands; when it does, the test passes, `it.fails`
+turns red, and that is the cue to drop `.fails`.
 
 ## Sprint 1 design
 

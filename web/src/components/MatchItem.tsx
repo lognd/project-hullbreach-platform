@@ -1,6 +1,5 @@
 import type { MatchSummary } from "@/api/me";
 
-// frob:tests web/tests/unit/Profile.test.tsx kind="unit"
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
 /** One match row (opponent, result, date, rating change); wraps on narrow screens so long names never force horizontal scroll. */
 export function MatchItem({ match }: { match: MatchSummary }) {

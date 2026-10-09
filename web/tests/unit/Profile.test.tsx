@@ -32,6 +32,9 @@ afterEach(() => {
 
 describe("Profile page", () => {
   // frob:tests web/src/pages/Profile.tsx::Profile kind="unit"
+  // frob:tests web/src/components/MatchItem.tsx::MatchItem kind="unit"
+  // frob:tests web/src/api/auth.ts::bearerHeaders kind="unit"
+  // frob:tests web/src/api/auth.ts::requestJson kind="unit"
   it("shows username, rating, currency, owned skins and the last five matches", async () => {
     signIn();
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse(meFixture));
@@ -173,7 +176,7 @@ describe("Profile against the live server", () => {
   // fetchMe), so it fails while the endpoint is missing or no server runs. When
   // T-0031 lands it passes, `it.fails` turns red, and that is the cue to drop
   // `.fails` and the marker below.
-  // frob:todo 01M2H5T10ZV4EV17ZMHTQ455KJ note="drop it.fails once GET /api/v1/me is live"
+  // frob:todo 01M2H5T10ZV4EV17ZMHTQ455KJ drop it.fails once GET /api/v1/me is live
   // frob:tests web/src/api/me.ts::fetchMe kind="integration"
   it.fails("returns the profile contract from the live GET /api/v1/me", async () => {
     const realFetch = globalThis.fetch;
