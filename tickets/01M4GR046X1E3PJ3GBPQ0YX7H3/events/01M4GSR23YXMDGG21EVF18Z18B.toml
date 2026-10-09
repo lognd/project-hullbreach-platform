@@ -1,0 +1,54 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:00:35Z"
+digest = "83d4e6979682ea9a5c9f9f14af78d01dcdeeb04058e4c88b50259a82461c38b0"
+exit_code = 1
+failed_tests = ["tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back"]
+inline = '''
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_invalid_auth_env_fails_validation_and_readers_fall_back _
+
+    @pytest.fixture(autouse=True)
+    def _reset_failed_login_store():
+        """Clear the module-level failed-login store before/after each test.
+    
+        `auth/sessions.py::_failed_attempts` is deliberately process-global
+        (single-instance rate limiting, per docs/design/sprint-1.md section
+        5), so it persists across tests in the same pytest process unless
+        reset; every test in this file reuses the same "player_one" username.
+        """
+>       import hullbreach_server.auth.sessions as sessions_module
+
+tests/unit/test_auth_login.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/hullbreach_server/auth/__init__.py:8: in <module>
+    from hullbreach_server.auth.deps import AuthContext, get_current_user, require_admin
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """FastAPI auth dependencies (T-0019), per docs/design/sprint-1.md section 5
+    ("get_current_user / require_admin").
+    """
+    
+    from __future__ import annotations
+    
+    from dataclasses import dataclass
+    
+>   from fastapi import Depends, HTTPException
+E   ModuleNotFoundError: No module named 'fastapi'
+
+src/hullbreach_server/auth/deps.py:9: ModuleNotFoundError
+-------------- generated xml file: /tmp/frob-pytest-618336-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back
+1 error in 0.07s
+'''
+passed = false
+provider = "pytest"
+ref = "tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back"
+size = 1779
+status = "measured"
+tests = ["tests/unit/test_auth_login.py::test_invalid_auth_env_fails_validation_and_readers_fall_back"]
+at = "2026-10-09T17:00:35Z"
+actor = "lognd"
+rev = 1
