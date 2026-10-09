@@ -2,11 +2,12 @@
 id = "01M2Y1SM370GG28KN9CKEES0WW"
 title = "Leave teammate breadcrumbs: pick-up guide and frob:todo markers at every plug-in point"
 type = "docs"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "high"
 reporter = "human"
 created = "2026-09-20T00:00:00Z"
-updated = "2026-10-09T04:06:59Z"
+updated = "2026-10-09T04:07:00Z"
 aliases = ["T-0103"]
 labels = ["jira:none"]
 scope = ["docs/picking-up-work.md", "README.md", "CONTRIBUTING.md", "docs/index.md", "src/hullbreach_server/api/__init__.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/api/auth.py", "web/src/router.tsx", "web/src/App.tsx", "web/src/components/Footer.tsx", "web/src/api/auth.ts"]
