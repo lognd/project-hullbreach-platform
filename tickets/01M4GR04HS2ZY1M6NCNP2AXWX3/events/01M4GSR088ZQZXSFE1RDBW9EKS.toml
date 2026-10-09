@@ -1,0 +1,35 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:00:33Z"
+digest = "7cd8dafdb5e03f01ea75e7da9a9e29f46859584fa451643e451895f1346f5daf"
+exit_code = 4
+failed_tests = ["tests/unit/test_sessions.py::tests.unit.test_sessions"]
+inline = """
+
+==================================== ERRORS ====================================
+_________________ ERROR collecting tests/unit/test_sessions.py _________________
+ImportError while importing test module '<worktree>/tests/unit/test_sessions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+~/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_sessions.py:13: in <module>
+    from fastapi import Depends
+E   ModuleNotFoundError: No module named 'fastapi'
+-------------- generated xml file: /tmp/frob-pytest-618157-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/unit/test_sessions.py
+1 error in 0.30s
+ERROR: found no collectors for <worktree>/tests/unit/test_sessions.py::test_auth_dependencies_are_sync_so_they_run_in_the_threadpool
+
+"""
+passed = false
+provider = "pytest"
+ref = "tests/unit/test_sessions.py::test_auth_dependencies_are_sync_so_they_run_in_the_threadpool"
+size = 1044
+status = "measured"
+tests = ["tests/unit/test_sessions.py::tests.unit.test_sessions"]
+at = "2026-10-09T17:00:33Z"
+actor = "lognd"
+rev = 1

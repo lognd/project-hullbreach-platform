@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:03Z"
-updated = "2026-10-09T17:00:32Z"
+updated = "2026-10-09T17:00:33Z"
 scope = ["src/hullbreach_server/auth/deps.py"]
 
 [[acceptance]]
