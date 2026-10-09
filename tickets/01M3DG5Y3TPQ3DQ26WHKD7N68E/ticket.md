@@ -2,7 +2,8 @@
 id = "01M3DG5Y3TPQ3DQ26WHKD7N68E"
 title = "S02-2: Add the design-system (frob) check as a required CI step"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "critical"
 points = 2
 parent = "01M2H5T109596X8JSBWC05JJDV"
