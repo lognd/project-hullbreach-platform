@@ -2,11 +2,12 @@
 id = "01M4GR0D0R069EZKD3CT4GKWQR"
 title = "api routes return undeclared JSONResponse errors: OpenAPI contract omits 401/409/429/503 and login logs raw username"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:12Z"
-updated = "2026-10-09T17:02:13Z"
+updated = "2026-10-09T17:02:16Z"
 labels = ["origin:auditor", "interface-audit"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/api/health.py"]
 
