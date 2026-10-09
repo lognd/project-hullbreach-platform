@@ -2,11 +2,12 @@
 id = "01M4GR071TMY19HWB9KDA5X5DF"
 title = "BelowLevelFilter silently defaults unknown level name to WARNING"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:06Z"
-updated = "2026-10-09T16:52:55Z"
+updated = "2026-10-09T16:52:57Z"
 labels = ["origin:auditor", "audit:logging"]
 scope = ["src/hullbreach_server/logging/filter.py"]
 
