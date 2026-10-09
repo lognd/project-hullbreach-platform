@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a wildcard origin, when config loads, then it is rejected; and preflights for other methods or headers are refused"]
+moved = []
+at = "2026-10-09T17:11:00Z"
+actor = "lognd"
+rev = 1
