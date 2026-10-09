@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/auth/session.ts"]
+new = ["web/src/auth/session.ts", "web/tests/setup.ts", "web/tests/unit/Login.test.tsx", "docs/index.md", "docs/design/sprint-1.md", "changelog.d/01M4GR6ES87DSS119XV7PR4BF7.changed.md"]
+at = "2026-10-09T16:50:57Z"
+actor = "a-carten"
+rev = 1
