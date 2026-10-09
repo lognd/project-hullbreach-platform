@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1, 2, 3, 4]
+captured_at = "2026-10-09T04:09:05Z"
+digest = "f2e73cd48db50addb7529a7d32f4828e995dd79c05db7a6a030ce47d2cb5a0c9"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Settings.test.tsx (8 tests) 775ms
+     \u{2713} sends only the changed email and current password, then confirms  314ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  00:09:05
+   Duration  1.75s (transform 149ms, setup 73ms, import 247ms, tests 775ms, environment 522ms)
+
+JSON report written to /tmp/frob-vitest-396715-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Settings.test.tsx"
+size = 397
+status = "measured"
+tests = ["web/tests/unit/Settings.test.tsx::suite$Settings_page::test$sends_only_the_changed_email_and_current_password__then_confirms", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$shows_the_error_and_changes_nothing_when_the_current_password_is_wrong", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$refuses_an_email_or_password_change_without_the_current_password_and_sends_nothi", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$changes_the_display_name_without_a_current_password_and_updates_the_stored_sessi", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$shows_a_rejected_display_name_next_to_its_field", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$shows_a_banner_for_a_failure_with_no_field__and_for_a_network_error", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$says_there_is_nothing_to_change_when_the_form_is_untouched", "web/tests/unit/Settings.test.tsx::suite$Settings_page::test$asks_a_signed-out_visitor_to_log_in_and_shows_no_form"]
+at = "2026-10-09T04:09:05Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: a-carten in wt/a-carten-platform; scope: web/src/pages/History.tsx, web/tests/unit/History.test.tsx, web/src/api/me.ts, web/tests/fixtures/me.ts, web/src/router.tsx, web/src/components/MatchItem.tsx, docs/index.md; ttl 7200s"
+at = "2026-10-09T04:09:27Z"
+actor = "a-carten"
+rev = 1

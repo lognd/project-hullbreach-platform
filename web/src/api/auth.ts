@@ -86,8 +86,9 @@ async function parseErrorBody(
   return { detail: "request failed" };
 }
 
-/** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response. */
-async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+// frob:doc docs/index.md#auth-api-client-and-the-register-page
+/** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response; shared by every API client module. */
+export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   // frob:todo T-0102 pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
   const response = await fetch(path, init);
   if (!response.ok) {
@@ -95,6 +96,12 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(response.status, detail, field);
   }
   return (await response.json()) as T;
+}
+
+// frob:doc docs/index.md#auth-api-client-and-the-register-page
+/** The Authorization header for a signed-in request, shared by every API client module that sends a bearer token. */
+export function bearerHeaders(token: string): Record<string, string> {
+  return { Authorization: `Bearer ${token}` };
 }
 
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
@@ -122,7 +129,7 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
 export async function logout(token: string): Promise<void> {
   const response = await fetch(`${AUTH_BASE}/logout`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: bearerHeaders(token),
   });
   if (!response.ok) {
     const { detail, field } = await parseErrorBody(response);
@@ -134,6 +141,6 @@ export async function logout(token: string): Promise<void> {
 /** GET /api/v1/auth/session with the caller's bearer token; 200 SessionInfo on success, throws an ApiError otherwise. */
 export async function fetchSession(token: string): Promise<SessionInfo> {
   return requestJson<SessionInfo>(`${AUTH_BASE}/session`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: bearerHeaders(token),
   });
 }

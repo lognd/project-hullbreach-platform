@@ -278,7 +278,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/me` (the profile page), `/me/matches`, `/settings`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -337,6 +337,73 @@ since `useSession` reads that same localStorage key back on mount. Any
 `role="alert"` form-level banner with the server's `detail` message;
 Login has no field-level errors (the login contract never names a
 `field`).
+
+### Player API client and the profile page
+
+`web/src/api/me.ts` is the client for the signed-in player's own
+resources under `/api/v1/me`. It reuses `api/auth.ts`'s `requestJson`
+(one `fetch` wrapper, one `ApiError` shape) and `bearerHeaders`. The
+`MeResponse` type is the _planned_ contract of `GET /api/v1/me` (T-0031),
+which does not exist yet: the `UserProfile` fields (`currency` is the
+balance, `rating` the Elo) plus `inventory` (owned skins) and
+`recent_matches` (newest first). `MatchSummary` is shared with the match
+history (T-0059). The shared fixture `web/tests/fixtures/me.ts` is a typed
+instance of that contract, so pages are built and tested before the
+endpoint ships.
+
+`web/src/pages/Profile.tsx` is routed at `/me`. It reads the token from
+`useSession()`; signed out it shows a log-in link and makes no request.
+Signed in it loads `fetchMe` and renders the username, rating, currency,
+owned skins and at most five recent matches (`web/src/components/
+MatchItem.tsx`, one row per match), or an empty-state line for each empty
+section. A rejected request shows the server's `detail` in a `role="alert"`
+paragraph. The layout is a single column capped at 40rem with wrapping
+flex rows, and every user-supplied string carries `wrap-anywhere`, so it
+fits a 400px phone. jsdom has no layout engine, so the test asserts that
+contract (`web/tests/support/layout.ts` `overflowRisks`: no fixed width
+above the viewport, no unwrappable text) rather than measuring
+`scrollWidth`.
+
+Known gap: the live-server test in `web/tests/unit/Profile.test.tsx` is
+`it.fails` until T-0031 lands; when it does, the test passes, `it.fails`
+turns red, and that is the cue to drop `.fails`.
+
+### Account settings page
+
+`web/src/pages/Settings.tsx` is routed at `/settings` and edits the
+signed-in player's display name (the username), email and password through
+`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (planned,
+T-0034; the page is built against the fixture
+`profileFixture` in `web/tests/fixtures/me.ts`). It copies Register's
+inline-error pattern: an `ApiError` with a `field` is shown beside that
+input through `aria-describedby`, and one without becomes a `role="alert"`
+banner. The planned contract: the request carries only the changed fields,
+a new email or password also carries `current_password`, and a wrong one is
+a 403 naming `field: "current_password"`. The page enforces the same rule
+locally (an email or password change with no current password is refused
+inline without a request) and says "Nothing to change." for an untouched
+form. On success it clears the secret fields and writes the new username
+into the stored session so a reload shows it. Signed out, the page renders
+`web/src/components/SignInPrompt.tsx`, the log-in prompt the profile page
+now shares.
+
+### Match history page
+
+`web/src/pages/History.tsx` is routed at `/me/matches` and lists the
+signed-in player's matches, newest first, through `fetchMatches` in
+`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (planned, T-0059;
+the page is built against `makeMatchPage` in `web/tests/fixtures/me.ts`).
+A `MatchPage` is `{items, next_cursor}`; `next_cursor` is null on the last
+page. Each row is `web/src/components/MatchItem.tsx` in `detailed` mode
+(opponent, result, rating before and after, date, duration and stats).
+Load more requests the next cursor and appends the page; the control is
+disabled while a request is in flight, vanishes when the cursor is null,
+and after a failed request stays as a retry (labelled Try again if the
+first page failed) with the matches already loaded kept. Responses that
+belong to an earlier list (StrictMode's double-run effects, a changed
+token) are dropped, so no match is listed twice. The page does not
+virtualize the list; it relies on the server's page size to keep the DOM
+small, and the page size is the server's default (no `limit` is sent).
 
 ## Sprint 1 design
 

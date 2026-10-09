@@ -8,7 +8,7 @@
 //
 // frob:ticket T-0044
 // frob:ticket T-0024
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -194,6 +194,47 @@ describe("Footer", () => {
     expect(
       screen.getByRole("link", { name: /data policy/i }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Footer keyboard access", () => {
+  // frob:tests web/src/components/Footer.tsx::Footer kind="unit"
+  it("tab order reaches each footer link and Enter activates it", async () => {
+    const { Footer } = await import(footerModulePath);
+    render(<Footer />);
+    const links = screen.getAllByRole("link");
+    const user = userEvent.setup();
+    const activated: string[] = [];
+    for (const link of links) {
+      link.addEventListener("click", (event) => {
+        // jsdom cannot navigate; the click firing is what proves Enter works.
+        event.preventDefault();
+        activated.push(link.textContent ?? "");
+      });
+    }
+    await user.tab();
+    for (const link of links) {
+      expect(document.activeElement).toBe(link);
+      await user.keyboard("{Enter}");
+      await user.tab();
+    }
+    expect(activated).toEqual(["Cookie policy", "Data policy"]);
+  });
+
+  // frob:tests web/src/App.tsx::App kind="unit"
+  it("the page shell is one tab sequence: header controls, then footer links", async () => {
+    const { App } = await import(appModulePath);
+    render(<App />);
+    const user = userEvent.setup();
+    const expected = [
+      ...within(screen.getByRole("banner")).getAllByRole("link"),
+      ...within(screen.getByRole("banner")).getAllByRole("button"),
+      ...within(screen.getByRole("contentinfo")).getAllByRole("link"),
+    ];
+    for (const control of expected) {
+      await user.tab();
+      expect(document.activeElement).toBe(control);
+    }
   });
 });
 

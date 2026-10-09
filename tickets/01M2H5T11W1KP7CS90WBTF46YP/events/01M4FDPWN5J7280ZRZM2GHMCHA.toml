@@ -1,0 +1,27 @@
+kind = "evidence"
+accepts = [1, 2, 3, 4, 5]
+captured_at = "2026-10-09T04:10:58Z"
+digest = "781469f39d332ce2398e21c2ee9bcb5847ee7a667ca88c6daa4d2b6bbf1ae7ad"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/History.test.tsx (10 tests) 460ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  00:10:58
+   Duration  1.58s (transform 181ms, setup 94ms, import 316ms, tests 460ms, environment 537ms)
+
+JSON report written to /tmp/frob-vitest-413187-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/History.test.tsx"
+size = 313
+status = "measured"
+tests = ["web/tests/unit/History.test.tsx::suite$History_page::test$lists_the_first_page_newest_first_with_details_and_a_Load_more_control", "web/tests/unit/History.test.tsx::suite$History_page::test$appends_the_next_page_on_Load_more_and_drops_the_control_on_the_last_page", "web/tests/unit/History.test.tsx::suite$History_page::test$disables_Load_more_while_a_page_is_in_flight_so_a_double_click_sends_one_request", "web/tests/unit/History.test.tsx::suite$History_page::test$keeps_the_loaded_matches_and_offers_a_retry_when_Load_more_fails", "web/tests/unit/History.test.tsx::suite$History_page::test$offers_Try_again_when_the_first_page_fails__then_loads_it", "web/tests/unit/History.test.tsx::suite$History_page::test$shows_an_empty_state_for_a_player_with_no_matches", "web/tests/unit/History.test.tsx::suite$History_page::test$lists_each_match_once_under_StrictMode_s_double-run_effects", "web/tests/unit/History.test.tsx::suite$History_page::test$asks_a_signed-out_visitor_to_log_in_and_makes_no_request", "web/tests/unit/History.test.tsx::suite$History_page::test$lays_out_for_a_400px_phone_width_without_horizontal_overflow", "web/tests/unit/History.test.tsx::suite$fetchMatches::test$encodes_the_cursor_into_the_query_string"]
+at = "2026-10-09T04:10:58Z"
+actor = "a-carten"
+rev = 1
