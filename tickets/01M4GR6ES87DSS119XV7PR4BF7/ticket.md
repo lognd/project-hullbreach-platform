@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T16:51:17Z"
+updated = "2026-10-09T16:51:39Z"
 labels = ["origin:auditor", "creates:changelog.d/01M4GR6ES87DSS119XV7PR4BF7.changed.md"]
 scope = ["web/src/auth/session.ts", "web/tests/setup.ts", "web/tests/unit/Login.test.tsx", "docs/index.md", "docs/design/sprint-1.md", "changelog.d/01M4GR6ES87DSS119XV7PR4BF7.changed.md"]
 
