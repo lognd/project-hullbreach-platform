@@ -6,13 +6,13 @@ category = "todo"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T16:33:30Z"
+updated = "2026-10-09T17:11:27Z"
 labels = ["origin:auditor"]
 scope = ["docker-compose.yml", "src/hullbreach_server/app/config.py"]
 
 [[acceptance]]
 text = "given no POSTGRES_PASSWORD, when docker compose up, then compose refuses to start"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given no database_url configured, when AppConfig is built, then it fails with a clear error instead of using a default credential"
