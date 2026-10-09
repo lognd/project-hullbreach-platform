@@ -101,39 +101,25 @@ jobs:
       - name: install
         run: uv sync && npm ci
 
-      # A missing/broken frob install means the gate genuinely could NOT
-      # run -- that must be a loud, non-green status, never a quiet notice
-      # next to an otherwise-green build. A skipped gate that only prints
-      # a notice is indistinguishable from a passing one.
+      # frob v2 (the Rust rewrite) is pinned: a fresh runner must never
+      # pick up a newer major by accident. 0.532.0 is published on PyPI,
+      # so no token is needed. No `|| true`: a failed install is a loud,
+      # non-green status, because a skipped gate is indistinguishable from
+      # a passing one.
       - name: install frob
-        run: uv tool install frob || true
+        run: uv tool install frob==0.532.0
 
-      # GitHub checks out a PR as a detached merge commit, so frob cannot
-      # derive the active ticket from the branch name the way it does on a
-      # developer machine; pass it from the head ref instead. Pushes to
-      # main have an empty diff against origin/main and need no ticket.
-      # The coverage stamp and the ticket pre-work sweep record live in the
-      # gitignored .frob/ directory, so both are rebuilt here before the
-      # gate reads them (TEST006, PRE001).
+      # `frob check` exits 1 at or above [check] fail_on, so it is the gate.
+      # v1 steps removed with the migration: `frob coverage --full
+      # --fail-on-degraded` (no such verb; COV001 inside `frob check` is
+      # the coverage gate now), `frob ticket sweep` (gone; `frob ticket
+      # doctor` is the nearest replacement and runs below), and deriving a
+      # ticket from the branch name (v2 handles are ULIDs, and `--ticket`
+      # only scopes a run to a lease, which CI has none of).
+      - name: frob ticket doctor
+        run: frob ticket doctor
+
       - name: frob check
-        env:
-          HEAD_REF: ${{ github.head_ref || github.ref_name }}
         run: |
-          if ! command -v frob >/dev/null 2>&1 || ! frob graph --help >/dev/null 2>&1; then
-            echo "::error::frob check could not run -- frob is not installed or not working (install: uv tool install frob). This gate is UNMEASURED, not clean; fix the install rather than ignoring this failure."
-            exit 1
-          fi
           source .venv/bin/activate
-          frob coverage --full --fail-on-degraded
-          # The refresh rewrites frob-coverage.lock.json with a new source
-          # hash even when nothing changed; put the committed lock back so
-          # the gate does not see an unticketed dirty file (PRE001/SCOPE001
-          # on every push to main). The stamp it needs lives in .frob/.
-          git checkout -- frob-coverage.lock.json
-          ticket=$(printf "%s" "$HEAD_REF" | grep -oE "^T-[0-9]{4}" || true)
-          if [ -n "$ticket" ]; then
-            frob ticket sweep "$ticket"
-            frob check --base origin/main --ticket "$ticket"
-          else
-            frob check --base origin/main
-          fi
+          frob check
