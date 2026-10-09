@@ -9,6 +9,7 @@ import { App } from "@/App";
 // describe block), so this smoke test asserts the shell responsibility that
 // replaced it instead.
 describe("App", () => {
+  // frob:tests web/src/App.tsx::App kind="unit"
   it("renders the header and footer landmarks around the routed content", () => {
     render(<App />);
     expect(screen.getByRole("banner")).toBeInTheDocument();

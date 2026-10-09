@@ -37,7 +37,6 @@ def health() -> HealthResponse:
 
 # frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:tests tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
-# frob:waive WIRE001 reason="wired into api_router as the GET /api/v1/ready handler; no external caller (web/ops) polls it yet" follow_up="T-0100"  # noqa: E501
 # frob:doc docs/index.md#public-api
 @router.get("/ready", response_model=ReadyResponse)
 def ready(db: Session = Depends(get_db)) -> ReadyResponse | JSONResponse:

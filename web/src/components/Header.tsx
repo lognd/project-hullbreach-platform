@@ -6,7 +6,6 @@ function goHome(): void {
   window.location.assign("/");
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 /** Revokes `session`'s token, clears the local session, and sends the user home; the server call is best-effort -- local sign-out proceeds even if it fails. */
 async function handleLogout(session: StoredSession): Promise<void> {
   try {
@@ -19,7 +18,6 @@ async function handleLogout(session: StoredSession): Promise<void> {
   goHome();
 }
 
-// frob:tests web/tests/unit/Header.test.tsx kind="unit"
 // frob:doc docs/index.md#routing-and-page-shell
 /** Site header: brand plus Register/Login links when signed out, or the username and a Log out control when signed in. */
 export function Header() {

@@ -37,7 +37,7 @@ def test_py_typed_marker_present():
 
 def test_cli_help():
     """The CLI entry point must exit 0 with --help."""
-    # frob:tests src/hullbreach_server/__main__.py kind="integration"
+    # frob:tests src/hullbreach_server/__main__.py::main kind="integration"
     r = subprocess.run(
         [sys.executable, "-m", "hullbreach_server", "--help"],
         capture_output=True,
@@ -49,8 +49,8 @@ def test_cli_help():
 def test_app_builds_and_serves_health():
     """AppConfig -> create_app -> a live ASGI app answering /api/v1/health,
     exactly the path __main__ takes minus the uvicorn socket."""
-    # frob:tests src/hullbreach_server/app kind="integration"
-    # frob:tests src/hullbreach_server/api kind="integration"
+    # frob:tests src/hullbreach_server/app/app.py::create_app kind="integration"
+    # frob:tests src/hullbreach_server/api/health.py::health kind="integration"
     from hullbreach_server import __version__
     from hullbreach_server.app import AppConfig, create_app
 
@@ -76,7 +76,7 @@ def test_openapi_schema_is_served():
 
 def test_logging_package_wires_end_to_end():
     """The dictConfig-driven logger initializes and emits without raising."""
-    # frob:tests src/hullbreach_server/logging kind="integration"
+    # frob:tests src/hullbreach_server/logging/logger.py::get_logger kind="integration"
     from hullbreach_server.logging import get_logger
 
     get_logger(__name__).info("smoke test")

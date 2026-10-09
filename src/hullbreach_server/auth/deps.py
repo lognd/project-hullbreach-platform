@@ -69,7 +69,6 @@ async def get_current_user(
 # frob:tests tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message  # noqa: E501
 # frob:tests tests/unit/test_roles.py::test_admin_token_on_admin_route_returns_200
 # frob:tests tests/unit/test_roles.py::test_missing_admin_route_dependency_never_returns_401_for_a_valid_player  # noqa: E501
-# frob:waive WIRE001 reason="no production admin route exists in milestone 0.1.0 (admin moderation is out of scope for this sprint); exercised only by tests/unit/test_roles.py's test-only router (_mount_admin_route)" follow_up="T-0076"  # noqa: E501
 async def require_admin(ctx: AuthContext = Depends(get_current_user)) -> AuthContext:
     """Require the resolved caller to hold the admin role, or raise 403.
 

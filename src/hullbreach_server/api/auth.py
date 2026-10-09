@@ -118,7 +118,7 @@ def login(
         )
 
     clear_failed_logins(payload.username)
-    # frob:todo T-0077 note="refuse a suspended user here with 403 and the suspension reason, before issuing a session"  # noqa: E501
+    # frob:todo T-0077 refuse a suspended user here with 403 and the suspension reason, before issuing a session  # noqa: E501
     _session_row, token = issue_session(db, user)
     _log.info("logged in user %s", user.id)
     return LoginResponse(token=token, user=UserProfile.from_user(user))
@@ -130,7 +130,6 @@ def login(
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session  # noqa: E501
 # frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401  # noqa: E501
 # frob:doc docs/index.md#auth-api
-# frob:waive WIRE001 reason="already called from web/src/components/Header.tsx via api/auth.ts's logout() (T-0024, merged); this Python-only gate cannot trace the cross-language call site, only the strata f_logout flow declares it" follow_up="T-0100"  # noqa: E501
 @router.post("/logout", status_code=204)
 def logout(
     all: bool = False,
@@ -158,5 +157,5 @@ def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
     Deliberately minimal (no username/email) -- the caller's only need is
     "who is this and what can they do".
     """
-    # frob:todo T-0040 note="add active_skin to SessionInfo so the game client can render the equipped skin"  # noqa: E501
+    # frob:todo T-0040 add active_skin to SessionInfo so the game client can render the equipped skin  # noqa: E501
     return SessionInfo(user_id=ctx.user.id, role=ctx.user.role)
