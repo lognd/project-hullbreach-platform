@@ -6,7 +6,7 @@ category = "todo"
 priority = "low"
 reporter = "lognd"
 created = "2026-10-09T16:30:04Z"
-updated = "2026-10-09T17:00:37Z"
+updated = "2026-10-09T17:00:38Z"
 scope = ["src/hullbreach_server/auth/__init__.py"]
 
 [[acceptance]]
