@@ -5,7 +5,7 @@ FastAPI `get_db` dependency. Other modules import from here, never from
 
 from __future__ import annotations
 
-import argparse
+import threading
 from collections.abc import Iterator
 
 from sqlalchemy import Engine
@@ -25,46 +25,80 @@ __all__ = [
     "Base",
     "DatabaseError",
     "check_connectivity",
+    "dispose_engine",
     "get_engine",
     "get_sessionmaker",
     "get_db",
+    "init_engine",
 ]
 
+# Process-wide engine state. Written only under _engine_lock; the serving
+# path initialises it once at startup (App.__call__ or the app lifespan), so
+# request-time reads never race a first-use build.
+_engine_lock = threading.Lock()
 _engine: Engine | None = None
+_engine_url: str | None = None
 _sessionmaker: sessionmaker[Session] | None = None
 
 
-# frob:tests tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
+# frob:doc docs/index.md#public-api
+def init_engine(url: str) -> Engine:
+    """Build the process-wide Engine and sessionmaker for `url` once, thread-safely.
+
+    The URL comes from the caller's `AppConfig`, so the database that is
+    health-checked at startup is the one requests are served from. Repeating
+    the call with the same URL returns the existing engine; a different URL
+    raises RuntimeError (a programmer bug) until `dispose_engine()` is called.
+    """
+    global _engine, _engine_url, _sessionmaker
+    with _engine_lock:
+        if _engine is not None:
+            if url != _engine_url:
+                raise RuntimeError(
+                    "engine already initialised for a different database; "
+                    "call dispose_engine() first"
+                )
+            return _engine
+        _log.info("initializing database engine")
+        _engine = create_db_engine(url)
+        _engine_url = url
+        _sessionmaker = sessionmaker(bind=_engine)
+        return _engine
+
+
+# frob:doc docs/index.md#public-api
+def dispose_engine() -> None:
+    """Dispose the process-wide engine and forget it; a no-op when none is set."""
+    global _engine, _engine_url, _sessionmaker
+    with _engine_lock:
+        if _engine is None:
+            return
+        _engine.dispose()
+        _log.info("disposed database engine")
+        _engine = None
+        _engine_url = None
+        _sessionmaker = None
+
+
 # frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:doc docs/index.md#public-api
 def get_engine() -> Engine:
-    """Return the process-wide SQLAlchemy Engine, built lazily from config.
+    """Return the process-wide SQLAlchemy Engine set up by `init_engine`.
 
-    `AppConfig` is imported here, not at module scope: `db` is imported
-    from `api/health.py` (T-0012), and an eager `app.config` import at
-    `db` module load time would trigger `app`'s own `__init__` (which
-    imports `app.app`, which imports `api`) while `api`'s package
-    `__init__` is itself still mid-import -- a circular import. Deferring
-    the import to call time (this function only runs per-request, well
-    after every package has finished importing) breaks the cycle.
+    Raises RuntimeError if `init_engine` has not run: the engine is built
+    from the caller's config, never re-derived from the environment here.
     """
-    global _engine
     if _engine is None:
-        from hullbreach_server.app.config import AppConfig
-
-        cfg = AppConfig.from_external(argparse.Namespace())
-        _log.info("initializing database engine")
-        _engine = create_db_engine(cfg.database_url)
+        raise RuntimeError("database engine not initialised; call init_engine(url)")
     return _engine
 
 
 # frob:tests tests/unit/test_db_engine.py::test_get_db_dependency_yields_a_session
 # frob:doc docs/index.md#public-api
 def get_sessionmaker() -> sessionmaker[Session]:
-    """Return the process-wide sessionmaker bound to `get_engine()`."""
-    global _sessionmaker
+    """Return the process-wide sessionmaker bound to the `init_engine` engine."""
     if _sessionmaker is None:
-        _sessionmaker = sessionmaker(bind=get_engine())
+        raise RuntimeError("database engine not initialised; call init_engine(url)")
     return _sessionmaker
 
 

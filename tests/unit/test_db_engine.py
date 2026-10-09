@@ -80,9 +80,69 @@ def test_get_db_dependency_yields_a_session(db_session) -> None:
     """get_db is a FastAPI dependency yielding a usable SQLAlchemy Session."""
     from sqlalchemy.orm import Session as OrmSession
 
-    from hullbreach_server.db import get_db
+    from hullbreach_server.db import dispose_engine, get_db, init_engine
 
+    init_engine("sqlite://")
     generator = get_db()
     session = next(generator)
 
     assert isinstance(session, OrmSession)
+    generator.close()
+    dispose_engine()
+
+
+def test_init_engine_is_idempotent_and_rejects_a_different_url() -> None:
+    # frob:tests src/hullbreach_server/db/__init__.py::init_engine kind="unit"
+    # frob:tests src/hullbreach_server/db/__init__.py::get_engine kind="unit"
+    import pytest
+
+    from hullbreach_server.db import dispose_engine, get_engine, init_engine
+
+    try:
+        first = init_engine("sqlite://")
+        assert init_engine("sqlite://") is first
+        assert get_engine() is first
+        with pytest.raises(RuntimeError, match="different database"):
+            init_engine("sqlite:///other.db")
+    finally:
+        dispose_engine()
+
+
+def test_dispose_engine_resets_state_so_a_new_url_can_be_used() -> None:
+    # frob:tests src/hullbreach_server/db/__init__.py::dispose_engine kind="unit"
+    import pytest
+
+    from hullbreach_server.db import dispose_engine, get_engine, init_engine
+
+    init_engine("sqlite://")
+    dispose_engine()
+    with pytest.raises(RuntimeError, match="not initialised"):
+        get_engine()
+    second = init_engine("sqlite:///other.db")
+    assert get_engine() is second
+    dispose_engine()
+    dispose_engine()  # a second dispose is a no-op
+
+
+def test_init_engine_builds_one_engine_under_concurrent_first_use() -> None:
+    # frob:tests src/hullbreach_server/db/__init__.py::init_engine kind="unit"
+    import threading
+
+    from hullbreach_server.db import dispose_engine, init_engine
+
+    engines: list[object] = []
+    barrier = threading.Barrier(8)
+
+    def _init() -> None:
+        barrier.wait()
+        engines.append(init_engine("sqlite://"))
+
+    threads = [threading.Thread(target=_init) for _ in range(8)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    try:
+        assert len({id(e) for e in engines}) == 1
+    finally:
+        dispose_engine()

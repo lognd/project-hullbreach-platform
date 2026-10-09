@@ -31,8 +31,18 @@ target_metadata = Base.metadata
 
 
 def _resolve_database_url() -> str:
-    """Read the database URL via AppConfig, same precedence as every entrypoint."""
-    return AppConfig.from_external(argparse.Namespace()).database_url
+    """Return the URL the caller handed in, else resolve it via AppConfig.
+
+    `db upgrade` passes `Config.attributes["database_url"]`; a bare
+    `alembic` invocation falls back to the same precedence as every entrypoint.
+    """
+    url = config.attributes.get("database_url")
+    if url is not None:
+        return url
+    result = AppConfig.from_external(argparse.Namespace())
+    if result.is_err:
+        raise RuntimeError(str(result.danger_err))
+    return result.danger_ok.database_url
 
 
 # frob:doc docs/index.md#database-migrations

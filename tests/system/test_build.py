@@ -54,7 +54,7 @@ def test_app_builds_and_serves_health():
     from hullbreach_server import __version__
     from hullbreach_server.app import AppConfig, create_app
 
-    with TestClient(create_app(AppConfig())) as client:
+    with TestClient(create_app(AppConfig(database_url="sqlite://"))) as client:
         r = client.get("/api/v1/health")
 
     assert r.status_code == 200
@@ -67,7 +67,7 @@ def test_openapi_schema_is_served():
     # frob:tests src/hullbreach_server/app/app.py::create_app kind="integration"
     from hullbreach_server.app import AppConfig, create_app
 
-    with TestClient(create_app(AppConfig())) as client:
+    with TestClient(create_app(AppConfig(database_url="sqlite://"))) as client:
         r = client.get("/api/openapi.json")
 
     assert r.status_code == 200
@@ -133,7 +133,6 @@ def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
 def test_migrated_users_table_enforces_role_check_and_ci_uniqueness(tmp_path):
     """After `upgrade head` the database itself rejects an unknown role and a
     case-variant duplicate username/email (not just the ORM and the API)."""
-    # frob:tests src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::upgrade kind="integration"  # noqa: E501
     import pytest
     from sqlalchemy import text
     from sqlalchemy.exc import IntegrityError
@@ -162,3 +161,13 @@ def test_migrated_users_table_enforces_role_check_and_ci_uniqueness(tmp_path):
     ):
         with pytest.raises(IntegrityError), engine.begin() as conn:
             conn.execute(insert, params)
+
+
+def test_compose_publishes_postgres_on_loopback_with_no_default_password():
+    """INV-005: the dev database is loopback-only and has no well-known credential."""
+    # frob:tests src/hullbreach_server/app/config.py::AppConfig kind="integration"
+    compose = (_SRC_ROOT.parent.parent / "docker-compose.yml").read_text()
+    assert '"127.0.0.1:5432:5432"' in compose
+    assert '"5432:5432"' not in compose
+    assert "POSTGRES_PASSWORD:?" in compose
+    assert "POSTGRES_PASSWORD:-" not in compose

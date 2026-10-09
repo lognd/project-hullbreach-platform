@@ -20,25 +20,40 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
-def _db_upgrade() -> None:
+def _load_config(args: argparse.Namespace) -> AppConfig:
+    """Resolve the AppConfig, or log the problem and exit non-zero."""
+    result = AppConfig.from_external(args)
+    if result.is_err:
+        print(f"configuration error: {result.danger_err}", file=sys.stderr)
+        sys.exit(1)
+    return result.danger_ok
+
+
+def _db_upgrade(args: argparse.Namespace) -> None:
     """Run every pending Alembic migration up to head (`db upgrade`)."""
-    from alembic.config import main as alembic_main
+    from hullbreach_server.db.migrate import upgrade_to_head
 
+    cfg = _load_config(args)
     print("running alembic upgrade head", file=sys.stderr)
-    alembic_main(["-c", "alembic.ini", "upgrade", "head"])
+    result = upgrade_to_head(cfg.database_url)
+    if result.is_err:
+        print(f"db upgrade failed: {result.danger_err}", file=sys.stderr)
+        sys.exit(1)
 
 
-def _db_seed() -> None:
+def _db_seed(args: argparse.Namespace) -> None:
     """Load the catalog items and the first admin account (`db seed`)."""
-    from hullbreach_server.db import get_sessionmaker
+    from hullbreach_server.db import dispose_engine, get_sessionmaker, init_engine
     from hullbreach_server.db.seed import seed
 
+    cfg = _load_config(args)
+    init_engine(cfg.database_url)
     session = get_sessionmaker()()
     try:
         result = seed(session)
     finally:
         session.close()
+        dispose_engine()
     if result.is_err:
         print(f"db seed failed: {result.danger_err}", file=sys.stderr)
         sys.exit(1)
@@ -52,12 +67,11 @@ def main() -> None:
     args = _build_parser().parse_args()
     if args.command == "db":
         if args.db_command == "upgrade":
-            _db_upgrade()
+            _db_upgrade(args)
         elif args.db_command == "seed":
-            _db_seed()
+            _db_seed(args)
         return
-    cfg = AppConfig.from_external(args)
-    App(cfg)()
+    App(_load_config(args))()
 
 
 if __name__ == "__main__":

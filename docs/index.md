@@ -17,6 +17,7 @@ cross-reference for every ticket in this repo lives in
 <!-- frob:describes src/hullbreach_server/app/app.py::create_app -->
 <!-- frob:describes src/hullbreach_server/app/config.py::AppConfig -->
 <!-- frob:describes src/hullbreach_server/app/config.py::AppConfig.from_external -->
+<!-- frob:describes src/hullbreach_server/app/config.py::ConfigError -->
 <!-- frob:describes src/hullbreach_server/api/health.py::health -->
 <!-- frob:describes src/hullbreach_server/api/health.py::HealthResponse -->
 <!-- frob:describes src/hullbreach_server/api/health.py::ready -->
@@ -30,6 +31,8 @@ cross-reference for every ticket in this repo lives in
 <!-- frob:describes src/hullbreach_server/db/engine.py::DatabaseError -->
 <!-- frob:describes src/hullbreach_server/db/engine.py::create_db_engine -->
 <!-- frob:describes src/hullbreach_server/db/engine.py::check_connectivity -->
+<!-- frob:describes src/hullbreach_server/db/__init__.py::init_engine -->
+<!-- frob:describes src/hullbreach_server/db/__init__.py::dispose_engine -->
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_engine -->
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_sessionmaker -->
 <!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
@@ -49,13 +52,27 @@ cross-reference for every ticket in this repo lives in
 
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
-to `App`, which runs uvicorn. Running with no subcommand still serves; a
+to `App`, which runs uvicorn. `AppConfig.from_external` returns a typani
+`Result[AppConfig, ConfigError]`: an unreadable or malformed config file, an
+unknown key (a typo such as `databse_url`) or an invalid value is an `Err`
+whose message names the key and never the value (so a database URL password
+cannot leak); `main` prints it and exits 1. The config file is the explicit
+argument, else `$HULLBREACH_CONFIG`, else the nearest `pyproject.toml` above
+the cwd that has a `[tool.hullbreach_server]` table, and the one used is
+logged at INFO. `database_url` is required and has no default (INV-005).
+`cors_origins` must be explicit `http(s)` origins (no `*`, path or query;
+whitespace and empty entries in the env list are dropped), and `create_app`
+allows credentials only with those origins and only the `GET`/`POST`/`OPTIONS`
+methods and `Authorization`/`Content-Type` headers the API uses (INV-004). Running with no subcommand still serves; a
 `db` subcommand group (`db upgrade`, `db seed`) instead runs the given
 database maintenance step and exits without building `App`/`create_app`.
-Before serving, `App.__call__` fails fast: it builds an engine from
-`AppConfig.database_url` and runs `check_connectivity`, exiting non-zero
-and logging the connectivity error at `ERROR` instead of calling
-`uvicorn.run` against a database it cannot reach.
+Before serving, `App.__call__` fails fast: it validates the auth
+environment variables, initialises the process-wide engine from
+`AppConfig.database_url` (`db.init_engine`) and runs `check_connectivity`
+on that same engine, exiting non-zero and logging the error at `ERROR`
+instead of calling `uvicorn.run` against a database it cannot reach, so the
+database checked is the database served. `create_app`'s lifespan
+initialises the same engine (idempotently) and disposes it on shutdown.
 `create_app` is the pure, socket-free core that
 tests exercise through `TestClient`. Routes live in `api/`, one module per
 resource, each exposing a `router` that `api_router` mounts under `/api/v1`;
@@ -77,10 +94,14 @@ builds an `Engine` (normalizing a bare `postgresql://` URL to the
 returns a typani `Result[None, DatabaseError]` whose message names the
 host/port/database but never a raw URL or password, and `Base` is the
 shared `DeclarativeBase` (with the ix/uq/ck/fk/pk naming convention) that
-every ORM model and the Alembic env import. `get_engine`/`get_sessionmaker`
-lazily build the process-wide engine and sessionmaker from
-`AppConfig.from_external()`, and `get_db` is the FastAPI dependency that
-yields a session per request and closes it afterward.
+every ORM model and the Alembic env import. `init_engine(url)` builds the
+process-wide engine and sessionmaker once, under a lock, from the caller's
+`AppConfig.database_url` (repeat calls with the same URL return the same
+engine; a different URL raises until `dispose_engine()` closes the pool and
+resets the state). `get_engine`/`get_sessionmaker` return that engine and
+raise `RuntimeError` if it was never initialised -- the `db` package no
+longer re-reads configuration itself. `get_db` is the FastAPI dependency
+that yields a session per request and closes it afterward.
 
 `src/hullbreach_server/db/models/user.py` holds the first ORM model:
 `User` (table `users`) -- `id` (UUID), unique `username`/`email`,
@@ -101,7 +122,8 @@ reach a log line (INV-003).
 ### Auth sessions
 
 <!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
-<!-- frob:describes src/hullbreach_server/db/models/session.py::_UTCDateTime.process_result_value -->
+<!-- frob:describes src/hullbreach_server/db/models/types.py::UTCDateTime -->
+<!-- frob:describes src/hullbreach_server/db/models/types.py::UTCDateTime.process_result_value -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
 <!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
@@ -117,7 +139,8 @@ CASCADE`, indexed), a unique `token_hash` (sha256 of the bearer token,
 hex-encoded; the plaintext token is never stored), `created_at`,
 `expires_at`, and a nullable `revoked_at`. A session is valid iff
 `revoked_at is None and expires_at > now()`. Those two timestamp columns
-use the private `_UTCDateTime` type decorator, whose
+use the shared `db/models/types.py::UTCDateTime` type decorator (also used
+by `User.created_at`, so every timestamp is tz-aware on SQLite and Postgres), whose
 `process_result_value` re-attaches UTC tzinfo to a value SQLite returns
 naive, so expiry/revocation comparisons never mix naive and aware
 datetimes regardless of the backing database.
@@ -296,14 +319,21 @@ T-0057 and T-0070.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrate.py::MigrationError -->
+<!-- frob:describes src/hullbreach_server/db/migrate.py::build_alembic_config -->
+<!-- frob:describes src/hullbreach_server/db/migrate.py::upgrade_to_head -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::downgrade -->
 
-`hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
-the repo root, `script_location` pointing at `db/migrations/`) to run
-every pending migration up to head; `db seed` calls
-`db/seed.py::seed(session)` (T-0008), which idempotently upserts
-`db/seed_items.json`'s catalog (120 cosmetic entries across 8
+`hullbreach_server db upgrade` runs Alembic programmatically
+(`db/migrate.py::upgrade_to_head`, with `build_alembic_config` pointing
+`script_location` at the package's own `db/migrations/`), so it works from any
+working directory; it resolves the URL through `AppConfig`, hands it to
+`env.py` via `Config.attributes["database_url"]`, and a failure prints a clear
+message and exits 1 (`MigrationError`) instead of a traceback. (`alembic.ini`
+at the repo root remains for bare `alembic` runs and the tests.) `db seed` calls
+`db/seed.py::seed(session)` (T-0008), which idempotently upserts (a changed
+name or price is updated) `db/seed_items.json`'s catalog (120 cosmetic entries across 8
 categories, matched by `slug` so a re-run never duplicates a row) into
 a hand-declared `items` table (created by the fourth migration below,
 T-0101; `seed.py`'s own `Table.create(checkfirst=True)` call is a no-op
@@ -313,7 +343,11 @@ than running Alembic), and creates the first admin account
 via `auth.passwords.hash_password` when no `User` with `role ==
 Role.admin` exists, reading `HULLBREACH_ADMIN_USERNAME`/`_EMAIL`/
 `_PASSWORD` and returning `Err(SeedError.MissingAdminPassword)` rather
-than inventing one. `db/migrations/env.py::run_migrations_online`
+than inventing one. Admin credentials are validated with the same bounds as
+`RegisterRequest` (`InvalidAdminCredentials`), a username or email already used
+by another account is `AdminConflict`, bad seed data is `InvalidSeedData`, and
+a database error rolls back and returns `DatabaseFailure`: `seed` never
+raises, so `db seed` always exits through its clean `db seed failed` path. `db/migrations/env.py::run_migrations_online`
 resolves `HULLBREACH_DATABASE_URL` via `AppConfig` the same way every
 other entrypoint does and runs against a caller-supplied connection
 (tests) or a fresh engine; `run_migrations_offline` always refuses,
