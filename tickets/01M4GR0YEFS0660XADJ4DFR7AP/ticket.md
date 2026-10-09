@@ -2,11 +2,12 @@
 id = "01M4GR0YEFS0660XADJ4DFR7AP"
 title = "seed(): _upsert_items is insert-if-missing; docstring/log claim upsert, catalog edits never propagate"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "low"
 reporter = "lognd"
 created = "2026-10-09T16:30:30Z"
-updated = "2026-10-09T17:11:08Z"
+updated = "2026-10-09T17:11:11Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/db/seed.py"]
 
