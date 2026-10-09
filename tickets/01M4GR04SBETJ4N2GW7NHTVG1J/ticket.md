@@ -1,0 +1,13 @@
++++
+id = "01M4GR04SBETJ4N2GW7NHTVG1J"
+title = "register: duplicate pre-check races with insert, concurrent duplicates surface as 500; username has no validation"
+type = "bug"
+category = "todo"
+priority = "medium"
+reporter = "lognd"
+created = "2026-10-09T16:30:04Z"
+updated = "2026-10-09T16:30:04Z"
+scope = ["src/hullbreach_server/api/auth.py"]
++++
+
+origin: auditor. api/auth.py:68-83 and auth/schemas.py:360 -- _duplicate_field SELECT then INSERT/commit is not atomic, so two concurrent registrations (or case-variant names/emails, since comparison is case-sensitive) hit the DB unique constraint and raise an uncaught IntegrityError -> 500 instead of the documented 409. RegisterRequest.username is an unconstrained str (empty, whitespace, huge, mixed-case homographs accepted). Fix: catch IntegrityError around commit, rollback, and return the same 409 (re-run _duplicate_field to name the field); normalize email/username case; add Field(min_length, max_length, pattern) on username.
