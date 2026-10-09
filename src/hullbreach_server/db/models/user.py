@@ -8,10 +8,11 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, Index, String, Uuid, func
+from sqlalchemy import Enum, Index, String, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from hullbreach_server.db.engine import Base
+from hullbreach_server.db.models.types import UTCDateTime
 
 
 # frob:doc docs/index.md#public-api
@@ -54,7 +55,7 @@ class User(Base):
         default=Role.player,
     )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=func.now()
     )
 
 

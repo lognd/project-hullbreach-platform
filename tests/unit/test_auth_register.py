@@ -200,3 +200,10 @@ def test_openapi_declares_the_error_responses(client) -> None:
     assert "503" in paths["/api/v1/ready"]["get"]["responses"]
     logout_params = paths["/api/v1/auth/logout"]["post"]["parameters"]
     assert [p["name"] for p in logout_params] == ["all"]
+
+
+def test_user_created_at_is_timezone_aware_on_every_backend(client) -> None:
+    # frob:tests src/hullbreach_server/db/models/types.py::UTCDateTime kind="unit"
+    response = client.post("/api/v1/auth/register", json=_register_payload())
+    created = response.json()["created_at"]
+    assert created.endswith("Z") or "+00:00" in created
