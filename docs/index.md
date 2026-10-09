@@ -207,6 +207,27 @@ the player's id and role (T-0026). Neither endpoint distinguishes a
 game-client caller from a browser caller; there is nothing in the
 request that could, by design.
 
+### Game-server keys
+
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::ServerKeyError -->
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::check_server_key -->
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::require_game_server -->
+
+The game server authenticates with a shared secret, not a player session
+(T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
+from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated), the
+`[tool.hullbreach_server]` table or a CLI flag like any other field; the
+default is empty, and an empty list means no server can authenticate. The
+values never appear in a `repr` or in logs. `require_game_server`
+(`src/hullbreach_server/auth/server_keys.py`) is the FastAPI dependency a
+game-server-only route lists: it reads the `X-Server-Key` header and
+answers 401 `{"detail": "not authenticated"}` for a missing, wrong or
+unconfigured key (never FastAPI's default 403). The comparison is
+`check_server_key`, which returns a typani `Result[None, ServerKeyError]`
+(`Missing` or `Invalid`) and compares every configured key with
+`hmac.compare_digest` so timing does not reveal a match. No production
+route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->

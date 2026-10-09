@@ -5,9 +5,11 @@ import os
 import tomllib
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 
 _ENV_PREFIX = "HULLBREACH_"
+# Fields whose environment value is a comma-separated list.
+_LIST_FIELDS = frozenset({"cors_origins", "game_server_api_keys"})
 
 
 # frob:tests tests/unit/test_app.py::test_app_config_from_external_with_no_config_file
@@ -23,6 +25,9 @@ class AppConfig(BaseModel):
     port: int = 8000
     database_url: str = "postgresql://hullbreach:hullbreach@localhost:5432/hullbreach"
     cors_origins: list[str] = ["http://localhost:5173"]
+    # Keys a game server presents in X-Server-Key (T-0052); empty means no
+    # server can authenticate. Secret values: never logged or repr'd.
+    game_server_api_keys: list[SecretStr] = []
 
     @classmethod
     def from_external(
@@ -42,7 +47,7 @@ class AppConfig(BaseModel):
             raw = os.environ.get(f"{_ENV_PREFIX}{field.upper()}")
             if raw is None:
                 continue
-            env_cfg[field] = raw.split(",") if field == "cors_origins" else raw
+            env_cfg[field] = raw.split(",") if field in _LIST_FIELDS else raw
 
         cli_cfg = {
             k: v
