@@ -2,11 +2,12 @@
 id = "01M4GR0D9K7NFS09E62D5KPH93"
 title = "get_current_user is async but runs blocking SQLAlchemy calls on the event loop for every authenticated api route"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "duplicate"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:12Z"
-updated = "2026-10-09T16:30:12Z"
+updated = "2026-10-09T16:36:04Z"
 labels = ["origin:auditor", "interface-audit"]
 scope = ["src/hullbreach_server/auth/deps.py"]
 +++
