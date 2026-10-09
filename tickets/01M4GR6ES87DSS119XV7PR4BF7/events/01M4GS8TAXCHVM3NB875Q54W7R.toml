@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T16:52:08Z"
+digest = "2682259c44c5c01aedcb9aac0b28fe75692e26a80b09d8cd71db194f761c63ea"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Login.test.tsx (10 tests) 2198ms
+     \u{2713} submits login with username and password fields  931ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  12:52:09
+   Duration  5.90s (transform 526ms, setup 499ms, import 881ms, tests 2.20s, environment 1.72s)
+
+JSON report written to /tmp/frob-vitest-492966-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Login.test.tsx"
+size = 382
+status = "measured"
+tests = ["web/tests/unit/Login.test.tsx::suite$Login_page::test$submits_login_with_username_and_password_fields", "web/tests/unit/Login.test.tsx::suite$Login_page::test$keeps_the_session_token_out_of_localStorage_and_sessionStorage_after_login", "web/tests/unit/Login.test.tsx::suite$Login_page::test$keeps_the_user_signed_in_across_in-app_navigation__same_page_load_", "web/tests/unit/Login.test.tsx::suite$Login_page::test$shows_a_form-level_error_banner_on_401_invalid_credentials", "web/tests/unit/Login.test.tsx::suite$Login_page::test$shows_a_rate-limit_message_on_429_too_many_attempts", "web/tests/unit/Login.test.tsx::suite$Login_page::test$navigates_to_the_landing_page_after_a_successful_login", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$loadSession_is_null_on_a_fresh_page_load__nothing_is_persisted_", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$ignores_a_token_planted_in_localStorage", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$clears_the_stored_session_so_loadSession_returns_null_after_clearSession", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$useSession_re-renders_on_saveSession_and_clearSession"]
+at = "2026-10-09T16:52:08Z"
+actor = "a-carten"
+rev = 1
