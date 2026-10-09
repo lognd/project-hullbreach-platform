@@ -1,0 +1,17 @@
+kind = "evidence"
+captured_at = "2026-10-09T03:59:45Z"
+digest = "faea91c6e8ac86c25a124a16a03b8495dd9618db381df736bd96e932fdf547a3"
+exit_code = 0
+inline = """
+.....                                                                    [100%]
+5 passed in 0.15s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor tests/unit/test_elo.py::test_loser_never_drops_below_the_floor tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip", "tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor", "tests/unit/test_elo.py::test_loser_never_drops_below_the_floor", "tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected", "tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win"]
+at = "2026-10-09T03:59:45Z"
+actor = "lognd"
+rev = 1
