@@ -2,11 +2,12 @@
 id = "01M4GR0GC074Y7KQAZQ8W2CV9Y"
 title = "App.__call__ checks one database but the served app uses another (cfg.database_url ignored by get_engine)"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "duplicate"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:30:15Z"
-updated = "2026-10-09T16:30:15Z"
+updated = "2026-10-09T16:36:17Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/app/app.py"]
 
