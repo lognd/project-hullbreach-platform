@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-09T04:04:41Z"
+digest = "f9b09130f51e3ec912fd8da101708d7c7129b1fe878fd3e9b123c11d544e8676"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 1.10s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_match_models.py::test_second_stats_row_for_the_same_player_is_rejected"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_match_models.py::test_second_stats_row_for_the_same_player_is_rejected"]
+at = "2026-10-09T04:04:41Z"
+actor = "lognd"
+rev = 1
