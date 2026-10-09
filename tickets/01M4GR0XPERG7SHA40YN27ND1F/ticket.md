@@ -2,11 +2,12 @@
 id = "01M4GR0XPERG7SHA40YN27ND1F"
 title = "register: concurrent duplicate signup surfaces unhandled IntegrityError as HTTP 500"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "duplicate"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:30:29Z"
-updated = "2026-10-09T16:30:29Z"
+updated = "2026-10-09T16:36:15Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/api/auth.py"]
 +++
