@@ -175,8 +175,8 @@ column as it was.
 - Every new public symbol carries a `frob:tests` line pointing at a test.
 - Every new endpoint or component has a paragraph in `docs/index.md`
   bound with `frob:describes`.
-- The ticket's acceptance criteria are bound as evidence
-  (`frob test --base main`, then `frob ticket evidence add --provider pytest
-  --accepts N T-0031`; see `frob ticket evidence add --help`).
+- The ticket's acceptance criteria are bound as evidence: run
+  `frob test --base main`, then bind each criterion with
+  `frob ticket evidence add` (see its `--help`).
 - The `frob:todo` marker for your ticket is gone.
 - One approving review from someone not on the same lane.
