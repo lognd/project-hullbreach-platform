@@ -1,0 +1,48 @@
+kind = "evidence"
+captured_at = "2026-10-09T04:05:21Z"
+digest = "fc1e29d892102edd4bcdda3e3f11894610803e5e435614381862458eec9ca8b2"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/App.test.tsx (1 test) 206ms
+ \u{2713} web/tests/unit/Profile.test.tsx (10 tests) 529ms
+     \u{2713} shows username, rating, currency, owned skins and the last five matches  365ms
+ \u{2713} web/tests/unit/Header.test.tsx (15 tests) 943ms
+ \u{2713} web/tests/unit/Login.test.tsx (10 tests) 1196ms
+     \u{2713} submits login with username and password fields  580ms
+ \u{2713} web/tests/unit/Register.test.tsx (12 tests) 1446ms
+     \u{2713} shows field error next to the offending input  657ms
+
+ Test Files  5 passed (5)
+      Tests  47 passed | 1 expected fail (48)
+   Start at  00:05:26
+   Duration  3.11s (transform 1.30s, setup 509ms, import 2.65s, tests 4.32s, environment 4.26s)
+
+JSON report written to /tmp/frob-vitest-353116-1.json
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+stderr | web/tests/unit/Login.test.tsx > auth/session.ts > useSession updates when a storage event fires from another tab
+Warning: An update to Probe inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Probe (<worktree>/web/tests/unit/Login.test.tsx:211:20)
+
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/App.test.tsx web/tests/unit/Header.test.tsx web/tests/unit/Login.test.tsx web/tests/unit/Profile.test.tsx web/tests/unit/Register.test.tsx"
+size = 1452
+status = "measured"
+tests = ["web/tests/unit/App.test.tsx::suite$App::test$renders_the_header_and_footer_landmarks_around_the_routed_content", "web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$renders_the_brand", "web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$shows_Register_and_Login_links_when_signed_out", "web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$renders_every_interactive_control_as_a_real_anchor_or_button_element", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$shows_username_and_a_Log_out_control_when_signed_in", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$clears_session_and_navigates_home_on_logout_click", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$logout_button_calls_POST__api_v1_auth_logout_with_the_bearer_token", "web/tests/unit/Header.test.tsx::suite$Header_keyboard_access::test$tab_order_matches_visual_order_and_Enter_activates_each_control", "web/tests/unit/Header.test.tsx::suite$Footer::test$renders_the_footer_with_cookie_and_data_policy_links", "web/tests/unit/Header.test.tsx::suite$Footer_keyboard_access::test$tab_order_reaches_each_footer_link_and_Enter_activates_it", "web/tests/unit/Header.test.tsx::suite$Footer_keyboard_access::test$the_page_shell_is_one_tab_sequence__header_controls__then_footer_links", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_landing_page_at__", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_register_page_at__register", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_login_page_at__login", "web/tests/unit/Header.test.tsx::suite$router::test$renders_a_not-found_page_for_an_unknown_path", "web/tests/unit/Header.test.tsx::suite$App_shell::test$renders_Header_and_Footer_around_the_routed_page", "web/tests/unit/Login.test.tsx::suite$Login_page::test$submits_login_with_username_and_password_fields", "web/tests/unit/Login.test.tsx::suite$Login_page::test$persists_the_session_to_localStorage_on_successful_login", "web/tests/unit/Login.test.tsx::suite$Login_page::test$keeps_user_signed_in_after_reload", "web/tests/unit/Login.test.tsx::suite$Login_page::test$shows_a_form-level_error_banner_on_401_invalid_credentials", "web/tests/unit/Login.test.tsx::suite$Login_page::test$shows_a_rate-limit_message_on_429_too_many_attempts", "web/tests/unit/Login.test.tsx::suite$Login_page::test$navigates_to_the_landing_page_after_a_successful_login", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$restores_the_session_from_localStorage_synchronously_on_mount", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$clears_the_stored_session_so_loadSession_returns_null_after_clearSession", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$useSession_updates_when_a_storage_event_fires_from_another_tab", "web/tests/unit/Login.test.tsx::suite$auth_session_ts::test$loadSession_returns_null_for_malformed_JSON_in_localStorage", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_username__rating__currency__owned_skins_and_the_last_five_matches", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$caps_the_recent_matches_at_five_even_if_the_server_sends_more", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_empty_states_for_a_player_with_no_skins_or_matches", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$asks_a_signed-out_visitor_to_log_in_and_makes_no_request", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_the_server_s_message_when_the_request_is_rejected", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_a_generic_message_when_the_network_fails", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$lays_out_for_a_400px_phone_width_without_horizontal_overflow", "web/tests/unit/Profile.test.tsx::suite$overflowRisks::test$flags_a_fixed_width_wider_than_the_viewport_and_unwrappable_text", "web/tests/unit/Profile.test.tsx::suite$fetchMe::test$rejects_with_the_server_s_detail_on_a_non-2xx_response", "web/tests/unit/Profile.test.tsx::suite$Profile_against_the_live_server::test$returns_the_profile_contract_from_the_live_GET__api_v1_me", "web/tests/unit/Register.test.tsx::suite$Register_page::test$shows_field_error_next_to_the_offending_input", "web/tests/unit/Register.test.tsx::suite$Register_page::test$shows_an_email-taken_error_from_a_409_response_with_field_email", "web/tests/unit/Register.test.tsx::suite$Register_page::test$submits_register_with_username__email__and_password_fields", "web/tests/unit/Register.test.tsx::suite$Register_page::test$shows_a_generic_validation_error_when_the_API_rejects_the_payload_with_422", "web/tests/unit/Register.test.tsx::suite$Register_page::test$navigates_away_from_the_register_form_after_a_successful_registration", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$register_posts_to__api_v1_auth_register_with_the_request_body", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$register_throws_an_ApiError_carrying_the_response_detail_and_field_on_409", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$login_posts_to__api_v1_auth_login_with_username_and_password", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$logout_posts_to__api_v1_auth_logout_with_a_bearer_Authorization_header", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$fetchSession_sends_a_bearer_Authorization_header_to_GET__api_v1_auth_session", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$maps_a_401_response_to_an_ApiError_with_status_401", "web/tests/unit/Register.test.tsx::suite$api_auth_ts::test$maps_a_429_response_to_an_ApiError_with_status_429"]
+at = "2026-10-09T04:05:21Z"
+actor = "a-carten"
+rev = 1
