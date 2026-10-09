@@ -2,11 +2,12 @@
 id = "01M4GR0Z2GWE07MFH5N7523D2D"
 title = "User.role CHECK constraint promised by migration/docs is not created; no Postgres integration coverage for db boundary"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:30Z"
-updated = "2026-10-09T17:11:59Z"
+updated = "2026-10-09T17:12:02Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/db/models/user.py", "src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py"]
 
