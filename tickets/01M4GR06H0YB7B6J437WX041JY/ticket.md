@@ -2,11 +2,12 @@
 id = "01M4GR06H0YB7B6J437WX041JY"
 title = "SimpleFormatter drops exc_info/stack_info so logged exceptions lose tracebacks"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:05Z"
-updated = "2026-10-09T16:52:35Z"
+updated = "2026-10-09T16:52:49Z"
 labels = ["origin:auditor", "audit:logging"]
 scope = ["src/hullbreach_server/logging/formatter.py"]
 
