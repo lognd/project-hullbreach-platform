@@ -118,7 +118,7 @@ def login(
         )
 
     clear_failed_logins(payload.username)
-    # frob:todo T-0077 note="refuse a suspended user here with 403 and the suspension reason, before issuing a session"  # noqa: E501
+    # frob:todo T-0077 refuse a suspended user here with 403 and the suspension reason, before issuing a session  # noqa: E501
     _session_row, token = issue_session(db, user)
     _log.info("logged in user %s", user.id)
     return LoginResponse(token=token, user=UserProfile.from_user(user))
@@ -157,5 +157,5 @@ def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
     Deliberately minimal (no username/email) -- the caller's only need is
     "who is this and what can they do".
     """
-    # frob:todo T-0040 note="add active_skin to SessionInfo so the game client can render the equipped skin"  # noqa: E501
+    # frob:todo T-0040 add active_skin to SessionInfo so the game client can render the equipped skin  # noqa: E501
     return SessionInfo(user_id=ctx.user.id, role=ctx.user.role)

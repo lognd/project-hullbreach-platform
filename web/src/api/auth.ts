@@ -88,7 +88,7 @@ async function parseErrorBody(
 
 /** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response. */
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  // frob:todo T-0102 note="pass AbortSignal.timeout(...) in init so a hung server cannot hang the page"
+  // frob:todo T-0102 pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
   const response = await fetch(path, init);
   if (!response.ok) {
     const { detail, field } = await parseErrorBody(response);
