@@ -58,3 +58,22 @@ export async function updateMe(
     body: JSON.stringify(payload),
   });
 }
+
+// frob:doc docs/index.md#match-history-page
+/** One page of GET /api/v1/me/matches (planned, T-0059): matches newest first and the cursor for the next page, or null on the last. */
+export type MatchPage = {
+  items: MatchSummary[];
+  next_cursor: string | null;
+};
+
+// frob:doc docs/index.md#match-history-page
+/** GET /api/v1/me/matches with the caller's bearer token, from `cursor` when given; 200 MatchPage on success, 401 rejects with an ApiError. */
+export async function fetchMatches(
+  token: string,
+  cursor: string | null = null,
+): Promise<MatchPage> {
+  const query = cursor === null ? "" : `?cursor=${encodeURIComponent(cursor)}`;
+  return requestJson<MatchPage>(`${ME_BASE}/matches${query}`, {
+    headers: bearerHeaders(token),
+  });
+}

@@ -1,4 +1,4 @@
-import type { MatchSummary, MeResponse } from "@/api/me";
+import type { MatchPage, MatchSummary, MeResponse } from "@/api/me";
 import type { UserProfile } from "@/api/auth";
 
 /** Builds a deterministic match, newest first by index, so list tests can assert order and counts. */
@@ -42,3 +42,12 @@ export const profileFixture: UserProfile = {
   rating: meFixture.rating,
   created_at: meFixture.created_at,
 };
+
+/** A typed GET /api/v1/me/matches page (planned contract, T-0059) of `count` matches starting at `from`, of `total` overall; its cursor is the next index. */
+export function makeMatchPage(from: number, count: number, total: number): MatchPage {
+  const end = Math.min(from + count, total);
+  return {
+    items: Array.from({ length: end - from }, (_, offset) => makeMatch(from + offset)),
+    next_cursor: end < total ? `cursor-${end}` : null,
+  };
+}

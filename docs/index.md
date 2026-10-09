@@ -278,7 +278,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, `/me` (the profile page), `/settings`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/me` (the profile page), `/me/matches`, `/settings`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -386,6 +386,24 @@ form. On success it clears the secret fields and writes the new username
 into the stored session so a reload shows it. Signed out, the page renders
 `web/src/components/SignInPrompt.tsx`, the log-in prompt the profile page
 now shares.
+
+### Match history page
+
+`web/src/pages/History.tsx` is routed at `/me/matches` and lists the
+signed-in player's matches, newest first, through `fetchMatches` in
+`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (planned, T-0059;
+the page is built against `makeMatchPage` in `web/tests/fixtures/me.ts`).
+A `MatchPage` is `{items, next_cursor}`; `next_cursor` is null on the last
+page. Each row is `web/src/components/MatchItem.tsx` in `detailed` mode
+(opponent, result, rating before and after, date, duration and stats).
+Load more requests the next cursor and appends the page; the control is
+disabled while a request is in flight, vanishes when the cursor is null,
+and after a failed request stays as a retry (labelled Try again if the
+first page failed) with the matches already loaded kept. Responses that
+belong to an earlier list (StrictMode's double-run effects, a changed
+token) are dropped, so no match is listed twice. The page does not
+virtualize the list; it relies on the server's page size to keep the DOM
+small, and the page size is the server's default (no `limit` is sent).
 
 ## Sprint 1 design
 
