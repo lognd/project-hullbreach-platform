@@ -2,7 +2,7 @@
 id = "01M2H5T11W1KP7CS90WBTF46YP"
 title = "Website match history page with paging"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 3
 parent = "01M2H5T11T3DJZ8N35J58RKTZ4"
