@@ -2,7 +2,7 @@
 id = "01M2H5T110VJQSF0684JXFR6E8"
 title = "Website profile page, responsive to phone width"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 3
 parent = "01M2H5T10YFV60H1CQDEEH5164"
