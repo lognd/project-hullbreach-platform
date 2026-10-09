@@ -185,3 +185,13 @@ def test_missing_authorization_header_returns_401_not_403(app) -> None:
         response = client.get("/__test_missing_auth__")
 
     assert response.status_code == 401
+
+
+def test_auth_dependencies_are_sync_so_they_run_in_the_threadpool() -> None:
+    # frob:tests src/hullbreach_server/auth/deps.py::get_current_user kind="unit"
+    import inspect
+
+    from hullbreach_server.auth.deps import get_current_user, require_admin
+
+    assert not inspect.iscoroutinefunction(get_current_user)
+    assert not inspect.iscoroutinefunction(require_admin)
