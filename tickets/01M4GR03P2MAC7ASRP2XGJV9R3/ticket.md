@@ -2,11 +2,12 @@
 id = "01M4GR03P2MAC7ASRP2XGJV9R3"
 title = "Failed-login store grows unbounded: entries for a username are never evicted unless that username logs in"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:02Z"
-updated = "2026-10-09T17:01:31Z"
+updated = "2026-10-09T17:01:40Z"
 scope = ["src/hullbreach_server/auth/sessions.py"]
 
 [[acceptance]]
