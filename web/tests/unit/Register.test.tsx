@@ -5,17 +5,17 @@
 // lands and the import stops throwing, at which point the test goes red --
 // the signal to move on to implementation.
 //
-// frob:ticket T-0017
+// frob:ticket 01M2H5T10HEMPGEZ7JBHEZV0RC
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const registerModulePath = "../../src/pages/Register";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const authApiModulePath = "../../src/api/auth";
 
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 function jsonResponse(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     status,

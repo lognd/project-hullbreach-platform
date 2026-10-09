@@ -43,11 +43,11 @@ export const router = createBrowserRouter([
       // Each queued page is one more route here plus a pages/<Name>.tsx and
       // a tests/unit/<Name>.test.tsx; copy pages/Login.tsx. Add this file to
       // the ticket's scope first (`frob ticket scope T-#### --add`).
-      // frob:todo T-0046 index route -> pages/Landing.tsx replaces the stub above
-      // frob:todo T-0049 path data-policy -> pages/DataPolicy.tsx (Footer already links it)
-      // frob:todo T-0063 path leaderboard -> pages/Leaderboard.tsx
-      // frob:todo T-0068 path store -> pages/Store.tsx
-      // frob:todo T-0078 path admin/* -> pages/admin/, gated on role is admin
+      // frob:todo 01M2H5T11EWXN4QEQ0QET8ZC6Y index route -> pages/Landing.tsx replaces the stub above
+      // frob:todo 01M2H5T11HZP2VXR9KV24Q8RV3 path data-policy -> pages/DataPolicy.tsx (Footer already links it)
+      // frob:todo 01M2H5T11ZXF08TGJ9RWXBB2TD path leaderboard -> pages/Leaderboard.tsx
+      // frob:todo 01M2H5T1242JFMB5A03JSDP5KP path store -> pages/Store.tsx
+      // frob:todo 01M2H5T12E0JWYSBMM6HZ09J6Q path admin/* -> pages/admin/, gated on role is admin
       { path: "*", element: <NotFound /> },
     ],
   },
