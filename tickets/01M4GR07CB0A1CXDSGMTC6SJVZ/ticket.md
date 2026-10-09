@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:06Z"
-updated = "2026-10-09T16:52:58Z"
+updated = "2026-10-09T16:52:59Z"
 labels = ["origin:auditor", "audit:logging"]
 scope = ["tests/unit/test_logging.py"]
 
