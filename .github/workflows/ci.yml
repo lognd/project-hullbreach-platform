@@ -101,6 +101,14 @@ jobs:
       - name: install
         run: uv sync && npm ci
 
+      # actions/checkout leaves HEAD detached (a pull_request merge commit
+      # or a bare sha), and frob.toml's ref_mode = "branch" commits the
+      # ledger to the checked-out branch, so doctor refuses a detached HEAD
+      # (E-LEDGER-DETACHED). A throwaway local branch satisfies it; nothing
+      # is pushed.
+      - name: name the checked-out commit
+        run: git switch -C ci-check
+
       # frob v2 (the Rust rewrite) is pinned: a fresh runner must never
       # pick up a newer major by accident. 0.532.0 is published on PyPI,
       # so no token is needed. No `|| true`: a failed install is a loud,

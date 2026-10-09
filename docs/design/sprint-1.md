@@ -101,8 +101,8 @@ Result[Session, SessionError]` checking expiry and revocation, and
   wrappers over `fetch`, typed against the same shapes as
   `auth/schemas.py` (mirrored by hand; there is no codegen step in
   0.1.0 -- open question, section 8).
-- `auth/session.ts` -- reads/writes the persisted session
-  (`localStorage` key `hullbreach.session`), and a small subscriber
+- `auth/session.ts` -- holds the signed-in session in memory only
+  (never web storage, INV-006), and a small subscriber
   hook (`useSession`) so `Header` re-renders on login/logout without a
   full page reload (T-0021).
 
@@ -255,7 +255,6 @@ returns no diffs.
 
 ### Seed idempotency and the items problem (T-0008)
 
-
 T-0066 (Item model, milestone 0.3.0) does not exist yet, so `db/seed.py`
 cannot seed rows into a model owned by a future ticket. Decision (see D3
 in section 8): a **minimal** `items` table -- `id (UUID pk)`,
@@ -323,7 +322,6 @@ is `HULLBREACH_SESSION_TTL_SECONDS` (default 14 days), set at issuance as
 
 ### Endpoints
 
-
 All four routes below live in `api/auth.py` and share the pattern: pydantic request model, pydantic response
 model, `Depends(get_db)` for a `Session` (SQLAlchemy) from `db.get_db`.
 `role` never appears as an input field on any schema and never appears in
@@ -359,7 +357,6 @@ username = :u OR email = :e`) so the specific field is knowable before
   password too short, malformed email) -- no custom body needed there.
 
 **POST /api/v1/auth/login**
-
 
 - Request `LoginRequest {username: str, password: str}`.
 - Response `LoginResponse {token: str, user: UserProfile}`, 200.
@@ -475,10 +472,10 @@ export type StoredSession = {
   role: string;
 };
 
-export function saveSession(s: StoredSession): void; // writes localStorage["hullbreach.session"]
-export function loadSession(): StoredSession | null; // reads it back, JSON.parse guarded by try/catch
-export function clearSession(): void; // removes the key
-export function useSession(): StoredSession | null; // React hook: state + storage-event listener
+export function saveSession(s: StoredSession): void; // keeps it in module memory only (INV-006)
+export function loadSession(): StoredSession | null; // reads the in-memory session
+export function clearSession(): void; // drops it
+export function useSession(): StoredSession | null; // React hook: useSyncExternalStore subscription
 ```
 
 `useSession` initializes its state from `loadSession()` synchronously (no
@@ -553,23 +550,23 @@ file:
 
 | Ticket | Acceptance criterion                                            | Planned test node id                                                                                                                                    |
 | ------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| T-0006 | unreachable URL fails startup naming the host                   | `tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url`                                                                   | |
-| T-0007 | upgrade head matches models                                     | `tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata`                                                                         | |
-| T-0008 | seed reaches >=100 items and one admin                          | `tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin`                                                                                    | |
-| T-0008 | re-running seed does not duplicate                              | `tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run`                                                                                        | |
+| T-0006 | unreachable URL fails startup naming the host                   | `tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url`                                                                   |     |
+| T-0007 | upgrade head matches models                                     | `tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata`                                                                         |     |
+| T-0008 | seed reaches >=100 items and one admin                          | `tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin`                                                                                    |     |
+| T-0008 | re-running seed does not duplicate                              | `tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run`                                                                                        |     |
 | T-0010 | green CI without approval is blocked                            | (process control, not a code test -- verified by a documented manual check in CONTRIBUTING.md; no test node id)                                         |
-| T-0012 | ready is 200 when reachable, 503 when not                       | `tests/unit/test_api.py::test_ready_returns_200_when_database_reachable` and `tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable` | |
-| T-0015 | hash then verify succeeds, stored value is not the password     | `tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext`                                                                | |
-| T-0016 | duplicate username gets 409 with field-specific message         | `tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field`                                                             | |
-| T-0016 | valid request gets 201, role Player, currency 0, rating default | `tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults`                                                        | |
+| T-0012 | ready is 200 when reachable, 503 when not                       | `tests/unit/test_api.py::test_ready_returns_200_when_database_reachable` and `tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable` |     |
+| T-0015 | hash then verify succeeds, stored value is not the password     | `tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext`                                                                |     |
+| T-0016 | duplicate username gets 409 with field-specific message         | `tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field`                                                             |     |
+| T-0016 | valid request gets 201, role Player, currency 0, rating default | `tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults`                                                        |     |
 | T-0017 | field error is shown next to the field                          | `web/tests/unit/Register.test.tsx::shows field error next to the offending input`                                                                       |
-| T-0019 | expired or revoked token gets 401 on protected route            | `tests/unit/test_sessions.py::test_expired_token_returns_401` and `tests/unit/test_sessions.py::test_revoked_token_returns_401`                         | |
-| T-0020 | sixth failed attempt in a minute gets 429                       | `tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429`                                                                  | |
+| T-0019 | expired or revoked token gets 401 on protected route            | `tests/unit/test_sessions.py::test_expired_token_returns_401` and `tests/unit/test_sessions.py::test_revoked_token_returns_401`                         |     |
+| T-0020 | sixth failed attempt in a minute gets 429                       | `tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429`                                                                  |     |
 | T-0021 | session persists across reload                                  | `web/tests/unit/Login.test.tsx::keeps user signed in after reload`                                                                                      |
-| T-0023 | token rejected after logout                                     | `tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward`                                                                 | |
+| T-0023 | token rejected after logout                                     | `tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward`                                                                 |     |
 | T-0024 | logout clears session and shows landing page                    | `web/tests/unit/Header.test.tsx::clears session and navigates home on logout click`                                                                     |
-| T-0026 | game server session lookup returns player id and role           | `tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token`                                                        | |
-| T-0028 | Player token on admin route gets 403 with permissions message   | `tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message`                                                       | |
+| T-0026 | game server session lookup returns player id and role           | `tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token`                                                        |     |
+| T-0028 | Player token on admin route gets 403 with permissions message   | `tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message`                                                       |     |
 | T-0044 | tab order matches visual order, Enter activates every control   | `web/tests/unit/Header.test.tsx::tab order matches visual order and Enter activates each control`                                                       |
 
 ## 8. Open questions and decisions made

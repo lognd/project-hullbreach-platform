@@ -7,7 +7,7 @@ match this suite's existing convention (see tests/unit/conftest.py).
 from __future__ import annotations
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_check_connectivity_names_host_on_unreachable_url() -> None:
     """Given an unreachable database URL, check_connectivity's error names the host."""
     from hullbreach_server.db.engine import check_connectivity, create_db_engine
@@ -19,7 +19,7 @@ def test_check_connectivity_names_host_on_unreachable_url() -> None:
     assert "nonexistent-host-12345" in str(result.danger_err)
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_check_connectivity_never_logs_the_full_url_with_password() -> None:
     """The connectivity-failure message never includes the raw URL/password, only host/port/database."""
     from hullbreach_server.db.engine import check_connectivity, create_db_engine
@@ -30,7 +30,7 @@ def test_check_connectivity_never_logs_the_full_url_with_password() -> None:
     assert "supersecret" not in str(result.danger_err)
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_check_connectivity_succeeds_on_reachable_sqlite_engine(engine) -> None:
     """Given a reachable (in-memory SQLite) engine, check_connectivity returns Ok."""
     from hullbreach_server.db.engine import check_connectivity
@@ -40,7 +40,7 @@ def test_check_connectivity_succeeds_on_reachable_sqlite_engine(engine) -> None:
     assert result.is_ok
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_create_db_engine_returns_a_sqlalchemy_engine() -> None:
     """create_db_engine(url) returns a real SQLAlchemy Engine instance."""
     from sqlalchemy import Engine
@@ -52,7 +52,7 @@ def test_create_db_engine_returns_a_sqlalchemy_engine() -> None:
     assert isinstance(engine, Engine)
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_base_is_shared_across_db_package(engine) -> None:
     """hullbreach_server.db.Base is the same DeclarativeBase re-exported from db.engine."""
     from hullbreach_server.db import Base as PackageBase
@@ -61,7 +61,7 @@ def test_base_is_shared_across_db_package(engine) -> None:
     assert PackageBase is EngineBase
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_base_metadata_has_naming_convention_for_alembic() -> None:
     """Base.metadata declares the ix/uq/ck/fk/pk naming convention so autogenerate is deterministic."""
     from hullbreach_server.db import Base
@@ -75,7 +75,7 @@ def test_base_metadata_has_naming_convention_for_alembic() -> None:
     )
 
 
-# frob:ticket T-0006
+# frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_get_db_dependency_yields_a_session(db_session) -> None:
     """get_db is a FastAPI dependency yielding a usable SQLAlchemy Session."""
     from sqlalchemy.orm import Session as OrmSession

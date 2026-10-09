@@ -12,38 +12,6 @@ cross-reference for every ticket in this repo lives in
 
 ## Public API
 
-<!-- frob:describes src/hullbreach_server/__main__.py::main -->
-<!-- frob:describes src/hullbreach_server/app/app.py::App -->
-<!-- frob:describes src/hullbreach_server/app/app.py::create_app -->
-<!-- frob:describes src/hullbreach_server/app/config.py::AppConfig -->
-<!-- frob:describes src/hullbreach_server/app/config.py::AppConfig.from_external -->
-<!-- frob:describes src/hullbreach_server/api/health.py::health -->
-<!-- frob:describes src/hullbreach_server/api/health.py::HealthResponse -->
-<!-- frob:describes src/hullbreach_server/api/health.py::ready -->
-<!-- frob:describes src/hullbreach_server/api/health.py::ReadyResponse -->
-<!-- frob:describes src/hullbreach_server/logging/logger.py::get_logger -->
-<!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter -->
-<!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter.format -->
-<!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter -->
-<!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter.filter -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::Base -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::DatabaseError -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::create_db_engine -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::check_connectivity -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_engine -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_sessionmaker -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
-<!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
-<!-- frob:describes src/hullbreach_server/db/seed.py::SeedError -->
-<!-- frob:describes src/hullbreach_server/db/seed.py::seed -->
-<!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
-<!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
-
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
 to `App`, which runs uvicorn. Running with no subcommand still serves; a
@@ -85,17 +53,6 @@ native enum), and `created_at`.
 
 ### Auth sessions
 
-<!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
-<!-- frob:describes src/hullbreach_server/db/models/session.py::_UTCDateTime.process_result_value -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::require_admin -->
-
 `src/hullbreach_server/db/models/session.py` holds `Session` (table
 `sessions`) -- `id` (UUID), `user_id` (FK to `users.id`, `ON DELETE
 CASCADE`, indexed), a unique `token_hash` (sha256 of the bearer token,
@@ -131,21 +88,6 @@ milestone); `require_admin` is exercised by a test-only router mounted
 directly on the test app fixture (`tests/unit/test_roles.py`).
 
 ### Auth API
-
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::RegisterRequest -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile.from_user -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::register -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginRequest -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginResponse -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::login -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::current_time -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::is_login_rate_limited -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::record_failed_login -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::clear_failed_logins -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::logout -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::session -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::SessionInfo -->
 
 `POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
 takes a `RegisterRequest` (`username`, `email` as `EmailStr`, `password`
@@ -209,10 +151,6 @@ request that could, by design.
 
 ### Game-server keys
 
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::ServerKeyError -->
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::check_server_key -->
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::require_game_server -->
-
 The game server authenticates with a shared secret, not a player session
 (T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
 from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated), the
@@ -230,9 +168,6 @@ route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
 
 ### Matches
 
-<!-- frob:describes src/hullbreach_server/db/models/match.py::Match -->
-<!-- frob:describes src/hullbreach_server/db/models/match.py::MatchPlayerStats -->
-
 `src/hullbreach_server/db/models/match.py` holds the record of a finished
 match (T-0053). `Match` (table `matches`) has `id` (UUID), `winner_id` (FK
 to `users.id`), `duration_seconds` and `created_at`; its `player_stats`
@@ -248,15 +183,6 @@ idempotency key, rating changes and currency payout land with T-0054,
 T-0057 and T-0070.
 
 ### Database migrations
-
-<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
-<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_online -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -302,14 +228,6 @@ diff. The fifth revision
 `match_player_stats` matching `db/models/match.py` exactly.
 
 ### Elo rating
-
-<!-- frob:describes src/hullbreach_server/rating/elo.py::STARTING_RATING -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::K_FACTOR -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::RATING_FLOOR -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::EloError -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::MatchRatings -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::expected_score -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::rate_match -->
 
 `src/hullbreach_server/rating/elo.py` is the pure rating arithmetic (T-0056):
 no database, no FastAPI, no clock. It is plain Elo with one fixed K-factor
@@ -362,21 +280,21 @@ control when signed in; every control is a real `<a>`/`<button>` (never a
 The signed-in Log out control calls `api/auth.ts`'s `logout()` with the
 session's token (best-effort: an expired token or a network error does
 not block signing out locally), then `clearSession()`, then navigates
-home -- `useSession`'s `storage`-event listener means any other open tab
-picks up the sign-out too. `web/src/components/Footer.tsx` links to the
+home -- sign-out clears the in-memory session. `web/src/components/Footer.tsx` links to the
 cookie and data policy pages.
 
 ### Session persistence
 
 `web/src/auth/session.ts` is the client-side session store: a
-`StoredSession` (token/userId/username/role) persisted to
-`localStorage["hullbreach.session"]`. `saveSession`/`loadSession`/
-`clearSession` read and write it directly (`loadSession` guards `JSON.
-parse` and returns `null` on anything malformed); `useSession` is the
-React hook `Header` and any future consumer read it through -- it
-initializes from `loadSession()` synchronously (no signed-out flash on
-reload) and re-reads on the `storage` event, so a change in one tab is
-reflected in another.
+`StoredSession` (token/userId/username/role) held in module memory only
+and never written to `localStorage`, `sessionStorage` or a script-readable
+cookie (INV-006), so injected script cannot read the bearer token back from
+storage. `saveSession`/`loadSession`/`clearSession` read and write that
+variable; `useSession` is the React hook (`useSyncExternalStore`) `Header`
+and any consumer read it through, re-rendering on login, logout and profile
+updates. Consequence: a full page reload signs the user out and they sign
+in again via `/login`; there is no cross-tab sync. A cookie-based
+(HttpOnly) restore is a server-side follow-up.
 
 ### Auth API client and the register page
 
@@ -401,8 +319,8 @@ Success swaps the form out for a confirmation message.
 `login()`, and on success builds a `StoredSession` from the returned
 `LoginResponse` (`token`, and `userId`/`username`/`role` from its
 `user`), passes it to `saveSession` (`web/src/auth/session.ts`), and
-navigates home -- satisfying T-0021's reload-persistence criterion,
-since `useSession` reads that same localStorage key back on mount. Any
+navigates home -- keeping the token in memory only (INV-006),
+and `useSession` reflects it immediately in the same page load. Any
 `ApiError` (401 invalid credentials, 429 rate-limited) sets a
 `role="alert"` form-level banner with the server's `detail` message;
 Login has no field-level errors (the login contract never names a

@@ -30,7 +30,7 @@ _NAMING_CONVENTION = {
 
 
 # frob:tests tests/unit/test_db_engine.py::test_base_is_shared_across_db_package
-# frob:tests tests/unit/test_db_engine.py::test_base_metadata_has_naming_convention_for_alembic  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_db_engine.py::test_base_metadata_has_naming_convention_for_alembic
 # frob:doc docs/index.md#public-api
 class Base(DeclarativeBase):
     """Shared declarative base for every ORM model; owns Alembic's naming convention."""
@@ -38,8 +38,8 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=_NAMING_CONVENTION)
 
 
-# frob:tests tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url  # noqa: E501
-# frob:tests tests/unit/test_db_engine.py::test_check_connectivity_never_logs_the_full_url_with_password  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
+# noqa: E501  # frob:tests tests/unit/test_db_engine.py::test_check_connectivity_never_logs_the_full_url_with_password
 # frob:doc docs/index.md#public-api
 class DatabaseError(BaseModel):
     """A log-safe database failure message: host/port/database only, never a raw URL."""
@@ -52,7 +52,7 @@ class DatabaseError(BaseModel):
         return self.message
 
 
-# frob:tests tests/unit/test_db_engine.py::test_create_db_engine_returns_a_sqlalchemy_engine  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_db_engine.py::test_create_db_engine_returns_a_sqlalchemy_engine
 # frob:doc docs/index.md#public-api
 def create_db_engine(url: str, **kwargs: Any) -> Engine:
     """Build a SQLAlchemy Engine from a database URL; connects lazily, not at call time.
@@ -74,7 +74,7 @@ def create_db_engine(url: str, **kwargs: Any) -> Engine:
     return create_engine(parsed, **kwargs)
 
 
-# frob:tests tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_db_engine.py::test_check_connectivity_names_host_on_unreachable_url
 # frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:doc docs/index.md#public-api
 def check_connectivity(engine: Engine) -> Result[None, DatabaseError]:

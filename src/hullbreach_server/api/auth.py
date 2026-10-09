@@ -56,9 +56,9 @@ def _duplicate_field(db: Session, username: str, email: str) -> str | None:
     return "email"
 
 
-# frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults  # noqa: E501
-# frob:tests tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field  # noqa: E501
-# frob:tests tests/unit/test_auth_register.py::test_register_duplicate_email_returns_409_with_field  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_duplicate_username_returns_409_with_field
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_duplicate_email_returns_409_with_field
 # frob:doc docs/index.md#auth-api
 @router.post("/register", response_model=UserProfile, status_code=201)
 def register(
@@ -85,11 +85,11 @@ def register(
     return UserProfile.from_user(user)
 
 
-# frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user
 # frob:tests tests/unit/test_auth_login.py::test_login_wrong_password_returns_401
-# frob:tests tests/unit/test_auth_login.py::test_login_unknown_username_returns_the_same_401_message_as_wrong_password  # noqa: E501
-# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
-# frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_unknown_username_returns_the_same_401_message_as_wrong_password
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter
 # frob:doc docs/index.md#auth-api
 @router.post("/login", response_model=LoginResponse)
 def login(
@@ -120,17 +120,17 @@ def login(
         )
 
     clear_failed_logins(payload.username)
-    # frob:todo T-0077 refuse a suspended user here with 403 and the suspension reason, before issuing a session  # noqa: E501
+    # frob:todo 01M2H5T12DHERRG7PFSX31A3MK refuse a suspended user here with 403 and the suspension reason, before issuing a session  # noqa: E501
     _session_row, token = issue_session(db, user)
     _log.info("logged in user %s", user.id)
     return LoginResponse(token=token, user=UserProfile.from_user(user))
 
 
 # frob:tests tests/unit/test_auth_logout.py::test_logout_returns_204
-# frob:tests tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward  # noqa: E501
-# frob:tests tests/unit/test_auth_logout.py::test_logout_without_all_only_revokes_the_presented_session  # noqa: E501
-# frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session  # noqa: E501
-# frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_logout.py::test_logout_revokes_token_so_it_is_rejected_afterward
+# noqa: E501  # frob:tests tests/unit/test_auth_logout.py::test_logout_without_all_only_revokes_the_presented_session
+# noqa: E501  # frob:tests tests/unit/test_auth_logout.py::test_logout_with_all_true_revokes_every_session
+# noqa: E501  # frob:tests tests/unit/test_auth_logout.py::test_logout_with_already_invalid_token_returns_401
 # frob:doc docs/index.md#auth-api
 @router.post("/logout", status_code=204)
 def logout(
@@ -149,8 +149,8 @@ def logout(
     return Response(status_code=204)
 
 
-# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token  # noqa: E501
-# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email
 # frob:doc docs/index.md#auth-api
 @router.get("/session", response_model=SessionInfo)
 def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
@@ -159,5 +159,5 @@ def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
     Deliberately minimal (no username/email) -- the caller's only need is
     "who is this and what can they do".
     """
-    # frob:todo T-0040 add active_skin to SessionInfo so the game client can render the equipped skin  # noqa: E501
+    # frob:todo 01M2H5T118CH0Q2PCGG2YF3KQN add active_skin to SessionInfo so the game client can render the equipped skin  # noqa: E501
     return SessionInfo(user_id=ctx.user.id, role=ctx.user.role)

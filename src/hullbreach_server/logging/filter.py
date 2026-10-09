@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 
-# frob:tests tests/unit/test_logging.py::test_below_level_filter_passes_records_below_threshold  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_logging.py::test_below_level_filter_passes_records_below_threshold
 # frob:doc docs/index.md#public-api
 class BelowLevelFilter(logging.Filter):
     """Pass only records with levelno strictly below the configured threshold."""
