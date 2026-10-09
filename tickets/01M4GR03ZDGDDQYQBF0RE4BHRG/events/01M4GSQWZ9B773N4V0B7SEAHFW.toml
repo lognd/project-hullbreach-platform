@@ -1,0 +1,39 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:00:30Z"
+digest = "52f6308bbc287791f9b6e79ff8c9a95a781dc886f07bbd5968820edaa2e65c4e"
+exit_code = 4
+failed_tests = ["tests/unit/test_passwords.py::tests.unit.test_passwords"]
+inline = """
+
+==================================== ERRORS ====================================
+________________ ERROR collecting tests/unit/test_passwords.py _________________
+ImportError while importing test module '<worktree>/tests/unit/test_passwords.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+~/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_passwords.py:5: in <module>
+    from hullbreach_server.auth.passwords import (
+src/hullbreach_server/auth/__init__.py:8: in <module>
+    from hullbreach_server.auth.deps import AuthContext, get_current_user, require_admin
+src/hullbreach_server/auth/deps.py:9: in <module>
+    from fastapi import Depends, HTTPException
+E   ModuleNotFoundError: No module named 'fastapi'
+-------------- generated xml file: /tmp/frob-pytest-618013-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/unit/test_passwords.py
+1 error in 0.07s
+ERROR: found no collectors for <worktree>/tests/unit/test_passwords.py::test_verify_password_returns_false_for_a_malformed_stored_hash
+
+"""
+passed = false
+provider = "pytest"
+ref = "tests/unit/test_passwords.py::test_verify_password_returns_false_for_a_malformed_stored_hash"
+size = 1307
+status = "measured"
+tests = ["tests/unit/test_passwords.py::tests.unit.test_passwords"]
+at = "2026-10-09T17:00:30Z"
+actor = "lognd"
+rev = 1
