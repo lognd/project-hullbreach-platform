@@ -228,6 +228,25 @@ unconfigured key (never FastAPI's default 403). The comparison is
 `hmac.compare_digest` so timing does not reveal a match. No production
 route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
 
+### Matches
+
+<!-- frob:describes src/hullbreach_server/db/models/match.py::Match -->
+<!-- frob:describes src/hullbreach_server/db/models/match.py::MatchPlayerStats -->
+
+`src/hullbreach_server/db/models/match.py` holds the record of a finished
+match (T-0053). `Match` (table `matches`) has `id` (UUID), `winner_id` (FK
+to `users.id`), `duration_seconds` and `created_at`; its `player_stats`
+relationship lists the `MatchPlayerStats` rows (table `match_player_stats`),
+one per player: `match_id` (FK to `matches.id`, `ON DELETE CASCADE`),
+`user_id` (FK to `users.id`, indexed), and the `damage_dealt`,
+`blocks_destroyed`, `blocks_placed` and `time_alive_seconds` counters, each
+defaulting to 0. `(match_id, user_id)` is unique, so a player has at most
+one stats row per match. The user FKs deliberately have no `ON DELETE`
+action: deleting an account anonymizes the user row and keeps its matches
+(T-0037), so a hard delete of a player with matches must fail. The
+idempotency key, rating changes and currency payout land with T-0054,
+T-0057 and T-0070.
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
@@ -236,6 +255,8 @@ route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -276,7 +297,9 @@ T-0101) creates the `items` table `db/seed.py` upserts into --
 deliberately not backed by an ORM model yet (T-0066 owns that), so
 `tests/system/test_build.py`'s `compare_metadata` check excludes it via
 an `include_object` filter rather than reporting a false "extra table"
-diff.
+diff. The fifth revision
+(`7d2c4a91e0b3_create_matches_tables.py`, T-0053) creates `matches` and
+`match_player_stats` matching `db/models/match.py` exactly.
 
 ### Elo rating
 
