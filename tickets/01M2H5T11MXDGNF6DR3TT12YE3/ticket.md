@@ -2,7 +2,7 @@
 id = "01M2H5T11MXDGNF6DR3TT12YE3"
 title = "Game-server API key authentication dependency"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 2
 parent = "01M2H5T11KNPF6MRRJKJR6793R"
