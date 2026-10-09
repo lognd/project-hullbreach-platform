@@ -15,7 +15,7 @@ scope = ["src/hullbreach_server/__main__.py", "src/hullbreach_server/db/__init__
 
 [[acceptance]]
 text = "Given a new developer reading the README, when they follow it, then they can start the local Docker PostgreSQL (docker compose up -d db) and find troubleshooting for it"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "Given a developer with a shared or hosted database, when they read the README, then they know switching is setting HULLBREACH_DATABASE_URL, with no code change"
