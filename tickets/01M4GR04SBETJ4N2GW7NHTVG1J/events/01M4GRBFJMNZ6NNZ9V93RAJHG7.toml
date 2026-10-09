@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "duplicate"
+reason = "duplicate of 01M4GR0CEENQ6ZRG43TZ7E6VAX (register race -> 500, case-sensitive uniqueness, unbounded username)"
+at = "2026-10-09T16:36:15Z"
+actor = "lognd"
+rev = 1

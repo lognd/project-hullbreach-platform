@@ -2,11 +2,12 @@
 id = "01M4GR04SBETJ4N2GW7NHTVG1J"
 title = "register: duplicate pre-check races with insert, concurrent duplicates surface as 500; username has no validation"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "duplicate"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:04Z"
-updated = "2026-10-09T16:30:04Z"
+updated = "2026-10-09T16:36:15Z"
 scope = ["src/hullbreach_server/api/auth.py"]
 +++
 
