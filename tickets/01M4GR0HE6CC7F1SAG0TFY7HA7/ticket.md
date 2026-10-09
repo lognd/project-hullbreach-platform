@@ -2,11 +2,12 @@
 id = "01M4GR0HE6CC7F1SAG0TFY7HA7"
 title = "create_app enables credentialed CORS with wildcard methods/headers and unvalidated cors_origins"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:16Z"
-updated = "2026-10-09T17:11:01Z"
+updated = "2026-10-09T17:11:04Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/app/app.py"]
 
