@@ -2,13 +2,14 @@
 id = "01M2H5T11NHABAJEYKDDDK3JZ3"
 title = "Match and MatchPlayerStats models with migration"
 type = "task"
-category = "in-progress"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 2
 parent = "01M2H5T11KNPF6MRRJKJR6793R"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-09T04:05:13Z"
+updated = "2026-10-09T04:05:22Z"
 aliases = ["T-0053"]
 labels = ["needs-game", "jira:SCRUM-137", "owner:lognd", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/db/models/match.py", "src/hullbreach_server/db/migrations/", "tests/unit/test_match_models.py", "src/hullbreach_server/db/models/__init__.py", "docs/index.md"]
