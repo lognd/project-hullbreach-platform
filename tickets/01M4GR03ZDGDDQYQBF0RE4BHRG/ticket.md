@@ -2,11 +2,12 @@
 id = "01M4GR03ZDGDDQYQBF0RE4BHRG"
 title = "verify_password raises on a malformed stored hash instead of honoring its bool contract"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:03Z"
-updated = "2026-10-09T17:00:59Z"
+updated = "2026-10-09T17:01:09Z"
 scope = ["src/hullbreach_server/auth/passwords.py"]
 
 [[acceptance]]
