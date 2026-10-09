@@ -1,0 +1,14 @@
+kind = "create"
+title = "Landing page with premise, screenshots, and register/login/download calls to action"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 3
+parent = "01M2H5T11DJZ2RR5VJ24AP2TVD"
+aliases = ["T-0046"]
+labels = ["jira:SCRUM-207", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/pages/Landing.tsx", "web/tests/unit/Landing.test.tsx"]
+acceptance = ["given the landing page, when crunk check runs, then zero findings"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

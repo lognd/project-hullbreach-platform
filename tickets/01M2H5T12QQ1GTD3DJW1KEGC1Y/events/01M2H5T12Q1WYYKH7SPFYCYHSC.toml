@@ -1,0 +1,14 @@
+kind = "create"
+title = "Queue endpoints: join, status, cancel, with rating-window pairing and server assignment"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 5
+parent = "01M2H5T12PWAJEVZ18CDFJCG57"
+aliases = ["T-0087"]
+labels = ["needs-game", "jira:SCRUM-168", "owner:lognd", "milestone:0.2.0"]
+scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
+acceptance = ["given two players within 100 rating, when both are queued, then status returns the same match id and server address for both"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

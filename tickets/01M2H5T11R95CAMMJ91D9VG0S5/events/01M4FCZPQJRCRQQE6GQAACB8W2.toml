@@ -1,0 +1,8 @@
+kind = "field"
+field = "acceptance"
+old = ["given equal ratings, when the higher-rated loses, then the change magnitude is larger than an expected win"]
+new = ["given equal ratings, when the higher-rated loses, then the change magnitude is larger than an expected win", "Given the module is read, when a caller needs the K-factor, starting rating, floor or rounding rule, then each is a named constant or documented behavior in rating/elo.py and described in docs/index.md", "Given a loser whose rating is at or near the floor, when ratings update, then the loser's new rating is never below the floor"]
+moved = [1]
+at = "2026-10-09T03:58:20Z"
+actor = "lognd"
+rev = 1

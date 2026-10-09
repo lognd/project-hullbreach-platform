@@ -1,0 +1,19 @@
+kind = "create"
+title = "S15 Navigate the site consistently"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T11ARH7FQCAQZ52ER1Y6"
+aliases = ["T-0043"]
+labels = ["jira:SCRUM-36", "owner:a-carten", "milestone:0.1.0"]
+scope = ["web/src/App.tsx", "web/src/components/Footer.tsx", "web/src/components/Header.tsx", "web/src/router.tsx", "web/tests/unit/Header.test.tsx"]
+acceptance = ["given any page, when signed out, then the header shows login and register; when signed in, then username, profile, store, and logout", "given the keyboard alone, when navigating, then every link and control is reachable"]
+body = """
+As a player, I want the same header and footer on every page with login state, profile, and store links, so that I always know where I am and how to get anywhere else.
+
+Open questions:
+- Client-side routing library, or plain links between pages?
+- Dark/light toggle, or is the dark cockpit theme the only theme?"""
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

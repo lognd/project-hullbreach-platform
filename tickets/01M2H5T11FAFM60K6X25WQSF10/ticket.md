@@ -1,0 +1,28 @@
++++
+id = "01M2H5T11FAFM60K6X25WQSF10"
+title = "S14 Understand what data is collected"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T11ARH7FQCAQZ52ER1Y6"
+reporter = "human"
+created = "2026-09-15T00:00:00Z"
+updated = "2026-09-15T00:00:00Z"
+aliases = ["T-0047"]
+labels = ["jira:SCRUM-35", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/components/CookieNotice.tsx", "web/src/components/Footer.tsx", "web/src/pages/DataPolicy.tsx", "web/tests/unit/CookieNotice.test.tsx", "web/tests/unit/DataPolicy.test.tsx"]
+
+[[acceptance]]
+text = "given a first-time visitor, when the site loads, then a dismissible cookie notice shows and does not return on that browser"
+bound = false
+
+[[acceptance]]
+text = "given any page footer, when the data policy link is followed, then the page lists what is stored, why, and how to delete it"
+bound = false
++++
+
+As a visitor, I want a cookie notice and a data policy page, so that I know what the site stores about me before I sign up.
+
+Open questions:
+- Do we set any non-essential cookies at all? If not, the notice can be informational rather than consent-gated.
+- Who writes the policy text: the team, or adapt a template?

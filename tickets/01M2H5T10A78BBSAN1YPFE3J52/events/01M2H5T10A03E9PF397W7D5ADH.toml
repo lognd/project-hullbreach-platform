@@ -1,0 +1,14 @@
+kind = "create"
+title = "Require one approving review and All checks pass in branch protection; document it"
+type = "docs"
+category = "todo"
+priority = "medium"
+points = 1
+parent = "01M2H5T109596X8JSBWC05JJDV"
+aliases = ["T-0010"]
+labels = ["jira:SCRUM-81", "owner:lognd", "milestone:0.1.0"]
+scope = ["CONTRIBUTING.md", "README.md"]
+acceptance = ["given branch protection, when a PR has green CI but no approval, then merge is blocked for non-bypass members"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

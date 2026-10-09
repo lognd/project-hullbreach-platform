@@ -22,6 +22,9 @@ coverage/
 # frob local state
 .frob/
 
+# crunk local state (written by `frob check` running crunk)
+.crunk/
+
 # serena local state
 .serena/
 FROBLEMS.md

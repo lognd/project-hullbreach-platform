@@ -1,0 +1,14 @@
+kind = "create"
+title = "User model, migration, and password hashing helper"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T10EF0AKZ2JZC55N747C"
+aliases = ["T-0015"]
+labels = ["jira:SCRUM-86", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/db/models/user.py", "src/hullbreach_server/auth/passwords.py", "tests/unit/test_passwords.py", "src/hullbreach_server/auth/__init__.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/db/migrations/versions/", "src/hullbreach_server/db/migrations/env.py", "pyproject.toml", "uv.lock", "tests/unit/test_roles.py", "docs/index.md", "design/hullbreach.strata", "docs/design/sprint-1.md", "src/hullbreach_server/db/engine.py", "src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py"]
+acceptance = ["given a password, when hashed, then verify succeeds and the stored value is not the password"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

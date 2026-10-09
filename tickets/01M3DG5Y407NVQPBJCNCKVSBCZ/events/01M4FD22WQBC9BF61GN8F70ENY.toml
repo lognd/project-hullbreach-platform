@@ -1,0 +1,29 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T03:59:35Z"
+digest = "536ede9cbc5a25ee2e4dec29eca559a48ca76789334687daf1fbf05d3b8289de"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Header.test.tsx (15 tests) 1178ms
+
+ Test Files  1 passed (1)
+      Tests  15 passed (15)
+   Start at  23:59:36
+   Duration  2.61s (transform 392ms, setup 155ms, import 346ms, tests 1.18s, environment 717ms)
+
+JSON report written to /tmp/frob-vitest-264274-0.json
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Header.test.tsx"
+size = 410
+status = "measured"
+tests = ["web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$renders_the_brand", "web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$shows_Register_and_Login_links_when_signed_out", "web/tests/unit/Header.test.tsx::suite$Header__signed_out_::test$renders_every_interactive_control_as_a_real_anchor_or_button_element", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$shows_username_and_a_Log_out_control_when_signed_in", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$clears_session_and_navigates_home_on_logout_click", "web/tests/unit/Header.test.tsx::suite$Header__signed_in_::test$logout_button_calls_POST__api_v1_auth_logout_with_the_bearer_token", "web/tests/unit/Header.test.tsx::suite$Header_keyboard_access::test$tab_order_matches_visual_order_and_Enter_activates_each_control", "web/tests/unit/Header.test.tsx::suite$Footer::test$renders_the_footer_with_cookie_and_data_policy_links", "web/tests/unit/Header.test.tsx::suite$Footer_keyboard_access::test$tab_order_reaches_each_footer_link_and_Enter_activates_it", "web/tests/unit/Header.test.tsx::suite$Footer_keyboard_access::test$the_page_shell_is_one_tab_sequence__header_controls__then_footer_links", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_landing_page_at__", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_register_page_at__register", "web/tests/unit/Header.test.tsx::suite$router::test$renders_the_login_page_at__login", "web/tests/unit/Header.test.tsx::suite$router::test$renders_a_not-found_page_for_an_unknown_path", "web/tests/unit/Header.test.tsx::suite$App_shell::test$renders_Header_and_Footer_around_the_routed_page"]
+at = "2026-10-09T03:59:35Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T04:05:10Z"
+digest = "a64cf7333a9b21c928d112802102b2e2bde7080d958d7d6f5a1d7bd8299da9ff"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.80s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_match_models.py::test_saved_match_has_a_stats_row_per_player_referencing_it"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_match_models.py::test_saved_match_has_a_stats_row_per_player_referencing_it"]
+at = "2026-10-09T04:05:10Z"
+actor = "lognd"
+rev = 1

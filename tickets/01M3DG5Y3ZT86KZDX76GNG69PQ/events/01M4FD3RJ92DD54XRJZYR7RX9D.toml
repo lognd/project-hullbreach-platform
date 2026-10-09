@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given any two ratings at or above the floor, when the winner's and loser's new ratings are computed, then the winner's rating is never lower than before", "Given any two ratings at or above the floor, when the winner's and loser's new ratings are computed, then the loser's rating is never higher than before"]
+moved = []
+at = "2026-10-09T04:00:33Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,14 @@
+kind = "create"
+title = "Data policy page linked from the footer"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T11FAFM60K6X25WQSF10"
+aliases = ["T-0049"]
+labels = ["jira:SCRUM-210", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/pages/DataPolicy.tsx", "web/src/components/Footer.tsx", "web/tests/unit/DataPolicy.test.tsx"]
+acceptance = ["given the footer, when the policy link is followed, then sections for stored data, purpose, and deletion exist"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

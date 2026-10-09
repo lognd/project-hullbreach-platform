@@ -1,0 +1,17 @@
+kind = "evidence"
+captured_at = "2026-10-09T04:04:34Z"
+digest = "e992811b3c6461c79434bdc169989aa6eb085b8a0a4290045d1230774d2eeef7"
+exit_code = 0
+inline = """
+...                                                                      [100%]
+3 passed in 1.18s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_match_models.py::test_saved_match_has_a_stats_row_per_player_referencing_it tests/unit/test_match_models.py::test_second_stats_row_for_the_same_player_is_rejected tests/unit/test_match_models.py::test_stats_default_to_zero_and_match_keeps_its_winner"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_match_models.py::test_saved_match_has_a_stats_row_per_player_referencing_it", "tests/unit/test_match_models.py::test_second_stats_row_for_the_same_player_is_rejected", "tests/unit/test_match_models.py::test_stats_default_to_zero_and_match_keeps_its_winner"]
+at = "2026-10-09T04:04:34Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,20 @@
++++
+id = "01M2H5T10MG71TCQ3Q67M8TSK0"
+title = "POST /api/v1/auth/login issuing a token, with failed-login rate limiting"
+type = "task"
+category = "done"
+outcome = "done"
+priority = "medium"
+points = 3
+parent = "01M2H5T10JTJB218KF4C7FSH46"
+reporter = "human"
+created = "2026-09-15T00:00:00Z"
+updated = "2026-09-15T00:00:02Z"
+aliases = ["T-0020"]
+labels = ["jira:SCRUM-91", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/api/auth.py", "tests/unit/test_auth_login.py", "src/hullbreach_server/auth/sessions.py", ".env.example", "src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/auth/passwords.py", "tests/unit/test_auth_game.py", "docs/index.md", "design/hullbreach.strata", "docs/design/sprint-1.md", "docs/design/registry/capability-via-ratchet.lock.json", "src/hullbreach_server/db/models/session.py", "src/hullbreach_server/auth/deps.py", "src/hullbreach_server/db/migrations/versions/*.py"]
+
+[[acceptance]]
+text = "given five failed attempts in a minute, when a sixth arrives, then 429"
+bound = false
++++

@@ -47,12 +47,12 @@ afterEach(() => {
 });
 
 describe("Login page", () => {
+  // frob:tests web/src/pages/Login.tsx::Login kind="unit"
   it("submits login with username and password fields", async () => {
     const fetchMock = vi
       .fn()
       .mockResolvedValue(jsonResponse(validLoginResponse, 200));
     vi.stubGlobal("fetch", fetchMock);
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Login } = await import(loginModulePath);
     const user = userEvent.setup();
     render(<Login />);
@@ -71,6 +71,8 @@ describe("Login page", () => {
     );
   });
 
+  // frob:tests web/src/api/auth.ts::login kind="unit"
+  // frob:tests web/src/auth/session.ts::saveSession kind="unit"
   it(
     "persists the session to localStorage on successful login",
     async () => {
@@ -78,7 +80,6 @@ describe("Login page", () => {
         "fetch",
         vi.fn().mockResolvedValue(jsonResponse(validLoginResponse, 200)),
       );
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Login } = await import(loginModulePath);
       const user = userEvent.setup();
       render(<Login />);
@@ -99,7 +100,6 @@ describe("Login page", () => {
       "fetch",
       vi.fn().mockResolvedValue(jsonResponse(validLoginResponse, 200)),
     );
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Login } = await import(loginModulePath);
     const user = userEvent.setup();
     const { unmount } = render(<Login />);
@@ -108,7 +108,6 @@ describe("Login page", () => {
     await user.click(screen.getByRole("button", { name: /log ?in/i }));
     unmount();
 
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { useSession } = await import(sessionModulePath);
     function Probe() {
       const session = useSession();
@@ -127,7 +126,6 @@ describe("Login page", () => {
           jsonResponse({ detail: "invalid username or password" }, 401),
         ),
       );
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Login } = await import(loginModulePath);
       const user = userEvent.setup();
       render(<Login />);
@@ -152,7 +150,6 @@ describe("Login page", () => {
           ),
         ),
       );
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Login } = await import(loginModulePath);
       const user = userEvent.setup();
       render(<Login />);
@@ -172,7 +169,6 @@ describe("Login page", () => {
         "fetch",
         vi.fn().mockResolvedValue(jsonResponse(validLoginResponse, 200)),
       );
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Login } = await import(loginModulePath);
       const user = userEvent.setup();
       render(<Login />);
@@ -185,6 +181,8 @@ describe("Login page", () => {
 });
 
 describe("auth/session.ts", () => {
+  // frob:tests web/src/auth/session.ts::loadSession kind="unit"
+  // frob:tests web/src/auth/session.ts::useSession kind="unit"
   it(
     "restores the session from localStorage synchronously on mount",
     async () => {
@@ -197,7 +195,6 @@ describe("auth/session.ts", () => {
           role: "player",
         }),
       );
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { useSession } = await import(sessionModulePath);
       function Probe() {
         const session = useSession();
@@ -208,10 +205,10 @@ describe("auth/session.ts", () => {
     },
   );
 
+  // frob:tests web/src/auth/session.ts::clearSession kind="unit"
   it(
     "clears the stored session so loadSession returns null after clearSession",
     async () => {
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { saveSession, clearSession, loadSession } = await import(
         sessionModulePath
       );
@@ -229,7 +226,6 @@ describe("auth/session.ts", () => {
   it(
     "useSession updates when a storage event fires from another tab",
     async () => {
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { useSession } = await import(sessionModulePath);
       function Probe() {
         const session = useSession();
@@ -256,7 +252,6 @@ describe("auth/session.ts", () => {
     "loadSession returns null for malformed JSON in localStorage",
     async () => {
       window.localStorage.setItem("hullbreach.session", "{not-json");
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { loadSession } = await import(sessionModulePath);
       expect(loadSession()).toBeNull();
     },

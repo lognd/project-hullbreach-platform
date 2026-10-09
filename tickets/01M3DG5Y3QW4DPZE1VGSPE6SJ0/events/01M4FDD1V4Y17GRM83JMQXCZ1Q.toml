@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given an unreachable or reachable database URL, when connectivity is checked, then the result names the host but never the password, and a reachable engine returns Ok; the get_db dependency yields a session", "Given an initialized database, when the seed runs twice, then 100 catalog items and one admin exist, the second run duplicates nothing, and a missing admin password is an Err"]
+moved = []
+at = "2026-10-09T04:05:38Z"
+actor = "lognd"
+rev = 1

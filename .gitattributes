@@ -1,0 +1,7 @@
+tickets/**/ticket.md merge=frob-ledger
+tickets/_milestones/*/milestone.md merge=frob-ledger
+tickets/_cycles/*/cycle.md merge=frob-ledger
+
+# Ledger files must stay LF even where core.autocrlf=true; the v2 reader and
+# the importer reject CRLF front matter.
+tickets/** text eol=lf

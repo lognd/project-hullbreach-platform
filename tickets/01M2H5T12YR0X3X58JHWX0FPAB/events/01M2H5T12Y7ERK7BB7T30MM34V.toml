@@ -1,0 +1,14 @@
+kind = "create"
+title = "Replay ingestion endpoint and match replay page (design spike first)"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 5
+parent = "01M2H5T12XK1QH06J7XJ1FBH92"
+aliases = ["T-0094"]
+labels = ["needs-game", "jira:SCRUM-215", "owner:lognd"]
+scope = ["src/hullbreach_server/api/replays.py", "web/src/pages/Replay.tsx", "tests/unit/test_replays.py"]
+acceptance = ["given a recorded input log, when uploaded, then the replay page renders both ships"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

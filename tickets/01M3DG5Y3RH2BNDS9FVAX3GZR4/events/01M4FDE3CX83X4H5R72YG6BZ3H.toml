@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given a new developer reading the README, when they follow it, then they can start the local Docker PostgreSQL (docker compose up -d db) and find troubleshooting for it", "Given a developer with a shared or hosted database, when they read the README, then they know switching is setting HULLBREACH_DATABASE_URL, with no code change"]
+moved = []
+at = "2026-10-09T04:06:12Z"
+actor = "lognd"
+rev = 1

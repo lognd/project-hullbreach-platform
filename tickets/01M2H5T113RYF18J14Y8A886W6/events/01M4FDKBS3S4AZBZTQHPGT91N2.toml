@@ -1,0 +1,27 @@
+kind = "evidence"
+captured_at = "2026-10-09T04:08:57Z"
+digest = "e8566e82442f6b021679da49631eaadfc5429a3fd17db34ac8591065ff8b4a28"
+exit_code = 0
+inline = """
+........                                                                 [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.11/site-packages/starlette/testclient.py:53
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 2 warnings in 1.60s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/system/test_build.py::test_app_builds_and_serves_health tests/system/test_build.py::test_cli_help tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata tests/system/test_build.py::test_logging_package_wires_end_to_end tests/system/test_build.py::test_no_syntax_errors_in_src tests/system/test_build.py::test_openapi_schema_is_served tests/system/test_build.py::test_package_imports tests/system/test_build.py::test_py_typed_marker_present"
+size = 921
+status = "measured"
+tests = ["tests/system/test_build.py::test_app_builds_and_serves_health", "tests/system/test_build.py::test_cli_help", "tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata", "tests/system/test_build.py::test_logging_package_wires_end_to_end", "tests/system/test_build.py::test_no_syntax_errors_in_src", "tests/system/test_build.py::test_openapi_schema_is_served", "tests/system/test_build.py::test_package_imports", "tests/system/test_build.py::test_py_typed_marker_present"]
+at = "2026-10-09T04:08:57Z"
+actor = "a-carten"
+rev = 1

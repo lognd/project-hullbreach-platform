@@ -1,0 +1,18 @@
+kind = "create"
+title = "S15-2: Keyboard-only navigation pass on the header and footer"
+type = "task"
+category = "todo"
+priority = "high"
+points = 1
+parent = "01M2H5T11BBT0FQHR5JDXDKE4Q"
+aliases = ["T-0128"]
+labels = ["platform", "web", "jira:SCRUM-98", "owner:a-carten", "milestone:0.1.0"]
+scope = ["web/src/App.tsx", "web/src/components/Footer.tsx", "web/src/components/Header.tsx", "web/src/router.tsx", "web/tests/unit/Header.test.tsx"]
+body = """
+https://aliens-against-humanity.atlassian.net/browse/SCRUM-98
+
+Keyboard-only navigation pass on the header and footer
+Parent story: SCRUM-36"""
+at = "2026-09-26T00:00:00Z"
+actor = "human"
+rev = 1

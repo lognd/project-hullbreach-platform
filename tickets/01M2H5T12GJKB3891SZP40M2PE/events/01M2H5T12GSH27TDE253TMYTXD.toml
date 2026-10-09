@@ -1,0 +1,14 @@
+kind = "create"
+title = "Admin set-rating endpoint writing a RatingChange with the admin's reason"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T12F0VE61FR26RTG2NG3"
+aliases = ["T-0080"]
+labels = ["jira:SCRUM-195", "owner:lognd", "milestone:0.3.0"]
+scope = ["src/hullbreach_server/api/admin/ratings.py", "src/hullbreach_server/services/admin.py", "tests/unit/test_admin_ratings.py"]
+acceptance = ["given a set-rating call, when applied, then history shows the admin entry and the new rating"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

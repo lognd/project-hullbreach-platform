@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given a pull request to main, when CI runs, then a dedicated frob check job runs frob ticket doctor and frob check, and fails the PR on a finding at or above fail_on", "Given a contributor reading CONTRIBUTING.md, when they look for what merges a PR, then frob check is named as one of the required status checks"]
+moved = []
+at = "2026-10-09T04:06:26Z"
+actor = "lognd"
+rev = 1

@@ -6,8 +6,10 @@ rules for the team.
 ## Picking a ticket
 
 Open work is mapped in [docs/picking-up-work.md](docs/picking-up-work.md):
-claim a ticket with `frob ticket start`, branch as `T-####-name`, and grep
-for `frob:todo T-####` to find where it plugs in.
+claim a ticket with `frob work <ticket>` (it creates the branch and
+worktree for you), and grep for `frob:todo T-####` to find where it plugs
+in. Tickets are ULIDs shown as `~HANDLE`s; the old `T-####` ids still
+resolve as aliases.
 
 ## Branching
 
@@ -20,7 +22,9 @@ merge; the Scrum Master is on the ruleset's bypass list, for an urgent fix
 when no reviewer is available, but does not push to `main` outside that
 case.
 
-Branch from `main` for every piece of work, one concern per branch:
+Branch from `main` for every piece of work, one concern per branch. For
+ticketed work `frob work` names the branch `ticket/<HANDLE>` for you; for
+anything else:
 
 ```
 git switch main && git pull
@@ -43,10 +47,19 @@ failure; use `@pytest.mark.xfail(strict=True, reason=...)` for a known,
 tracked defect rather than skipping or deleting the test. There is no
 equivalent escape hatch for lint, types, or the frob gates: fix them.
 
-Run the same gate locally before pushing:
+`frob check` here is frob v2 (pinned to 0.532.0 in CI; install with
+`uv tool install frob==0.532.0`). It runs frob's own rules (directives,
+doc links, COV001 coverage, ledger rules, the crunk sibling); it does not
+wrap the linters, so run those yourself as the `server` and `web` jobs do.
+Run the same gates locally before pushing:
 
 ```
+frob ticket doctor
 frob check
+uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+uv run ty check src/
+uv run pytest tests/
+npm run lint && npm run typecheck && npm run test
 ```
 
 ## Commits
@@ -77,8 +90,8 @@ Every new module gets a unit test file of the same name under
 `tests/unit/`. Anything that wires modules together gets a case in
 `tests/system/test_build.py`, which is the "did I build?" smoke test and
 must pass on a fresh `uv sync`. Annotate tests with `# frob:tests
-<path>::<symbol> kind="unit"|"integration"` so the frob coverage gate can
-map them.
+<path>::<symbol> kind="unit"|"integration"` so the frob coverage gate
+(COV001 inside `frob check`) can map them.
 
 ## Styling
 

@@ -8,7 +8,7 @@
 //
 // frob:ticket T-0044
 // frob:ticket T-0024
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -51,15 +51,15 @@ afterEach(() => {
 });
 
 describe("Header (signed out)", () => {
+  // frob:tests web/src/components/Header.tsx::Header kind="unit"
+  // frob:tests web/src/auth/session.ts::useSession kind="unit"
   it("renders the brand", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     render(<Header />);
     expect(screen.getByText(/hullbreach/i)).toBeInTheDocument();
   });
 
   it("shows Register and Login links when signed out", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     render(<Header />);
     expect(screen.getByRole("link", { name: /register/i })).toHaveAttribute(
@@ -75,7 +75,6 @@ describe("Header (signed out)", () => {
   it(
     "renders every interactive control as a real anchor or button element",
     async () => {
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Header } = await import(headerModulePath);
       render(<Header />);
       const controls = [
@@ -91,8 +90,8 @@ describe("Header (signed out)", () => {
 });
 
 describe("Header (signed in)", () => {
+  // frob:tests web/src/auth/session.ts::saveSession kind="unit"
   it("shows username and a Log out control when signed in", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const session = await import(sessionModulePath);
     session.saveSession({
       token: "tok-1",
@@ -100,7 +99,6 @@ describe("Header (signed in)", () => {
       username: "flagship",
       role: "player",
     });
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     render(<Header />);
     expect(screen.getByText("flagship")).toBeInTheDocument();
@@ -110,7 +108,6 @@ describe("Header (signed in)", () => {
   });
 
   it("clears session and navigates home on logout click", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const session = await import(sessionModulePath);
     session.saveSession({
       token: "tok-1",
@@ -119,7 +116,6 @@ describe("Header (signed in)", () => {
       role: "player",
     });
     stubFetchOnce(undefined, { status: 204 });
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Header } = await import(headerModulePath);
     const user = userEvent.setup();
     render(<Header />);
@@ -128,10 +124,12 @@ describe("Header (signed in)", () => {
     expect(window.location.pathname).toBe("/");
   });
 
+  // frob:tests web/src/components/Header.tsx::handleLogout kind="unit"
+  // frob:tests web/src/api/auth.ts::logout kind="unit"
+  // frob:tests web/src/auth/session.ts::clearSession kind="unit"
   it(
     "logout button calls POST /api/v1/auth/logout with the bearer token",
     async () => {
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const session = await import(sessionModulePath);
       session.saveSession({
         token: "tok-1",
@@ -140,7 +138,6 @@ describe("Header (signed in)", () => {
         role: "player",
       });
       stubFetchOnce(undefined, { status: 204 });
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Header } = await import(headerModulePath);
       const user = userEvent.setup();
       render(<Header />);
@@ -162,7 +159,6 @@ describe("Header keyboard access", () => {
   it(
     "tab order matches visual order and Enter activates each control",
     async () => {
-      // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
       const { Header } = await import(headerModulePath);
       const activated: string[] = [];
       render(<Header />);
@@ -188,8 +184,8 @@ describe("Header keyboard access", () => {
 });
 
 describe("Footer", () => {
+  // frob:tests web/src/components/Footer.tsx::Footer kind="unit"
   it("renders the footer with cookie and data policy links", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { Footer } = await import(footerModulePath);
     render(<Footer />);
     expect(
@@ -198,6 +194,47 @@ describe("Footer", () => {
     expect(
       screen.getByRole("link", { name: /data policy/i }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Footer keyboard access", () => {
+  // frob:tests web/src/components/Footer.tsx::Footer kind="unit"
+  it("tab order reaches each footer link and Enter activates it", async () => {
+    const { Footer } = await import(footerModulePath);
+    render(<Footer />);
+    const links = screen.getAllByRole("link");
+    const user = userEvent.setup();
+    const activated: string[] = [];
+    for (const link of links) {
+      link.addEventListener("click", (event) => {
+        // jsdom cannot navigate; the click firing is what proves Enter works.
+        event.preventDefault();
+        activated.push(link.textContent ?? "");
+      });
+    }
+    await user.tab();
+    for (const link of links) {
+      expect(document.activeElement).toBe(link);
+      await user.keyboard("{Enter}");
+      await user.tab();
+    }
+    expect(activated).toEqual(["Cookie policy", "Data policy"]);
+  });
+
+  // frob:tests web/src/App.tsx::App kind="unit"
+  it("the page shell is one tab sequence: header controls, then footer links", async () => {
+    const { App } = await import(appModulePath);
+    render(<App />);
+    const user = userEvent.setup();
+    const expected = [
+      ...within(screen.getByRole("banner")).getAllByRole("link"),
+      ...within(screen.getByRole("banner")).getAllByRole("button"),
+      ...within(screen.getByRole("contentinfo")).getAllByRole("link"),
+    ];
+    for (const control of expected) {
+      await user.tab();
+      expect(document.activeElement).toBe(control);
+    }
   });
 });
 
@@ -211,11 +248,10 @@ describe("router", () => {
     vi.resetModules();
   });
 
+  // frob:tests web/src/router.tsx::router kind="unit"
   it("renders the landing page at /", async () => {
     window.history.pushState({}, "", "/");
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { RouterProvider } = await import(routerDomModulePath);
     render(<RouterProvider router={router} />);
     expect(
@@ -225,9 +261,7 @@ describe("router", () => {
 
   it("renders the register page at /register", async () => {
     window.history.pushState({}, "", "/register");
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { RouterProvider } = await import(routerDomModulePath);
     render(<RouterProvider router={router} />);
     expect(
@@ -237,9 +271,7 @@ describe("router", () => {
 
   it("renders the login page at /login", async () => {
     window.history.pushState({}, "", "/login");
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { RouterProvider } = await import(routerDomModulePath);
     render(<RouterProvider router={router} />);
     expect(
@@ -249,9 +281,7 @@ describe("router", () => {
 
   it("renders a not-found page for an unknown path", async () => {
     window.history.pushState({}, "", "/does-not-exist");
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { router } = await import(routerModulePath);
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { RouterProvider } = await import(routerDomModulePath);
     render(<RouterProvider router={router} />);
     expect(screen.getByText(/not found/i)).toBeInTheDocument();
@@ -259,8 +289,8 @@ describe("router", () => {
 });
 
 describe("App shell", () => {
+  // frob:tests web/src/App.tsx::App kind="unit"
   it("renders Header and Footer around the routed page", async () => {
-    // frob:waive OPAQUE001 reason="specifier is a variable so vite/vitest treat the import as runtime-resolved instead of eagerly failing to resolve a not-yet-existing module at transform time (a literal specifier here breaks vite:import-analysis even with @vite-ignore); the module path is a single file-scoped const, not user input" permanent="true"
     const { App } = await import(appModulePath);
     render(<App />);
     expect(

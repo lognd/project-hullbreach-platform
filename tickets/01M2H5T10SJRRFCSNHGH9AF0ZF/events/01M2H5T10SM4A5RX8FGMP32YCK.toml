@@ -1,0 +1,19 @@
+kind = "create"
+title = "S07 Sign in from inside the game"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T10DT4023PZH1JHFEWQE"
+aliases = ["T-0025"]
+labels = ["needs-game", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/deps.py", "tests/unit/test_auth_game.py"]
+acceptance = ["given website credentials, when used from the game client, then sign-in succeeds", "given a signed-in client, when it joins a match, then the game server can validate the session with the API", "given a signed-out client, when building ships offline, then it works, but ranked matches are refused"]
+body = """
+As a player, I want to sign into my platform account from the game client, so that my matches count toward my rating and my skins appear on my ship.
+
+Open questions:
+- Username/password form in the game, or open the website and receive a token (device-code style)?
+- How does the game client store the token between launches?"""
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

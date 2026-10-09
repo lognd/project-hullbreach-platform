@@ -1,0 +1,8 @@
+kind = "field"
+field = "acceptance"
+old = ["given a page of matches, when load more is pressed, then the next page appends"]
+new = ["given a page of matches, when load more is pressed, then the next page appends", "Given a player with matches, when the history loads, then matches show newest first with opponent, result, date, duration, rating before and after and stats, and a Load more control while more remain", "Given the last page, when it has loaded, then there is no Load more control", "Given a failing load more, when it is pressed, then an error shows and the matches already loaded stay", "Given a signed-out visitor, when the history renders, then it asks them to log in and makes no request"]
+moved = [1]
+at = "2026-10-09T04:09:27Z"
+actor = "a-carten"
+rev = 1

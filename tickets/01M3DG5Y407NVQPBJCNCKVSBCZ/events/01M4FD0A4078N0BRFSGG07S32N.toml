@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given the keyboard alone, when tabbing through the header and footer, then every link and control is reachable in visual order and Enter activates it"]
+moved = []
+at = "2026-10-09T03:58:40Z"
+actor = "a-carten"
+rev = 1

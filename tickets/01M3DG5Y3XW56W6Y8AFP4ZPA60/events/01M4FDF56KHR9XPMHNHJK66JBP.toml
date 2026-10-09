@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-09T04:06:46Z"
+digest = "03c84ca4c4f1eac316cae5fa01ba8b6c47c6b23e1e09ce2afacbb4e331a05921"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/unit/test_auth_register.py::test_register_password_too_short_returns_422
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_auth_register.py::test_register_password_too_short_returns_422
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 2 warnings in 0.40s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_auth_register.py::test_register_password_too_short_returns_422"
+size = 958
+status = "measured"
+tests = ["tests/unit/test_auth_register.py::test_register_password_too_short_returns_422"]
+at = "2026-10-09T04:06:46Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,14 @@
+kind = "create"
+title = "Website register page with inline validation errors"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 3
+parent = "01M2H5T10EF0AKZ2JZC55N747C"
+aliases = ["T-0017"]
+labels = ["jira:SCRUM-88", "owner:a-carten", "milestone:0.1.0"]
+scope = ["web/src/pages/Register.tsx", "web/src/api/auth.ts", "web/tests/unit/Register.test.tsx", "web/src/router.tsx", "docs/index.md", "design/hullbreach.strata", "docs/design/registry/capability-via-ratchet.lock.json"]
+acceptance = ["given the register form, when the API returns a field error, then it is shown next to the field"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

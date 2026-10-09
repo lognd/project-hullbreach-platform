@@ -1,0 +1,33 @@
++++
+id = "01M2H5T114G1C2NS9KF4WKN7VA"
+title = "S11 Delete my account"
+type = "story"
+category = "todo"
+priority = "medium"
+points = 3
+parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
+reporter = "human"
+created = "2026-09-15T00:00:00Z"
+updated = "2026-10-09T04:05:31Z"
+aliases = ["T-0036"]
+labels = ["jira:SCRUM-32", "owner:lognd", "milestone:0.2.0"]
+scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/account_deletion.py", "tests/unit/test_me_delete.py", "web/src/pages/Settings.tsx", "web/tests/unit/Settings.test.tsx"]
+
+[[acceptance]]
+text = "given an explicit confirmation step, when a player deletes their account, then it is deleted"
+bound = false
+
+[[acceptance]]
+text = "given a deleted account, when its credentials are used or its profile requested, then both fail"
+bound = false
+
+[[acceptance]]
+text = "given a deleted player, when an opponent views history, then the match still shows with the player anonymized"
+bound = false
++++
+
+As a player, I want to permanently delete my account, so that I can leave the game and take my data with me.
+
+Open questions:
+- Hard delete, or anonymize and keep match records so opponents' histories stay intact?
+- Grace period / undo, or immediate?

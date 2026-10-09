@@ -1,0 +1,44 @@
+kind = "evidence"
+captured_at = "2026-10-09T03:59:26Z"
+digest = "d64a87cba083623664d8eba3f4238c2c03669f6fe89f014771f3f85478b0223a"
+exit_code = 4
+failed_tests = ["tests/unit/test_elo.py::tests.unit.test_elo"]
+inline = """
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/unit/test_elo.py ____________________
+ImportError while importing test module '<worktree>/tests/unit/test_elo.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+~/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_elo.py:5: in <module>
+    from hullbreach_server.rating.elo import (
+src/hullbreach_server/rating/elo.py:13: in <module>
+    from pydantic import BaseModel, ConfigDict
+E   ModuleNotFoundError: No module named 'pydantic'
+-------------- generated xml file: /tmp/frob-pytest-262685-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/unit/test_elo.py
+1 error in 0.04s
+ERROR: found no collectors for <worktree>/tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip
+
+ERROR: found no collectors for <worktree>/tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor
+
+ERROR: found no collectors for <worktree>/tests/unit/test_elo.py::test_loser_never_drops_below_the_floor
+
+ERROR: found no collectors for <worktree>/tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected
+
+ERROR: found no collectors for <worktree>/tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win
+
+"""
+passed = false
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor tests/unit/test_elo.py::test_loser_never_drops_below_the_floor tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win"
+size = 1543
+status = "measured"
+tests = ["tests/unit/test_elo.py::tests.unit.test_elo"]
+at = "2026-10-09T03:59:26Z"
+actor = "lognd"
+rev = 1

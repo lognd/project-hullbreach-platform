@@ -1,0 +1,17 @@
+kind = "evidence"
+captured_at = "2026-10-09T04:01:01Z"
+digest = "7effb07a98174d8b159a1f438a8f17dec3e2111c55d2a327470c0cc1ea61346c"
+exit_code = 0
+inline = """
+.......                                                                  [100%]
+7 passed in 0.38s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor tests/unit/test_elo.py::test_loser_never_drops_below_the_floor tests/unit/test_elo.py::test_loser_never_gains_rating tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win tests/unit/test_elo.py::test_winner_never_loses_rating"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip", "tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor", "tests/unit/test_elo.py::test_loser_never_drops_below_the_floor", "tests/unit/test_elo.py::test_loser_never_gains_rating", "tests/unit/test_elo.py::test_rating_below_the_floor_is_rejected", "tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win", "tests/unit/test_elo.py::test_winner_never_loses_rating"]
+at = "2026-10-09T04:01:01Z"
+actor = "lognd"
+rev = 1

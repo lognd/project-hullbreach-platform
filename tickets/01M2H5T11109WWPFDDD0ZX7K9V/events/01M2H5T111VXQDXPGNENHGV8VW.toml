@@ -1,0 +1,19 @@
+kind = "create"
+title = "S10 Edit my account details"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
+aliases = ["T-0033"]
+labels = ["jira:SCRUM-31", "owner:lognd", "milestone:0.2.0"]
+scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/auth/sessions.py", "tests/unit/test_me_edit.py", "web/src/pages/Settings.tsx", "web/tests/unit/Settings.test.tsx"]
+acceptance = ["given the current password, when email or password is changed, then it succeeds; without it, refused", "given a display-name change, when submitted, then registration rules apply", "given a password change, when it succeeds, then other active sessions are invalidated"]
+body = """
+As a player, I want to change my display name, email, and password, so that my account stays accurate and secure over time.
+
+Open questions:
+- Does changing the password require the current password? (Recommended yes.)
+- Is the username changeable, or only a separate display name?"""
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

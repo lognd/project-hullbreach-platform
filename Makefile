@@ -6,14 +6,18 @@ WEB_STAMP := node_modules/.install-stamp
 
 # T-3400: this Makefile intentionally does NOT ship format/lint/typecheck/
 # test/coverage/check targets. This is a frob-enabled polyglot project
-# (see frob.toml) and frob IS the interface for those workflows, not a
-# make wrapper around it -- use the commands below directly:
+# (see frob.toml) and frob IS the interface for the workflows it covers,
+# not a make wrapper around it (frob v2, pinned in CI):
 #
-#   frob format     ruff check --fix + ruff format + frob: directive canon
-#   frob check      the aggregate gate: ruff, ty, tsc, eslint, prettier,
-#                   vitest, frob cycle/dup/arch/...
-#   frob test       select and run tests for the touched set (or --all)
-#   frob coverage   refresh coverage.xml / the coverage stamp
+#   frob check      the aggregate gate: directives, doc links, COV001
+#                   coverage, ticket ledger rules, crunk sibling
+#   frob test       run the tests that reach the files changed vs --base
+#                   (or --all)
+#
+# frob v2 no longer wraps the linters, so run those directly (CI does):
+# `uv run ruff check|format`, `uv run ty check src/`, `npm run lint`,
+# `npm run typecheck`, `npm run test`. v1's `frob format` and
+# `frob coverage` verbs do not exist in v2.
 #
 # Only bootstrap (install), the run/dev conveniences, build, and clean stay
 # here: bootstrap cannot be a frob subcommand because it installs frob's

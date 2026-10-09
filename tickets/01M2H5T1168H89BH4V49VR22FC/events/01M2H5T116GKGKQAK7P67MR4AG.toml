@@ -1,0 +1,14 @@
+kind = "create"
+title = "Website delete-account confirmation flow"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 1
+parent = "01M2H5T114G1C2NS9KF4WKN7VA"
+aliases = ["T-0038"]
+labels = ["jira:SCRUM-150", "owner:a-carten", "milestone:0.2.0"]
+scope = ["web/src/pages/Settings.tsx", "web/tests/unit/Settings.test.tsx"]
+acceptance = ["given the delete button, when clicked, then a typed confirmation is required before the request is sent"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

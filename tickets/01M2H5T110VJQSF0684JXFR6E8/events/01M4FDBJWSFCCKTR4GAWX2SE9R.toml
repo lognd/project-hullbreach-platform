@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1, 2, 3]
+captured_at = "2026-10-09T04:04:46Z"
+digest = "8ba89252cb497fb1e7a4a9d7ba2b5cc4e8097675dc6bf9a107d3a6530a84507d"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Profile.test.tsx (10 tests) 508ms
+     \u{2713} shows username, rating, currency, owned skins and the last five matches  331ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed | 1 expected fail (10)
+   Start at  00:04:47
+   Duration  2.40s (transform 422ms, setup 214ms, import 556ms, tests 508ms, environment 888ms)
+
+JSON report written to /tmp/frob-vitest-346488-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Profile.test.tsx"
+size = 424
+status = "measured"
+tests = ["web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_username__rating__currency__owned_skins_and_the_last_five_matches", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$caps_the_recent_matches_at_five_even_if_the_server_sends_more", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_empty_states_for_a_player_with_no_skins_or_matches", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$asks_a_signed-out_visitor_to_log_in_and_makes_no_request", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_the_server_s_message_when_the_request_is_rejected", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$shows_a_generic_message_when_the_network_fails", "web/tests/unit/Profile.test.tsx::suite$Profile_page::test$lays_out_for_a_400px_phone_width_without_horizontal_overflow", "web/tests/unit/Profile.test.tsx::suite$overflowRisks::test$flags_a_fixed_width_wider_than_the_viewport_and_unwrappable_text", "web/tests/unit/Profile.test.tsx::suite$fetchMe::test$rejects_with_the_server_s_detail_on_a_non-2xx_response", "web/tests/unit/Profile.test.tsx::suite$Profile_against_the_live_server::test$returns_the_profile_contract_from_the_live_GET__api_v1_me"]
+at = "2026-10-09T04:04:46Z"
+actor = "a-carten"
+rev = 1

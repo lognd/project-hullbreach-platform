@@ -1,0 +1,8 @@
+kind = "field"
+field = "acceptance"
+old = ["given a missing or wrong key, when the match endpoint is called, then 401"]
+new = ["given a missing or wrong key, when the match endpoint is called, then 401", "Given a request carrying a configured server key, when the match endpoint is called, then the request is authenticated", "Given no server keys are configured, when any key is presented, then the request is rejected with 401"]
+moved = [1]
+at = "2026-10-09T04:01:33Z"
+actor = "lognd"
+rev = 1
