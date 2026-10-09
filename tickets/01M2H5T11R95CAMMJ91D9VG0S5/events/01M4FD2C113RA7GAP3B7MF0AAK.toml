@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T03:59:47Z"
+digest = "e66637d0011e3c82a78b9432fde70e35ba35daba60503fdd5706870f26796d9e"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.10s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_elo.py::test_upset_moves_more_than_an_expected_win"]
+at = "2026-10-09T03:59:47Z"
+actor = "lognd"
+rev = 1

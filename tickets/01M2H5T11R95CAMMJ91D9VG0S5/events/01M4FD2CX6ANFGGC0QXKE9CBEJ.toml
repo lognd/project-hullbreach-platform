@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-09T03:59:48Z"
+digest = "db533884ec19df7a2fb62e5ecf8a51282c00c9906dad9db65408f4f1418a81d5"
+exit_code = 0
+inline = """
+..                                                                       [100%]
+2 passed in 0.19s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_elo.py::test_equal_ratings_move_half_the_k_factor", "tests/unit/test_elo.py::test_equal_ratings_are_a_coin_flip"]
+at = "2026-10-09T03:59:48Z"
+actor = "lognd"
+rev = 1

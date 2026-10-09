@@ -207,6 +207,46 @@ the player's id and role (T-0026). Neither endpoint distinguishes a
 game-client caller from a browser caller; there is nothing in the
 request that could, by design.
 
+### Game-server keys
+
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::ServerKeyError -->
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::check_server_key -->
+<!-- frob:describes src/hullbreach_server/auth/server_keys.py::require_game_server -->
+
+The game server authenticates with a shared secret, not a player session
+(T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
+from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated), the
+`[tool.hullbreach_server]` table or a CLI flag like any other field; the
+default is empty, and an empty list means no server can authenticate. The
+values never appear in a `repr` or in logs. `require_game_server`
+(`src/hullbreach_server/auth/server_keys.py`) is the FastAPI dependency a
+game-server-only route lists: it reads the `X-Server-Key` header and
+answers 401 `{"detail": "not authenticated"}` for a missing, wrong or
+unconfigured key (never FastAPI's default 403). The comparison is
+`check_server_key`, which returns a typani `Result[None, ServerKeyError]`
+(`Missing` or `Invalid`) and compares every configured key with
+`hmac.compare_digest` so timing does not reveal a match. No production
+route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
+
+### Matches
+
+<!-- frob:describes src/hullbreach_server/db/models/match.py::Match -->
+<!-- frob:describes src/hullbreach_server/db/models/match.py::MatchPlayerStats -->
+
+`src/hullbreach_server/db/models/match.py` holds the record of a finished
+match (T-0053). `Match` (table `matches`) has `id` (UUID), `winner_id` (FK
+to `users.id`), `duration_seconds` and `created_at`; its `player_stats`
+relationship lists the `MatchPlayerStats` rows (table `match_player_stats`),
+one per player: `match_id` (FK to `matches.id`, `ON DELETE CASCADE`),
+`user_id` (FK to `users.id`, indexed), and the `damage_dealt`,
+`blocks_destroyed`, `blocks_placed` and `time_alive_seconds` counters, each
+defaulting to 0. `(match_id, user_id)` is unique, so a player has at most
+one stats row per match. The user FKs deliberately have no `ON DELETE`
+action: deleting an account anonymizes the user row and keeps its matches
+(T-0037), so a hard delete of a player with matches must fail. The
+idempotency key, rating changes and currency payout land with T-0054,
+T-0057 and T-0070.
+
 ### Database migrations
 
 <!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
@@ -215,6 +255,8 @@ request that could, by design.
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::upgrade -->
 <!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
+<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
 
 `hullbreach_server db upgrade` shells out to Alembic (`alembic.ini` at
 the repo root, `script_location` pointing at `db/migrations/`) to run
@@ -255,7 +297,35 @@ T-0101) creates the `items` table `db/seed.py` upserts into --
 deliberately not backed by an ORM model yet (T-0066 owns that), so
 `tests/system/test_build.py`'s `compare_metadata` check excludes it via
 an `include_object` filter rather than reporting a false "extra table"
-diff.
+diff. The fifth revision
+(`7d2c4a91e0b3_create_matches_tables.py`, T-0053) creates `matches` and
+`match_player_stats` matching `db/models/match.py` exactly.
+
+### Elo rating
+
+<!-- frob:describes src/hullbreach_server/rating/elo.py::STARTING_RATING -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::K_FACTOR -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::RATING_FLOOR -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::EloError -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::MatchRatings -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::expected_score -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::rate_match -->
+
+`src/hullbreach_server/rating/elo.py` is the pure rating arithmetic (T-0056):
+no database, no FastAPI, no clock. It is plain Elo with one fixed K-factor
+for every account (`K_FACTOR = 32`, no higher K for new accounts), a
+`STARTING_RATING` of 1200 and a `RATING_FLOOR` of 100; a match is decisive
+(there is no draw). `expected_score(rating, opponent)` is the standard
+logistic `1 / (1 + 10 ** ((opponent - rating) / 400))`. `rate_match(winner,
+loser)` returns a typani `Result[MatchRatings, EloError]`: the winner gains
+`K_FACTOR * (1 - expected)` rounded half up to an integer (so the gain is
+never negative, and an upset pays more than an expected win), and the loser
+loses the same integer amount but never drops below the floor. A rating
+under the floor is `Err(EloError.BelowFloor)`, not a silent clamp. `tests/unit/test_elo.py` sweeps a grid of rating pairs plus a seeded
+random sample (floor edges included) to check that the winner never loses
+rating and the loser never gains. Applying
+the result to stored ratings and attaching it to a match is later work
+(T-0057).
 
 ## Web frontend
 

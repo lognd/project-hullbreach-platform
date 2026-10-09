@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-09T04:01:04Z"
+digest = "cd9e0b40331b55edf45ca68551f1b555e7e0571b8b1120ab67479624c2fe719f"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.24s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py::test_loser_never_gains_rating"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_elo.py::test_loser_never_gains_rating"]
+at = "2026-10-09T04:01:04Z"
+actor = "lognd"
+rev = 1

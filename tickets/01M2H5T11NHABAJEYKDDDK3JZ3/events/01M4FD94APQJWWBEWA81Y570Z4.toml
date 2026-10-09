@@ -1,0 +1,8 @@
+kind = "field"
+field = "acceptance"
+old = ["given a match with two players, when saved, then both stat rows reference it"]
+new = ["given a match with two players, when saved, then both stat rows reference it", "Given a fresh database, when the Alembic migrations run to head, then the matches and match_player_stats tables exist and match the declarative models", "Given a match, when a second stat row is saved for the same player, then the database rejects it"]
+moved = [1]
+at = "2026-10-09T04:03:29Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/rating/elo.py", "docs/index.md", "tests/unit/test_elo.py"]
+new = ["src/hullbreach_server/rating/elo.py", "docs/index.md", "tests/unit/test_elo.py", "src/hullbreach_server/rating/__init__.py"]
+at = "2026-10-09T03:58:20Z"
+actor = "lognd"
+rev = 1
