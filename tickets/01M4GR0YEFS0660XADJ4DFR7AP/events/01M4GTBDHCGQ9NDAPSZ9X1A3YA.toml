@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:11:08Z"
+digest = "745741cd4c16094b8fd62b900102730b6018b99664921364c94020ee85b2eda3"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 1.19s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_seed.py::test_seed_updates_a_changed_item_price_on_reseed"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_seed.py::test_seed_updates_a_changed_item_price_on_reseed"]
+at = "2026-10-09T17:11:08Z"
+actor = "lognd"
+rev = 1

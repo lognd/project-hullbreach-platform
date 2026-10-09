@@ -2,12 +2,17 @@
 id = "01M4GR04HS2ZY1M6NCNP2AXWX3"
 title = "get_current_user is async but does blocking SQLAlchemy I/O on the event loop"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:03Z"
-updated = "2026-10-09T16:30:03Z"
+updated = "2026-10-09T17:01:12Z"
 scope = ["src/hullbreach_server/auth/deps.py"]
+
+[[acceptance]]
+text = "given get_current_user, when inspected, then it is a plain def that FastAPI runs in the threadpool"
+bound = true
 +++
 
 origin: auditor. auth/deps.py:66-90 -- 'async def' calls resolve_session (db.query) and db.get synchronously, blocking the event loop on every authenticated request, while the sync Session from get_db is thread-bound to the threadpool dependencies. Same for require_admin (line 97, harmless but needless). Fix: make get_current_user a plain def so FastAPI runs it in the threadpool with the same db session; keep tests in tests/unit/test_sessions.py passing.

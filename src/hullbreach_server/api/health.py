@@ -13,6 +13,8 @@ router = APIRouter()
 # frob:tests tests/unit/test_api.py::test_health_reports_ok_and_version
 # frob:doc docs/index.md#public-api
 class HealthResponse(BaseModel):
+    """Body of a `/api/v1/health` response: liveness status and server version."""
+
     status: str
     version: str
 
@@ -22,6 +24,15 @@ class HealthResponse(BaseModel):
 # frob:doc docs/index.md#public-api
 class ReadyResponse(BaseModel):
     """Body of a healthy `/api/v1/ready` response."""
+
+    status: str
+    database: str
+
+
+# frob:tests tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
+# frob:doc docs/index.md#public-api
+class NotReadyResponse(BaseModel):
+    """Body of the 503 `/api/v1/ready` response when the database is unreachable."""
 
     status: str
     database: str
@@ -38,7 +49,11 @@ def health() -> HealthResponse:
 # frob:tests tests/unit/test_api.py::test_ready_returns_200_when_database_reachable
 # frob:tests tests/unit/test_api.py::test_ready_returns_503_when_database_unreachable
 # frob:doc docs/index.md#public-api
-@router.get("/ready", response_model=ReadyResponse)
+@router.get(
+    "/ready",
+    response_model=ReadyResponse,
+    responses={503: {"model": NotReadyResponse, "description": "Database unreachable"}},
+)
 def ready(db: Session = Depends(get_db)) -> ReadyResponse | JSONResponse:
     """Readiness probe. Reports 200 when the database is reachable, else 503.
 
@@ -53,6 +68,8 @@ def ready(db: Session = Depends(get_db)) -> ReadyResponse | JSONResponse:
     if result.is_err:
         return JSONResponse(
             status_code=503,
-            content={"status": "not_ready", "database": "unreachable"},
+            content=NotReadyResponse(
+                status="not_ready", database="unreachable"
+            ).model_dump(),
         )
     return ReadyResponse(status="ready", database="ok")

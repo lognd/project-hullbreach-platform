@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
+import functools
+import secrets
+
 from pwdlib import PasswordHash
+from pwdlib.exceptions import PwdlibError
+
+from hullbreach_server.logging import get_logger
+
+_log = get_logger(__name__)
 
 _hasher = PasswordHash.recommended()  # Argon2id
 
@@ -21,5 +29,32 @@ def hash_password(plain: str) -> str:
 # noqa: E501  # frob:tests tests/unit/test_passwords.py::test_hash_password_verifies_and_does_not_store_plaintext
 # frob:tests tests/unit/test_passwords.py::test_verify_password_rejects_wrong_password
 def verify_password(plain: str, hashed: str) -> bool:
-    """Check a plaintext password against a stored Argon2id hash."""
-    return _hasher.verify(plain, hashed)
+    """Check a plaintext password against a stored Argon2id hash.
+
+    Never raises for bad stored data: an unrecognised or corrupt `hashed`
+    (legacy row, truncated value) is logged at ERROR and answers False, so a
+    login against such a row is an ordinary 401, not a 500.
+    """
+    try:
+        return _hasher.verify(plain, hashed)
+    except PwdlibError as exc:
+        _log.error("verify_password: stored hash is unusable (%s)", type(exc).__name__)
+        return False
+
+
+@functools.cache
+def _dummy_hash() -> str:
+    """A throwaway valid Argon2id hash, built once, used to equalise login timing."""
+    return _hasher.hash(secrets.token_urlsafe(16))
+
+
+# frob:invariant INV-001
+# frob:doc docs/index.md#auth-api
+def verify_against_dummy_hash(plain: str) -> bool:
+    """Run one full Argon2 verify against a dummy hash and return False.
+
+    Called on the unknown-username login path so it costs the same as a real
+    verification and response time cannot enumerate accounts.
+    """
+    _hasher.verify(plain, _dummy_hash())
+    return False

@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a cwd without alembic.ini, when db upgrade runs, then migrations apply, and failures exit 1 with a message"]
+moved = []
+at = "2026-10-09T17:11:15Z"
+actor = "lognd"
+rev = 1

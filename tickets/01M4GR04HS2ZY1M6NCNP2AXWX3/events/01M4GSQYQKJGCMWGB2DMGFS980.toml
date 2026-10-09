@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given get_current_user, when inspected, then it is a plain def that FastAPI runs in the threadpool"]
+moved = []
+at = "2026-10-09T17:00:32Z"
+actor = "lognd"
+rev = 1

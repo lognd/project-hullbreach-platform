@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:00:59Z"
+digest = "36642b1a8cefcd77b713f116fb2f4ffb51167d21e403760a7f41cfb9c51ad09c"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.90s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_passwords.py::test_verify_password_returns_false_for_a_malformed_stored_hash"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_passwords.py::test_verify_password_returns_false_for_a_malformed_stored_hash"]
+at = "2026-10-09T17:00:59Z"
+actor = "lognd"
+rev = 1

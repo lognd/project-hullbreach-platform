@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:01:41Z"
+digest = "a6885bc13743e211b25e22e48c7dde3c90d476b2ee9d8a43e14565683a0bb529"
+exit_code = 0
+inline = """
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/unit/test_auth_login.py::test_unknown_username_still_runs_one_password_verification
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_auth_login.py::test_unknown_username_still_runs_one_password_verification
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 2 warnings in 8.79s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_auth_login.py::test_unknown_username_still_runs_one_password_verification tests/unit/test_auth_login.py::test_429_carries_a_retry_after_header_within_the_window tests/unit/test_auth_login.py::test_failed_attempt_store_drops_empty_keys_and_is_bounded tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing"
+size = 980
+status = "measured"
+tests = ["tests/unit/test_auth_login.py::test_unknown_username_still_runs_one_password_verification", "tests/unit/test_auth_login.py::test_429_carries_a_retry_after_header_within_the_window", "tests/unit/test_auth_login.py::test_failed_attempt_store_drops_empty_keys_and_is_bounded", "tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing"]
+at = "2026-10-09T17:01:41Z"
+actor = "lognd"
+rev = 1

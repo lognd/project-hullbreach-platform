@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given the auth package, when api/auth.py imports, then every consumed symbol comes from hullbreach_server.auth"]
+moved = []
+at = "2026-10-09T17:00:37Z"
+actor = "lognd"
+rev = 1

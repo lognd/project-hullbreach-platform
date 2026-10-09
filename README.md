@@ -243,17 +243,24 @@ Generate new token, tick `repo`, copy it, paste it as the password. Run
 ## Run it
 
 Settings come from `.env`, which is gitignored because it can hold
-passwords. Make yours from the template; the defaults are right for local
-dev:
+passwords. Make yours from the template:
 
 ```
 cp .env.example .env
 ```
 
-Every setting has a default in `pyproject.toml` under
+Then replace `change-me-local-only` with a password of your own in both
+`POSTGRES_PASSWORD` and the password inside `HULLBREACH_DATABASE_URL` (keep
+the two identical). There is deliberately no built-in database URL or
+password: the API refuses to start without `HULLBREACH_DATABASE_URL`, and
+`docker compose` refuses to start without `POSTGRES_PASSWORD`. The local
+database only listens on `127.0.0.1`.
+
+Other settings have defaults in `pyproject.toml` under
 `[tool.hullbreach_server]`; `.env` overrides that, and CLI flags override
-`.env`. If you are on the shared database, set `HULLBREACH_DATABASE_URL=`
-in `.env` to the string I gave you.
+`.env`. Unknown keys there are an error (a typo like `databse_url` is
+reported, not ignored). If you are on the shared database, set
+`HULLBREACH_DATABASE_URL=` in `.env` to the string I gave you.
 
 Database, API, website, each in its own terminal:
 
@@ -277,7 +284,7 @@ data; `down -v` wipes it.
 
 - "Cannot connect to the Docker daemon": Docker Desktop is not running.
 - "port is already allocated" on 5432: another Postgres is on your
-  machine. Stop it, or change `"5432:5432"` to `"5433:5432"` in
+  machine. Stop it, or change `"127.0.0.1:5432:5432"` to `"127.0.0.1:5433:5432"` in
   `docker-compose.yml` and match the port in your `.env`.
 - `unhealthy`: `docker compose logs db`, read the tail, paste it in chat.
 - "Address already in use" on 8000: an old API is still running. Kill

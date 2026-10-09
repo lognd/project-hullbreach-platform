@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a lost insert race, an over-long username or a case-variant duplicate, when registering, then the API answers 409 or 422, never 500"]
+moved = []
+at = "2026-10-09T17:02:06Z"
+actor = "lognd"
+rev = 1

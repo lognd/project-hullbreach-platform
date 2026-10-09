@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-09T17:02:19Z"
+digest = "ed2abeb355b8780d9cbf6a609789b9cb9ed220d6d6534cebc314b6cc3841e435"
+exit_code = 0
+inline = """
+...                                                                      [100%]
+=============================== warnings summary ===============================
+tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 2 warnings in 1.18s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing tests/unit/test_auth_register.py::test_register_username_over_32_chars_returns_422 tests/unit/test_auth_register.py::test_register_email_over_254_chars_returns_422"
+size = 974
+status = "measured"
+tests = ["tests/unit/test_auth_login.py::test_oversize_login_fields_return_422_and_store_nothing", "tests/unit/test_auth_register.py::test_register_username_over_32_chars_returns_422", "tests/unit/test_auth_register.py::test_register_email_over_254_chars_returns_422"]
+at = "2026-10-09T17:02:19Z"
+actor = "lognd"
+rev = 1

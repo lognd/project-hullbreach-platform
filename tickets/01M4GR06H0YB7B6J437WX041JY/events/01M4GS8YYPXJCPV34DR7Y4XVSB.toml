@@ -1,0 +1,18 @@
+kind = "evidence"
+captured_at = "2026-10-09T16:52:20Z"
+digest = "4f5d96f76aceee8cee3746cb2a596c1b04cf5fa538f8d3d8b11ceca000535ceb"
+exit_code = 0
+inline = """
+..                                                                       [100%]
+-------------- generated xml file: /tmp/frob-pytest-495450-0.xml ---------------
+2 passed in 0.09s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_logging.py::test_simple_formatter_appends_traceback_for_exception_records tests/unit/test_logging.py::test_simple_formatter_appends_stack_info"
+size = 179
+status = "measured"
+tests = ["tests/unit/test_logging.py::test_simple_formatter_appends_traceback_for_exception_records", "tests/unit/test_logging.py::test_simple_formatter_appends_stack_info"]
+at = "2026-10-09T16:52:20Z"
+actor = "lognd"
+rev = 1

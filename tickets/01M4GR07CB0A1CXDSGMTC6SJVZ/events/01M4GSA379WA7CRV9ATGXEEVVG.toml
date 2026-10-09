@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given the shipped config.toml, when INFO and WARNING records are logged, then INFO goes to stdout only and WARNING+ to stderr once"]
+moved = []
+at = "2026-10-09T16:52:58Z"
+actor = "lognd"
+rev = 1

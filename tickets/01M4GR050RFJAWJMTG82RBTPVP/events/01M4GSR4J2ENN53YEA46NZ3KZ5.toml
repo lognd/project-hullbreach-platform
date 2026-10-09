@@ -1,0 +1,43 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:00:38Z"
+digest = "83eed8c49d95c3271485325466794585bd58f2fbf1beeead643851622d9cd7bf"
+exit_code = 4
+failed_tests = ["tests/unit/test_auth_package.py::tests.unit.test_auth_package"]
+inline = """
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting tests/unit/test_auth_package.py _______________
+ImportError while importing test module '<worktree>/tests/unit/test_auth_package.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+~/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_auth_package.py:5: in <module>
+    import hullbreach_server.auth as auth
+src/hullbreach_server/auth/__init__.py:8: in <module>
+    from hullbreach_server.auth.deps import AuthContext, get_current_user, require_admin
+src/hullbreach_server/auth/deps.py:9: in <module>
+    from fastapi import Depends, HTTPException
+E   ModuleNotFoundError: No module named 'fastapi'
+-------------- generated xml file: /tmp/frob-pytest-618422-0.xml ---------------
+=========================== short test summary info ============================
+ERROR tests/unit/test_auth_package.py
+1 error in 0.07s
+ERROR: found no collectors for <worktree>/tests/unit/test_auth_package.py::test_every_name_in_all_resolves
+
+ERROR: found no collectors for <worktree>/tests/unit/test_auth_package.py::test_all_exposes_the_symbols_api_consumes
+
+ERROR: found no collectors for <worktree>/tests/unit/test_auth_package.py::test_api_auth_imports_only_from_the_package_surface
+
+"""
+passed = false
+provider = "pytest"
+ref = "tests/unit/test_auth_package.py::test_every_name_in_all_resolves tests/unit/test_auth_package.py::test_all_exposes_the_symbols_api_consumes tests/unit/test_auth_package.py::test_api_auth_imports_only_from_the_package_surface"
+size = 1525
+status = "measured"
+tests = ["tests/unit/test_auth_package.py::tests.unit.test_auth_package"]
+at = "2026-10-09T17:00:38Z"
+actor = "lognd"
+rev = 1

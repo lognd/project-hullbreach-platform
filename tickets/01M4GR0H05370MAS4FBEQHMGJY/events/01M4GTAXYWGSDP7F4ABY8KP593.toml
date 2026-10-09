@@ -1,0 +1,18 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-09T17:10:52Z"
+digest = "af16ab30e4c6751cb59d0c09be57f1cfb1987d5349413ae6188fef5fd6035a1a"
+exit_code = 0
+inline = """
+....                                                                     [100%]
+4 passed in 1.07s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_app.py::test_from_external_rejects_a_typo_key_in_the_file tests/unit/test_app.py::test_from_external_finds_the_config_file_from_a_subdirectory tests/unit/test_app.py::test_from_external_honours_hullbreach_config_env tests/unit/test_app.py::test_cors_list_is_stripped_and_empty_entries_dropped"
+size = 98
+status = "measured"
+tests = ["tests/unit/test_app.py::test_from_external_rejects_a_typo_key_in_the_file", "tests/unit/test_app.py::test_from_external_finds_the_config_file_from_a_subdirectory", "tests/unit/test_app.py::test_from_external_honours_hullbreach_config_env", "tests/unit/test_app.py::test_cors_list_is_stripped_and_empty_entries_dropped"]
+at = "2026-10-09T17:10:52Z"
+actor = "lognd"
+rev = 1

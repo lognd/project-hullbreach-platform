@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given an unknown level name, when BelowLevelFilter is built, then ValueError is raised"]
+moved = []
+at = "2026-10-09T16:52:55Z"
+actor = "lognd"
+rev = 1

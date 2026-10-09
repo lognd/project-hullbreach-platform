@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given the OpenAPI schema, when read, then register/login/logout/session/ready list their error responses"]
+moved = []
+at = "2026-10-09T17:02:12Z"
+actor = "lognd"
+rev = 1

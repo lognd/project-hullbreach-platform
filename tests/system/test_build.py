@@ -54,7 +54,7 @@ def test_app_builds_and_serves_health():
     from hullbreach_server import __version__
     from hullbreach_server.app import AppConfig, create_app
 
-    with TestClient(create_app(AppConfig())) as client:
+    with TestClient(create_app(AppConfig(database_url="sqlite://"))) as client:
         r = client.get("/api/v1/health")
 
     assert r.status_code == 200
@@ -67,7 +67,7 @@ def test_openapi_schema_is_served():
     # frob:tests src/hullbreach_server/app/app.py::create_app kind="integration"
     from hullbreach_server.app import AppConfig, create_app
 
-    with TestClient(create_app(AppConfig())) as client:
+    with TestClient(create_app(AppConfig(database_url="sqlite://"))) as client:
         r = client.get("/api/openapi.json")
 
     assert r.status_code == 200
@@ -128,3 +128,46 @@ def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
         diffs = compare_metadata(context, Base.metadata)
 
     assert diffs == []
+
+
+def test_migrated_users_table_enforces_role_check_and_ci_uniqueness(tmp_path):
+    """After `upgrade head` the database itself rejects an unknown role and a
+    case-variant duplicate username/email (not just the ORM and the API)."""
+    import pytest
+    from sqlalchemy import text
+    from sqlalchemy.exc import IntegrityError
+
+    engine = create_db_engine(
+        f"sqlite:///{tmp_path / 'ck.db'}",
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
+    alembic_cfg = Config(str(_SRC_ROOT.parent.parent / "alembic.ini"))
+    alembic_cfg.attributes["connection"] = engine.connect()
+    command.upgrade(alembic_cfg, "head")
+
+    insert = text(
+        "INSERT INTO users (id, username, email, password_hash, role) "
+        "VALUES (:id, :u, :e, 'h', :r)"
+    )
+    with engine.begin() as conn:
+        conn.execute(
+            insert, {"id": "1" * 32, "u": "Bob", "e": "Bob@x.com", "r": "player"}
+        )
+    for params in (
+        {"id": "2" * 32, "u": "other", "e": "o@x.com", "r": "superadmin"},
+        {"id": "3" * 32, "u": "bob", "e": "new@x.com", "r": "player"},
+        {"id": "4" * 32, "u": "new", "e": "bob@x.com", "r": "player"},
+    ):
+        with pytest.raises(IntegrityError), engine.begin() as conn:
+            conn.execute(insert, params)
+
+
+def test_compose_publishes_postgres_on_loopback_with_no_default_password():
+    """INV-005: the dev database is loopback-only and has no well-known credential."""
+    # frob:tests src/hullbreach_server/app/config.py::AppConfig kind="integration"
+    compose = (_SRC_ROOT.parent.parent / "docker-compose.yml").read_text()
+    assert '"127.0.0.1:5432:5432"' in compose
+    assert '"5432:5432"' not in compose
+    assert "POSTGRES_PASSWORD:?" in compose
+    assert "POSTGRES_PASSWORD:-" not in compose

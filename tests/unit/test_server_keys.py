@@ -94,9 +94,10 @@ def test_server_keys_come_from_the_environment_comma_separated(
     """HULLBREACH_GAME_SERVER_API_KEYS is split on commas and never shown in repr."""
     monkeypatch.setenv("HULLBREACH_GAME_SERVER_API_KEYS", "alpha-key,beta-key")
 
+    monkeypatch.setenv("HULLBREACH_DATABASE_URL", "sqlite://")
     cfg = AppConfig.from_external(
         argparse.Namespace(), config_file=tmp_path / "missing.toml"
-    )
+    ).unwrap()
 
     assert [k.get_secret_value() for k in cfg.game_server_api_keys] == [
         "alpha-key",
