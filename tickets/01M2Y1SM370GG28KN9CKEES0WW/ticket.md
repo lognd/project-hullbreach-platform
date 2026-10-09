@@ -13,7 +13,7 @@ scope = ["docs/picking-up-work.md", "README.md", "CONTRIBUTING.md", "docs/index.
 
 [[acceptance]]
 text = "given a new teammate, when they read docs/picking-up-work.md, then they can claim a queued ticket and know which file and example to start from"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "Given each code site a queued ticket plugs into, when a teammate opens the file, then a frob:todo marker names the owning ticket"
