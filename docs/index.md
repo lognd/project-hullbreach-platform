@@ -257,6 +257,30 @@ deliberately not backed by an ORM model yet (T-0066 owns that), so
 an `include_object` filter rather than reporting a false "extra table"
 diff.
 
+### Elo rating
+
+<!-- frob:describes src/hullbreach_server/rating/elo.py::STARTING_RATING -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::K_FACTOR -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::RATING_FLOOR -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::EloError -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::MatchRatings -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::expected_score -->
+<!-- frob:describes src/hullbreach_server/rating/elo.py::rate_match -->
+
+`src/hullbreach_server/rating/elo.py` is the pure rating arithmetic (T-0056):
+no database, no FastAPI, no clock. It is plain Elo with one fixed K-factor
+for every account (`K_FACTOR = 32`, no higher K for new accounts), a
+`STARTING_RATING` of 1200 and a `RATING_FLOOR` of 100; a match is decisive
+(there is no draw). `expected_score(rating, opponent)` is the standard
+logistic `1 / (1 + 10 ** ((opponent - rating) / 400))`. `rate_match(winner,
+loser)` returns a typani `Result[MatchRatings, EloError]`: the winner gains
+`K_FACTOR * (1 - expected)` rounded half up to an integer (so the gain is
+never negative, and an upset pays more than an expected win), and the loser
+loses the same integer amount but never drops below the floor. A rating
+under the floor is `Err(EloError.BelowFloor)`, not a silent clamp. Applying
+the result to stored ratings and attaching it to a match is later work
+(T-0057).
+
 ## Web frontend
 
 The React app under `web/` is the player-facing site: landing page, cookie
