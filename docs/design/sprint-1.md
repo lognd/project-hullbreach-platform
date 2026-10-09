@@ -101,8 +101,8 @@ Result[Session, SessionError]` checking expiry and revocation, and
   wrappers over `fetch`, typed against the same shapes as
   `auth/schemas.py` (mirrored by hand; there is no codegen step in
   0.1.0 -- open question, section 8).
-- `auth/session.ts` -- reads/writes the persisted session
-  (`localStorage` key `hullbreach.session`), and a small subscriber
+- `auth/session.ts` -- holds the signed-in session in memory only
+  (never web storage, INV-006), and a small subscriber
   hook (`useSession`) so `Header` re-renders on login/logout without a
   full page reload (T-0021).
 
@@ -475,10 +475,10 @@ export type StoredSession = {
   role: string;
 };
 
-export function saveSession(s: StoredSession): void; // writes localStorage["hullbreach.session"]
-export function loadSession(): StoredSession | null; // reads it back, JSON.parse guarded by try/catch
-export function clearSession(): void; // removes the key
-export function useSession(): StoredSession | null; // React hook: state + storage-event listener
+export function saveSession(s: StoredSession): void; // keeps it in module memory only (INV-006)
+export function loadSession(): StoredSession | null; // reads the in-memory session
+export function clearSession(): void; // drops it
+export function useSession(): StoredSession | null; // React hook: useSyncExternalStore subscription
 ```
 
 `useSession` initializes its state from `loadSession()` synchronously (no

@@ -362,21 +362,21 @@ control when signed in; every control is a real `<a>`/`<button>` (never a
 The signed-in Log out control calls `api/auth.ts`'s `logout()` with the
 session's token (best-effort: an expired token or a network error does
 not block signing out locally), then `clearSession()`, then navigates
-home -- `useSession`'s `storage`-event listener means any other open tab
-picks up the sign-out too. `web/src/components/Footer.tsx` links to the
+home -- sign-out clears the in-memory session. `web/src/components/Footer.tsx` links to the
 cookie and data policy pages.
 
 ### Session persistence
 
 `web/src/auth/session.ts` is the client-side session store: a
-`StoredSession` (token/userId/username/role) persisted to
-`localStorage["hullbreach.session"]`. `saveSession`/`loadSession`/
-`clearSession` read and write it directly (`loadSession` guards `JSON.
-parse` and returns `null` on anything malformed); `useSession` is the
-React hook `Header` and any future consumer read it through -- it
-initializes from `loadSession()` synchronously (no signed-out flash on
-reload) and re-reads on the `storage` event, so a change in one tab is
-reflected in another.
+`StoredSession` (token/userId/username/role) held in module memory only
+and never written to `localStorage`, `sessionStorage` or a script-readable
+cookie (INV-006), so injected script cannot read the bearer token back from
+storage. `saveSession`/`loadSession`/`clearSession` read and write that
+variable; `useSession` is the React hook (`useSyncExternalStore`) `Header`
+and any consumer read it through, re-rendering on login, logout and profile
+updates. Consequence: a full page reload signs the user out and they sign
+in again via `/login`; there is no cross-tab sync. A cookie-based
+(HttpOnly) restore is a server-side follow-up.
 
 ### Auth API client and the register page
 
@@ -401,8 +401,8 @@ Success swaps the form out for a confirmation message.
 `login()`, and on success builds a `StoredSession` from the returned
 `LoginResponse` (`token`, and `userId`/`username`/`role` from its
 `user`), passes it to `saveSession` (`web/src/auth/session.ts`), and
-navigates home -- satisfying T-0021's reload-persistence criterion,
-since `useSession` reads that same localStorage key back on mount. Any
+navigates home -- keeping the token in memory only (INV-006),
+and `useSession` reflects it immediately in the same page load. Any
 `ApiError` (401 invalid credentials, 429 rate-limited) sets a
 `role="alert"` form-level banner with the server's `detail` message;
 Login has no field-level errors (the login contract never names a
