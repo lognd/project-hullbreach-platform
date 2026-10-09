@@ -2,11 +2,12 @@
 id = "01M4GR04HS2ZY1M6NCNP2AXWX3"
 title = "get_current_user is async but does blocking SQLAlchemy I/O on the event loop"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:03Z"
-updated = "2026-10-09T17:01:09Z"
+updated = "2026-10-09T17:01:12Z"
 scope = ["src/hullbreach_server/auth/deps.py"]
 
 [[acceptance]]
