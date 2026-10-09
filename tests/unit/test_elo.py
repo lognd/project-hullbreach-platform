@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import random
+
 from hullbreach_server.rating.elo import (
     K_FACTOR,
     RATING_FLOOR,
@@ -54,3 +56,33 @@ def test_rating_below_the_floor_is_rejected() -> None:
     """An input rating under the floor is an Err, not a silent clamp."""
     assert rate_match(RATING_FLOOR - 1, 1200).unwrap_err() is EloError.BelowFloor
     assert rate_match(1200, RATING_FLOOR - 1).unwrap_err() is EloError.BelowFloor
+
+
+def _rating_pairs() -> list[tuple[int, int]]:
+    """A grid over the useful rating range plus seeded random pairs, floor edges included."""
+    grid = range(RATING_FLOOR, 3001, 100)
+    pairs = [(a, b) for a in grid for b in grid]
+    rng = random.Random(127)
+    pairs += [
+        (rng.randint(RATING_FLOOR, 4000), rng.randint(RATING_FLOOR, 4000))
+        for _ in range(2000)
+    ]
+    return pairs
+
+
+# frob:ticket 01M3DG5Y3ZT86KZDX76GNG69PQ
+# frob:tests src/hullbreach_server/rating/elo.py::rate_match kind="unit"
+def test_winner_never_loses_rating() -> None:
+    """For every sampled pairing, the winner's new rating is at least the old one."""
+    for winner, loser in _rating_pairs():
+        result = rate_match(winner, loser).unwrap()
+        assert result.winner >= winner, (winner, loser, result)
+
+
+# frob:ticket 01M3DG5Y3ZT86KZDX76GNG69PQ
+# frob:tests src/hullbreach_server/rating/elo.py::rate_match kind="unit"
+def test_loser_never_gains_rating() -> None:
+    """For every sampled pairing, the loser's new rating is at most the old one."""
+    for winner, loser in _rating_pairs():
+        result = rate_match(winner, loser).unwrap()
+        assert result.loser <= loser, (winner, loser, result)

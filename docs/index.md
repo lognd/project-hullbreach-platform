@@ -277,7 +277,9 @@ loser)` returns a typani `Result[MatchRatings, EloError]`: the winner gains
 `K_FACTOR * (1 - expected)` rounded half up to an integer (so the gain is
 never negative, and an upset pays more than an expected win), and the loser
 loses the same integer amount but never drops below the floor. A rating
-under the floor is `Err(EloError.BelowFloor)`, not a silent clamp. Applying
+under the floor is `Err(EloError.BelowFloor)`, not a silent clamp. `tests/unit/test_elo.py` sweeps a grid of rating pairs plus a seeded
+random sample (floor edges included) to check that the winner never loses
+rating and the loser never gains. Applying
 the result to stored ratings and attaching it to a match is later work
 (T-0057).
 
