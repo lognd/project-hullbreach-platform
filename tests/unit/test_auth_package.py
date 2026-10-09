@@ -6,12 +6,10 @@ import hullbreach_server.auth as auth
 
 
 def test_every_name_in_all_resolves() -> None:
-    # frob:tests src/hullbreach_server/auth/__init__.py kind="unit"
     assert all(hasattr(auth, name) for name in auth.__all__)
 
 
 def test_all_exposes_the_symbols_api_consumes() -> None:
-    # frob:tests src/hullbreach_server/auth/__init__.py kind="unit"
     consumed = {
         "require_admin",
         "RegisterRequest",
@@ -28,7 +26,6 @@ def test_all_exposes_the_symbols_api_consumes() -> None:
 
 
 def test_api_auth_imports_only_from_the_package_surface() -> None:
-    # frob:tests src/hullbreach_server/api/auth.py kind="unit"
     import inspect
 
     import hullbreach_server.api.auth as api_auth

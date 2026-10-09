@@ -46,7 +46,7 @@ def _resolve_database_url() -> str:
 
 
 # frob:doc docs/index.md#database-migrations
-# frob:accept TEST001 because="untestable in isolation without Alembic's own execution context; this module is exec'd exclusively by Alembic's own runner, never imported directly outside it"  # noqa: E501
+# noqa: E501  # frob:accept TEST001 because="untestable in isolation without Alembic's own execution context; this module is exec'd exclusively by Alembic's own runner, never imported directly outside it"
 def run_migrations_offline() -> None:
     """Refuse: only online (connected) migrations are supported for 0.1.0."""
     raise NotImplementedError(
@@ -64,7 +64,7 @@ def _do_run_migrations(connection: Connection) -> None:
 
 
 # frob:doc docs/index.md#database-migrations
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 def run_migrations_online() -> None:
     """Run migrations against a caller-supplied connection, else a fresh engine."""
     connection = config.attributes.get("connection")

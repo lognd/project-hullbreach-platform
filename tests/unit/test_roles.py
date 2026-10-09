@@ -11,7 +11,7 @@ from hullbreach_server.auth.passwords import hash_password
 from hullbreach_server.db.models.user import Role, User
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _register_and_login(client, username: str = "player_one") -> dict:
     client.post(
         "/api/v1/auth/register",
@@ -29,7 +29,7 @@ def _register_and_login(client, username: str = "player_one") -> dict:
     return {"Authorization": f"Bearer {token}"}
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _mount_admin_route(app):
     from fastapi import Depends
 
@@ -40,13 +40,13 @@ def _mount_admin_route(app):
         return {"ok": True}
 
 
-# frob:ticket T-0015
+# frob:ticket 01M2H5T10FZD12FP728D4G72FY
 def test_role_enum_has_exactly_player_and_admin_members() -> None:
     """Role is a str enum with exactly the members player and admin."""
     assert {member.value for member in Role} == {"player", "admin"}
 
 
-# frob:ticket T-0015
+# frob:ticket 01M2H5T10FZD12FP728D4G72FY
 def test_user_default_role_is_player(db_session) -> None:
     """A User created without an explicit role defaults to Role.player."""
     user = User(
@@ -60,7 +60,7 @@ def test_user_default_role_is_player(db_session) -> None:
     assert user.role is Role.player
 
 
-# frob:ticket T-0028
+# frob:ticket 01M2H5T10WP2DH6ZHDRPYGEZBF
 def test_player_token_on_admin_route_returns_403_with_permissions_message(
     app, client
 ) -> None:
@@ -74,7 +74,7 @@ def test_player_token_on_admin_route_returns_403_with_permissions_message(
     assert response.json() == {"detail": "admin role required"}
 
 
-# frob:ticket T-0028
+# frob:ticket 01M2H5T10WP2DH6ZHDRPYGEZBF
 def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None:
     """Given an Admin token, the same admin route succeeds."""
     from hullbreach_server.auth.passwords import hash_password
@@ -100,7 +100,7 @@ def test_admin_token_on_admin_route_returns_200(app, client, db_session) -> None
     assert response.status_code == 200
 
 
-# frob:ticket T-0028
+# frob:ticket 01M2H5T10WP2DH6ZHDRPYGEZBF
 def test_role_is_never_accepted_as_an_input_field_on_register_schema() -> None:
     """RegisterRequest has no `role` field at all, not merely an ignored one."""
     from hullbreach_server.auth.schemas import RegisterRequest
@@ -108,7 +108,7 @@ def test_role_is_never_accepted_as_an_input_field_on_register_schema() -> None:
     assert "role" not in RegisterRequest.model_fields
 
 
-# frob:ticket T-0028
+# frob:ticket 01M2H5T10WP2DH6ZHDRPYGEZBF
 def test_missing_admin_route_dependency_never_returns_401_for_a_valid_player(
     app, client
 ) -> None:

@@ -16,7 +16,7 @@ from hullbreach_server.db.models.types import UTCDateTime
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 class Role(str, enum.Enum):
     """A user's permission level: `player` (default) or `admin`."""
 
@@ -25,7 +25,7 @@ class Role(str, enum.Enum):
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 class User(Base):
     """A registered account: credentials, role, and creation time."""
 

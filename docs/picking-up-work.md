@@ -174,7 +174,7 @@ column as it was.
   jobs green.
 - Every new public symbol carries a `frob:tests` line pointing at a test.
 - Every new endpoint or component has a paragraph in `docs/index.md`
-  bound with `frob:describes`.
+  linked from its code with a `frob:doc docs/index.md#anchor` directive.
 - The ticket's acceptance criteria are bound as evidence: run
   `frob test --base main`, then bind each criterion with
   `frob ticket evidence add` (see its `--help`).

@@ -23,7 +23,7 @@ _log = get_logger(__name__)
 _MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
 
-# frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure
 # frob:doc docs/index.md#database-migrations
 class MigrationError(BaseModel):
     """A log-safe migration failure: the exception class only, never a URL."""
@@ -36,7 +36,7 @@ class MigrationError(BaseModel):
         return self.message
 
 
-# frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure
 # frob:doc docs/index.md#database-migrations
 def build_alembic_config(database_url: str) -> Config:
     """Return an Alembic Config for the packaged migrations, targeting `database_url`.
@@ -50,7 +50,7 @@ def build_alembic_config(database_url: str) -> Config:
     return cfg
 
 
-# frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_main.py::test_db_upgrade_runs_from_any_directory_and_reports_failure
 # frob:doc docs/index.md#database-migrations
 def upgrade_to_head(database_url: str) -> Result[None, MigrationError]:
     """Run every pending migration up to head; Err instead of a traceback on failure."""

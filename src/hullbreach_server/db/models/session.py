@@ -15,7 +15,7 @@ from hullbreach_server.db.models.types import UTCDateTime
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 # frob:tests tests/unit/test_sessions.py::test_issue_session_stores_sha256_hash_of_token
 class Session(Base):
     """A bearer-token login session: its hashed token, expiry, and revocation state."""

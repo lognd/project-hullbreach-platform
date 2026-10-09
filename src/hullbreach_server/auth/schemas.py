@@ -27,9 +27,9 @@ _USERNAME_PATTERN = r"^[A-Za-z0-9_.-]+$"
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_register.py::test_register_password_too_short_returns_422  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_password_too_short_returns_422
 # frob:tests tests/unit/test_auth_register.py::test_register_malformed_email_returns_422
-# frob:tests tests/unit/test_auth_register.py::test_register_role_field_is_never_accepted_as_input  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_role_field_is_never_accepted_as_input
 class RegisterRequest(BaseModel):
     """POST /api/v1/auth/register's request body; `role` is deliberately not a field."""
 
@@ -51,8 +51,8 @@ class RegisterRequest(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults  # noqa: E501
-# frob:tests tests/unit/test_auth_register.py::test_register_response_never_exposes_password_hash  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
+# noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_response_never_exposes_password_hash
 class UserProfile(BaseModel):
     """The profile shape every auth endpoint that returns a user echoes.
 
@@ -71,7 +71,7 @@ class UserProfile(BaseModel):
     rating: int
     created_at: datetime
 
-    # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults  # noqa: E501
+    # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
     @classmethod
     def from_user(cls, user: User) -> UserProfile:
         """Build a UserProfile from a `User` ORM row, filling in the not-yet-persisted defaults."""  # noqa: E501
@@ -87,7 +87,7 @@ class UserProfile(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_login_password_min_length_still_enforced_by_schema  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_password_min_length_still_enforced_by_schema
 class LoginRequest(BaseModel):
     """POST /api/v1/auth/login's request body; bounded (INV-002), no password min_length."""  # noqa: E501
 
@@ -100,7 +100,7 @@ class LoginRequest(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user
 class LoginResponse(BaseModel):
     """POST /api/v1/auth/login's 200 response body."""
 
@@ -111,8 +111,8 @@ class LoginResponse(BaseModel):
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token  # noqa: E501
-# frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email
 class SessionInfo(BaseModel):
     """GET /api/v1/auth/session's 200 response body; deliberately minimal.
 

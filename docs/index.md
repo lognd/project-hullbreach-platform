@@ -12,44 +12,6 @@ cross-reference for every ticket in this repo lives in
 
 ## Public API
 
-<!-- frob:describes src/hullbreach_server/__main__.py::main -->
-<!-- frob:describes src/hullbreach_server/app/app.py::App -->
-<!-- frob:describes src/hullbreach_server/app/app.py::create_app -->
-<!-- frob:describes src/hullbreach_server/app/config.py::AppConfig -->
-<!-- frob:describes src/hullbreach_server/app/config.py::AppConfig.from_external -->
-<!-- frob:describes src/hullbreach_server/app/config.py::ConfigError -->
-<!-- frob:describes src/hullbreach_server/api/health.py::health -->
-<!-- frob:describes src/hullbreach_server/api/health.py::HealthResponse -->
-<!-- frob:describes src/hullbreach_server/api/health.py::ready -->
-<!-- frob:describes src/hullbreach_server/api/health.py::ReadyResponse -->
-<!-- frob:describes src/hullbreach_server/logging/logger.py::get_logger -->
-<!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter -->
-<!-- frob:describes src/hullbreach_server/logging/formatter.py::SimpleFormatter.format -->
-<!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter -->
-<!-- frob:describes src/hullbreach_server/logging/filter.py::BelowLevelFilter.filter -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::Base -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::DatabaseError -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::create_db_engine -->
-<!-- frob:describes src/hullbreach_server/db/engine.py::check_connectivity -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::init_engine -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::dispose_engine -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_engine -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_sessionmaker -->
-<!-- frob:describes src/hullbreach_server/db/__init__.py::get_db -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/ba2efc248a9a_baseline_no_tables_yet.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/0f6d70e4d209_create_users_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/models/user.py::Role -->
-<!-- frob:describes src/hullbreach_server/db/models/user.py::User -->
-<!-- frob:describes src/hullbreach_server/db/seed.py::SeedError -->
-<!-- frob:describes src/hullbreach_server/db/seed.py::seed -->
-<!-- frob:describes src/hullbreach_server/auth/passwords.py::hash_password -->
-<!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_password -->
-<!-- frob:describes src/hullbreach_server/auth/passwords.py::verify_against_dummy_hash -->
-<!-- frob:describes src/hullbreach_server/logging/logger.py::sanitize_for_log -->
-<!-- frob:describes src/hullbreach_server/api/health.py::NotReadyResponse -->
-
 `main` parses CLI flags, loads `.env`, builds an `AppConfig`
 (pyproject.toml, then `HULLBREACH_*` env vars, then CLI flags), and hands it
 to `App`, which runs uvicorn. `AppConfig.from_external` returns a typani
@@ -121,18 +83,6 @@ reach a log line (INV-003).
 
 ### Auth sessions
 
-<!-- frob:describes src/hullbreach_server/db/models/session.py::Session -->
-<!-- frob:describes src/hullbreach_server/db/models/types.py::UTCDateTime -->
-<!-- frob:describes src/hullbreach_server/db/models/types.py::UTCDateTime.process_result_value -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::SessionError -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::issue_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::resolve_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_session -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::revoke_all_sessions -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::AuthContext -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::get_current_user -->
-<!-- frob:describes src/hullbreach_server/auth/deps.py::require_admin -->
-
 `src/hullbreach_server/db/models/session.py` holds `Session` (table
 `sessions`) -- `id` (UUID), `user_id` (FK to `users.id`, `ON DELETE
 CASCADE`, indexed), a unique `token_hash` (sha256 of the bearer token,
@@ -171,25 +121,6 @@ milestone); `require_admin` is exercised by a test-only router mounted
 directly on the test app fixture (`tests/unit/test_roles.py`).
 
 ### Auth API
-
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::RegisterRequest -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::UserProfile.from_user -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::register -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginRequest -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::LoginResponse -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::login -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::current_time -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::reserve_login_attempt -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::LoginRateLimited -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::AuthEnvError -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::validate_auth_env -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::ErrorDetail -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::ConflictResponse -->
-<!-- frob:describes src/hullbreach_server/auth/sessions.py::clear_failed_logins -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::logout -->
-<!-- frob:describes src/hullbreach_server/api/auth.py::session -->
-<!-- frob:describes src/hullbreach_server/auth/schemas.py::SessionInfo -->
 
 `POST /api/v1/auth/register` (`src/hullbreach_server/api/auth.py::register`)
 takes a `RegisterRequest` (`username` 3-32 chars of `[A-Za-z0-9_.-]`,
@@ -271,10 +202,6 @@ request that could, by design.
 
 ### Game-server keys
 
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::ServerKeyError -->
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::check_server_key -->
-<!-- frob:describes src/hullbreach_server/auth/server_keys.py::require_game_server -->
-
 The game server authenticates with a shared secret, not a player session
 (T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
 from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated), the
@@ -292,9 +219,6 @@ route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
 
 ### Matches
 
-<!-- frob:describes src/hullbreach_server/db/models/match.py::Match -->
-<!-- frob:describes src/hullbreach_server/db/models/match.py::MatchPlayerStats -->
-
 `src/hullbreach_server/db/models/match.py` holds the record of a finished
 match (T-0053). `Match` (table `matches`) has `id` (UUID), `winner_id` (FK
 to `users.id`), `duration_seconds` and `created_at`; its `player_stats`
@@ -310,20 +234,6 @@ idempotency key, rating changes and currency payout land with T-0054,
 T-0057 and T-0070.
 
 ### Database migrations
-
-<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_offline -->
-<!-- frob:describes src/hullbreach_server/db/migrations/env.py::run_migrations_online -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/550676f68926_create_sessions_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/abbcc4cb6b34_create_items_table.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/7d2c4a91e0b3_create_matches_tables.py::downgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrate.py::MigrationError -->
-<!-- frob:describes src/hullbreach_server/db/migrate.py::build_alembic_config -->
-<!-- frob:describes src/hullbreach_server/db/migrate.py::upgrade_to_head -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::upgrade -->
-<!-- frob:describes src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py::downgrade -->
 
 `hullbreach_server db upgrade` runs Alembic programmatically
 (`db/migrate.py::upgrade_to_head`, with `build_alembic_config` pointing
@@ -382,14 +292,6 @@ indexes on `lower(username)` / `lower(email)`; it fails on existing rows
 that already collide case-insensitively or hold an unknown role.
 
 ### Elo rating
-
-<!-- frob:describes src/hullbreach_server/rating/elo.py::STARTING_RATING -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::K_FACTOR -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::RATING_FLOOR -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::EloError -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::MatchRatings -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::expected_score -->
-<!-- frob:describes src/hullbreach_server/rating/elo.py::rate_match -->
 
 `src/hullbreach_server/rating/elo.py` is the pure rating arithmetic (T-0056):
 no database, no FastAPI, no clock. It is plain Elo with one fixed K-factor

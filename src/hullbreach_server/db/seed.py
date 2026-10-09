@@ -48,7 +48,7 @@ _items_table = sa.Table(
 )
 
 
-# frob:tests tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists
 # frob:doc docs/index.md#public-api
 class SeedError(ErrorSet):
     """Failure reasons `seed()` can return."""
@@ -158,8 +158,8 @@ def _create_first_admin(session: Session) -> Result[None, SeedError]:
 
 # frob:tests tests/unit/test_seed.py::test_seed_creates_100_items_and_one_admin
 # frob:tests tests/unit/test_seed.py::test_seed_is_idempotent_on_second_run
-# frob:tests tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists  # noqa: E501
-# frob:tests tests/unit/test_seed.py::test_seed_items_are_upserted_by_slug_not_duplicated_by_name  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists
+# noqa: E501  # frob:tests tests/unit/test_seed.py::test_seed_items_are_upserted_by_slug_not_duplicated_by_name
 # frob:doc docs/index.md#public-api
 def seed(session: Session) -> Result[None, SeedError]:
     """Idempotently load the catalog and create the first admin account.

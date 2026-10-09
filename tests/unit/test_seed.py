@@ -14,7 +14,7 @@ from hullbreach_server.db.models.user import Role, User
 from hullbreach_server.db.seed import SeedError, seed
 
 
-# frob:ticket T-0008
+# frob:ticket 01M2H5T108QJ1XZE5WZKK7Y5KS
 def test_seed_creates_100_items_and_one_admin(db_session, monkeypatch) -> None:
     """Given an empty database, seed() loads >=100 items and creates exactly one admin."""
     monkeypatch.setenv("HULLBREACH_ADMIN_USERNAME", "admin")
@@ -31,7 +31,7 @@ def test_seed_creates_100_items_and_one_admin(db_session, monkeypatch) -> None:
     assert len(admins) == 1
 
 
-# frob:ticket T-0008
+# frob:ticket 01M2H5T108QJ1XZE5WZKK7Y5KS
 def test_seed_is_idempotent_on_second_run(db_session, monkeypatch) -> None:
     """Given a seeded database, running seed() again does not duplicate items or admins."""
     monkeypatch.setenv("HULLBREACH_ADMIN_USERNAME", "admin")
@@ -51,7 +51,7 @@ def test_seed_is_idempotent_on_second_run(db_session, monkeypatch) -> None:
     assert len(admins) == 1
 
 
-# frob:ticket T-0008
+# frob:ticket 01M2H5T108QJ1XZE5WZKK7Y5KS
 def test_seed_returns_err_when_admin_password_unset_and_no_admin_exists(
     db_session, monkeypatch
 ) -> None:
@@ -65,7 +65,7 @@ def test_seed_returns_err_when_admin_password_unset_and_no_admin_exists(
     assert result.danger_err is SeedError.MissingAdminPassword
 
 
-# frob:ticket T-0008
+# frob:ticket 01M2H5T108QJ1XZE5WZKK7Y5KS
 def test_seed_items_are_upserted_by_slug_not_duplicated_by_name(
     db_session, monkeypatch
 ) -> None:

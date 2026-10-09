@@ -7,7 +7,7 @@ from __future__ import annotations
 import pytest
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 @pytest.fixture(autouse=True)
 def _reset_failed_login_store():
     """Clear the module-level failed-login store before/after each test.
@@ -24,7 +24,7 @@ def _reset_failed_login_store():
     sessions_module._failed_attempts.clear()
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _register(client, **overrides: object) -> None:
     payload = {
         "username": "player_one",
@@ -35,7 +35,7 @@ def _register(client, **overrides: object) -> None:
     client.post("/api/v1/auth/register", json=payload)
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_login_valid_credentials_returns_200_with_token_and_user(client) -> None:
     """Given valid credentials, login returns 200 with a token and the user's profile."""
     _register(client)
@@ -51,7 +51,7 @@ def test_login_valid_credentials_returns_200_with_token_and_user(client) -> None
     assert body["user"]["username"] == "player_one"
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_login_wrong_password_returns_401(client) -> None:
     """Given a wrong password, login returns 401 with the generic invalid-credentials message."""
     _register(client)
@@ -65,7 +65,7 @@ def test_login_wrong_password_returns_401(client) -> None:
     assert response.json() == {"detail": "invalid username or password"}
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_login_unknown_username_returns_the_same_401_message_as_wrong_password(
     client,
 ) -> None:
@@ -79,7 +79,7 @@ def test_login_unknown_username_returns_the_same_401_message_as_wrong_password(
     assert response.json() == {"detail": "invalid username or password"}
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_sixth_failed_login_attempt_in_window_returns_429(client) -> None:
     """Given five failed attempts in a minute, a sixth arrives and gets 429."""
     _register(client)
@@ -99,7 +99,7 @@ def test_sixth_failed_login_attempt_in_window_returns_429(client) -> None:
     assert response.json() == {"detail": "too many attempts, try again later"}
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_successful_login_clears_the_failed_attempt_counter(client) -> None:
     """A successful login clears the username's failed-attempt deque, so the next failure does not immediately 429."""
     _register(client)
@@ -122,7 +122,7 @@ def test_successful_login_clears_the_failed_attempt_counter(client) -> None:
     assert response.status_code == 401
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_rate_limit_window_resets_after_60_seconds(client, monkeypatch) -> None:
     """Failed attempts older than the 60-second window no longer count toward the 429 threshold."""
     import hullbreach_server.auth.sessions as sessions_module
@@ -156,7 +156,7 @@ def test_rate_limit_window_resets_after_60_seconds(client, monkeypatch) -> None:
     assert response.status_code == 401
 
 
-# frob:ticket T-0020
+# frob:ticket 01M2H5T10MG71TCQ3Q67M8TSK0
 def test_login_password_min_length_still_enforced_by_schema(client) -> None:
     """LoginRequest still validates via pydantic even though no min_length is imposed on login (only shape)."""
     response = client.post("/api/v1/auth/login", json={"username": "player_one"})

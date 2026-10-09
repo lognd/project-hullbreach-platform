@@ -21,13 +21,13 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 # frob:doc docs/index.md#public-api
 def upgrade() -> None:
     """Upgrade schema: no-op baseline, nothing to create yet."""
 
 
 # frob:doc docs/index.md#public-api
-# frob:accept TEST001 because="a no-op revert path with nothing to assert beyond 'does not raise'; exercised implicitly whenever this revision is downgraded, not by a dedicated unit test"  # noqa: E501
+# noqa: E501  # frob:accept TEST001 because="a no-op revert path with nothing to assert beyond 'does not raise'; exercised implicitly whenever this revision is downgraded, not by a dedicated unit test"
 def downgrade() -> None:
     """Downgrade schema: no-op baseline, nothing to drop."""

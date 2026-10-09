@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 
-# frob:tests tests/unit/test_logging.py::test_simple_formatter_prefixes_level_at_warning_and_above  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_logging.py::test_simple_formatter_prefixes_level_at_warning_and_above
 # frob:doc docs/index.md#public-api
 class SimpleFormatter(logging.Formatter):
     """Plain message for INFO/DEBUG; prefixes level name for WARNING and above.

@@ -137,7 +137,7 @@ def _make_room(now: datetime) -> None:
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_rate_limit_window_resets_after_60_seconds  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_rate_limit_window_resets_after_60_seconds
 def current_time() -> datetime:
     """Return the current UTC time; a single call site per login attempt so tests
     can freeze/advance it by monkeypatching this module's `datetime`."""
@@ -145,7 +145,7 @@ def current_time() -> datetime:
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 class LoginRateLimited(BaseModel):
     """Why a login attempt was refused, and how long until the window frees a slot."""
 
@@ -154,7 +154,7 @@ class LoginRateLimited(BaseModel):
 
 # frob:invariant INV-002
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_sixth_failed_login_attempt_in_window_returns_429
 def reserve_login_attempt(
     username: str, now: datetime
 ) -> Result[None, LoginRateLimited]:
@@ -182,7 +182,7 @@ def reserve_login_attempt(
 
 
 # frob:doc docs/index.md#auth-api
-# frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_successful_login_clears_the_failed_attempt_counter
 def clear_failed_logins(username: str) -> None:
     """Clear `username`'s failed-login history, e.g. after a successful login."""
     with _failed_attempts_lock:
@@ -204,7 +204,7 @@ def _as_aware_utc(value: datetime) -> datetime:
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_an_expired_token  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_an_expired_token
 # frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_a_revoked_token
 class SessionError(ErrorSet):
     """Reasons resolve_session can fail: the token is unknown, expired, or revoked."""
@@ -215,9 +215,9 @@ class SessionError(ErrorSet):
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/unit/test_sessions.py::test_issue_session_returns_row_and_plaintext_token_once  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_issue_session_returns_row_and_plaintext_token_once
 # frob:tests tests/unit/test_sessions.py::test_issue_session_stores_sha256_hash_of_token
-# frob:tests tests/unit/test_sessions.py::test_issue_session_sets_expiry_from_default_ttl  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_issue_session_sets_expiry_from_default_ttl
 def issue_session(db: DBSession, user: User) -> tuple[Session, str]:
     """Create and persist a new Session for `user`; return the row and the one-time plaintext token."""  # noqa: E501
     token = secrets.token_urlsafe(32)
@@ -234,8 +234,8 @@ def issue_session(db: DBSession, user: User) -> tuple[Session, str]:
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/unit/test_sessions.py::test_resolve_session_succeeds_for_a_valid_token  # noqa: E501
-# frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_an_expired_token  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_resolve_session_succeeds_for_a_valid_token
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_an_expired_token
 # frob:tests tests/unit/test_sessions.py::test_resolve_session_fails_for_a_revoked_token
 def resolve_session(db: DBSession, token: str) -> Result[Session, SessionError]:
     """Look up the Session for `token`; Err if unknown, expired, or revoked."""
@@ -264,7 +264,7 @@ def revoke_session(db: DBSession, session_row: Session) -> None:
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/unit/test_sessions.py::test_revoke_all_sessions_revokes_every_non_revoked_session_for_user  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_revoke_all_sessions_revokes_every_non_revoked_session_for_user
 def revoke_all_sessions(db: DBSession, user: User) -> None:
     """Revoke every non-revoked Session belonging to `user`."""
     now = datetime.now(timezone.utc)

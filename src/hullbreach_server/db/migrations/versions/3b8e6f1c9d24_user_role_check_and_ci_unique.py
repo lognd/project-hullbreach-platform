@@ -42,7 +42,7 @@ def upgrade() -> None:
 
 
 # frob:doc docs/index.md#database-migrations
-# frob:accept TEST001 because="a straightforward revert of upgrade() with nothing to assert beyond 'does not raise'; exercised whenever this revision is downgraded"  # noqa: E501
+# noqa: E501  # frob:accept TEST001 because="a straightforward revert of upgrade() with nothing to assert beyond 'does not raise'; exercised whenever this revision is downgraded"
 def downgrade() -> None:
     """Downgrade schema: drop the indexes and the role CHECK."""
     op.drop_index("uq_users_email_lower", table_name="users")

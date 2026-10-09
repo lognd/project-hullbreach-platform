@@ -6,8 +6,8 @@
 // red -- the intended signal to move on to implementation -- the moment the
 // real module lands and the import stops throwing.
 //
-// frob:ticket T-0044
-// frob:ticket T-0024
+// frob:ticket 01M2H5T11CGZ33XBW01120R15Q
+// frob:ticket 01M2H5T10RQG4CAH5QCW1V4RF4
 import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -15,20 +15,20 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // Dynamic import specifiers are read from a variable (not a string literal)
 // so `tsc --noEmit` treats the import() as untyped rather than trying to
 // resolve a module that does not exist yet on this branch.
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const headerModulePath = "../../src/components/Header";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const footerModulePath = "../../src/components/Footer";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const routerModulePath = "../../src/router";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const appModulePath = "../../src/App";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const sessionModulePath = "../../src/auth/session";
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 const routerDomModulePath = "react-router-dom";
 
-// frob:ticket T-0096
+// frob:ticket 01M2KR6R300KQMV7Y0QKK7HZ63
 function stubFetchOnce(body: unknown, init: ResponseInit = { status: 204 }) {
   const response = new Response(
     body === undefined ? null : JSON.stringify(body),

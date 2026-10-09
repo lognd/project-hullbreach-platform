@@ -43,7 +43,6 @@ packages = { find = { where = ["src"] } }
 [tool.setuptools.package-data]
 hullbreach_server = ["py.typed", "logging/config.toml"]
 
-# frob:ticket T-4406
 # pythonpath explicitly includes "src" (not just ".") because relying
 # solely on the editable install to make the src-layout package
 # importable is not portable: on win32, an xdist worker spawned via
