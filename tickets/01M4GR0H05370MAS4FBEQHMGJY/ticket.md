@@ -2,11 +2,12 @@
 id = "01M4GR0H05370MAS4FBEQHMGJY"
 title = "AppConfig.from_external silently misconfigures: cwd-relative pyproject, ignored unknown keys, unstripped CORS list"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:16Z"
-updated = "2026-10-09T17:10:52Z"
+updated = "2026-10-09T17:10:55Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/app/config.py"]
 
