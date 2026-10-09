@@ -2,11 +2,12 @@
 id = "01M4GR0Y30VNVNZ8DP792WJA1W"
 title = "seed(): DB failures and bad inputs escape the Result contract (IntegrityError, KeyError)"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:29Z"
-updated = "2026-10-09T17:11:04Z"
+updated = "2026-10-09T17:11:07Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/db/seed.py"]
 
