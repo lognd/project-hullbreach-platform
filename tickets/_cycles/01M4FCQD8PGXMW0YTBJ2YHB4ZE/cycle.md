@@ -4,6 +4,7 @@ start = "2026-10-05"
 end = "2026-10-23"
 goal = "Sprint 2"
 state = "planned"
+tickets = ["01M2H5T10ZV4EV17ZMHTQ455KJ"]
 created = "2026-10-09T03:53:48Z"
-updated = "2026-10-09T03:53:48Z"
+updated = "2026-10-09T03:54:00Z"
 +++
