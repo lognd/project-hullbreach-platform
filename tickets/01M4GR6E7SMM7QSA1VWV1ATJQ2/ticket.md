@@ -6,13 +6,13 @@ category = "todo"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T16:33:30Z"
+updated = "2026-10-09T17:02:16Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/auth/schemas.py"]
 
 [[acceptance]]
 text = "given a password over 128 chars, when POST /register or /login, then 422 before any hashing"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a username over its cap, when POST /login, then 422 and nothing is stored in the failed-attempt dict"
