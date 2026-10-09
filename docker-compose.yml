@@ -9,6 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-hullbreach}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hullbreach}
       POSTGRES_DB: ${POSTGRES_DB:-hullbreach}
+    # frob:invariant INV-005
     ports:
       - "5432:5432"
     volumes:

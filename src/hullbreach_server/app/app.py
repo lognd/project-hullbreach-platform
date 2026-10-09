@@ -22,6 +22,7 @@ def create_app(cfg: AppConfig) -> FastAPI:
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
     )
+    # frob:invariant INV-004
     app.add_middleware(
         CORSMiddleware,
         allow_origins=cfg.cors_origins,

@@ -30,6 +30,7 @@ class RegisterRequest(BaseModel):
 
     username: str
     email: EmailStr
+    # frob:invariant INV-002
     password: str = Field(min_length=8)
 
 

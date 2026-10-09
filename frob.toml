@@ -87,3 +87,12 @@ branch = "frob-tickets"
 # `trunk` commits to `ref`; `branch` commits to the checked-out branch.
 # main is PR-only, so ledger commits go on the working branch and travel in the PR.
 ref_mode = "branch"
+
+[invariants]
+# INV-007: server code never spawns processes or deserializes untrusted bytes with pickle-family modules.
+forbid_imports = [
+  { from = "src/hullbreach_server/**", to = "subprocess", reason = "POL-no-subprocess (INV-007): process spawning from request-handling code is command-injection surface" },
+  { from = "src/hullbreach_server/**", to = "pickle", reason = "POL-no-unsafe-deserialization (INV-007): pickle executes arbitrary code on untrusted bytes" },
+  { from = "src/hullbreach_server/**", to = "marshal", reason = "POL-no-unsafe-deserialization (INV-007): marshal is not safe on untrusted bytes" },
+  { from = "src/hullbreach_server/**", to = "shelve", reason = "POL-no-unsafe-deserialization (INV-007): shelve is pickle-backed" },
+]

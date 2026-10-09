@@ -29,6 +29,7 @@ function isStoredSession(value: unknown): value is StoredSession {
 // frob:doc docs/index.md#session-persistence
 /** Persists the given session to localStorage so it survives a reload. */
 export function saveSession(session: StoredSession): void {
+  // frob:invariant INV-006
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 }
 

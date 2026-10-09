@@ -1,4 +1,5 @@
 # hullbreach_server
+# frob:invariant INV-007
 from importlib.metadata import PackageNotFoundError, version
 
 try:
