@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:16Z"
-updated = "2026-10-09T16:30:16Z"
+updated = "2026-10-09T16:34:01Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/app/app.py"]
 +++
