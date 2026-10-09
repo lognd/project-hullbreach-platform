@@ -1,6 +1,7 @@
 """Unit tests for the logging setup."""
 
 import logging
+import os
 import subprocess
 import sys
 
@@ -93,6 +94,9 @@ def test_config_toml_routes_info_to_stdout_and_warnings_to_stderr() -> None:
         capture_output=True,
         text=True,
         check=True,
+        # Mirror this interpreter's import path so the child finds the package
+        # however pytest was launched (uv run, frob test's own runner).
+        env={**os.environ, "PYTHONPATH": os.pathsep.join(sys.path)},
     )
     assert proc.stdout == "info-line\n"
     assert proc.stderr.splitlines()[0] == "WARNING: warn-line"
