@@ -25,7 +25,7 @@ from hullbreach_server.db.models.session import Session as SessionRow
 from hullbreach_server.db.models.user import User
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _make_user(db_session):
     """Persist and return a fresh User row for a test's fixture session."""
     user = User(
@@ -38,7 +38,7 @@ def _make_user(db_session):
     return user
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_issue_session_returns_row_and_plaintext_token_once(db_session) -> None:
     """issue_session returns the Session ORM row and a plaintext token not equal to its stored hash."""
     user = _make_user(db_session)
@@ -48,7 +48,7 @@ def test_issue_session_returns_row_and_plaintext_token_once(db_session) -> None:
     assert len(token) > 20
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_issue_session_stores_sha256_hash_of_token(db_session) -> None:
     """The stored token_hash is exactly sha256(token).hexdigest()."""
     user = _make_user(db_session)
@@ -57,7 +57,7 @@ def test_issue_session_stores_sha256_hash_of_token(db_session) -> None:
     assert session_row.token_hash == hashlib.sha256(token.encode()).hexdigest()
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_issue_session_sets_expiry_from_default_ttl(db_session) -> None:
     """A freshly issued session expires ~14 days (the default TTL) from now."""
     user = _make_user(db_session)
@@ -67,7 +67,7 @@ def test_issue_session_sets_expiry_from_default_ttl(db_session) -> None:
     assert abs((session_row.expires_at - expected).total_seconds()) < 60
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_resolve_session_succeeds_for_a_valid_token(db_session) -> None:
     """resolve_session returns Ok(session) for a token that is neither expired nor revoked."""
     user = _make_user(db_session)
@@ -78,7 +78,7 @@ def test_resolve_session_succeeds_for_a_valid_token(db_session) -> None:
     assert result.is_ok
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_resolve_session_fails_for_an_expired_token(db_session) -> None:
     """resolve_session returns Err for a token whose expires_at is in the past."""
     user = _make_user(db_session)
@@ -91,7 +91,7 @@ def test_resolve_session_fails_for_an_expired_token(db_session) -> None:
     assert result.is_err
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_resolve_session_fails_for_a_revoked_token(db_session) -> None:
     """resolve_session returns Err for a token whose revoked_at is set."""
     user = _make_user(db_session)
@@ -104,7 +104,7 @@ def test_resolve_session_fails_for_a_revoked_token(db_session) -> None:
     assert result.is_err
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_revoke_session_sets_revoked_at(db_session) -> None:
     """revoke_session sets revoked_at on the given session row."""
     user = _make_user(db_session)
@@ -115,7 +115,7 @@ def test_revoke_session_sets_revoked_at(db_session) -> None:
     assert session_row.revoked_at is not None
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_revoke_all_sessions_revokes_every_non_revoked_session_for_user(
     db_session,
 ) -> None:
@@ -134,7 +134,7 @@ def test_revoke_all_sessions_revokes_every_non_revoked_session_for_user(
     assert remaining == 0
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_expired_token_returns_401(app, db_session) -> None:
     """Given an expired token, a protected route (via get_current_user) returns 401."""
     user = _make_user(db_session)
@@ -154,7 +154,7 @@ def test_expired_token_returns_401(app, db_session) -> None:
     assert response.status_code == 401
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_revoked_token_returns_401(app, db_session) -> None:
     """Given a revoked token, a protected route (via get_current_user) returns 401."""
     user = _make_user(db_session)
@@ -173,7 +173,7 @@ def test_revoked_token_returns_401(app, db_session) -> None:
     assert response.status_code == 401
 
 
-# frob:ticket T-0019
+# frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
 def test_missing_authorization_header_returns_401_not_403(app) -> None:
     """A missing Authorization header is normalized to 401 (never FastAPI's default 403)."""
 

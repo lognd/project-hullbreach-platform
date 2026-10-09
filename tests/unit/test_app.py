@@ -52,7 +52,7 @@ def test_app_is_constructible_without_binding_a_socket() -> None:
     assert callable(App(AppConfig()))
 
 
-# frob:ticket T-0099
+# frob:ticket 01M2KR6R33VE66XY6M4Z9PQATE
 def test_app_call_exits_nonzero_naming_host_when_database_unreachable(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

@@ -9,7 +9,7 @@ from __future__ import annotations
 from hullbreach_server.db.models.user import User  # noqa: F401
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _register_payload(**overrides: object) -> dict:
     payload = {
         "username": "player_one",
@@ -20,7 +20,7 @@ def _register_payload(**overrides: object) -> dict:
     return payload
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_valid_request_returns_201_with_player_defaults(client) -> None:
     """Given a valid request, register returns 201 with role Player, currency 0, and a default rating."""
     response = client.post("/api/v1/auth/register", json=_register_payload())
@@ -32,7 +32,7 @@ def test_register_valid_request_returns_201_with_player_defaults(client) -> None
     assert body["rating"] == 1200
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_duplicate_username_returns_409_with_field(client) -> None:
     """Given a duplicate username, register returns 409 naming the username field."""
     client.post("/api/v1/auth/register", json=_register_payload())
@@ -49,7 +49,7 @@ def test_register_duplicate_username_returns_409_with_field(client) -> None:
     }
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_duplicate_email_returns_409_with_field(client) -> None:
     """Given a duplicate email, register returns 409 naming the email field."""
     client.post("/api/v1/auth/register", json=_register_payload())
@@ -63,7 +63,7 @@ def test_register_duplicate_email_returns_409_with_field(client) -> None:
     assert response.json() == {"detail": "email already taken", "field": "email"}
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_password_too_short_returns_422(client) -> None:
     """A password under 8 characters fails pydantic validation with 422."""
     response = client.post(
@@ -73,7 +73,7 @@ def test_register_password_too_short_returns_422(client) -> None:
     assert response.status_code == 422
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_malformed_email_returns_422(client) -> None:
     """A malformed email fails pydantic's EmailStr validation with 422."""
     response = client.post(
@@ -83,7 +83,7 @@ def test_register_malformed_email_returns_422(client) -> None:
     assert response.status_code == 422
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_role_field_is_never_accepted_as_input(client) -> None:
     """Passing role=admin in the request body is ignored; the created user is still a Player."""
     response = client.post(
@@ -94,7 +94,7 @@ def test_register_role_field_is_never_accepted_as_input(client) -> None:
     assert response.json()["role"] == "player"
 
 
-# frob:ticket T-0016
+# frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
 def test_register_response_never_exposes_password_hash(client) -> None:
     """UserProfile never includes password_hash or the raw password anywhere in the body."""
     response = client.post("/api/v1/auth/register", json=_register_payload())

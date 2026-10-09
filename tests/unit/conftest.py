@@ -18,7 +18,7 @@ from typing import Any
 import pytest
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 @pytest.fixture
 def engine() -> Iterator[Any]:
     """A fresh in-memory SQLite engine, shared across connections via StaticPool."""
@@ -35,7 +35,7 @@ def engine() -> Iterator[Any]:
     eng.dispose()
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 @pytest.fixture
 def db_session(engine: Any) -> Iterator[Any]:
     """A SQLAlchemy Session against `engine`, with every table created and
@@ -54,7 +54,7 @@ def db_session(engine: Any) -> Iterator[Any]:
         Base.metadata.drop_all(engine)
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 @pytest.fixture
 def app(db_session: Any) -> Any:
     """A `create_app`-built FastAPI app with `get_db` overridden to yield
@@ -71,7 +71,7 @@ def app(db_session: Any) -> Any:
     return application
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 @pytest.fixture
 def client(app: Any) -> Iterator[Any]:
     """A `TestClient` wrapping `app`, for exercising the HTTP surface directly."""

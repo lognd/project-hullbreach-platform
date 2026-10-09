@@ -11,8 +11,8 @@ __all__ = ["Match", "MatchPlayerStats", "Role", "Session", "User"]
 # New tables register here (import + __all__) so Alembic autogenerate sees
 # them; copy models/session.py for the shape and T-0101's migration for the
 # revision. Each ticket adds this file to its scope before editing it.
-# frob:todo T-0057 RatingChange (models/rating.py)
-# frob:todo T-0066 Item and Inventory (models/item.py, models/inventory.py)
-# frob:todo T-0070 CurrencyLedger (models/ledger.py)
-# frob:todo T-0077 ModerationLog and User.suspended_* (models/moderation.py)
-# frob:todo T-0089 ShipDesign (models/design.py)
+# frob:todo 01M2H5T11SW5W3X3716GRY6J80 RatingChange (models/rating.py)
+# frob:todo 01M2H5T1227K1HMGED2B5K9JYQ Item and Inventory (models/item.py, models/inventory.py)
+# frob:todo 01M2H5T126K37TGJQ32PYKEHW6 CurrencyLedger (models/ledger.py)
+# frob:todo 01M2H5T12DHERRG7PFSX31A3MK ModerationLog and User.suspended_* (models/moderation.py)
+# frob:todo 01M2H5T12SY6DWG2W72KDMBC3Z ShipDesign (models/design.py)
