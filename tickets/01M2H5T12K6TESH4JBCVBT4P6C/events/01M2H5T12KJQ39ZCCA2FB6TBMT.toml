@@ -1,0 +1,14 @@
+kind = "create"
+title = "Admin item CRUD endpoints with retire semantics"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 3
+parent = "01M2H5T12J047CP3Z2AC59XD4G"
+aliases = ["T-0083"]
+labels = ["jira:SCRUM-197", "owner:lognd", "milestone:0.3.0"]
+scope = ["src/hullbreach_server/api/admin/items.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_admin_items.py"]
+acceptance = ["given a retired item, when the public catalog is fetched, then it is absent; when an owner's inventory is fetched, then present"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

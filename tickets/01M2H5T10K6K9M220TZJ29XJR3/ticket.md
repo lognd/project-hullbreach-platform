@@ -1,0 +1,20 @@
++++
+id = "01M2H5T10K6K9M220TZJ29XJR3"
+title = "Session model with expiry and revocation, and the current-user auth dependency"
+type = "task"
+category = "done"
+outcome = "done"
+priority = "medium"
+points = 3
+parent = "01M2H5T10JTJB218KF4C7FSH46"
+reporter = "human"
+created = "2026-09-15T00:00:00Z"
+updated = "2026-09-15T00:00:02Z"
+aliases = ["T-0019"]
+labels = ["jira:SCRUM-90", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/db/models/session.py", "src/hullbreach_server/auth/sessions.py", "src/hullbreach_server/auth/deps.py", "tests/unit/test_sessions.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/db/migrations/versions/*.py", ".env.example", "docs/index.md", "design/hullbreach.strata", "docs/design/sprint-1.md", "docs/design/registry/capability-via-ratchet.lock.json", "tests/unit/test_roles.py", "src/hullbreach_server/auth/__init__.py"]
+
+[[acceptance]]
+text = "given an expired or revoked token, when a protected route is called, then 401"
+bound = false
++++

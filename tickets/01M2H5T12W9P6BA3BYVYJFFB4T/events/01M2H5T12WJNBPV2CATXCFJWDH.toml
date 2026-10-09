@@ -1,0 +1,13 @@
+kind = "create"
+title = "E14 Stretch goals (platform half)"
+type = "epic"
+category = "todo"
+priority = "high"
+aliases = ["T-0092"]
+scope = ["src/hullbreach_server/api/replays.py", "tests/unit/test_replays.py", "web/src/pages/Replay.tsx"]
+body = """
+Epic from the Module 4 story map. Stories:
+- S52 Watch a match from the website"""
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

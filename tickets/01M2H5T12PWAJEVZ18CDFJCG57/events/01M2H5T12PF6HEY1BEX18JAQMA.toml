@@ -1,0 +1,20 @@
+kind = "create"
+title = "S29 Find an online opponent (platform half: matchmaking queue API)"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T12NSRFVQ2H4YCE7ZX30"
+aliases = ["T-0086"]
+labels = ["needs-game", "milestone:0.2.0"]
+scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
+acceptance = ["given a signed-in player, when they enter the queue, then they can see they are queued and cancel", "given two queued players within the rating window, when matched, then both receive the same game server address without typing one", "given a matched game, when it ends, then it is recorded as ranked"]
+body = """
+As a player, I want to queue for a ranked match and be paired with an opponent of similar rating, so that matches are fair and I do not have to arrange them myself.
+
+Open questions:
+- Who runs matchmaking: the platform API, or a lobby service on the game server host?
+- Widening rating window over time in queue? Maximum wait before matching anyone?
+- How many game servers do we run, and where?"""
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

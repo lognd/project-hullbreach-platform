@@ -1,0 +1,14 @@
+kind = "create"
+title = "Admin website section: player search, detail, suspend and reinstate"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 3
+parent = "01M2H5T12BT56ETFWBMD8MR8HR"
+aliases = ["T-0078"]
+labels = ["jira:SCRUM-194", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/pages/admin/Players.tsx", "web/src/router.tsx", "web/tests/unit/AdminPlayers.test.tsx"]
+acceptance = ["given a Player session, when /admin is opened, then it redirects away"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

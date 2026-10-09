@@ -1,0 +1,14 @@
+kind = "create"
+title = "Website leaderboard page"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T11XDV04575V7T3S9A68"
+aliases = ["T-0063"]
+labels = ["jira:SCRUM-191", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx"]
+acceptance = ["given the leaderboard, when rendered, then the signed-in player's row is highlighted"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

@@ -1,0 +1,13 @@
+kind = "evidence"
+at = "2026-09-16T00:00:01Z"
+actor = "import"
+rev = 1
+provider = "command"
+ref = "npx vitest run web/tests/unit/Header.test.tsx web/tests/unit/Register.test.tsx web/tests/unit/Login.test.tsx"
+digest = "f306fed9ad13"
+status = "measured"
+captured_at = "2026-09-16T00:00:01Z"
+accepts = [1]
+passed = true
+exit_code = 0
+size = 0

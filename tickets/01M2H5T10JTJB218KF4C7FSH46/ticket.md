@@ -1,0 +1,37 @@
++++
+id = "01M2H5T10JTJB218KF4C7FSH46"
+title = "S05 Log in and stay logged in"
+type = "story"
+category = "todo"
+priority = "medium"
+parent = "01M2H5T10DT4023PZH1JHFEWQE"
+reporter = "human"
+created = "2026-09-15T00:00:00Z"
+updated = "2026-09-15T00:00:00Z"
+aliases = ["T-0018"]
+labels = ["jira:SCRUM-26", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/deps.py", "src/hullbreach_server/auth/sessions.py", "src/hullbreach_server/db/models/session.py", "tests/unit/test_auth_login.py", "tests/unit/test_sessions.py", "web/src/auth/session.ts", "web/src/pages/Login.tsx", "web/tests/unit/Login.test.tsx"]
+
+[[acceptance]]
+text = "given correct credentials, when logging in, then a session is issued; given incorrect ones, then a generic refusal"
+bound = false
+
+[[acceptance]]
+text = "given a logged-in player, when the page is refreshed, then they stay signed in until the session expires"
+bound = false
+
+[[acceptance]]
+text = "given a session, when its configured period passes or it is revoked server-side, then it is rejected"
+bound = false
+
+[[acceptance]]
+text = "given any response or redirect, when inspected, then no session token appears in a URL"
+bound = false
++++
+
+As a player, I want to log in with my username or email and password and remain signed in across page loads, so that I do not have to re-enter credentials every time I open the site.
+
+Open questions:
+- Session length: hours, days, or until logout? Remember me?
+- Token transport: HTTP-only cookie for the website versus bearer header for the game client, or bearer everywhere?
+- Rate limiting on failed logins?

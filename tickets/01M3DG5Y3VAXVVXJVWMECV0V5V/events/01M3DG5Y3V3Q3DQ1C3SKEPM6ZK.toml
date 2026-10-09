@@ -1,0 +1,18 @@
+kind = "create"
+title = "S03-1: Unauthenticated GET /api/v1/health returning the running version"
+type = "task"
+category = "todo"
+priority = "high"
+points = 1
+parent = "01M2H5T10BYCP87BPHK38Y09BN"
+aliases = ["T-0123"]
+labels = ["platform", "jira:SCRUM-83", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/api/health.py", "tests/unit/test_api.py"]
+body = """
+https://aliens-against-humanity.atlassian.net/browse/SCRUM-83
+
+Unauthenticated GET /api/v1/health returning the running version
+Parent story: SCRUM-24"""
+at = "2026-09-26T00:00:00Z"
+actor = "human"
+rev = 1

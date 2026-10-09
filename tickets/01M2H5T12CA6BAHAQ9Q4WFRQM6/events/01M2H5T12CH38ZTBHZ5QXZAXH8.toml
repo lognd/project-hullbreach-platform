@@ -1,0 +1,14 @@
+kind = "create"
+title = "Admin player search and detail endpoints under /api/v1/admin"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T12BT56ETFWBMD8MR8HR"
+aliases = ["T-0076"]
+labels = ["jira:SCRUM-192", "owner:lognd", "milestone:0.3.0"]
+scope = ["src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/services/admin.py", "tests/unit/test_admin_players.py"]
+acceptance = ["given a partial username, when searched by an admin, then matching players return; a Player gets 403"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

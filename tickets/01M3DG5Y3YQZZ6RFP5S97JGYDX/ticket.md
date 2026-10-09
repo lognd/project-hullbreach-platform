@@ -1,0 +1,20 @@
++++
+id = "01M3DG5Y3YQZZ6RFP5S97JGYDX"
+title = "S08-2: Exclude role from the registration and profile-edit paths and test it"
+type = "task"
+category = "todo"
+priority = "high"
+points = 1
+parent = "01M2H5T10VN6HGPSN5F492TGYA"
+reporter = "human"
+created = "2026-09-26T00:00:00Z"
+updated = "2026-09-26T00:00:00Z"
+aliases = ["T-0126"]
+labels = ["platform", "jira:SCRUM-96", "owner:lognd", "milestone:0.1.0"]
+scope = ["src/hullbreach_server/auth/deps.py", "src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/db/models/user.py", "tests/unit/test_roles.py"]
++++
+
+https://aliens-against-humanity.atlassian.net/browse/SCRUM-96
+
+Exclude role from the registration and profile-edit paths and test it
+Parent story: SCRUM-29

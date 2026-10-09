@@ -1,0 +1,18 @@
+kind = "create"
+title = "Widen strata tests node glob to cover web/tests"
+type = "docs"
+category = "todo"
+priority = "medium"
+aliases = ["T-0097"]
+labels = ["jira:none"]
+scope = ["design/hullbreach.strata", "docs/design/registry/capability-via-ratchet.lock.json", "docs/design/sprint-1.md"]
+acceptance = ["given design/hullbreach.strata's tests node, when frob check runs against a branch carrying web/tests/unit/Header.test.tsx and Login.test.tsx, then their observed client_storage capability is bound by the node's code glob (no SELFAUDIT001/SYS103 finding)"]
+body = """
+found while working T-0096: the design's 'tests' node (design/hullbreach.strata) only globs 'tests/**', so web/tests/unit/*.test.tsx's observed client_storage capability (localStorage use in Header.test.tsx and Login.test.tsx) is unbound, tripping SELFAUDIT001/SYS103. Widen the node's code= glob (or add a second node) to also cover web/tests/**.
+
+## Reopen log
+- 2026-09-16: COV003: cmd: evidence is not allowed for kind=bug; replace with real pytest/vitest node-id evidence per CI's frob check finding
+- 2026-09-16: web/scripts/run-vitest-ids.mjs (a node script) trips eslint's browser-only no-undef on process/console; needs an eslint.config.js override"""
+at = "2026-09-16T00:00:00Z"
+actor = "human"
+rev = 1

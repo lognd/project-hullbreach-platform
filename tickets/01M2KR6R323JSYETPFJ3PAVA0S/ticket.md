@@ -1,0 +1,20 @@
++++
+id = "01M2KR6R323JSYETPFJ3PAVA0S"
+title = "Sprint 1 xfail test skeleton (python)"
+type = "docs"
+category = "done"
+outcome = "done"
+priority = "medium"
+reporter = "human"
+created = "2026-09-16T00:00:00Z"
+updated = "2026-09-16T00:00:03Z"
+aliases = ["T-0098"]
+labels = ["jira:none", "milestone:0.1.0"]
+scope = ["tests/unit/conftest.py", "tests/unit/test_db_engine.py", "tests/unit/test_seed.py", "tests/unit/test_api.py", "tests/unit/test_passwords.py", "tests/unit/test_auth_register.py", "tests/unit/test_sessions.py", "tests/unit/test_auth_login.py", "tests/unit/test_auth_logout.py", "tests/unit/test_auth_game.py", "tests/unit/test_roles.py", "tests/system/test_build.py", "ty.toml", "design/hullbreach.strata", "docs/design/sprint-1.md", "frob.toml"]
+
+[[acceptance]]
+text = "given docs/design/sprint-1.md section 7's acceptance table, when uv run pytest runs, then every planned node id in that table exists, is marked xfail(strict=True), and the full suite reports zero failures and zero errors"
+bound = true
++++
+
+Test-first xfail(strict=True) skeleton for the sprint-1 backend tickets (T-0006, T-0007, T-0008, T-0012, T-0015, T-0016, T-0019, T-0020, T-0023, T-0026, T-0028), written against docs/design/sprint-1.md before any implementation lands. Every test imports its planned symbols lazily inside the test/fixture body so collection succeeds and the test fails at call time via a real ImportError, reported as xfail. Adds tests/unit/conftest.py (engine/db_session/app/client fixtures per design section 7) and ty.toml (excludes tests/ from frob's whole-repo ty gate, matching CI's own ty check src/ scope).

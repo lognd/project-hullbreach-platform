@@ -1,0 +1,12 @@
+kind = "create"
+title = "File the Module 4 backlog as epics, stories, and tickets"
+type = "docs"
+category = "todo"
+priority = "high"
+aliases = ["T-0003"]
+labels = ["jira:none"]
+scope = ["tickets/**"]
+acceptance = ["given the story map PDF, when frob ticket board runs, then every platform story E1-E7 exists as a story under its epic with sprint and milestone set"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1

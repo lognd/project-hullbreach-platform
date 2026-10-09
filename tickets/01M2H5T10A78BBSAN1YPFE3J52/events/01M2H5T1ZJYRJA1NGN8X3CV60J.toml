@@ -1,0 +1,13 @@
+kind = "evidence"
+at = "2026-09-15T00:00:01Z"
+actor = "import"
+rev = 1
+provider = "command"
+ref = "gh api repos/lognd/project-hullbreach-platform/rules/branches/main"
+digest = "df8956df9a54"
+status = "measured"
+captured_at = "2026-09-15T00:00:01Z"
+accepts = [1]
+passed = true
+exit_code = 0
+size = 0

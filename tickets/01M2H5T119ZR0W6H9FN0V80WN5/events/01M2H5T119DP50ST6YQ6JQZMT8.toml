@@ -1,0 +1,14 @@
+kind = "create"
+title = "Website skin picker on the profile page"
+type = "task"
+category = "todo"
+priority = "medium"
+points = 2
+parent = "01M2H5T117A35Q8AA9THRZTTYB"
+aliases = ["T-0041"]
+labels = ["needs-game", "jira:SCRUM-188", "owner:a-carten", "milestone:0.3.0"]
+scope = ["web/src/pages/Profile.tsx", "web/src/components/SkinPicker.tsx", "web/tests/unit/SkinPicker.test.tsx"]
+acceptance = ["given owned skins, when one is clicked, then it becomes active and is marked"]
+at = "2026-09-15T00:00:00Z"
+actor = "human"
+rev = 1
