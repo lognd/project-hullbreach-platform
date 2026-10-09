@@ -15,7 +15,7 @@ scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/passwo
 
 [[acceptance]]
 text = "Given an existing username or email, when a second account registers with it, then the API answers 409 naming the offending field"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "Given a password shorter than 8 characters, when an account registers, then the API answers 422"
