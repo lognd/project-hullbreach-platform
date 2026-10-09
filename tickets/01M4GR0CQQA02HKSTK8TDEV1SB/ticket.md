@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:30:12Z"
-updated = "2026-10-09T16:30:12Z"
+updated = "2026-10-09T16:34:00Z"
 labels = ["origin:auditor", "interface-audit"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/sessions.py"]
 +++
