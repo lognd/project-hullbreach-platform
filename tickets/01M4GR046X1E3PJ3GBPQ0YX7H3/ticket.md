@@ -2,11 +2,12 @@
 id = "01M4GR046X1E3PJ3GBPQ0YX7H3"
 title = "Env-config readers raise bare ValueError at request time and accept nonsensical values"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:03Z"
-updated = "2026-10-09T17:01:12Z"
+updated = "2026-10-09T17:01:14Z"
 scope = ["src/hullbreach_server/auth/sessions.py"]
 
 [[acceptance]]
