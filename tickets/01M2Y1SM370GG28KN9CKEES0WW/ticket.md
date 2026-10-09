@@ -17,7 +17,7 @@ bound = true
 
 [[acceptance]]
 text = "Given each code site a queued ticket plugs into, when a teammate opens the file, then a frob:todo marker names the owning ticket"
-bound = false
+bound = true
 +++
 
 Sprint 1 landed as one author. The remaining backlog (T-0031 onward) is where teammates pick up. Leave a lane-by-lane pick-up guide and a frob:todo T-#### marker at each code site a queued ticket plugs into, so the next person landing in a file sees which ticket owns the gap.
