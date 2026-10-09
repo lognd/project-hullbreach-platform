@@ -2,11 +2,12 @@
 id = "01M4GR0CQQA02HKSTK8TDEV1SB"
 title = "login: unknown-username path skips password hashing (timing user enumeration) and failed-attempt store grows unbounded"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:30:12Z"
-updated = "2026-10-09T17:01:41Z"
+updated = "2026-10-09T17:01:51Z"
 labels = ["origin:auditor", "interface-audit"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/sessions.py"]
 
