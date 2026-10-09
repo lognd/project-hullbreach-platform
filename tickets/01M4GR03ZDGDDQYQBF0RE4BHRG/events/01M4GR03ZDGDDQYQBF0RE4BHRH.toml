@@ -1,0 +1,10 @@
+kind = "create"
+title = "verify_password raises on a malformed stored hash instead of honoring its bool contract"
+type = "bug"
+category = "todo"
+priority = "medium"
+scope = ["src/hullbreach_server/auth/passwords.py"]
+body = "origin: auditor. auth/passwords.py:131-133 -- docstring and signature promise bool, but pwdlib's verify raises (e.g. UnknownHashError) when hashed is not a recognised hash (corrupt row, legacy/seeded value). Caller api/auth.py:112 does not catch it, so login returns 500 and leaks via error. Failure mode is undocumented. Fix: return Result[bool, PasswordError] (ErrorSet with MalformedHash) per typani convention, or catch and log then return False; document it and test with hashed='not-a-hash'. Callers (api/auth.py login) map Err to the same 401."
+at = "2026-10-09T16:30:03Z"
+actor = "lognd"
+rev = 1
