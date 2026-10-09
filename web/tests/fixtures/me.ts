@@ -1,4 +1,5 @@
 import type { MatchSummary, MeResponse } from "@/api/me";
+import type { UserProfile } from "@/api/auth";
 
 /** Builds a deterministic match, newest first by index, so list tests can assert order and counts. */
 export function makeMatch(index: number): MatchSummary {
@@ -29,4 +30,15 @@ export const meFixture: MeResponse = {
     { id: "item-2", slug: "frost-plating", name: "Frost Plating" },
   ],
   recent_matches: [0, 1, 2, 3, 4].map(makeMatch),
+};
+
+/** The UserProfile a successful PATCH /api/v1/me echoes back (planned contract, T-0034). */
+export const profileFixture: UserProfile = {
+  id: meFixture.id,
+  username: meFixture.username,
+  email: meFixture.email,
+  role: meFixture.role,
+  currency: meFixture.currency,
+  rating: meFixture.rating,
+  created_at: meFixture.created_at,
 };

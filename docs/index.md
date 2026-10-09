@@ -278,7 +278,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, `/me` (the profile page), and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/me` (the profile page), `/settings`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -367,6 +367,25 @@ above the viewport, no unwrappable text) rather than measuring
 Known gap: the live-server test in `web/tests/unit/Profile.test.tsx` is
 `it.fails` until T-0031 lands; when it does, the test passes, `it.fails`
 turns red, and that is the cue to drop `.fails`.
+
+### Account settings page
+
+`web/src/pages/Settings.tsx` is routed at `/settings` and edits the
+signed-in player's display name (the username), email and password through
+`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (planned,
+T-0034; the page is built against the fixture
+`profileFixture` in `web/tests/fixtures/me.ts`). It copies Register's
+inline-error pattern: an `ApiError` with a `field` is shown beside that
+input through `aria-describedby`, and one without becomes a `role="alert"`
+banner. The planned contract: the request carries only the changed fields,
+a new email or password also carries `current_password`, and a wrong one is
+a 403 naming `field: "current_password"`. The page enforces the same rule
+locally (an email or password change with no current password is refused
+inline without a request) and says "Nothing to change." for an untouched
+form. On success it clears the secret fields and writes the new username
+into the stored session so a reload shows it. Signed out, the page renders
+`web/src/components/SignInPrompt.tsx`, the log-in prompt the profile page
+now shares.
 
 ## Sprint 1 design
 

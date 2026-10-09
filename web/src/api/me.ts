@@ -36,3 +36,25 @@ export type MeResponse = UserProfile & {
 export async function fetchMe(token: string): Promise<MeResponse> {
   return requestJson<MeResponse>(ME_BASE, { headers: bearerHeaders(token) });
 }
+
+// frob:doc docs/index.md#account-settings-page
+/** PATCH /api/v1/me's planned request body (T-0034): only changed fields; email or password changes need `current_password`. */
+export type UpdateMeRequest = {
+  username?: string;
+  email?: string;
+  password?: string;
+  current_password?: string;
+};
+
+// frob:doc docs/index.md#account-settings-page
+/** PATCH /api/v1/me with the caller's bearer token; 200 UserProfile on success, 403/409/422 rejects with an ApiError (a `field` names the offender). */
+export async function updateMe(
+  token: string,
+  payload: UpdateMeRequest,
+): Promise<UserProfile> {
+  return requestJson<UserProfile>(ME_BASE, {
+    method: "PATCH",
+    headers: { ...bearerHeaders(token), "content-type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}

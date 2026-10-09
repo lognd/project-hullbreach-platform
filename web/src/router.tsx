@@ -3,6 +3,7 @@ import { App } from "@/App";
 import { Register } from "@/pages/Register";
 import { Login } from "@/pages/Login";
 import { Profile } from "@/pages/Profile";
+import { Settings } from "@/pages/Settings";
 
 /** Landing route content; a fuller version lands with T-0045/T-0046 in a later milestone. */
 function Landing() {
@@ -40,11 +41,11 @@ export const router = createBrowserRouter([
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
       { path: "me", element: <Profile /> },
+      { path: "settings", element: <Settings /> },
       // Each queued page is one more route here plus a pages/<Name>.tsx and
       // a tests/unit/<Name>.test.tsx; copy pages/Login.tsx. Add this file to
       // the ticket's scope first (`frob ticket scope T-#### --add`).
       // frob:todo T-0046 note="index route -> pages/Landing.tsx replaces the stub above"
-      // frob:todo T-0035 note="path settings -> pages/Settings.tsx"
       // frob:todo T-0049 note="path data-policy -> pages/DataPolicy.tsx (Footer already links it)"
       // frob:todo T-0060 note="path me/matches -> pages/MatchHistory.tsx"
       // frob:todo T-0063 note="path leaderboard -> pages/Leaderboard.tsx"

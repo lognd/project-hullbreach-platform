@@ -3,6 +3,7 @@ import { ApiError } from "@/api/auth";
 import { fetchMe, type MeResponse } from "@/api/me";
 import { useSession } from "@/auth/session";
 import { MatchItem } from "@/components/MatchItem";
+import { SignInPrompt } from "@/components/SignInPrompt";
 
 /** What the page is showing: waiting on the server, the loaded profile, or a failure message. */
 type ProfileState =
@@ -46,17 +47,7 @@ export function Profile() {
   }, [token]);
 
   if (token === null) {
-    return (
-      <main className="flex flex-col items-center gap-space-8 bg-paper px-space-16 py-space-48 text-ink">
-        <h1 className="text-font-size-32 font-semibold">Profile</h1>
-        <p className="text-font-size-16 text-muted">
-          <a href="/login" className="text-accent">
-            Log in
-          </a>{" "}
-          to see your profile.
-        </p>
-      </main>
-    );
+    return <SignInPrompt title="Profile" reason="to see your profile." />;
   }
 
   if (state.status === "error") {
