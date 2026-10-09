@@ -37,7 +37,7 @@ class AuthContext:
 # frob:doc docs/index.md#public-api
 # frob:tests tests/unit/test_sessions.py::test_expired_token_returns_401
 # frob:tests tests/unit/test_sessions.py::test_revoked_token_returns_401
-# frob:tests tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
     db: DBSession = Depends(get_db),
@@ -66,9 +66,9 @@ async def get_current_user(
 
 
 # frob:doc docs/index.md#public-api
-# frob:tests tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_roles.py::test_player_token_on_admin_route_returns_403_with_permissions_message
 # frob:tests tests/unit/test_roles.py::test_admin_token_on_admin_route_returns_200
-# frob:tests tests/unit/test_roles.py::test_missing_admin_route_dependency_never_returns_401_for_a_valid_player  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_roles.py::test_missing_admin_route_dependency_never_returns_401_for_a_valid_player
 async def require_admin(ctx: AuthContext = Depends(get_current_user)) -> AuthContext:
     """Require the resolved caller to hold the admin role, or raise 403.
 

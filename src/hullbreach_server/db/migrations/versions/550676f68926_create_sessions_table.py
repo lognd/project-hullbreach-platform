@@ -24,7 +24,7 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 # frob:doc docs/index.md#database-migrations
 def upgrade() -> None:
     """Upgrade schema: create the `sessions` table."""
@@ -54,7 +54,7 @@ def upgrade() -> None:
 
 
 # frob:doc docs/index.md#database-migrations
-# frob:accept TEST001 because="a straightforward drop_table revert with nothing to assert beyond 'does not raise'; exercised implicitly whenever this revision is downgraded, not by a dedicated unit test"  # noqa: E501
+# noqa: E501  # frob:accept TEST001 because="a straightforward drop_table revert with nothing to assert beyond 'does not raise'; exercised implicitly whenever this revision is downgraded, not by a dedicated unit test"
 def downgrade() -> None:
     """Downgrade schema: drop the `sessions` table."""
     op.drop_index(op.f("ix_sessions_user_id"), table_name="sessions")
