@@ -2,11 +2,12 @@
 id = "01M4GR039DB36NKZQT13W5SY38"
 title = "login: unknown-username path skips Argon2 verify, leaking account existence by timing"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "duplicate"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:02Z"
-updated = "2026-10-09T16:34:00Z"
+updated = "2026-10-09T16:36:16Z"
 scope = ["src/hullbreach_server/api/auth.py"]
 +++
 
