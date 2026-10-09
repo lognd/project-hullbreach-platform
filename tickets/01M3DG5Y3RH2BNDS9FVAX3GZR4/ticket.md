@@ -2,7 +2,8 @@
 id = "01M3DG5Y3RH2BNDS9FVAX3GZR4"
 title = "S01-5: Document the local Docker PostgreSQL setup and the hosted database switch in the README"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "critical"
 points = 1
 parent = "01M2H5T105AGGPXTV9ETEC5DF2"
