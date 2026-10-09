@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given no credentials, when GET /api/v1/health is called, then it returns 200 with status ok and the running version"]
+moved = []
+at = "2026-10-09T04:06:44Z"
+actor = "lognd"
+rev = 1
