@@ -89,7 +89,7 @@ async function parseErrorBody(
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response; shared by every API client module. */
 export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  // frob:todo T-0102 pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
+  // frob:todo 01M2KR6R362BWF543KBR5PHHZC pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
   const response = await fetch(path, init);
   if (!response.ok) {
     const { detail, field } = await parseErrorBody(response);

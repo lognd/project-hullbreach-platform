@@ -13,7 +13,7 @@ from __future__ import annotations
 from hullbreach_server.db.models.user import User  # noqa: F401
 
 
-# frob:ticket T-0098
+# frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 def _register_and_login(client, username: str = "player_one") -> dict:
     client.post(
         "/api/v1/auth/register",
@@ -31,7 +31,7 @@ def _register_and_login(client, username: str = "player_one") -> dict:
     return {"Authorization": f"Bearer {token}"}
 
 
-# frob:ticket T-0026
+# frob:ticket 01M2H5T10TQVP5A2R1N2S5Y3FP
 def test_session_endpoint_returns_player_id_and_role_for_valid_token(client) -> None:
     """Given a client token, when the game server calls the session endpoint, it gets the player id and role."""
     headers = _register_and_login(client)
@@ -44,7 +44,7 @@ def test_session_endpoint_returns_player_id_and_role_for_valid_token(client) -> 
     assert body["role"] == "player"
 
 
-# frob:ticket T-0026
+# frob:ticket 01M2H5T10TQVP5A2R1N2S5Y3FP
 def test_session_endpoint_returns_401_for_missing_token(client) -> None:
     """Calling the session endpoint with no Authorization header returns 401."""
     response = client.get("/api/v1/auth/session")
@@ -53,7 +53,7 @@ def test_session_endpoint_returns_401_for_missing_token(client) -> None:
     assert response.json() == {"detail": "not authenticated"}
 
 
-# frob:ticket T-0026
+# frob:ticket 01M2H5T10TQVP5A2R1N2S5Y3FP
 def test_session_endpoint_returns_401_for_malformed_token(client) -> None:
     """Calling the session endpoint with a malformed bearer token returns 401."""
     response = client.get(
@@ -63,7 +63,7 @@ def test_session_endpoint_returns_401_for_malformed_token(client) -> None:
     assert response.status_code == 401
 
 
-# frob:ticket T-0026
+# frob:ticket 01M2H5T10TQVP5A2R1N2S5Y3FP
 def test_session_endpoint_omits_username_and_email(client) -> None:
     """SessionInfo is deliberately minimal: no username or email fields."""
     headers = _register_and_login(client)

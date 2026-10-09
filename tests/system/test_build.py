@@ -102,8 +102,8 @@ def _ignore_migration_owned_items_table(object_, name, type_, reflected, compare
     return not (type_ == "table" and name == "items")
 
 
-# frob:ticket T-0007
-# frob:ticket T-0101
+# frob:ticket 01M2H5T1074T5Q5JVANXG215XS
+# frob:ticket 01M2KR6R359Z2X63K2113CTW2Y
 def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
     """Given a fresh database, running the Alembic upgrade head matches the
     declarative models exactly (compare_metadata reports no diffs, aside

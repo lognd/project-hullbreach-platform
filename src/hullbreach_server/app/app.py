@@ -12,7 +12,7 @@ from hullbreach_server.logging import get_logger
 _log = get_logger(__name__)
 
 
-# frob:tests tests/unit/test_app.py::test_create_app_returns_fastapi_with_config_attached  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_app.py::test_create_app_returns_fastapi_with_config_attached
 # frob:doc docs/index.md#public-api
 def create_app(cfg: AppConfig) -> FastAPI:
     """Build the ASGI application. Pure: no sockets, no database connection."""
@@ -36,7 +36,7 @@ def create_app(cfg: AppConfig) -> FastAPI:
 
 
 # frob:tests tests/unit/test_app.py::test_app_is_constructible_without_binding_a_socket
-# frob:tests tests/unit/test_app.py::test_app_call_exits_nonzero_naming_host_when_database_unreachable  # noqa: E501
+# noqa: E501  # frob:tests tests/unit/test_app.py::test_app_call_exits_nonzero_naming_host_when_database_unreachable
 # frob:doc docs/index.md#public-api
 class App:
     """Runs the ASGI app under uvicorn. `create_app` is the testable core."""

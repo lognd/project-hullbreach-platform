@@ -20,7 +20,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-# frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata  # noqa: E501
+# noqa: E501  # frob:tests tests/system/test_build.py::test_db_upgrade_head_matches_declarative_metadata
 def _db_upgrade() -> None:
     """Run every pending Alembic migration up to head (`db upgrade`)."""
     from alembic.config import main as alembic_main
