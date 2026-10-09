@@ -2,11 +2,12 @@
 id = "01M4GR0CEENQ6ZRG43TZ7E6VAX"
 title = "register: unique-race IntegrityError and over-long username surface as 500 instead of 409/422"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:30:11Z"
-updated = "2026-10-09T17:02:06Z"
+updated = "2026-10-09T17:02:12Z"
 labels = ["origin:auditor", "interface-audit"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/schemas.py"]
 
