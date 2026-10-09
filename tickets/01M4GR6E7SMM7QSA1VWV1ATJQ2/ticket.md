@@ -2,11 +2,12 @@
 id = "01M4GR6E7SMM7QSA1VWV1ATJQ2"
 title = "Bound unauthenticated auth inputs: max_length on username, email, password"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T17:02:19Z"
+updated = "2026-10-09T17:02:22Z"
 labels = ["origin:auditor"]
 scope = ["src/hullbreach_server/auth/schemas.py"]
 
