@@ -8,7 +8,9 @@ base = "main"
 # Wall-clock bound in seconds of one sibling `check --json` run (sibling-contract.md section 7).
 sibling_timeout_secs = 120
 # When true an unusable configured sibling is a required Unresolved (`SIB001`).
-require_siblings = true
+# Off: the crunk on PyPI (0.1.1) rejects the `--base` flag frob 0.532.0 passes;
+# CI's web job runs `crunk check` directly, so the design gate still holds.
+require_siblings = false
 
 [compute]
 # How an unannotated public signature is treated (`warn-unresolved` or `required`).
