@@ -1,0 +1,10 @@
+kind = "create"
+title = "login: unknown-username path skips Argon2 verify, leaking account existence by timing"
+type = "security"
+category = "todo"
+priority = "medium"
+scope = ["src/hullbreach_server/api/auth.py"]
+body = "origin: auditor. api/auth.py:112 -- 'user is None or not verify_password(...)' short-circuits, so an unknown username returns in microseconds while a real one costs a full Argon2id verify. Contract (login docstring, api/auth.py:98) promises an identical response for unknown user vs wrong password; timing breaks it. Fix: when user is None, verify against a module-level dummy Argon2 hash (exposed from auth/passwords.py) so both paths do equal work; add a test asserting verify is called on both paths."
+at = "2026-10-09T16:30:02Z"
+actor = "lognd"
+rev = 1
