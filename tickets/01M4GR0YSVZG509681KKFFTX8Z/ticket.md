@@ -2,11 +2,12 @@
 id = "01M4GR0YSVZG509681KKFFTX8Z"
 title = "get_engine/get_sessionmaker: unsynchronized lazy globals and config re-read diverge from the cfg given to App/create_app"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T16:30:30Z"
-updated = "2026-10-09T17:11:12Z"
+updated = "2026-10-09T17:11:14Z"
 labels = ["origin:auditor", "audit:db"]
 scope = ["src/hullbreach_server/db/__init__.py"]
 
