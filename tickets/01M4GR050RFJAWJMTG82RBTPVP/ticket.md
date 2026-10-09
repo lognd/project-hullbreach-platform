@@ -2,11 +2,12 @@
 id = "01M4GR050RFJAWJMTG82RBTPVP"
 title = "Package __all__ omits symbols the api layer consumes (require_admin, schemas, rate-limit helpers); callers import submodules"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "low"
 reporter = "lognd"
 created = "2026-10-09T16:30:04Z"
-updated = "2026-10-09T17:01:14Z"
+updated = "2026-10-09T17:01:16Z"
 scope = ["src/hullbreach_server/auth/__init__.py"]
 
 [[acceptance]]
