@@ -2,11 +2,12 @@
 id = "01M4GR6EGFEXV770648K7YTHGG"
 title = "Dev database exposed on all interfaces with a well-known default credential"
 type = "security"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-09T16:33:30Z"
-updated = "2026-10-09T17:11:30Z"
+updated = "2026-10-09T17:11:34Z"
 labels = ["origin:auditor"]
 scope = ["docker-compose.yml", "src/hullbreach_server/app/config.py"]
 
