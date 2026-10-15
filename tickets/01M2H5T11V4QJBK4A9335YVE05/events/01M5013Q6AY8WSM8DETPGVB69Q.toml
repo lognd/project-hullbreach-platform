@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Precision on the previous comment: no code path writes Match rows yet (the game-server record route is T-0054, not mounted), so on a live server every history is empty until T-0054 lands; the endpoint is exercised with rows inserted directly in the unit and system tests."
+at = "2026-10-15T14:57:54Z"
+actor = "lognd"
+rev = 1

@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "MatchSummary.rating_before/rating_after (GET /me and /me/matches) are the starting rating until RatingChange exists; see the frob:todo in src/hullbreach_server/services/matches.py::_summarize."
+at = "2026-10-15T14:50:47Z"
+actor = "lognd"
+rev = 1

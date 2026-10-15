@@ -102,7 +102,8 @@ token, `secrets.token_urlsafe(32)`; expiry is
 SessionError]`, `Err` on an unknown, expired, or revoked token),
 `revoke_session(db, session)` (sets `revoked_at`), and
 `revoke_all_sessions(db, user)` (revokes every non-revoked session for
-that user).
+that user), and `revoke_other_sessions(db, user, keep)` (the same, sparing
+the session `keep`; used on a password change, T-0034).
 `src/hullbreach_server/auth/deps.py` provides the FastAPI dependency
 `get_current_user`, which resolves the `Authorization: Bearer <token>`
 header via `resolve_session` and returns an `AuthContext(user, session)`,
@@ -390,18 +391,74 @@ and `useSession` reflects it immediately in the same page load. Any
 Login has no field-level errors (the login contract never names a
 `field`).
 
+### Player API
+
+`src/hullbreach_server/api/me.py` serves the signed-in player's own
+resources under `/api/v1/me`; every route requires `Authorization: Bearer
+<token>` and answers the uniform 401 `{"detail": "not authenticated"}`
+through `get_current_user`. The response models live in the service layer
+(`src/hullbreach_server/services/`), which turns ORM rows into the shapes
+`web/src/api/me.ts` names.
+
+`GET /api/v1/me` (`api/me.py::get_me`, T-0031) returns a `MeResponse`
+(`services/profile.py::build_me`): the `UserProfile` fields (`id`,
+`username`, `email`, `role`, `currency`, `rating`, `created_at`) plus
+`inventory` (a list of `OwnedSkin` `{id, slug, name}`) and
+`recent_matches` (the newest five `MatchSummary` rows). Two sections are
+honest defaults until their models land: `inventory` is always `[]` (no
+Item/Inventory ORM model or ownership table yet, T-0066), and `currency`
+and `rating` are `UserProfile.from_user`'s `0` and `1200` (see Auth API).
+
+A `MatchSummary` (`services/matches.py`) is one match from the player's
+point of view: `id`, `played_at` (the match's `created_at`), `opponent`
+(the other players' usernames, comma-joined, or `unknown`), `result`
+(`win` when `winner_id` is the player, else `loss`), `duration_seconds`,
+`rating_before`, `rating_after` and `stats` (the player's own
+`damage_dealt`, `blocks_destroyed`, `blocks_placed` and
+`time_alive_seconds`). Matches are ordered newest first by
+`(created_at, id)`. No rating change is recorded per match yet, so
+`rating_before` and `rating_after` are both the starting rating (1200)
+until the RatingChange model exists (T-0057).
+
+`PATCH /api/v1/me` (`api/me.py::patch_me`, T-0034) edits the player's
+`username`, `email` and `password`. The body is an `UpdateMeRequest`
+(`auth/schemas.py`): every field optional, the same bounds as register,
+`email` lower-cased, and unknown fields (such as `role`) rejected with
+a 422. A new email or password must also carry `current_password`;
+missing or wrong it is a 403 `{"detail": "current password required" |
+"current password is incorrect", "field": "current_password"}`. A
+username or email already held by another account (case-insensitive) is
+a 409 `{"detail": "username already taken" | "email already taken",
+"field": ...}`. `services/profile.py::update_profile` returns a typani
+`Result[User, ProfileUpdateError]`; on a password change it re-hashes the
+password and revokes every other session of the player, keeping the one
+that made the request. The response is the updated `UserProfile`.
+
+`GET /api/v1/me/matches?cursor=&limit=` (`api/me.py::get_my_matches`,
+T-0059) returns a `MatchPage` `{items, next_cursor}` of `MatchSummary`
+rows, newest first (`services/matches.py::match_page`). Paging is keyset,
+not offset: `next_cursor` is an opaque URL-safe token encoding the last
+row's `(created_at, id)`, and the next page is the rows strictly after
+that key, so a match recorded while the player pages never shifts or
+repeats a row. `next_cursor` is null on the last page (one extra row is
+fetched to know, no COUNT). `limit` defaults to 20 and is bounded 1..100
+(422 outside). A cursor that does not decode is a 422 `{"detail":
+"invalid cursor", "field": "cursor"}`. A player with no matches gets
+`{"items": [], "next_cursor": null}`. `tests/system/test_account_flow.py`
+drives register, login, `GET /me`, `PATCH /me`, `GET /me/matches` and
+logout through `create_app` on an Alembic-migrated database.
+
 ### Player API client and the profile page
 
 `web/src/api/me.ts` is the client for the signed-in player's own
 resources under `/api/v1/me`. It reuses `api/auth.ts`'s `requestJson`
 (one `fetch` wrapper, one `ApiError` shape) and `bearerHeaders`. The
-`MeResponse` type is the _planned_ contract of `GET /api/v1/me` (T-0031),
-which does not exist yet: the `UserProfile` fields (`currency` is the
-balance, `rating` the Elo) plus `inventory` (owned skins) and
-`recent_matches` (newest first). `MatchSummary` is shared with the match
-history (T-0059). The shared fixture `web/tests/fixtures/me.ts` is a typed
-instance of that contract, so pages are built and tested before the
-endpoint ships.
+`MeResponse` type is the contract of `GET /api/v1/me` (T-0031, see
+Player API): the `UserProfile` fields (`currency` is the balance, `rating`
+the Elo) plus `inventory` (owned skins) and `recent_matches` (newest
+first). `MatchSummary` is shared with the match history (T-0059). The
+shared fixture `web/tests/fixtures/me.ts` is a typed instance of that
+contract, so pages are tested without a server.
 
 `web/src/pages/Profile.tsx` is routed at `/me`. It reads the token from
 `useSession()`; signed out it shows a log-in link and makes no request.
@@ -416,20 +473,22 @@ contract (`web/tests/support/layout.ts` `overflowRisks`: no fixed width
 above the viewport, no unwrappable text) rather than measuring
 `scrollWidth`.
 
-Known gap: the live-server test in `web/tests/unit/Profile.test.tsx` is
-`it.fails` until T-0031 lands; when it does, the test passes, `it.fails`
-turns red, and that is the cue to drop `.fails`.
+The live-server test in `web/tests/unit/Profile.test.tsx` runs the real
+client (register, log in, `fetchMe`) against a running API when
+`HULLBREACH_LIVE_API` holds its origin (for example
+`HULLBREACH_LIVE_API=http://127.0.0.1:8001 npm test`) and is skipped
+otherwise.
 
 ### Account settings page
 
 `web/src/pages/Settings.tsx` is routed at `/settings` and edits the
 signed-in player's display name (the username), email and password through
-`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (planned,
-T-0034; the page is built against the fixture
-`profileFixture` in `web/tests/fixtures/me.ts`). It copies Register's
+`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (T-0034,
+see Player API; the page's tests use the fixture `profileFixture` in
+`web/tests/fixtures/me.ts`). It copies Register's
 inline-error pattern: an `ApiError` with a `field` is shown beside that
 input through `aria-describedby`, and one without becomes a `role="alert"`
-banner. The planned contract: the request carries only the changed fields,
+banner. The contract: the request carries only the changed fields,
 a new email or password also carries `current_password`, and a wrong one is
 a 403 naming `field: "current_password"`. The page enforces the same rule
 locally (an email or password change with no current password is refused
@@ -443,8 +502,9 @@ now shares.
 
 `web/src/pages/History.tsx` is routed at `/me/matches` and lists the
 signed-in player's matches, newest first, through `fetchMatches` in
-`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (planned, T-0059;
-the page is built against `makeMatchPage` in `web/tests/fixtures/me.ts`).
+`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (T-0059, see
+Player API; the page's tests use `makeMatchPage` in
+`web/tests/fixtures/me.ts`).
 A `MatchPage` is `{items, next_cursor}`; `next_cursor` is null on the last
 page. Each row is `web/src/components/MatchItem.tsx` in `detailed` mode
 (opponent, result, rating before and after, date, duration and stats).

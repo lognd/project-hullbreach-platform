@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "rating_before/rating_after in each MatchSummary are the starting rating (1200) until the RatingChange model lands (T-0057, frob:todo in services/matches.py). Matches are only recorded by the game server path (POST /matches is T-0054), so a fresh account's history is the empty page {items: [], next_cursor: null}."
+at = "2026-10-15T14:57:44Z"
+actor = "lognd"
+rev = 1

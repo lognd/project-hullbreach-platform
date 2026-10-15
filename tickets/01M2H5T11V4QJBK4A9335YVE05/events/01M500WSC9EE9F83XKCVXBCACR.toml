@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: lognd in scratchpad/wt-plat-account; scope: src/hullbreach_server/api/me.py, src/hullbreach_server/services/matches.py, tests/unit/test_me_matches.py, docs/index.md, tests/system/test_account_flow.py; ttl 7200s"
+at = "2026-10-15T14:54:07Z"
+actor = "lognd"
+rev = 1
