@@ -8,9 +8,9 @@ points = 2
 parent = "01M2H5T10SJRRFCSNHGH9AF0ZF"
 reporter = "lognd"
 created = "2026-10-15T15:23:28Z"
-updated = "2026-10-15T16:02:43Z"
+updated = "2026-10-15T16:07:31Z"
 labels = ["owner:lognd", "creates:changelog.d/*.security.md", "milestone:0.2.0"]
-scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/server_keys.py", "tests/unit/test_auth_game.py", "tests/unit/test_server_keys.py", "tests/unit/test_auth_logout.py", "tests/unit/test_me_edit.py", "docs/index.md", "README.md", "docs/design/sprint-1.md", "docs/picking-up-work.md", "web/src/api/auth.ts", "web/tests/unit/Register.test.tsx", ".env.example", "changelog.d/*.security.md"]
+scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/server_keys.py", "tests/unit/test_auth_game.py", "tests/unit/test_server_keys.py", "tests/unit/test_auth_logout.py", "tests/unit/test_me_edit.py", "docs/index.md", "README.md", "docs/design/sprint-1.md", "docs/picking-up-work.md", "web/src/api/auth.ts", "web/tests/unit/Register.test.tsx", ".env.example", "changelog.d/*.security.md", "tests/unit/conftest.py"]
 
 [[acceptance]]
 text = "GET /api/v1/auth/session called by a game server without a valid X-Server-Key returns 401 not authenticated"
