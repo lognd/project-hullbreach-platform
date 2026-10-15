@@ -2,7 +2,7 @@
 id = "01M502JHCDDQQ7WHRG748H1VAK"
 title = "Require X-Server-Key on GET /api/v1/auth/session so only real game servers verify sessions"
 type = "security"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 2
 parent = "01M2H5T10SJRRFCSNHGH9AF0ZF"
