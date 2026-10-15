@@ -390,18 +390,46 @@ and `useSession` reflects it immediately in the same page load. Any
 Login has no field-level errors (the login contract never names a
 `field`).
 
+### Player API
+
+`src/hullbreach_server/api/me.py` serves the signed-in player's own
+resources under `/api/v1/me`; every route requires `Authorization: Bearer
+<token>` and answers the uniform 401 `{"detail": "not authenticated"}`
+through `get_current_user`. The response models live in the service layer
+(`src/hullbreach_server/services/`), which turns ORM rows into the shapes
+`web/src/api/me.ts` names.
+
+`GET /api/v1/me` (`api/me.py::get_me`, T-0031) returns a `MeResponse`
+(`services/profile.py::build_me`): the `UserProfile` fields (`id`,
+`username`, `email`, `role`, `currency`, `rating`, `created_at`) plus
+`inventory` (a list of `OwnedSkin` `{id, slug, name}`) and
+`recent_matches` (the newest five `MatchSummary` rows). Two sections are
+honest defaults until their models land: `inventory` is always `[]` (no
+Item/Inventory ORM model or ownership table yet, T-0066), and `currency`
+and `rating` are `UserProfile.from_user`'s `0` and `1200` (see Auth API).
+
+A `MatchSummary` (`services/matches.py`) is one match from the player's
+point of view: `id`, `played_at` (the match's `created_at`), `opponent`
+(the other players' usernames, comma-joined, or `unknown`), `result`
+(`win` when `winner_id` is the player, else `loss`), `duration_seconds`,
+`rating_before`, `rating_after` and `stats` (the player's own
+`damage_dealt`, `blocks_destroyed`, `blocks_placed` and
+`time_alive_seconds`). Matches are ordered newest first by
+`(created_at, id)`. No rating change is recorded per match yet, so
+`rating_before` and `rating_after` are both the starting rating (1200)
+until the RatingChange model exists (T-0057).
+
 ### Player API client and the profile page
 
 `web/src/api/me.ts` is the client for the signed-in player's own
 resources under `/api/v1/me`. It reuses `api/auth.ts`'s `requestJson`
 (one `fetch` wrapper, one `ApiError` shape) and `bearerHeaders`. The
-`MeResponse` type is the _planned_ contract of `GET /api/v1/me` (T-0031),
-which does not exist yet: the `UserProfile` fields (`currency` is the
-balance, `rating` the Elo) plus `inventory` (owned skins) and
-`recent_matches` (newest first). `MatchSummary` is shared with the match
-history (T-0059). The shared fixture `web/tests/fixtures/me.ts` is a typed
-instance of that contract, so pages are built and tested before the
-endpoint ships.
+`MeResponse` type is the contract of `GET /api/v1/me` (T-0031, see
+Player API): the `UserProfile` fields (`currency` is the balance, `rating`
+the Elo) plus `inventory` (owned skins) and `recent_matches` (newest
+first). `MatchSummary` is shared with the match history (T-0059). The
+shared fixture `web/tests/fixtures/me.ts` is a typed instance of that
+contract, so pages are tested without a server.
 
 `web/src/pages/Profile.tsx` is routed at `/me`. It reads the token from
 `useSession()`; signed out it shows a log-in link and makes no request.
@@ -416,9 +444,11 @@ contract (`web/tests/support/layout.ts` `overflowRisks`: no fixed width
 above the viewport, no unwrappable text) rather than measuring
 `scrollWidth`.
 
-Known gap: the live-server test in `web/tests/unit/Profile.test.tsx` is
-`it.fails` until T-0031 lands; when it does, the test passes, `it.fails`
-turns red, and that is the cue to drop `.fails`.
+The live-server test in `web/tests/unit/Profile.test.tsx` runs the real
+client (register, log in, `fetchMe`) against a running API when
+`HULLBREACH_LIVE_API` holds its origin (for example
+`HULLBREACH_LIVE_API=http://127.0.0.1:8001 npm test`) and is skipped
+otherwise.
 
 ### Account settings page
 

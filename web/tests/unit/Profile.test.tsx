@@ -170,18 +170,18 @@ describe("fetchMe", () => {
   });
 });
 
+// Set HULLBREACH_LIVE_API to a running API's origin (for example
+// http://127.0.0.1:8001) to exercise the real client against the real
+// GET /api/v1/me (T-0031); without it there is no server to talk to, so the
+// test is skipped rather than failed.
+const liveApi = process.env.HULLBREACH_LIVE_API;
+
 describe("Profile against the live server", () => {
-  // Known tracked gap: GET /api/v1/me (T-0031) is not implemented yet. This test
-  // exercises the real client against a running dev server (register, log in,
-  // fetchMe), so it fails while the endpoint is missing or no server runs. When
-  // T-0031 lands it passes, `it.fails` turns red, and that is the cue to drop
-  // `.fails` and the marker below.
-  // frob:todo 01M2H5T10ZV4EV17ZMHTQ455KJ drop it.fails once GET /api/v1/me is live
   // frob:tests web/src/api/me.ts::fetchMe kind="integration"
-  it.fails("returns the profile contract from the live GET /api/v1/me", async () => {
+  it.runIf(liveApi)("returns the profile contract from the live GET /api/v1/me", async () => {
     const realFetch = globalThis.fetch;
     vi.stubGlobal("fetch", (path: string, init?: RequestInit) =>
-      realFetch(`http://127.0.0.1:8000${path}`, init),
+      realFetch(`${liveApi}${path}`, init),
     );
     const suffix = Math.random().toString(36).slice(2, 10);
     const credentials = {

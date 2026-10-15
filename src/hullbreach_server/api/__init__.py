@@ -2,15 +2,16 @@ from fastapi import APIRouter
 
 from hullbreach_server.api.auth import router as auth_router
 from hullbreach_server.api.health import router as health_router
+from hullbreach_server.api.me import router as me_router
 
 api_router = APIRouter()
 api_router.include_router(health_router, tags=["health"])
 api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
+api_router.include_router(me_router, prefix="/me", tags=["me"])
 
 # Each queued resource mounts here as one more include_router line; the
 # ticket owns the new api/<resource>.py module and its tests, and adds this
 # file to its scope with `frob ticket scope T-#### --add <path>` first.
-# frob:todo 01M2H5T10ZV4EV17ZMHTQ455KJ mount api/me.py at /me (profile aggregate)
 # noqa: E501  frob:todo 01M2H5T11PZ6JDPS66PNFRX5S2 mount api/matches.py at /matches (game-server match record)
 # frob:todo 01M2H5T11YNBSP9Y9VBR29F5P0 mount api/leaderboard.py at /leaderboard
 # frob:todo 01M2H5T123XSEESJJVAE8NS2PN mount api/catalog.py at /catalog
