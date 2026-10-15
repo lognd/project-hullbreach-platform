@@ -276,11 +276,11 @@ def check_ports(run: DoctorRun) -> CheckResult:
         if found.is_ok and found.danger_ok is not None:
             ours_db = found.danger_ok.name
     details: list[str] = []
-    conflicts: list[tuple[str, int, str, str]] = []
-    for label, port, var, service in (
-        ("database", s.db_port, DB_PORT_VAR, None),
-        ("API", s.api_port, API_PORT_VAR, "api"),
-        ("website", s.web_port, WEB_PORT_VAR, "web"),
+    conflicts: list[tuple[str, int, str, str, rl.ReadmeSection]] = []
+    for label, port, var, service, section in (
+        ("database", s.db_port, DB_PORT_VAR, None, rl.TROUBLE_DB),
+        ("API", s.api_port, API_PORT_VAR, "api", rl.TROUBLE_API),
+        ("website", s.web_port, WEB_PORT_VAR, "web", rl.TROUBLE_WEB),
     ):
         if not ctx.ports.port_open(port):
             details.append(f"{port} ({label}): free")
@@ -296,9 +296,9 @@ def check_ports(run: DoctorRun) -> CheckResult:
                 details.append(f"{port} ({label}): a Hullbreach API started by hand")
                 continue
         details.append(f"{port} ({label}): TAKEN by {holder}")
-        conflicts.append((label, port, var, holder))
+        conflicts.append((label, port, var, holder, section))
     if conflicts:
-        label, port, var, holder = conflicts[0]
+        label, port, var, holder, section = conflicts[0]
         return fail(
             f"port {port} ({label}) is already used by {holder}",
             [
@@ -313,7 +313,7 @@ def check_ports(run: DoctorRun) -> CheckResult:
                 ),
                 _RERUN,
             ],
-            rl.TROUBLE_INSTALL,
+            section,
             details,
         )
     return ok(f"ports {s.db_port}, {s.api_port}, {s.web_port} are usable", details)

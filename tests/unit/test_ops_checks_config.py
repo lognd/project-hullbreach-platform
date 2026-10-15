@@ -116,5 +116,7 @@ def test_ports_name_the_program_holding_a_port(tmp_path: Path) -> None:
     )
     assert "5432 (database): used by this platform" in result.details[0]
     assert "HULLBREACH_PORT=<free port>" in result.fix[1]
+    assert result.readme is not None
+    assert result.readme.describe().startswith("README 'API problems'")
     free = cc.check_ports(_run(tmp_path, {}, runner=runner, ports=FakePorts()))
     assert free.status == Status.PASS
