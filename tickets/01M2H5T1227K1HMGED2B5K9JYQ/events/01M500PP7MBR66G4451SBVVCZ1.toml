@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "GET /api/v1/me (T-0031) returns inventory=[] until this lands; replace the frob:todo in src/hullbreach_server/services/profile.py::build_me with a real owned-skins query."
+at = "2026-10-15T14:50:47Z"
+actor = "lognd"
+rev = 1
