@@ -2,7 +2,8 @@
 id = "01M505P94DYBTQJN62Y99XSJ66"
 title = "Doctor: hullbreach_server doctor with demo profiles, support bundle and bootstrap wrappers"
 type = "task"
-category = "in-progress"
+category = "done"
+outcome = "fixed"
 priority = "high"
 points = 8
 parent = "01M505NY7ZY9Y8HYFF8GGTC0R6"
