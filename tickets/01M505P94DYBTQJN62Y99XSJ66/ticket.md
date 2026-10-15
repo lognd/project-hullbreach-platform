@@ -26,7 +26,7 @@ bound = true
 
 [[acceptance]]
 text = "given doctor --collect, when run, then a zip with the redacted doctor output and recent logs is written and no secret value appears in it"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a .env file, when the doctor runs, then it reports settings as set or unset and never prints their values"
