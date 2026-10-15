@@ -18,7 +18,7 @@ bound = true
 
 [[acceptance]]
 text = "given a failing check, when the doctor reports, then it prints FAIL with numbered fix steps and a README link, and checks depending on it show PENDING"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given doctor --demo website, guest, platform or online, when it finishes, then only the checks that demo needs ran and the exact next commands and game-side values are printed"
