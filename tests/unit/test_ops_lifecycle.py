@@ -164,6 +164,41 @@ def test_start_stop_records_and_ends_the_api_and_web(
     assert "API: was not started by this tool" in output(after)
 
 
+def test_start_restarts_an_api_that_outlived_a_stopped_database(
+    tmp_path: Path, fake_db: list[str]
+) -> None:
+    # frob:tests src/hullbreach_ops/lifecycle.py::start kind="unit"
+    # frob:tests src/hullbreach_ops/lifecycle.py::db_up kind="unit"
+    runner = FakeRunner(replies={PS: ok(HEALTHY)})
+    assert lifecycle.start(_ctx(tmp_path, runner, _http_up())).is_ok
+    (first_api, _web) = sorted(runner.alive)
+
+    # The database container stopped; `up -d` brings it back healthy.
+    runner.replies[PS] = ok(HEALTHY.replace('"running"', '"exited"'))
+    up = ("docker", "compose", "-p", "platform", "up")
+    runner.replies[up] = ok()
+    original_run = runner.run
+
+    def run(argv: list[str], **kw: object):  # type: ignore[no-untyped-def]
+        if tuple(argv[: len(up)]) == up:
+            runner.replies[PS] = ok(HEALTHY)
+        return original_run(argv, **kw)  # type: ignore[arg-type]
+
+    runner.run = run  # type: ignore[method-assign]
+    again = _ctx(tmp_path, runner, _http_up())
+    assert lifecycle.start(again).is_ok
+    assert first_api in runner.terminated
+    assert len(runner.spawned) == 3
+    assert "API: restarting so it reconnects to the database" in output(again)
+    assert "Website: already running" in output(again)
+
+    # With the database already healthy, nothing is restarted.
+    steady = _ctx(tmp_path, runner, _http_up())
+    assert lifecycle.start(steady).is_ok
+    assert len(runner.spawned) == 3
+    assert "API: already running" in output(steady)
+
+
 def test_start_reports_an_api_that_never_answers_with_its_log(
     tmp_path: Path, fake_db: list[str]
 ) -> None:

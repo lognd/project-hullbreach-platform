@@ -394,6 +394,9 @@ def check_e2e(run: DoctorRun) -> CheckResult:
                 "running the API).",
                 "Make sure the database is migrated: "
                 "uv run hullbreach_server db upgrade",
+                "If the database was restarted while the API kept running, "
+                "restart both: uv run hullbreach_server stop, then "
+                "uv run hullbreach_server start",
                 _RERUN,
             ],
             rl.TROUBLE_SIGNIN,

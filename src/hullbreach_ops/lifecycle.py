@@ -183,8 +183,8 @@ def wait_for_db(
 
 
 @propagate
-def db_up(ctx: OpsContext) -> Result[None, OpsError]:
-    """Create or start the database container and wait until it is healthy."""
+def db_up(ctx: OpsContext) -> Result[bool, OpsError]:
+    """Create or start the database container; True when it was not already up."""
     if ctx.runner.which("docker") is None:
         return Err(
             OpsError(
@@ -204,6 +204,9 @@ def db_up(ctx: OpsContext) -> Result[None, OpsError]:
                 ],
             )
         )
+    before = db_container(ctx).unwrap()
+    was_up = before is not None and before.healthy
+    _log.info("db_up: container already healthy=%s", was_up)
     ctx.console.line(
         f"  Database: starting container (compose project "
         f"{ctx.settings.compose_project}, port {ctx.settings.db_port})"
@@ -221,7 +224,7 @@ def db_up(ctx: OpsContext) -> Result[None, OpsError]:
     ).unwrap()
     wait_for_db(ctx).unwrap()
     ctx.console.line("  Database: running and healthy")
-    return Ok(None)
+    return Ok(not was_up)
 
 
 @propagate
@@ -472,7 +475,12 @@ def start(ctx: OpsContext, host: str | None = None) -> Result[None, OpsError]:
     bind = host or ctx.settings.api_host
     _log.info("start: host=%s", bind)
     ctx.console.heading("Starting the platform")
-    db_up(ctx).unwrap()
+    restarted = db_up(ctx).unwrap()
+    if restarted and read_record(ctx, "api") is not None:
+        # An API that outlived its database holds dead pooled connections.
+        _log.info("start: database was restarted; restarting the API too")
+        ctx.console.line("  API: restarting so it reconnects to the database")
+        stop_service(ctx, "api")
     prepare_db(ctx).unwrap()
     start_api(ctx, bind).unwrap()
     start_web(ctx, bind).unwrap()
