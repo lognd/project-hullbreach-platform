@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Items half of the acceptance is not exercisable yet: there is no Item/Inventory ORM model or ownership table (T-0066), so GET /me returns inventory=[] and the evidence covers profile, balance, rating, inventory (empty) and matches. Per-match rating_before/rating_after are the starting rating until RatingChange lands (T-0057). frob:todo markers in services/profile.py and services/matches.py point at both."
+at = "2026-10-15T14:50:47Z"
+actor = "lognd"
+rev = 1
