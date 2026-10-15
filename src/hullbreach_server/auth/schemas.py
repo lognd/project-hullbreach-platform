@@ -50,6 +50,41 @@ class RegisterRequest(BaseModel):
         return value.lower()
 
 
+# frob:doc docs/index.md#player-api
+# frob:tests tests/unit/test_me_edit.py::test_patch_me_rejects_role_as_input
+# frob:tests tests/unit/test_me_edit.py::test_patch_me_short_password_returns_422
+class UpdateMeRequest(BaseModel):
+    """PATCH /api/v1/me's body: only the fields to change, bounded (INV-002).
+
+    `role` is not a field and unknown keys are refused, so a player can
+    never grant themselves a role. A new `email` or `password` must carry
+    `current_password`; the route enforces that, not the schema.
+    """
+
+    model_config = {"extra": "forbid"}
+
+    # frob:invariant INV-002
+    username: str | None = Field(
+        default=None,
+        min_length=3,
+        max_length=USERNAME_MAX_LENGTH,
+        pattern=_USERNAME_PATTERN,
+    )
+    email: EmailStr | None = Field(default=None, max_length=EMAIL_MAX_LENGTH)
+    # frob:invariant INV-002
+    password: str | None = Field(
+        default=None, min_length=8, max_length=PASSWORD_MAX_LENGTH
+    )
+    # frob:invariant INV-002
+    current_password: str | None = Field(default=None, max_length=PASSWORD_MAX_LENGTH)
+
+    @field_validator("email")
+    @classmethod
+    def _lowercase_email(cls, value: str | None) -> str | None:
+        """Store emails lower-cased so uniqueness is case-insensitive."""
+        return None if value is None else value.lower()
+
+
 # frob:doc docs/index.md#auth-api
 # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
 # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_response_never_exposes_password_hash

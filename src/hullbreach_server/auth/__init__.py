@@ -18,6 +18,7 @@ from hullbreach_server.auth.schemas import (
     LoginResponse,
     RegisterRequest,
     SessionInfo,
+    UpdateMeRequest,
     UserProfile,
 )
 from hullbreach_server.auth.server_keys import (
@@ -35,6 +36,7 @@ from hullbreach_server.auth.sessions import (
     reserve_login_attempt,
     resolve_session,
     revoke_all_sessions,
+    revoke_other_sessions,
     revoke_session,
     validate_auth_env,
 )
@@ -51,6 +53,7 @@ __all__ = [
     "ServerKeyError",
     "SessionError",
     "SessionInfo",
+    "UpdateMeRequest",
     "UserProfile",
     "check_server_key",
     "clear_failed_logins",
@@ -63,6 +66,7 @@ __all__ = [
     "reserve_login_attempt",
     "resolve_session",
     "revoke_all_sessions",
+    "revoke_other_sessions",
     "revoke_session",
     "validate_auth_env",
     "verify_against_dummy_hash",

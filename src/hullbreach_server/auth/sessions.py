@@ -263,17 +263,34 @@ def revoke_session(db: DBSession, session_row: Session) -> None:
     _log.info("revoked session %s", session_row.id)
 
 
+def _revoke_sessions(db: DBSession, user: User, keep: Session | None) -> int:
+    """Revoke `user`'s live sessions except `keep`; return how many."""
+    now = datetime.now(timezone.utc)
+    query = db.query(Session).filter(
+        Session.user_id == user.id, Session.revoked_at.is_(None)
+    )
+    if keep is not None:
+        query = query.filter(Session.id != keep.id)
+    sessions = query.all()
+    for session_row in sessions:
+        session_row.revoked_at = now
+    db.commit()
+    return len(sessions)
+
+
 # frob:doc docs/index.md#public-api
 # noqa: E501  # frob:tests tests/unit/test_sessions.py::test_revoke_all_sessions_revokes_every_non_revoked_session_for_user
 def revoke_all_sessions(db: DBSession, user: User) -> None:
     """Revoke every non-revoked Session belonging to `user`."""
-    now = datetime.now(timezone.utc)
-    sessions = (
-        db.query(Session)
-        .filter(Session.user_id == user.id, Session.revoked_at.is_(None))
-        .all()
+    count = _revoke_sessions(db, user, keep=None)
+    _log.info("revoked %d sessions for user %s", count, user.id)
+
+
+# frob:doc docs/index.md#public-api
+# noqa: E501  # frob:tests tests/unit/test_me_edit.py::test_revoke_other_sessions_keeps_only_the_given_session
+def revoke_other_sessions(db: DBSession, user: User, keep: Session) -> None:
+    """Revoke every non-revoked Session of `user` except `keep` (e.g. after a password change)."""  # noqa: E501
+    count = _revoke_sessions(db, user, keep=keep)
+    _log.info(
+        "revoked %d other sessions for user %s (kept %s)", count, user.id, keep.id
     )
-    for session_row in sessions:
-        session_row.revoked_at = now
-    db.commit()
-    _log.info("revoked %d sessions for user %s", len(sessions), user.id)

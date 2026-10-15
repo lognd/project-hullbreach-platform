@@ -102,7 +102,8 @@ token, `secrets.token_urlsafe(32)`; expiry is
 SessionError]`, `Err` on an unknown, expired, or revoked token),
 `revoke_session(db, session)` (sets `revoked_at`), and
 `revoke_all_sessions(db, user)` (revokes every non-revoked session for
-that user).
+that user), and `revoke_other_sessions(db, user, keep)` (the same, sparing
+the session `keep`; used on a password change, T-0034).
 `src/hullbreach_server/auth/deps.py` provides the FastAPI dependency
 `get_current_user`, which resolves the `Authorization: Bearer <token>`
 header via `resolve_session` and returns an `AuthContext(user, session)`,
@@ -419,6 +420,20 @@ point of view: `id`, `played_at` (the match's `created_at`), `opponent`
 `rating_before` and `rating_after` are both the starting rating (1200)
 until the RatingChange model exists (T-0057).
 
+`PATCH /api/v1/me` (`api/me.py::patch_me`, T-0034) edits the player's
+`username`, `email` and `password`. The body is an `UpdateMeRequest`
+(`auth/schemas.py`): every field optional, the same bounds as register,
+`email` lower-cased, and unknown fields (such as `role`) rejected with a
+422. A new email or password must also carry `current_password`;
+missing or wrong it is a 403 `{"detail": "current password required" |
+"current password is incorrect", "field": "current_password"}`. A
+username or email already held by another account (case-insensitive) is
+a 409 `{"detail": "username already taken" | "email already taken",
+"field": ...}`. `services/profile.py::update_profile` returns a typani
+`Result[User, ProfileUpdateError]`; on a password change it re-hashes the
+password and revokes every other session of the player, keeping the one
+that made the request. The response is the updated `UserProfile`.
+
 ### Player API client and the profile page
 
 `web/src/api/me.ts` is the client for the signed-in player's own
@@ -454,12 +469,12 @@ otherwise.
 
 `web/src/pages/Settings.tsx` is routed at `/settings` and edits the
 signed-in player's display name (the username), email and password through
-`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (planned,
-T-0034; the page is built against the fixture
-`profileFixture` in `web/tests/fixtures/me.ts`). It copies Register's
+`updateMe` in `web/src/api/me.ts`, which is `PATCH /api/v1/me` (T-0034,
+see Player API; the page's tests use the fixture `profileFixture` in
+`web/tests/fixtures/me.ts`). It copies Register's
 inline-error pattern: an `ApiError` with a `field` is shown beside that
 input through `aria-describedby`, and one without becomes a `role="alert"`
-banner. The planned contract: the request carries only the changed fields,
+banner. The contract: the request carries only the changed fields,
 a new email or password also carries `current_password`, and a wrong one is
 a 403 naming `field: "current_password"`. The page enforces the same rule
 locally (an email or password change with no current password is refused
