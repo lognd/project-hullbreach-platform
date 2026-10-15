@@ -22,7 +22,7 @@ bound = true
 
 [[acceptance]]
 text = "given doctor --demo website, guest, platform or online, when it finishes, then only the checks that demo needs ran and the exact next commands and game-side values are printed"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given doctor --collect, when run, then a zip with the redacted doctor output and recent logs is written and no secret value appears in it"
