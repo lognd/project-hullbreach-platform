@@ -2,7 +2,7 @@
 id = "01M2H5T10ZV4EV17ZMHTQ455KJ"
 title = "GET /api/v1/me aggregating profile, balance, inventory, and last five matches"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 2
 parent = "01M2H5T10YFV60H1CQDEEH5164"
