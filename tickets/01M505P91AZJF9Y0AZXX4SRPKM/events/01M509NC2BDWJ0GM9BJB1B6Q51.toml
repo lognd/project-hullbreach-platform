@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-15T17:27:21Z"
+digest = "a2ae6672c89384c7e8c04de9ae7a80320ffedf7e6adce1044697d20a432bed6c"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.39s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_lifecycle.py::test_reset_db_requires_the_exact_volume_name"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "5d898b0a50c219d038d47d527cb1657b0e3dcd5c49e6d57eefe55558e69993e4"
+at = "2026-10-15T17:27:21Z"
+actor = "lognd"
+rev = 1
