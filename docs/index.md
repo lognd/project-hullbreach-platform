@@ -204,9 +204,9 @@ request that could, by design.
 
 The game server authenticates with a shared secret, not a player session
 (T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
-from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated), the
-`[tool.hullbreach_server]` table or a CLI flag like any other field; the
-default is empty, and an empty list means no server can authenticate. The
+from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated; `.env.example`
+lists it) or the `[tool.hullbreach_server]` table (there is no CLI flag,
+the CLI only has `--host` and `--port`); the default is empty, and an empty list means no server can authenticate. The
 values never appear in a `repr` or in logs. `require_game_server`
 (`src/hullbreach_server/auth/server_keys.py`) is the FastAPI dependency a
 game-server-only route lists: it reads the `X-Server-Key` header and
@@ -216,6 +216,10 @@ unconfigured key (never FastAPI's default 403). The comparison is
 (`Missing` or `Invalid`) and compares every configured key with
 `hmac.compare_digest` so timing does not reveal a match. No production
 route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
+In particular `GET /api/v1/auth/session`, the call a game server makes to
+verify a player, does not check `X-Server-Key` today, so any holder of a
+session token can call it; ticket `~48H1VAK` tracks requiring the key
+there.
 
 ### Matches
 
