@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "src/hullbreach_server/api/__init__.py", "docs/index.md", "src/hullbreach_server/services/__init__.py", "src/hullbreach_server/services/matches.py", "tests/system/test_account_flow.py"]
+new = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "src/hullbreach_server/api/__init__.py", "docs/index.md", "src/hullbreach_server/services/__init__.py", "src/hullbreach_server/services/matches.py", "tests/system/test_account_flow.py", "web/tests/unit/Profile.test.tsx"]
+at = "2026-10-15T14:49:56Z"
+actor = "lognd"
+rev = 1
