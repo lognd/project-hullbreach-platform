@@ -6,9 +6,9 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-15T15:23:28Z"
-updated = "2026-10-15T15:23:28Z"
-labels = ["owner:lognd"]
-scope = ["src/hullbreach_server/api/auth.py"]
+updated = "2026-10-15T16:02:26Z"
+labels = ["owner:lognd", "creates:changelog.d/*.security.md"]
+scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/server_keys.py", "tests/unit/test_auth_game.py", "tests/unit/test_server_keys.py", "tests/unit/test_auth_logout.py", "tests/unit/test_me_edit.py", "docs/index.md", "README.md", "docs/design/sprint-1.md", "docs/picking-up-work.md", "web/src/api/auth.ts", "web/tests/unit/Register.test.tsx", ".env.example", "changelog.d/*.security.md"]
 
 [[acceptance]]
 text = "GET /api/v1/auth/session called by a game server without a valid X-Server-Key returns 401 not authenticated"
