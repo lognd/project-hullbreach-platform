@@ -147,8 +147,8 @@ def check_settings(run: DoctorRun) -> CheckResult:
             [
                 "Create .env if you have not: cp .env.example .env",
                 _EDIT_ENV,
-                f"Give {' and '.join(missing)} a value (the database password "
-                "must be the same in both).",
+                f"Give {' and '.join(missing)} a value (the password inside "
+                "HULLBREACH_DATABASE_URL must equal POSTGRES_PASSWORD).",
                 _RERUN,
             ],
             rl.SETTINGS,

@@ -47,6 +47,7 @@ def test_settings_report_set_or_unset_never_values(
     assert unset.status == Status.FAIL
     assert "HULLBREACH_DATABASE_URL, POSTGRES_PASSWORD" in unset.summary
     assert "POSTGRES_PASSWORD: not set" in unset.details
+    assert "must equal POSTGRES_PASSWORD" in unset.fix[2]
 
     monkeypatch.setattr(
         cc, "load_app_config", lambda _s: Ok(SimpleNamespace(database_url=URL))
