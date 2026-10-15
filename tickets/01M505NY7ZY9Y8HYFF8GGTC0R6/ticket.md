@@ -8,12 +8,12 @@ points = 8
 parent = "01M2H5T104B4HY0X1B5KX80SJ7"
 reporter = "lognd"
 created = "2026-10-15T16:17:46Z"
-updated = "2026-10-15T16:17:46Z"
+updated = "2026-10-15T16:18:01Z"
 persona = "first-time operator who has never used a terminal"
 capability = "run one doctor command that checks every prerequisite and tells me exactly how to fix what is wrong, then start, stop and demo the platform with named scripts"
 outcome_text = "I can demo the website and the guest, online and platform game modes without help"
-labels = ["owner:lognd", "milestone:0.2.0"]
-scope = ["src/hullbreach_ops/**", "src/hullbreach_server/__main__.py", "README.md", "docs/**"]
+labels = ["owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_ops/**"]
+scope = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "src/hullbreach_ops/**"]
 
 [[acceptance]]
 text = "given a fresh clone, when ./doctor.sh is run, then every check prints PASS, WARN or FAIL and each failure prints numbered fix steps and a README link"
