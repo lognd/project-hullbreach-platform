@@ -1,0 +1,8 @@
+kind = "field"
+field = "labels"
+old = ["owner:lognd"]
+new = ["owner:lognd", "creates:changelog.d/*.security.md"]
+reason = "guard touches server_keys, tests that probe /auth/session, docs, and the dead web fetchSession"
+at = "2026-10-15T16:02:26Z"
+actor = "lognd"
+rev = 1

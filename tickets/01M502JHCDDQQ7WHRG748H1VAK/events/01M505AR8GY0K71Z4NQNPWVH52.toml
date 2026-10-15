@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Guarded the existing route rather than adding a new one: the website never needed /auth/session (it checks its token with GET /me; the unused fetchSession client is removed), so no web exemption is required. Criterion 1 says '401 not authenticated'; the implementation deliberately gives each failure its own detail so the game server and its doctor can tell a key problem from a bad token: 401 'server key missing', 401 'invalid server key', 401 'not authenticated' (bad token, key OK), and 503 'server key not configured' when HULLBREACH_GAME_SERVER_API_KEYS is empty (operator fault, not caller fault). Key is checked before the token. Returning username from the verify route is left to the existing active_skin follow-up frob:todo; not in this ticket."
+at = "2026-10-15T16:11:39Z"
+actor = "lognd"
+rev = 1

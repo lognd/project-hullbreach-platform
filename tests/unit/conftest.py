@@ -17,6 +17,9 @@ from typing import Any
 
 import pytest
 
+# The one game-server key the `app` fixture configures (X-Server-Key).
+UNIT_SERVER_KEY = "unit-test-server-key"
+
 
 # frob:ticket 01M2KR6R323JSYETPFJ3PAVA0S
 @pytest.fixture
@@ -59,10 +62,17 @@ def db_session(engine: Any) -> Iterator[Any]:
 def app(db_session: Any) -> Any:
     """A `create_app`-built FastAPI app with `get_db` overridden to yield
     `db_session`, so every route in the test sees the same in-memory schema."""
+    from pydantic import SecretStr
+
     from hullbreach_server.app import AppConfig, create_app
     from hullbreach_server.db import get_db
 
-    application = create_app(AppConfig(database_url="sqlite://"))
+    application = create_app(
+        AppConfig(
+            database_url="sqlite://",
+            game_server_api_keys=[SecretStr(UNIT_SERVER_KEY)],
+        )
+    )
 
     def _override_get_db() -> Iterator[Any]:
         yield db_session
@@ -79,3 +89,10 @@ def client(app: Any) -> Iterator[Any]:
 
     with TestClient(app) as test_client:
         yield test_client
+
+
+# frob:ticket 01M502JHCDDQQ7WHRG748H1VAK
+@pytest.fixture
+def server_key_headers() -> dict[str, str]:
+    """The X-Server-Key header a game server sends, matching the `app` fixture."""
+    return {"X-Server-Key": UNIT_SERVER_KEY}

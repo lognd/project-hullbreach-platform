@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-15T16:11:34Z"
+digest = "61abc1a611b5c78b0b71967c0412e55dbafd83b35558727d8893be96fa6e3d9e"
+exit_code = 0
+inline = """
+README.md:806:    - `server key missing` or `invalid server key`: the game server's\r
+README.md:819:    `server key not configured`: `HULLBREACH_GAME_SERVER_API_KEYS` is\r
+docs/index.md:227:| platform has no keys configured           | 503    | `server key not configured` |\r
+docs/index.md:229:| header does not match any configured key  | 401    | `invalid server key`        |\r
+"""
+passed = true
+provider = "command"
+ref = "git grep -n -F -e 'server key not configured' -e 'invalid server key' -- docs/index.md README.md"
+size = 378
+status = "measured"
+at = "2026-10-15T16:11:34Z"
+actor = "lognd"
+rev = 1

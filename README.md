@@ -320,7 +320,7 @@ example `blue-ocean-4821`) and put it in the file:
 4. Save and quit: `Ctrl+O`, Enter, then `Ctrl+X`.
 
 Leave everything else as it is. (`HULLBREACH_GAME_SERVER_API_KEYS` is only
-for the game; see
+needed when a game server signs players in through this platform; see
 [Connecting the game](#connecting-the-game-to-the-platform).)
 
 ### Step 5: Start the database
@@ -547,14 +547,14 @@ README's "Play with the platform" section.
   not signed in with "This server requires a Hullbreach account. Sign in
   and reconnect."
 - **Game server key** (`HULLBREACH_GAME_SERVER_API_KEYS` in `.env`): a
-  shared secret meant to prove a game server is genuine. Make one with
+  shared secret that proves a game server is genuine. **It is required**
+  for signed-in play: the platform refuses to verify a player for a game
+  server that does not send a matching key. Make one with
   `python3 -c "import secrets; print(secrets.token_urlsafe(32))"`, put it
   after `HULLBREACH_GAME_SERVER_API_KEYS=` in the platform's `.env`
   (then restart the API), and give the game server the same value as
-  `HULLBREACH_PLATFORM_SERVER_KEY`. **The platform does not check it yet**
-  when a game server verifies a player (ticket `~48H1VAK`), so a missing
-  or wrong key changes nothing in a demo today. Setting it now keeps the
-  demo working once that ticket lands.
+  `HULLBREACH_PLATFORM_SERVER_KEY`. Guest play (no sign-in) does not
+  need it.
 
 ## Hosting a demo for other computers
 
@@ -622,8 +622,6 @@ So nobody presents this as deployed:
 - The website runs on its development server (`npm run dev`). This repo
   has no production web hosting setup.
 - Reloading the page signs you out (ticket `~6TZCHZ0`).
-- The game server key is not enforced on the session check (ticket
-  `~48H1VAK`).
 - Nothing records match results yet (T-0054), so ELO never changes and
   match history stays empty.
 - The login attempt limit lives in the API's memory; restarting the API
@@ -801,16 +799,27 @@ The quoted messages here are shown by the game (see the game README).
     `-hullbreachRequirePlatformAuth` and you joined without signing in.
   - Fix: sign in on the game's sign-in screen, then reconnect.
 - **"Your platform session is invalid or expired. Sign in again."**
-  - Cause: the platform told the game server your sign-in is not valid:
-    you logged out, it expired (after 14 days), the platform database was
-    wiped, or the game server uses a _different_ platform than the one
-    you signed in to.
-  - Fix: sign in again; make sure game client and game server use the
-    same `-hullbreachPlatformUrl`.
+  - Cause: the platform refused the game server's check (HTTP 401) and
+    said why in the response's `detail`. The API's terminal also logs a
+    key refusal as `require_game_server: rejected (Missing)` or
+    `rejected (Invalid)`; no such line means the sign-in itself was bad.
+    - `server key missing` or `invalid server key`: the game server's
+      `HULLBREACH_PLATFORM_SERVER_KEY` is unset or is not one of the
+      platform's `HULLBREACH_GAME_SERVER_API_KEYS`. Fix: copy the exact
+      value across (no spaces or quotes), then restart both.
+    - `not authenticated`: your sign-in really is not valid: you logged
+      out, it expired (after 14 days), the platform database was wiped,
+      or the game server uses a _different_ platform than the one you
+      signed in to. Fix: sign in again; make sure game client and game
+      server use the same `-hullbreachPlatformUrl`.
 - **"Could not verify your platform session (...)"**
-  - Cause: the game server could not reach the platform at all. Same
+  - Cause: the game server could not reach the platform at all (same
     causes as "Cannot reach the Hullbreach servers" above, checked from
-    the game server's computer.
+    the game server's computer), or the platform answered HTTP 503
+    `server key not configured`: `HULLBREACH_GAME_SERVER_API_KEYS` is
+    empty in the platform's `.env`. Fix: set it (see
+    [Connecting the game](#connecting-the-game-to-the-platform)) and
+    restart the API.
 
 ## Developer guide
 
