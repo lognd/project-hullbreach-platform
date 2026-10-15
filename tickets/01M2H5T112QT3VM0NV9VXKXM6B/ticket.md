@@ -2,7 +2,7 @@
 id = "01M2H5T112QT3VM0NV9VXKXM6B"
 title = "PATCH /api/v1/me with current-password confirmation and session invalidation on password change"
 type = "task"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 points = 2
 parent = "01M2H5T11109WWPFDDD0ZX7K9V"
