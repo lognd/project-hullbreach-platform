@@ -1,13 +1,13 @@
 {
   "borderRadius": {
     "radius-0": "var(--radius-0)",
-    "radius-16": "var(--radius-16)",
-    "radius-4": "var(--radius-4)",
-    "radius-8": "var(--radius-8)"
+    "radius-2": "var(--radius-2)",
+    "radius-4": "var(--radius-4)"
   },
   "colors": {
     "accent": "var(--color-accent)",
     "ink": "var(--color-ink)",
+    "line": "var(--color-line)",
     "muted": "var(--color-muted)",
     "panel": "var(--color-panel)",
     "paper": "var(--color-paper)",
@@ -17,9 +17,19 @@
   },
   "fontFamily": {
     "base": [
-      "Inter",
       "system-ui",
+      "Segoe UI",
+      "Roboto",
+      "Helvetica Neue",
+      "Arial",
       "sans-serif"
+    ],
+    "mono": [
+      "ui-monospace",
+      "SFMono-Regular",
+      "Menlo",
+      "Consolas",
+      "monospace"
     ]
   },
   "fontSize": {

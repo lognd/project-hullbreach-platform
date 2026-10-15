@@ -19,6 +19,10 @@ ink = "#e6e8ef"
 paper = "#0b0d12"
 panel = "#161a24"
 muted = "#8b93a7"
+# Hairline dividers and panel edges. Decorative only, never text: it is
+# deliberately absent from [palette.roles]. Input borders use muted (6.3:1
+# on paper) so form controls clear WCAG 1.4.11's 3:1 non-text floor.
+line = "#2a3142"
 accent = "#3ba0ff"
 stress-ok = "#3fd17c"
 stress-warn = "#f0b429"
@@ -30,15 +34,38 @@ panel = ["ink", "panel"]
 muted = ["muted", "paper"]
 accent = ["accent", "paper"]
 danger = ["stress-fail", "paper"]
+# Every pair the pages actually draw, so CONTRAST001 guards all of them:
+# readouts on panels, win/loss/warn text, and the primary button (paper
+# text on an accent fill).
+muted-panel = ["muted", "panel"]
+accent-panel = ["accent", "panel"]
+danger-panel = ["stress-fail", "panel"]
+ok = ["stress-ok", "paper"]
+ok-panel = ["stress-ok", "panel"]
+warn = ["stress-warn", "paper"]
+warn-panel = ["stress-warn", "panel"]
+on-accent = ["paper", "accent"]
 
 [scales]
 spacing = [0, 4, 8, 12, 16, 24, 32, 48, 64]
 font_sizes = [12, 14, 16, 20, 24, 32, 48, 64]
-radii = [0, 4, 8, 16]
+# Hard-edged hull plating, not pill-shaped SaaS cards: nothing rounder
+# than 4px. TW005 already rejects Tailwind's own rounded-lg/2xl/full keys.
+radii = [0, 2, 4]
 
+# System fonts only: nothing is downloaded, so what is declared is what
+# renders. "mono" is the readout face for numbers (ELO, durations, dates)
+# and the small uppercase labels -- the cockpit-instrument voice.
 [typography]
-families = ["Inter", "system-ui", "sans-serif"]
+families = [
+  "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif",
+  "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace",
+]
 weights = [400, 500, 600, 700]
+
+[typography.stacks]
+base = ["system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"]
+mono = ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
 
 [layers]
 base = 0
@@ -64,14 +91,20 @@ globs = ["web/src/**/*.tsx"]
 # mapping (GENERATED, never hand-edited) and web/tailwind.config.ts hands it
 # to Tailwind through `@config`. namespace_keys keeps the declared scales
 # out of Tailwind's default key space, so utilities read as
-# `gap-space-8`, `text-font-size-20`, `rounded-radius-8`, `bg-paper` --
+# `gap-space-8`, `text-font-size-20`, `rounded-radius-4`, `bg-paper` --
 # there is no `gap-8` that silently means 2rem.
 [tailwind]
 config = "web/tailwind.config.ts"
 tokens_file = "web/tailwind.theme.json"
 namespace_keys = true
 
+# RADIUS001 and TW003 are promoted from crunk's default warn: an off-scale
+# corner or an alpha-tinted utility (bg-accent/20 -- the glass-panel look)
+# fails the build. Gradients, shadows and blur have no crunk rule; the web
+# test web/tests/unit/designRules.test.ts bans those instead.
 [lint]
 SPACE001 = "warn"
+RADIUS001 = "error"
+TW003 = "error"
 fix_tolerance = 0.15
 color_tolerance = 8.0

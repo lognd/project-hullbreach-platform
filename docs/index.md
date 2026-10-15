@@ -326,7 +326,7 @@ it; `web/tailwind.config.ts` hands that theme to Tailwind through
 `@config`, and `crunk check` lints every stylesheet and `className` string
 against the spec so an undeclared color or off-scale spacing is a red
 build. Utilities are namespaced to the declared scales: `bg-paper`,
-`text-ink`, `gap-space-8`, `text-font-size-20`, `rounded-radius-8`.
+`text-ink`, `gap-space-8`, `text-font-size-20`, `rounded-radius-4`.
 
 ### Routing and page shell
 
@@ -339,14 +339,57 @@ router context renders nothing rather than throwing. `web/src/main.tsx`
 mounts the tree with `RouterProvider`, not `App` directly.
 
 `web/src/components/Header.tsx` reads `useSession()` (below) and shows
-Register/Login links when signed out, or the username and a Log out
-control when signed in; every control is a real `<a>`/`<button>` (never a
+Register/Log in links when signed out, or Profile, Matches and Settings
+links, the username and a Log out control when signed in; the link for the
+page being shown carries `aria-current="page"`; every control is a real `<a>`/`<button>` (never a
 `<div onClick>`) so tab order and Enter-activation work by construction.
 The signed-in Log out control calls `api/auth.ts`'s `logout()` with the
 session's token (best-effort: an expired token or a network error does
 not block signing out locally), then `clearSession()`, then navigates
 home -- sign-out clears the in-memory session. `web/src/components/Footer.tsx` links to the
 cookie and data policy pages.
+
+Every internal link is an `AppLink` (`web/src/components/AppLink.tsx`) and
+every programmatic move (after login, logout, the brand mark) goes through
+`navigate()` in `web/src/components/navigate.ts`: `history.pushState` plus
+a `popstate` event the data router listens to. A plain `<a href>` or
+`window.location.assign` would reload the document and drop the in-memory
+session (see Session persistence), so the header, footer and login flow
+never do. Modifier and middle clicks on an `AppLink` fall through to the
+browser so open-in-new-tab still works. `usePathname()` is the matching
+hook the header uses for `aria-current`.
+
+### Visual design rules
+
+The site should read as a ship-combat console, not a template. These rules
+are enforced, not suggested:
+
+- Corners: `crunk.toml` declares radii 0, 2 and 4 only and `RADIUS001`
+  is an error, so `rounded-2xl` cards cannot come back. Buttons and chips
+  use `rounded-radius-2`.
+- No decoration for its own sake: `web/tests/unit/designRules.test.ts`
+  fails on gradient, shadow, blur, backdrop and gradient-text utilities in
+  `className` strings, on `gradient`/`box-shadow`/`text-shadow`/
+  `backdrop-filter`/`blur()` in stylesheets, and on any non-ASCII
+  character (emojis, decorative unicode) anywhere under `web/src`.
+- Type: the system sans stack for prose and the system mono stack for
+  labels, numbers and buttons (`font-mono`, uppercase, tracked); no web
+  fonts are loaded.
+- Focus: `web/src/styles/base/reset.css` draws one keyboard-only accent
+  outline, offset 2px, on every control.
+- Contrast: every text/background pair is a `[roles]` entry in
+  `crunk.toml`, checked to WCAG AA by `crunk check` (`ok`, `warn`,
+  `on-accent` and the `*-panel` roles cover badges and notices).
+- Layout: pages are left-aligned columns under a `Page` header (mono
+  eyebrow, title, accent rule); nothing is centered for its own sake.
+- Shared components, not one-offs: `Page` (shell and width), `Button` /
+  `ButtonLink` (primary accent fill, secondary outline), `TextField`
+  (label, hint, error tied by `aria-describedby`, `aria-invalid`),
+  `Notice` / `Loading` (error, ok and loading states with roles `alert` /
+  `status`), `AppLink`, and `HullReadout` (the landing page's block-ship
+  stress grid, colored with the `stress-*` palette).
+- Copy is concrete and terse: name the thing (ELO, match history, hull),
+  never "seamless", "unleash" or "get started today".
 
 ### Session persistence
 

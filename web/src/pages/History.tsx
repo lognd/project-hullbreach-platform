@@ -2,7 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "@/api/auth";
 import { fetchMatches, type MatchSummary } from "@/api/me";
 import { useSession } from "@/auth/session";
+import { Button } from "@/components/Button";
 import { MatchItem } from "@/components/MatchItem";
+import { Loading, Notice } from "@/components/Notice";
+import { Page } from "@/components/Page";
 import { SignInPrompt } from "@/components/SignInPrompt";
 
 /** The matches loaded so far, the cursor for the next page (null once exhausted), and whether a request is in flight. */
@@ -81,38 +84,38 @@ export function History() {
     return <SignInPrompt title="Match history" reason="to see your matches." />;
   }
 
+  const retry = (
+    <Button
+      variant={state.error !== null ? "primary" : "secondary"}
+      disabled={state.loading}
+      onClick={() => {
+        void loadPage(state.nextCursor);
+      }}
+    >
+      {state.loaded ? "Load more" : "Try again"}
+    </Button>
+  );
+
   return (
-    <main className="mx-auto flex w-full max-w-[40rem] flex-col gap-space-16 bg-paper px-space-16 py-space-32 text-ink">
-      <h1 className="text-font-size-32 font-semibold">Match history</h1>
+    <Page eyebrow="Pilot record" title="Match history">
       {state.loaded && state.matches.length === 0 ? (
         <p className="text-font-size-14 text-muted">No matches yet.</p>
       ) : (
-        <ul className="flex flex-col gap-space-8">
+        <ul className="flex flex-col gap-space-4">
           {state.matches.map((match) => (
             <MatchItem key={match.id} match={match} detailed />
           ))}
         </ul>
       )}
+      {state.loading && !state.loaded ? <Loading label="Loading matches" /> : null}
       {state.error !== null ? (
-        <p role="alert" className="text-font-size-14 text-stress-fail">
-          {state.error}
-        </p>
+        <Notice tone="error" role="alert">
+          <span>{state.error}</span>
+          {retry}
+        </Notice>
+      ) : state.nextCursor !== null ? (
+        <div>{retry}</div>
       ) : null}
-      {state.loading && !state.loaded ? (
-        <p className="text-font-size-16 text-muted">Loading...</p>
-      ) : null}
-      {state.nextCursor !== null || state.error !== null ? (
-        <button
-          type="button"
-          disabled={state.loading}
-          onClick={() => {
-            void loadPage(state.nextCursor);
-          }}
-          className="text-font-size-16"
-        >
-          {state.loaded ? "Load more" : "Try again"}
-        </button>
-      ) : null}
-    </main>
+    </Page>
   );
 }

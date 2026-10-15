@@ -1,11 +1,17 @@
+import { AppLink } from "@/components/AppLink";
+
 // frob:doc docs/index.md#routing-and-page-shell
 /** Site footer with links to the cookie notice and data policy pages. */
 export function Footer() {
   return (
-    <footer className="flex items-center justify-center gap-space-16 bg-panel px-space-24 py-space-16 text-font-size-14 text-muted">
+    <footer className="flex flex-wrap items-center gap-x-space-16 gap-y-space-8 border-t border-line bg-paper px-space-16 py-space-16 text-font-size-12 text-muted sm:px-space-24">
       {/* frob:todo 01M2H5T11HZP2VXR9KV24Q8RV3 both links 404 until the data-policy route and page exist */}
-      <a href="/cookie-policy">Cookie policy</a>
-      <a href="/data-policy">Data policy</a>
+      <AppLink href="/cookie-policy" className="hover:text-ink">
+        Cookie policy
+      </AppLink>
+      <AppLink href="/data-policy" className="hover:text-ink">
+        Data policy
+      </AppLink>
     </footer>
   );
 }

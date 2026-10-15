@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { ApiError } from "@/api/auth";
 import { fetchMe, type MeResponse } from "@/api/me";
 import { useSession } from "@/auth/session";
+import { AppLink } from "@/components/AppLink";
+import { Button } from "@/components/Button";
 import { MatchItem } from "@/components/MatchItem";
+import { Loading, Notice } from "@/components/Notice";
+import { Page } from "@/components/Page";
 import { SignInPrompt } from "@/components/SignInPrompt";
 
 /** What the page is showing: waiting on the server, the loaded profile, or a failure message. */
@@ -12,11 +16,13 @@ type ProfileState =
   | { status: "error"; message: string };
 
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
-/** Profile page: loads GET /api/v1/me for the signed-in player and shows rating, currency, owned skins and the last five matches in a single column that fits a phone. */
+/** Profile page: loads GET /api/v1/me for the signed-in player and shows ELO, balance, owned skins and the last five matches in a single column that fits a phone. */
 export function Profile() {
   const session = useSession();
   const token = session?.token ?? null;
   const [state, setState] = useState<ProfileState>({ status: "loading" });
+  // Bumped by Try again so the effect below refetches.
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (token === null) {
@@ -44,7 +50,7 @@ export function Profile() {
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, [token, attempt]);
 
   if (token === null) {
     return <SignInPrompt title="Profile" reason="to see your profile." />;
@@ -52,43 +58,39 @@ export function Profile() {
 
   if (state.status === "error") {
     return (
-      <main className="flex flex-col items-center gap-space-8 bg-paper px-space-16 py-space-48 text-ink">
-        <h1 className="text-font-size-32 font-semibold">Profile</h1>
-        <p role="alert" className="text-font-size-14 text-stress-fail">
-          {state.message}
-        </p>
-      </main>
+      <Page eyebrow="Pilot record" title="Profile">
+        <Notice tone="error" role="alert">
+          <span>{state.message}</span>
+          <Button onClick={() => setAttempt((n) => n + 1)}>Try again</Button>
+        </Notice>
+      </Page>
     );
   }
 
   if (state.status === "loading") {
     return (
-      <main className="flex flex-col items-center gap-space-8 bg-paper px-space-16 py-space-48 text-ink">
-        <h1 className="text-font-size-32 font-semibold">Profile</h1>
-        <p className="text-font-size-16 text-muted">Loading...</p>
-      </main>
+      <Page eyebrow="Pilot record" title="Profile">
+        <Loading label="Loading profile" />
+      </Page>
     );
   }
 
   const { me } = state;
   return (
-    <main className="mx-auto flex w-full max-w-[40rem] flex-col gap-space-24 bg-paper px-space-16 py-space-32 text-ink">
-      <h1 className="wrap-anywhere text-font-size-32 font-semibold">
-        {me.username}
-      </h1>
-      <dl className="flex flex-wrap gap-space-24">
-        <div className="flex flex-col gap-space-4">
-          <dt className="text-font-size-14 text-muted">Rating</dt>
-          <dd className="text-font-size-24 font-semibold">{me.rating}</dd>
+    <Page eyebrow="Pilot record" title={me.username} titleClassName="wrap-anywhere">
+      <dl className="grid grid-cols-2 gap-space-4 sm:max-w-[28rem]">
+        <div className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
+          <dt className="font-mono text-font-size-12 uppercase tracking-widest text-muted">ELO</dt>
+          <dd className="font-mono text-font-size-32 font-semibold tabular-nums text-accent">{me.rating}</dd>
         </div>
-        <div className="flex flex-col gap-space-4">
-          <dt className="text-font-size-14 text-muted">Currency</dt>
-          <dd className="text-font-size-24 font-semibold">{me.currency}</dd>
+        <div className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
+          <dt className="font-mono text-font-size-12 uppercase tracking-widest text-muted">Balance</dt>
+          <dd className="font-mono text-font-size-32 font-semibold tabular-nums">{me.currency}</dd>
         </div>
       </dl>
 
-      <section aria-labelledby="profile-skins" className="flex flex-col gap-space-8">
-        <h2 id="profile-skins" className="text-font-size-20 font-semibold">
+      <section aria-labelledby="profile-skins" className="flex flex-col gap-space-12">
+        <h2 id="profile-skins" className="font-mono text-font-size-14 font-semibold uppercase tracking-widest text-muted">
           Owned skins
         </h2>
         {me.inventory.length === 0 ? (
@@ -98,7 +100,7 @@ export function Profile() {
             {me.inventory.map((skin) => (
               <li
                 key={skin.id}
-                className="wrap-anywhere rounded-radius-8 bg-panel px-space-12 py-space-4 text-font-size-14"
+                className="wrap-anywhere rounded-radius-2 border border-line bg-panel px-space-12 py-space-4 text-font-size-14"
               >
                 {skin.name}
               </li>
@@ -107,20 +109,25 @@ export function Profile() {
         )}
       </section>
 
-      <section aria-labelledby="profile-matches" className="flex flex-col gap-space-8">
-        <h2 id="profile-matches" className="text-font-size-20 font-semibold">
-          Recent matches
-        </h2>
+      <section aria-labelledby="profile-matches" className="flex flex-col gap-space-12">
+        <div className="flex flex-wrap items-baseline justify-between gap-space-8">
+          <h2 id="profile-matches" className="font-mono text-font-size-14 font-semibold uppercase tracking-widest text-muted">
+            Recent matches
+          </h2>
+          <AppLink href="/me/matches" className="text-font-size-14 font-medium text-accent underline underline-offset-4 hover:text-ink">
+            Full history
+          </AppLink>
+        </div>
         {me.recent_matches.length === 0 ? (
           <p className="text-font-size-14 text-muted">No matches yet.</p>
         ) : (
-          <ul className="flex flex-col gap-space-8">
+          <ul className="flex flex-col gap-space-4">
             {me.recent_matches.slice(0, 5).map((match) => (
               <MatchItem key={match.id} match={match} />
             ))}
           </ul>
         )}
       </section>
-    </main>
+    </Page>
   );
 }

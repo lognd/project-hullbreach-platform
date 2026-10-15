@@ -9,3 +9,20 @@ body {
   color: var(--color-ink);
   background: var(--color-paper);
 }
+
+/* One focus ring for every control, keyboard-only: a solid accent outline
+   offset off the edge so it reads on any fill, including the accent button.
+   frob:doc docs/index.md#visual-design-rules */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+::selection {
+  color: var(--color-paper);
+  background: var(--color-accent);
+}
