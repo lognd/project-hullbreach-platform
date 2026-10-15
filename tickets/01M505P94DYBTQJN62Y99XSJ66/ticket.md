@@ -8,9 +8,9 @@ points = 8
 parent = "01M505NY7ZY9Y8HYFF8GGTC0R6"
 reporter = "lognd"
 created = "2026-10-15T16:17:57Z"
-updated = "2026-10-15T16:17:57Z"
+updated = "2026-10-15T17:25:53Z"
 labels = ["owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_ops/**", "creates:tests/unit/test_ops_*.py", "creates:doctor.sh", "creates:doctor.cmd", "creates:doctor.ps1", "creates:.nvmrc"]
-scope = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "package.json", "frob.toml", "design/hullbreach.strata", "changelog.d/**", "src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "doctor.sh", "doctor.cmd", "doctor.ps1", ".nvmrc"]
+scope = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "package.json", "frob.toml", "design/hullbreach.strata", "changelog.d/**", "src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "doctor.sh", "doctor.cmd", "doctor.ps1", ".nvmrc", ".gitattributes", "invariants/INV-007.md", "tests/unit/ops_fakes.py", "tests/unit/test_main.py", "Makefile", ".env.example"]
 
 [[acceptance]]
 text = "given any machine, when ./doctor.sh runs, then missing git, uv, docker or node is explained in plain English and the official installer is offered only behind a y/N prompt"
