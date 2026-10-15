@@ -1,9 +1,18 @@
 import { useState, type FormEvent } from "react";
 import { ApiError, login } from "@/api/auth";
 import { saveSession } from "@/auth/session";
+import { AppLink } from "@/components/AppLink";
+import { Button } from "@/components/Button";
+import { navigate } from "@/components/navigate";
+import { Notice } from "@/components/Notice";
+import { Page } from "@/components/Page";
+import { TextField } from "@/components/TextField";
+
+/** Id of the form-level error banner, referenced by the form's aria-describedby. */
+const FORM_ERROR_ID = "login-form-error";
 
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
-/** Login form: submits to POST /api/v1/auth/login, persists the session on success, and navigates home; shows a form-level banner on 401/429. */
+/** Login form: submits to POST /api/v1/auth/login, keeps the session in memory, and moves home in-app (a page load would drop it); shows a form-level banner on 401/429. */
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +29,7 @@ export function Login() {
         username: response.user.username,
         role: response.user.role,
       });
-      window.location.assign("/");
+      navigate("/");
     } catch (error) {
       if (error instanceof ApiError) {
         setFormError(error.detail);
@@ -31,48 +40,48 @@ export function Login() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-16 bg-paper text-ink">
-      <h1 className="text-font-size-32 font-semibold">Log in</h1>
+    <Page eyebrow="Pilot access" title="Log in" width="form">
       {formError !== null ? (
-        <p role="alert" className="text-font-size-14 text-stress-fail">
+        <Notice tone="error" role="alert" id={FORM_ERROR_ID}>
           {formError}
-        </p>
+        </Notice>
       ) : null}
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
-        className="flex w-full max-w-[24rem] flex-col gap-space-12"
+        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+        className="flex flex-col gap-space-16"
       >
-        <div className="flex flex-col gap-space-4">
-          <label htmlFor="login-username" className="text-font-size-14">
-            Username
-          </label>
-          <input
-            id="login-username"
-            name="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </div>
-
-        <div className="flex flex-col gap-space-4">
-          <label htmlFor="login-password" className="text-font-size-14">
-            Password
-          </label>
-          <input
-            id="login-password"
-            name="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-
-        <button type="submit" className="text-font-size-16">
+        <TextField
+          id="login-username"
+          name="username"
+          label="Username"
+          autoComplete="username"
+          value={username}
+          error={undefined}
+          onChange={setUsername}
+        />
+        <TextField
+          id="login-password"
+          name="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          error={undefined}
+          onChange={setPassword}
+        />
+        <Button type="submit" variant="primary">
           Log in
-        </button>
+        </Button>
       </form>
-    </main>
+      <p className="text-font-size-14 text-muted">
+        No account?{" "}
+        <AppLink href="/register" className="font-medium text-accent underline underline-offset-4 hover:text-ink">
+          Register
+        </AppLink>
+      </p>
+    </Page>
   );
 }

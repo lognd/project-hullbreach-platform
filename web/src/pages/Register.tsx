@@ -1,8 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { ApiError, register } from "@/api/auth";
+import { Button, ButtonLink } from "@/components/Button";
+import { Notice } from "@/components/Notice";
+import { Page } from "@/components/Page";
+import { TextField } from "@/components/TextField";
 
 /** Field-keyed validation errors, e.g. `{ username: "username already taken" }`. */
 type FieldErrors = Record<string, string>;
+
+/** Id of the form-level error banner, referenced by the form's aria-describedby. */
+const FORM_ERROR_ID = "register-form-error";
 
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** Registration form: submits to POST /api/v1/auth/register and shows errors inline next to the offending field, or a form-level banner for a non-field error. */
@@ -34,87 +41,65 @@ export function Register() {
 
   if (submitted) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-space-8 bg-paper text-ink">
-        <h1 className="text-font-size-32 font-semibold">Registration complete</h1>
-        <p className="text-font-size-16 text-muted">You can now log in.</p>
-      </main>
+      <Page eyebrow="Callsign registered" title="Registration complete" width="form">
+        <p className="text-font-size-16 text-muted">Your account is ready. Log in to start climbing from 1200.</p>
+        <div>
+          <ButtonLink href="/login" variant="primary">
+            Log in
+          </ButtonLink>
+        </div>
+      </Page>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-16 bg-paper text-ink">
-      <h1 className="text-font-size-32 font-semibold">Register</h1>
+    <Page eyebrow="New pilot" title="Register" width="form">
+      <p className="text-font-size-16 text-muted">Claim a callsign. Your ELO starts at 1200.</p>
       {formError !== null ? (
-        <p role="alert" className="text-font-size-14 text-stress-fail">
+        <Notice tone="error" role="alert" id={FORM_ERROR_ID}>
           {formError}
-        </p>
+        </Notice>
       ) : null}
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
-        className="flex w-full max-w-[24rem] flex-col gap-space-12"
+        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+        className="flex flex-col gap-space-16"
       >
-        <div className="flex flex-col gap-space-4">
-          <label htmlFor="register-username" className="text-font-size-14">
-            Username
-          </label>
-          <input
-            id="register-username"
-            name="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            aria-describedby={fieldErrors.username ? "username-error" : undefined}
-          />
-          {fieldErrors.username ? (
-            <p id="username-error" className="text-font-size-14 text-stress-fail">
-              {fieldErrors.username}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="flex flex-col gap-space-4">
-          <label htmlFor="register-email" className="text-font-size-14">
-            Email
-          </label>
-          <input
-            id="register-email"
-            name="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            aria-describedby={fieldErrors.email ? "email-error" : undefined}
-          />
-          {fieldErrors.email ? (
-            <p id="email-error" className="text-font-size-14 text-stress-fail">
-              {fieldErrors.email}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="flex flex-col gap-space-4">
-          <label htmlFor="register-password" className="text-font-size-14">
-            Password
-          </label>
-          <input
-            id="register-password"
-            name="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            aria-describedby={fieldErrors.password ? "password-error" : undefined}
-          />
-          {fieldErrors.password ? (
-            <p id="password-error" className="text-font-size-14 text-stress-fail">
-              {fieldErrors.password}
-            </p>
-          ) : null}
-        </div>
-
-        <button type="submit" className="text-font-size-16">
+        <TextField
+          id="register-username"
+          name="username"
+          label="Username"
+          autoComplete="username"
+          value={username}
+          error={fieldErrors.username}
+          onChange={setUsername}
+        />
+        <TextField
+          id="register-email"
+          name="email"
+          label="Email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          error={fieldErrors.email}
+          onChange={setEmail}
+        />
+        <TextField
+          id="register-password"
+          name="password"
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          error={fieldErrors.password}
+          onChange={setPassword}
+        />
+        <Button type="submit" variant="primary">
           Register
-        </button>
+        </Button>
       </form>
-    </main>
+    </Page>
   );
 }

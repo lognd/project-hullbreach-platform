@@ -4,6 +4,7 @@
   --color-paper: #0b0d12;
   --color-panel: #161a24;
   --color-muted: #8b93a7;
+  --color-line: #2a3142;
   --color-accent: #3ba0ff;
   --color-stress-ok: #3fd17c;
   --color-stress-warn: #f0b429;
@@ -26,12 +27,13 @@
   --font-size-48: 48px;
   --font-size-64: 64px;
   --radius-0: 0px;
+  --radius-2: 2px;
   --radius-4: 4px;
-  --radius-8: 8px;
-  --radius-16: 16px;
   --layer-base: 0;
   --layer-dropdown: 100;
   --layer-overlay: 200;
   --layer-toast: 300;
-  --font-family-base: Inter, system-ui, sans-serif;
+  --font-family-base: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-family-base: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }

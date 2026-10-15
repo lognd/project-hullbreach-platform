@@ -5,15 +5,67 @@ import { History } from "@/pages/History";
 import { Login } from "@/pages/Login";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
+import { useSession } from "@/auth/session";
+import { AppLink } from "@/components/AppLink";
+import { ButtonLink } from "@/components/Button";
+import { HullReadout } from "@/components/HullReadout";
+import { Page } from "@/components/Page";
+
+/** The four beats of a match, numbered down the landing page: what you do, in the order you do it. */
+const LOOP = [
+  ["01", "Build", "Assemble your ship block by block: hull, thrusters, weapons."],
+  ["02", "Fly", "Real gravity, real momentum. Mass you add is mass you have to move."],
+  ["03", "Breach", "Hits load the hull block by block. Overload one and it breaks open."],
+  ["04", "Rank", "Every match moves your ELO and lands in your match history."],
+] as const;
 
 /** Landing route content; a fuller version lands with T-0045/T-0046 in a later milestone. */
 function Landing() {
+  const session = useSession();
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-8 bg-paper font-base text-ink">
-      <h1 className="text-font-size-48 font-semibold tracking-tight">
-        Project Hullbreach
-      </h1>
-      <p className="text-font-size-20 text-muted">Build a ship. Breach a hull.</p>
+    <main className="flex w-full flex-1 flex-col bg-paper text-ink">
+      <div className="mx-auto grid w-full max-w-[72rem] items-start gap-space-48 px-space-16 py-space-48 sm:px-space-24 lg:grid-cols-2 lg:py-space-64">
+        <div className="flex flex-col gap-space-24">
+          <div className="flex flex-col gap-space-12 border-l-4 border-accent pl-space-16">
+            <p className="font-mono text-font-size-12 uppercase tracking-widest text-accent">
+              Ship combat, block by block
+            </p>
+            <h1 className="text-font-size-48 font-bold leading-none tracking-tight">Project Hullbreach</h1>
+          </div>
+          <p className="max-w-[32rem] text-font-size-20 text-muted">
+            Build a ship one block at a time. Fly it under real gravity. Break the enemy&apos;s hull before it
+            breaks yours.
+          </p>
+          <div className="flex flex-wrap gap-space-12">
+            {session === null ? (
+              <>
+                <ButtonLink href="/register" variant="primary">
+                  Register
+                </ButtonLink>
+                <ButtonLink href="/login">Log in</ButtonLink>
+              </>
+            ) : (
+              <>
+                <ButtonLink href="/me" variant="primary">
+                  Profile
+                </ButtonLink>
+                <ButtonLink href="/me/matches">Match history</ButtonLink>
+              </>
+            )}
+          </div>
+          <ol className="grid gap-space-4 sm:grid-cols-2">
+            {LOOP.map(([step, name, line]) => (
+              <li key={step} className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
+                <span className="font-mono text-font-size-12 uppercase tracking-widest text-accent">
+                  {step} {name}
+                </span>
+                <span className="text-font-size-14 text-muted">{line}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <HullReadout />
+      </div>
     </main>
   );
 }
@@ -21,9 +73,14 @@ function Landing() {
 /** Fallback route for an unmatched path. */
 function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-8 bg-paper text-ink">
-      <p>Page not found.</p>
-    </main>
+    <Page eyebrow="404" title="Page not found.">
+      <p className="text-font-size-16 text-muted">
+        Nothing is docked at this address.{" "}
+        <AppLink href="/" className="font-medium text-accent underline underline-offset-4 hover:text-ink">
+          Back to the hangar
+        </AppLink>
+      </p>
+    </Page>
   );
 }
 

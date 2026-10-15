@@ -395,10 +395,15 @@ The design system lives in `crunk.toml`. `uv run crunk tokens` generates
 `web/src/styles/tokens.css` and `web/tailwind.theme.json` from it; never
 edit those by hand. Utilities use our names, not Tailwind's: `bg-paper`,
 `text-ink`, `text-muted`, `bg-accent`, `gap-space-8`, `p-space-16`,
-`text-font-size-20`, `rounded-radius-8`, `font-base`. A stock
+`text-font-size-20`, `rounded-radius-4`, `font-base`. A stock
 `bg-zinc-900` or `gap-2` does nothing and fails `crunk check`. Need a new
 color or size? Add it to `crunk.toml`, run `uv run crunk tokens`, commit
 all three files. Hand-written CSS goes in `web/src/styles/<bucket>/`.
+
+House look (enforced, details in docs/index.md "Visual design rules"):
+square-ish corners (radius 0/2/4 only), no gradients, shadows, blur or
+emojis, left-aligned pages, and the shared `Page`, `Button`, `TextField`,
+`Notice` and `AppLink` components instead of one-off markup.
 
 ## Cheat sheet
 

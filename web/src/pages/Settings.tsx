@@ -2,45 +2,17 @@ import { useState, type FormEvent } from "react";
 import { ApiError } from "@/api/auth";
 import { updateMe, type UpdateMeRequest } from "@/api/me";
 import { saveSession, useSession, type StoredSession } from "@/auth/session";
+import { Button } from "@/components/Button";
+import { Notice } from "@/components/Notice";
+import { Page } from "@/components/Page";
 import { SignInPrompt } from "@/components/SignInPrompt";
+import { TextField } from "@/components/TextField";
+
+/** Id of the form-level error banner, referenced by the form's aria-describedby. */
+const FORM_ERROR_ID = "settings-form-error";
 
 /** Field-keyed validation errors, e.g. `{ username: "username already taken" }`. */
 type FieldErrors = Record<string, string>;
-
-/** One labelled input with its inline error, the same markup Register uses per field. */
-function Field(props: {
-  name: string;
-  label: string;
-  type?: string;
-  autoComplete?: string;
-  value: string;
-  error: string | undefined;
-  onChange: (value: string) => void;
-}) {
-  const id = `settings-${props.name}`;
-  const errorId = `${props.name}-error`;
-  return (
-    <div className="flex flex-col gap-space-4">
-      <label htmlFor={id} className="text-font-size-14">
-        {props.label}
-      </label>
-      <input
-        id={id}
-        name={props.name}
-        type={props.type}
-        autoComplete={props.autoComplete}
-        value={props.value}
-        onChange={(event) => props.onChange(event.target.value)}
-        aria-describedby={props.error ? errorId : undefined}
-      />
-      {props.error ? (
-        <p id={errorId} className="text-font-size-14 text-stress-fail">
-          {props.error}
-        </p>
-      ) : null}
-    </div>
-  );
-}
 
 /** The form for a known session: sends only changed fields, and shows server errors next to the offending field or as a banner. */
 function SettingsForm({ session }: { session: StoredSession }) {
@@ -102,62 +74,71 @@ function SettingsForm({ session }: { session: StoredSession }) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-space-16 bg-paper px-space-16 text-ink">
-      <h1 className="text-font-size-32 font-semibold">Account settings</h1>
+    <Page eyebrow="Account" title="Account settings" width="form">
       {saved ? (
-        <p role="status" className="text-font-size-14 text-stress-ok">
+        <Notice tone="ok" role="status">
           Settings saved.
-        </p>
+        </Notice>
       ) : null}
       {formError !== null ? (
-        <p role="alert" className="text-font-size-14 text-stress-fail">
+        <Notice tone="error" role="alert" id={FORM_ERROR_ID}>
           {formError}
-        </p>
+        </Notice>
       ) : null}
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
         }}
-        className="flex w-full max-w-[24rem] flex-col gap-space-12"
+        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+        className="flex flex-col gap-space-16"
       >
-        <Field
+        <TextField
+          id="settings-username"
           name="username"
           label="Display name"
+          autoComplete="username"
           value={username}
           error={fieldErrors.username}
           onChange={setUsername}
         />
-        <Field
+        <TextField
+          id="settings-email"
           name="email"
-          label="New email (leave blank to keep)"
+          label="New email"
           type="email"
+          autoComplete="email"
+          hint="Blank keeps the current address."
           value={email}
           error={fieldErrors.email}
           onChange={setEmail}
         />
-        <Field
+        <TextField
+          id="settings-password"
           name="password"
-          label="New password (leave blank to keep)"
+          label="New password"
           type="password"
           autoComplete="new-password"
+          hint="Blank keeps the current password."
           value={password}
           error={fieldErrors.password}
           onChange={setPassword}
         />
-        <Field
+        <TextField
+          id="settings-current_password"
           name="current_password"
-          label="Current password (needed to change email or password)"
+          label="Current password"
           type="password"
           autoComplete="current-password"
+          hint="Required to change email or password."
           value={currentPassword}
           error={fieldErrors.current_password}
           onChange={setCurrentPassword}
         />
-        <button type="submit" className="text-font-size-16">
+        <Button type="submit" variant="primary">
           Save changes
-        </button>
+        </Button>
       </form>
-    </main>
+    </Page>
   );
 }
 
