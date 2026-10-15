@@ -434,6 +434,20 @@ a 409 `{"detail": "username already taken" | "email already taken",
 password and revokes every other session of the player, keeping the one
 that made the request. The response is the updated `UserProfile`.
 
+`GET /api/v1/me/matches?cursor=&limit=` (`api/me.py::get_my_matches`,
+T-0059) returns a `MatchPage` `{items, next_cursor}` of `MatchSummary`
+rows, newest first (`services/matches.py::match_page`). Paging is keyset,
+not offset: `next_cursor` is an opaque URL-safe token encoding the last
+row's `(created_at, id)`, and the next page is the rows strictly after
+that key, so a match recorded while the player pages never shifts or
+repeats a row. `next_cursor` is null on the last page (one extra row is
+fetched to know, no COUNT). `limit` defaults to 20 and is bounded 1..100
+(422 outside). A cursor that does not decode is a 422 `{"detail":
+"invalid cursor", "field": "cursor"}`. A player with no matches gets
+`{"items": [], "next_cursor": null}`. `tests/system/test_account_flow.py`
+drives register, login, `GET /me`, `PATCH /me`, `GET /me/matches` and
+logout through `create_app` on an Alembic-migrated database.
+
 ### Player API client and the profile page
 
 `web/src/api/me.ts` is the client for the signed-in player's own
@@ -488,8 +502,9 @@ now shares.
 
 `web/src/pages/History.tsx` is routed at `/me/matches` and lists the
 signed-in player's matches, newest first, through `fetchMatches` in
-`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (planned, T-0059;
-the page is built against `makeMatchPage` in `web/tests/fixtures/me.ts`).
+`web/src/api/me.ts`: `GET /api/v1/me/matches?cursor=` (T-0059, see
+Player API; the page's tests use `makeMatchPage` in
+`web/tests/fixtures/me.ts`).
 A `MatchPage` is `{items, next_cursor}`; `next_cursor` is null on the last
 page. Each row is `web/src/components/MatchItem.tsx` in `detailed` mode
 (opponent, result, rating before and after, date, duration and stats).

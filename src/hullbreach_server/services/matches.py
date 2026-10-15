@@ -4,13 +4,16 @@ docs/index.md#player-api.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import uuid
 from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel
-from sqlalchemy import Select, select
+from sqlalchemy import Select, and_, or_, select
 from sqlalchemy.orm import Session as DBSession
+from typani import Err, Ok, Result
 
 from hullbreach_server.db.models.match import Match, MatchPlayerStats
 from hullbreach_server.db.models.user import User
@@ -21,6 +24,13 @@ _log = get_logger(__name__)
 
 # Shown as the opponent when a match has no other player's stats row.
 _NO_OPPONENT = "unknown"
+
+# Matches per history page when the client sends no `limit`, and the cap.
+DEFAULT_PAGE_SIZE = 20
+MAX_PAGE_SIZE = 100
+
+# Separates the played-at timestamp from the match id inside a cursor.
+_CURSOR_SEP = "|"
 
 
 # frob:doc docs/index.md#player-api
@@ -106,3 +116,68 @@ def recent_matches(db: DBSession, user: User, limit: int) -> list[MatchSummary]:
     rows = db.execute(_player_matches(user).limit(limit)).tuples().all()
     _log.debug("loaded %d recent matches for user %s", len(rows), user.id)
     return _summarize(db, user, list(rows))
+
+
+# frob:doc docs/index.md#player-api
+# frob:tests tests/unit/test_me_matches.py::test_match_page_250_each_once_newest_first
+class MatchPage(BaseModel):
+    """One page of match history; `next_cursor` is None on the last page."""
+
+    items: list[MatchSummary]
+    next_cursor: str | None
+
+
+# frob:doc docs/index.md#player-api
+# frob:tests tests/unit/test_me_matches.py::test_get_me_matches_bad_cursor_returns_422
+class CursorError(BaseModel):
+    """A history cursor that does not decode to (played-at, match id)."""
+
+    cursor: str
+
+
+def _encode_cursor(match: Match) -> str:
+    """Encode the last match of a page as an opaque, URL-safe cursor."""
+    raw = f"{match.created_at.isoformat()}{_CURSOR_SEP}{match.id}"
+    return base64.urlsafe_b64encode(raw.encode()).decode().rstrip("=")
+
+
+def _decode_cursor(cursor: str) -> Result[tuple[datetime, uuid.UUID], CursorError]:
+    """Decode a cursor back to the (created_at, id) key it was made from."""
+    padded = cursor + "=" * (-len(cursor) % 4)
+    try:
+        raw = base64.urlsafe_b64decode(padded.encode()).decode()
+        stamp, _, match_id = raw.partition(_CURSOR_SEP)
+        return Ok((datetime.fromisoformat(stamp), uuid.UUID(match_id)))
+    except (binascii.Error, UnicodeDecodeError, ValueError):
+        return Err(CursorError(cursor=cursor))
+
+
+# frob:doc docs/index.md#player-api
+# frob:tests tests/unit/test_me_matches.py::test_match_page_250_each_once_newest_first
+# frob:tests tests/unit/test_me_matches.py::test_get_me_matches_bad_cursor_returns_422
+def match_page(
+    db: DBSession, user: User, cursor: str | None, limit: int
+) -> Result[MatchPage, CursorError]:
+    """Return the page of `user`'s matches after `cursor`, newest first (keyset)."""
+    query = _player_matches(user)
+    if cursor is not None:
+        decoded = _decode_cursor(cursor)
+        if decoded.is_err:
+            _log.info("rejected history cursor for user %s", user.id)
+            return Err(decoded.danger_err)
+        played_at, match_id = decoded.danger_ok
+        query = query.where(
+            or_(
+                Match.created_at < played_at,
+                and_(Match.created_at == played_at, Match.id < match_id),
+            )
+        )
+    # One extra row tells whether another page follows without a COUNT.
+    rows = list(db.execute(query.limit(limit + 1)).tuples().all())
+    more = len(rows) > limit
+    rows = rows[:limit]
+    next_cursor = _encode_cursor(rows[-1][0]) if more else None
+    _log.debug(
+        "loaded %d history matches for user %s (more=%s)", len(rows), user.id, more
+    )
+    return Ok(MatchPage(items=_summarize(db, user, rows), next_cursor=next_cursor))

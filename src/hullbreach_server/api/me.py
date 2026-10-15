@@ -1,10 +1,11 @@
 """The signed-in player's own resources under /api/v1/me: the profile
-aggregate (T-0031) and its edit (T-0034), per docs/index.md#player-api.
+aggregate (T-0031), its edit (T-0034) and the match history (T-0059), per
+docs/index.md#player-api.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
@@ -18,6 +19,12 @@ from hullbreach_server.auth import (
 )
 from hullbreach_server.db import get_db
 from hullbreach_server.logging import get_logger
+from hullbreach_server.services.matches import (
+    DEFAULT_PAGE_SIZE,
+    MAX_PAGE_SIZE,
+    MatchPage,
+    match_page,
+)
 from hullbreach_server.services.profile import MeResponse, build_me, update_profile
 
 _log = get_logger(__name__)
@@ -74,3 +81,32 @@ def patch_me(
             content={"detail": error.detail, "field": error.field},
         )
     return UserProfile.from_user(result.danger_ok)
+
+
+# frob:tests tests/unit/test_me_matches.py::test_get_me_matches_pages_with_cursor
+# frob:tests tests/unit/test_me_matches.py::test_get_me_matches_empty_history
+# frob:tests tests/unit/test_me_matches.py::test_get_me_matches_bad_cursor_returns_422
+# frob:doc docs/index.md#player-api
+@router.get(
+    "/matches",
+    response_model=MatchPage,
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        422: {"model": ConflictResponse, "description": "Cursor invalid"},
+    },
+)
+def get_my_matches(
+    cursor: str | None = None,
+    limit: int = Query(DEFAULT_PAGE_SIZE, ge=1, le=MAX_PAGE_SIZE),
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> MatchPage | JSONResponse:
+    """Return one page of the caller's matches, newest first, from `cursor`."""
+    result = match_page(db, ctx.user, cursor, limit)
+    if result.is_err:
+        return JSONResponse(
+            status_code=422, content={"detail": "invalid cursor", "field": "cursor"}
+        )
+    page = result.danger_ok
+    _log.info("served %d history matches for user %s", len(page.items), ctx.user.id)
+    return page
