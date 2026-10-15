@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-15T17:28:15Z"
+digest = "8f748b183e4ca4dd91b5bdb7ed0d91c59170351f0f06771316185129cb54a747"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.31s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_doctor.py::test_doctor_game_only_demo_points_to_the_game_doctor"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "40a0e88193457e2e8c00edce5766d092042fce549bb2435290405b9e97f99e06"
+at = "2026-10-15T17:28:15Z"
+actor = "lognd"
+rev = 1
