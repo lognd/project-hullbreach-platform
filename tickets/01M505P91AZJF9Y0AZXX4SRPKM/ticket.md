@@ -26,7 +26,7 @@ bound = true
 
 [[acceptance]]
 text = "given server-key and demo-users, when run, then a strong key or two demo accounts are produced and secrets are never logged"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given lan, when run, then API and web bind 0.0.0.0 and the LAN URL for a friend is printed"
