@@ -8,7 +8,7 @@ points = 2
 parent = "01M2H5T10SJRRFCSNHGH9AF0ZF"
 reporter = "lognd"
 created = "2026-10-15T15:23:28Z"
-updated = "2026-10-15T16:11:17Z"
+updated = "2026-10-15T16:11:34Z"
 labels = ["owner:lognd", "creates:changelog.d/*.security.md", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/server_keys.py", "tests/unit/test_auth_game.py", "tests/unit/test_server_keys.py", "tests/unit/test_auth_logout.py", "tests/unit/test_me_edit.py", "docs/index.md", "README.md", "docs/design/sprint-1.md", "docs/picking-up-work.md", "web/src/api/auth.ts", "web/tests/unit/Register.test.tsx", ".env.example", "changelog.d/*.security.md", "tests/unit/conftest.py"]
 
@@ -22,7 +22,7 @@ bound = true
 
 [[acceptance]]
 text = "docs/index.md Game-server keys section and README limitations updated"
-bound = false
+bound = true
 +++
 
 The game repo's platform link (game PR #50, docs/platform-link.md) sends HULLBREACH_PLATFORM_SERVER_KEY as X-Server-Key when its dedicated server verifies a player's bearer token against GET /api/v1/auth/session, and the platform now documents HULLBREACH_GAME_SERVER_API_KEYS in .env.example. But /auth/session does not depend on require_game_server (auth/server_keys.py), so the header is ignored: any caller holding a token can verify it, and a game server with a wrong or missing key is not rejected. Either add a server-only verify route guarded by require_game_server (preferred, so the website keeps using /auth/session with just the bearer token) or guard the existing route for server callers. Note /auth/session also returns no username, so the game shows a client-claimed name; consider returning it from the server-only route. Found while writing the beginner README demo guide.
