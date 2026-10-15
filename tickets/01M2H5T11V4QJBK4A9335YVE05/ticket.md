@@ -2,7 +2,8 @@
 id = "01M2H5T11V4QJBK4A9335YVE05"
 title = "GET /api/v1/me/matches with cursor pagination"
 type = "task"
-category = "in-progress"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 2
 parent = "01M2H5T11T3DJZ8N35J58RKTZ4"
