@@ -58,3 +58,21 @@ def test_main_exits_with_a_clear_message_when_database_url_is_missing(
 
     assert exc.value.code == 1
     assert "database_url" in capsys.readouterr().err
+
+
+def test_main_runs_operator_commands(monkeypatch: pytest.MonkeyPatch) -> None:
+    # frob:tests src/hullbreach_server/__main__.py::main kind="unit"
+    # frob:tests src/hullbreach_ops/cli.py::run_ops kind="unit"
+    seen: list[argparse.Namespace] = []
+
+    def fake_run_ops(args: argparse.Namespace) -> int:
+        seen.append(args)
+        return 0
+
+    monkeypatch.setattr("hullbreach_server.__main__.load_dotenv", lambda: None)
+    monkeypatch.setattr("hullbreach_server.__main__.run_ops", fake_run_ops)
+    monkeypatch.setattr(sys, "argv", ["hullbreach_server", "status"])
+    with pytest.raises(SystemExit) as exc:
+        main()
+    assert exc.value.code == 0
+    assert [args.command for args in seen] == ["status"]
