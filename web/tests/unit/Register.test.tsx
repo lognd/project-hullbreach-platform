@@ -284,27 +284,6 @@ describe("api/auth.ts", () => {
     },
   );
 
-  // frob:tests web/src/api/auth.ts::fetchSession kind="unit"
-  it(
-    "fetchSession sends a bearer Authorization header to GET /api/v1/auth/session",
-    async () => {
-      const fetchMock = vi
-        .fn()
-        .mockResolvedValue(
-          jsonResponse({ user_id: "user-1", role: "player" }, 200),
-        );
-      vi.stubGlobal("fetch", fetchMock);
-      const { fetchSession } = await import(authApiModulePath);
-      await fetchSession("tok-1");
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringContaining("/api/v1/auth/session"),
-        expect.objectContaining({
-          headers: expect.objectContaining({ Authorization: "Bearer tok-1" }),
-        }),
-      );
-    },
-  );
-
   it("maps a 401 response to an ApiError with status 401", async () => {
     vi.stubGlobal(
       "fetch",

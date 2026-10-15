@@ -24,6 +24,7 @@ from hullbreach_server.auth import (
     get_current_user,
     hash_password,
     issue_session,
+    require_game_server,
     reserve_login_attempt,
     revoke_all_sessions,
     revoke_session,
@@ -195,17 +196,27 @@ def logout(
 
 # noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token
 # noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_omits_username_and_email
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_rejects_missing_server_key_before_reading_the_token
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_rejects_wrong_server_key
+# noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_refuses_when_no_server_keys_are_configured
+# frob:ticket 01M502JHCDDQQ7WHRG748H1VAK
 # frob:doc docs/index.md#auth-api
 @router.get(
     "/session",
     response_model=SessionInfo,
-    responses={401: {"model": ErrorDetail, "description": "Token invalid"}},
+    # The key is checked first, so a key failure never reveals token validity.
+    dependencies=[Depends(require_game_server)],
+    responses={
+        401: {"model": ErrorDetail, "description": "Server key or token invalid"},
+        503: {"model": ErrorDetail, "description": "No server keys configured"},
+    },
 )
 def session(ctx: AuthContext = Depends(get_current_user)) -> SessionInfo:
-    """Validate a client-presented token; used by the game server (T-0026).
+    """Validate a player's token for a game server holding a valid X-Server-Key.
 
     Deliberately minimal (no username/email) -- the caller's only need is
-    "who is this and what can they do".
+    "who is this and what can they do". The website checks its own session
+    with GET /me instead, since a browser never holds a server key.
     """
     # noqa: E501  # frob:todo 01M2H5T118CH0Q2PCGG2YF3KQN add active_skin to SessionInfo so the game client can render the equipped skin
     return SessionInfo(user_id=ctx.user.id, role=ctx.user.role)

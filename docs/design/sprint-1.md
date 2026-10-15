@@ -97,7 +97,7 @@ Result[Session, SessionError]` checking expiry and revocation, and
   placeholders); no signed-in/out branching needed in 0.1.0.
 - `pages/Register.tsx`, `pages/Login.tsx` -- forms with inline,
   field-scoped validation error display (T-0017, T-0021).
-- `api/auth.ts` -- `register`, `login`, `logout`, `fetchSession` thin
+- `api/auth.ts` -- `register`, `login`, `logout` thin
   wrappers over `fetch`, typed against the same shapes as
   `auth/schemas.py` (mirrored by hand; there is no codegen step in
   0.1.0 -- open question, section 8).
@@ -388,13 +388,18 @@ username = :u OR email = :e`) so the specific field is knowable before
 
 **GET /api/v1/auth/session**
 
-- Requires `Authorization: Bearer <token>`, used by the game server to
-  validate a client-presented token server-side.
+- Requires `X-Server-Key: <one of HULLBREACH_GAME_SERVER_API_KEYS>` and
+  `Authorization: Bearer <token>`; used only by the game server to
+  validate a client-presented token server-side (ticket `~48H1VAK`; the
+  website checks its own token with `GET /me` instead).
 - Response `SessionInfo {user_id: UUID, role: Role}`, 200. Deliberately
   minimal -- no username/email, since the game server's only need is
   "who is this and what can they do."
-- 401 on missing/invalid/expired/revoked token, same shape as other
-  protected routes: `{"detail": "not authenticated"}`.
+- The key is checked before the token: 503 `server key not configured`
+  when the platform has no keys, 401 `server key missing` / `invalid
+server key` for a bad header, then 401 `not authenticated` on a
+  missing/invalid/expired/revoked token, same shape as other protected
+  routes.
 
 ### `get_current_user` / `require_admin` (T-0019, T-0028)
 

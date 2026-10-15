@@ -179,9 +179,9 @@ def test_password_change_revokes_every_other_session(client) -> None:
     )
 
     assert response.status_code == 200
-    assert client.get("/api/v1/auth/session", headers=other_a).status_code == 401
-    assert client.get("/api/v1/auth/session", headers=other_b).status_code == 401
-    assert client.get("/api/v1/auth/session", headers=headers).status_code == 200
+    assert client.get("/api/v1/me", headers=other_a).status_code == 401
+    assert client.get("/api/v1/me", headers=other_b).status_code == 401
+    assert client.get("/api/v1/me", headers=headers).status_code == 200
     old = client.post(
         "/api/v1/auth/login", json={"username": "flagship", "password": _PASSWORD}
     )

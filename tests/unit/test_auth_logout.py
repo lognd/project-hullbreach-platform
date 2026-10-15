@@ -42,7 +42,7 @@ def test_logout_revokes_token_so_it_is_rejected_afterward(client) -> None:
     token, headers = _register_and_login(client)
 
     client.post("/api/v1/auth/logout", headers=headers)
-    response = client.get("/api/v1/auth/session", headers=headers)
+    response = client.get("/api/v1/me", headers=headers)
 
     assert response.status_code == 401
 
@@ -59,7 +59,7 @@ def test_logout_without_all_only_revokes_the_presented_session(client) -> None:
 
     client.post("/api/v1/auth/logout", headers=headers)
 
-    response = client.get("/api/v1/auth/session", headers=second_headers)
+    response = client.get("/api/v1/me", headers=second_headers)
     assert response.status_code == 200
 
 
@@ -75,7 +75,7 @@ def test_logout_with_all_true_revokes_every_session(client) -> None:
 
     client.post("/api/v1/auth/logout?all=true", headers=headers)
 
-    response = client.get("/api/v1/auth/session", headers=second_headers)
+    response = client.get("/api/v1/me", headers=second_headers)
     assert response.status_code == 401
 
 
