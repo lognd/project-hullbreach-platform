@@ -423,8 +423,8 @@ until the RatingChange model exists (T-0057).
 `PATCH /api/v1/me` (`api/me.py::patch_me`, T-0034) edits the player's
 `username`, `email` and `password`. The body is an `UpdateMeRequest`
 (`auth/schemas.py`): every field optional, the same bounds as register,
-`email` lower-cased, and unknown fields (such as `role`) rejected with a
-422. A new email or password must also carry `current_password`;
+`email` lower-cased, and unknown fields (such as `role`) rejected with
+a 422. A new email or password must also carry `current_password`;
 missing or wrong it is a 403 `{"detail": "current password required" |
 "current password is incorrect", "field": "current_password"}`. A
 username or email already held by another account (case-insensitive) is
