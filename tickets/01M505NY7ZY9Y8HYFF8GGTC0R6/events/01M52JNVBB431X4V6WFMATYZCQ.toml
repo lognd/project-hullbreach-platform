@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-16T14:43:23Z"
+digest = "b1898912f27bcaad4f2f578e10e34e6e94010cc42c4313e5f46b6bd3bd4802c5"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.26s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_cli.py::test_every_command_is_wired"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "8ef8c0f69ba638b0ac85e2e39da217e2262fdb83e133dd16a444ef878fb94c27"
+at = "2026-10-16T14:43:23Z"
+actor = "lognd"
+rev = 1

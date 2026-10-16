@@ -185,21 +185,26 @@ already invalid, so logging out twice with the same token 401s the
 second time.
 
 `GET /api/v1/auth/session` (`src/hullbreach_server/api/auth.py::session`)
-also requires a bearer token and returns a `SessionInfo` (`user_id`,
-`role`) with 200 -- deliberately minimal, no `username`/`email`, since
-the game server's only need is "who is this and what can they do"
-(T-0026). It shares `get_current_user` with `logout`, so a missing,
-malformed, expired, or revoked token gets the same uniform 401.
+is the game-server-only verify call (ticket `~48H1VAK`): it requires a
+valid `X-Server-Key` header (see Game-server keys below) and the player's
+bearer token, and returns a `SessionInfo` (`user_id`, `role`) with 200 --
+deliberately minimal, no `username`/`email`, since the game server's only
+need is "who is this and what can they do" (T-0026). The key is checked
+first, by a route-level `require_game_server` dependency, so a key problem
+never reaches the token check. Once the key is accepted the token goes
+through `get_current_user`, so a missing, malformed, expired, or revoked
+token gets the same uniform 401 `{"detail": "not authenticated"}`. The
+website never calls this route; it checks its own token with `GET /me`.
 
 The game client authenticates the same way the browser does: it calls
 `POST /api/v1/auth/login` verbatim (no separate route or client-kind
 flag -- the design's `f_login_game` flow and `f_login_web` share the
 identical `attr "POST /api/v1/auth/login"`), gets back the same
 `LoginResponse`, and then presents that token to its own server, which
-calls `GET /api/v1/auth/session` server-side to validate it and learn
-the player's id and role (T-0026). Neither endpoint distinguishes a
-game-client caller from a browser caller; there is nothing in the
-request that could, by design.
+calls `GET /api/v1/auth/session` server-side, with its `X-Server-Key`, to
+validate it and learn the player's id and role (T-0026). The login route
+does not distinguish a game-client caller from a browser caller; only the
+verify call is server-only.
 
 ### Game-server keys
 
@@ -207,20 +212,31 @@ The game server authenticates with a shared secret, not a player session
 (T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
 from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated; `.env.example`
 lists it) or the `[tool.hullbreach_server]` table (there is no CLI flag,
-the CLI only has `--host` and `--port`); the default is empty, and an empty list means no server can authenticate. The
-values never appear in a `repr` or in logs. `require_game_server`
+the CLI only has `--host` and `--port`); the default is empty. The values
+never appear in a `repr` or in logs. `require_game_server`
 (`src/hullbreach_server/auth/server_keys.py`) is the FastAPI dependency a
 game-server-only route lists: it reads the `X-Server-Key` header and
-answers 401 `{"detail": "not authenticated"}` for a missing, wrong or
-unconfigured key (never FastAPI's default 403). The comparison is
-`check_server_key`, which returns a typani `Result[None, ServerKeyError]`
-(`Missing` or `Invalid`) and compares every configured key with
-`hmac.compare_digest` so timing does not reveal a match. No production
-route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
-In particular `GET /api/v1/auth/session`, the call a game server makes to
-verify a player, does not check `X-Server-Key` today, so any holder of a
-session token can call it; ticket `~48H1VAK` tracks requiring the key
-there.
+compares it with `check_server_key`, which returns a typani
+`Result[None, ServerKeyError]` and compares every configured key with
+`hmac.compare_digest` so timing does not reveal a match. Each error maps
+to one response through `SERVER_KEY_REJECTIONS`, so a game server (and the
+game doctor) can tell the cases apart from the body alone:
+
+| Situation                                 | Status | `detail`                    |
+| ----------------------------------------- | ------ | --------------------------- |
+| platform has no keys configured           | 503    | `server key not configured` |
+| request has no `X-Server-Key` header      | 401    | `server key missing`        |
+| header does not match any configured key  | 401    | `invalid server key`        |
+| key accepted, bearer token missing or bad | 401    | `not authenticated`         |
+
+An unconfigured platform refuses with 503 rather than 401 because the
+fault is on the platform operator's side, not the caller's: set
+`HULLBREACH_GAME_SERVER_API_KEYS` and restart the API (the refusal is also
+logged at ERROR naming that variable). A wrong key is logged at WARNING;
+the presented value never is. FastAPI's default 403 for a missing header
+is never used. The one route guarded by the dependency today is
+`GET /api/v1/auth/session` (ticket `~48H1VAK`); `POST /api/v1/matches`
+(T-0054) will be the next.
 
 ### Matches
 
@@ -412,8 +428,10 @@ in again via `/login`; there is no cross-tab sync. A cookie-based
 
 `web/src/api/auth.ts` is the one `fetch` wrapper every auth-facing page
 uses (docs/design/sprint-1.md sec.5/6): `register`/`login` POST their
-request body and resolve to a `UserProfile`/`LoginResponse`; `logout`/
-`fetchSession` send a `Bearer` `Authorization` header. Any non-2xx
+request body and resolve to a `UserProfile`/`LoginResponse`; `logout`
+sends a `Bearer` `Authorization` header. There is deliberately no client
+for `GET /api/v1/auth/session`: that route needs a game-server key a
+browser never holds, so the website checks its token with `GET /me`. Any non-2xx
 response is normalized into a thrown `ApiError {status, detail, field?}`
 -- `field` is present only when the server named one (409's duplicate
 username/email), letting a caller show the error next to that field
@@ -563,6 +581,98 @@ belong to an earlier list (StrictMode's double-run effects, a changed
 token) are dropped, so no match is listed twice. The page does not
 virtualize the list; it relies on the server's page size to keep the DOM
 small, and the page size is the server's default (no `limit` is sent).
+
+## Operator scripts and the doctor
+
+`src/hullbreach_ops/` is the operator tooling a person runs on their own
+computer: the doctor and the start/stop/demo scripts (tickets `~99XSJ66`
+and `~X4SRPKM`). It is a separate package from `hullbreach_server` on
+purpose: it is the only code that runs other programs (docker, git, npm,
+uv), and INV-007 forbids `subprocess` under `src/hullbreach_server/**`.
+`frob.toml`'s `POL-ops-outside-server` rule and
+`tests/unit/test_ops_boundary.py` keep the request-handling code from
+importing it; only `hullbreach_server.__main__` does, and `hullbreach_ops/cli.py`
+imports the command modules lazily. Every program call goes through
+`proc.py` with an argv list, never a shell string.
+
+Each script is one implementation behind three entry points: the
+subcommand (`uv run hullbreach_server <command>`), the Makefile target of
+the same name, and, for the doctor, the wrappers `doctor.sh` (macOS, Linux,
+WSL) and `doctor.cmd`/`doctor.ps1` (Windows, which explain how to get into
+WSL and then hand over to `doctor.sh`). The wrappers only make sure git,
+uv, Docker and Node.js exist and offer their official installers after a
+`[y/N]` question; every real check is in Python.
+
+| Command      | What it does                                                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
+| `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
+| `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
+| `status`     | what is running, on which port                                                                                                                |
+| `reset-db`   | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                              |
+| `demo-users` | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                |
+| `server-key` | generates a game-server key and says where it goes on both sides; never written to disk                                                       |
+| `lan`        | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`) |
+
+Terminal output goes through `console.py`'s `Console`, not logging: every
+line is redacted (registered secret values plus anything that looks like a
+credential) and kept as a transcript. Log records go to
+`.hullbreach/logs/ops.log`; the API and website started by `start` write
+`api.log` and `web.log` next to it. `doctor --collect` zips the redacted
+transcript, the redacted ends of those logs and a few facts about the
+computer into `hullbreach-support-<timestamp>.zip`; it never includes
+`.env` or any setting value.
+
+Where things run comes from environment variables (or `.env`, loaded by
+`load_dotenv` in `__main__`), read by `settings.py::OpsSettings`:
+`HULLBREACH_PORT` (API, default 8000, also read by the server and by
+`vite.config.ts` for its `/api` proxy), `HULLBREACH_WEB_PORT` (website,
+5173), `HULLBREACH_DB_PORT` (host side of the compose port mapping, 5432),
+`HULLBREACH_HOST` and docker's own `COMPOSE_PROJECT_NAME`. Together they
+let a second copy of the stack run beside the first.
+
+The doctor (`doctor.py`) runs the checks of `REGISTRY` in order. Each
+returns a `CheckResult` (PASS, WARN, FAIL or PENDING, a one-line summary,
+numbered fix steps and a README section from `readme_links.py`, whose
+anchors `tests/unit/test_ops_readme_links.py` checks). A check lists the
+checks it needs; when one of those FAILs it is shown as PENDING instead of
+running, but the whole checklist is always printed, followed by the first
+FAIL to fix. The doctor never reads `.env` itself: `env-file` checks only
+that it exists, and `settings` loads it through `AppConfig` and reports
+each setting as set or not set, never its value.
+
+| Check id        | Needs                           | Checks                                                                                                                  |
+| --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `os`            |                                 | operating system, WSL detection                                                                                         |
+| `git`           |                                 | git installed                                                                                                           |
+| `repo`          | `git`                           | inside the checkout, up to date with its upstream                                                                       |
+| `uv`            |                                 | uv installed                                                                                                            |
+| `python`        | `uv`                            | the Python version the project needs                                                                                    |
+| `py-deps`       | `python`                        | `uv sync` done and current                                                                                              |
+| `node`          |                                 | Node.js and npm match `.nvmrc` / `engines`                                                                              |
+| `web-deps`      | `node`                          | `npm ci` done and current                                                                                               |
+| `docker`        |                                 | Docker installed                                                                                                        |
+| `docker-daemon` | `docker`                        | the Docker engine is running                                                                                            |
+| `env-file`      |                                 | `.env` exists (WARN when settings come from the environment instead)                                                    |
+| `compose-file`  | `docker`                        | `docker compose config` accepts `docker-compose.yml`                                                                    |
+| `settings`      | `py-deps`                       | the server's own settings loader accepts the settings                                                                   |
+| `game-keys`     | `settings`                      | `HULLBREACH_GAME_SERVER_API_KEYS` set (needed by the platform demo)                                                     |
+| `ports`         |                                 | API, website and database ports free or held by this stack; names the holder                                            |
+| `db-container`  | `docker-daemon`, `compose-file` | the database container is up and healthy                                                                                |
+| `db-connect`    | `db-container`, `settings`      | the API's database URL connects                                                                                         |
+| `migrations`    | `db-connect`                    | the schema is at the Alembic head                                                                                       |
+| `seed`          | `migrations`                    | the item catalog is loaded (WARN when there is no admin)                                                                |
+| `api`           | `migrations`, `py-deps`         | `/api/v1/health` answers (the doctor starts the API if needed)                                                          |
+| `web`           | `web-deps`, `api`               | the website and its `/api` proxy answer                                                                                 |
+| `e2e`           | `api`, `seed`                   | register a throwaway `doctor-<timestamp>` user, login, `GET`/`PATCH /me`, `/me/matches`; the user is deleted afterwards |
+| `game-session`  | `e2e`, `game-keys`              | `GET /api/v1/auth/session` refuses without a key and accepts a configured one                                           |
+| `lan`           | `api`                           | whether other computers can reach the API, and what is in the way                                                       |
+
+Services the doctor starts for a check (`api`, `web`) are stopped again
+when the run ends. `--demo website` skips `game-keys`, `game-session` and
+`lan`; `--demo guest` and `--demo online` need nothing from the platform
+and point to the game's doctor; `--demo platform` runs everything and
+ends with the values the game server and clients need.
 
 ## Sprint 1 design
 

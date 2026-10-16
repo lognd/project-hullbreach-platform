@@ -38,11 +38,11 @@ def _client(keys: list[str]) -> TestClient:
 # frob:ticket 01M2H5T11MXDGNF6DR3TT12YE3
 # frob:tests src/hullbreach_server/auth/server_keys.py::require_game_server kind="unit"
 def test_missing_key_returns_401() -> None:
-    """A request with no X-Server-Key header gets 401."""
+    """A request with no X-Server-Key header gets 401 naming the missing key."""
     response = _client([_GOOD]).post("/guarded")
 
     assert response.status_code == 401
-    assert response.json() == {"detail": "not authenticated"}
+    assert response.json() == {"detail": "server key missing"}
 
 
 # frob:ticket 01M2H5T11MXDGNF6DR3TT12YE3
@@ -52,6 +52,7 @@ def test_wrong_key_returns_401() -> None:
     response = _client([_GOOD]).post("/guarded", headers={"X-Server-Key": "nope"})
 
     assert response.status_code == 401
+    assert response.json() == {"detail": "invalid server key"}
 
 
 # frob:ticket 01M2H5T11MXDGNF6DR3TT12YE3
@@ -68,19 +69,22 @@ def test_configured_key_is_accepted() -> None:
 # frob:ticket 01M2H5T11MXDGNF6DR3TT12YE3
 # frob:tests src/hullbreach_server/auth/server_keys.py::require_game_server kind="unit"
 def test_no_configured_keys_rejects_every_key() -> None:
-    """With no keys configured the guard fails closed, even for an empty key."""
+    """With no keys configured the guard fails closed with 503 and the reason."""
     client = _client([])
 
-    assert client.post("/guarded", headers={"X-Server-Key": _GOOD}).status_code == 401
-    assert client.post("/guarded", headers={"X-Server-Key": ""}).status_code == 401
+    for headers in ({"X-Server-Key": _GOOD}, {"X-Server-Key": ""}, {}):
+        response = client.post("/guarded", headers=headers)
+        assert response.status_code == 503
+        assert response.json() == {"detail": "server key not configured"}
 
 
 # frob:ticket 01M2H5T11MXDGNF6DR3TT12YE3
 # frob:tests src/hullbreach_server/auth/server_keys.py::check_server_key kind="unit"
 def test_check_server_key_distinguishes_missing_from_invalid() -> None:
-    """check_server_key reports Missing for None and Invalid for a wrong key."""
+    """check_server_key reports NotConfigured, Missing and Invalid distinctly."""
     keys = [SecretStr(_GOOD)]
 
+    assert check_server_key(_GOOD, []).unwrap_err() is ServerKeyError.NotConfigured
     assert check_server_key(None, keys).unwrap_err() is ServerKeyError.Missing
     assert check_server_key("nope", keys).unwrap_err() is ServerKeyError.Invalid
     assert check_server_key(_GOOD, keys).unwrap() is None

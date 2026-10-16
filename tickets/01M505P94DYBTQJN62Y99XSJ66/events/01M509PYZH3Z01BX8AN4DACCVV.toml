@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-15T17:28:13Z"
+digest = "ab6ed5b97307452a8628b1dcbc8adee35e880d2f6dbb898f24822dc0f9ee2482"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.30s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_doctor.py::test_doctor_prints_fix_steps_and_the_first_failure"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "2b5a21d77a110b7922b875c398709114abdf54891e437a3168166c56858a709f"
+at = "2026-10-15T17:28:13Z"
+actor = "lognd"
+rev = 1

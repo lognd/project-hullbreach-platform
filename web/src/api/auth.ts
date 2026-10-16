@@ -40,13 +40,6 @@ export type LoginResponse = {
 };
 
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
-/** GET /api/v1/auth/session's 200 response body. */
-export type SessionInfo = {
-  user_id: string;
-  role: Role;
-};
-
-// frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** A non-2xx auth response, normalized to a status/detail/optional field shape (docs/design/sprint-1.md sec.6). */
 export class ApiError extends Error {
   status: number;
@@ -135,12 +128,4 @@ export async function logout(token: string): Promise<void> {
     const { detail, field } = await parseErrorBody(response);
     throw new ApiError(response.status, detail, field);
   }
-}
-
-// frob:doc docs/index.md#auth-api-client-and-the-register-page
-/** GET /api/v1/auth/session with the caller's bearer token; 200 SessionInfo on success, throws an ApiError otherwise. */
-export async function fetchSession(token: string): Promise<SessionInfo> {
-  return requestJson<SessionInfo>(`${AUTH_BASE}/session`, {
-    headers: bearerHeaders(token),
-  });
 }

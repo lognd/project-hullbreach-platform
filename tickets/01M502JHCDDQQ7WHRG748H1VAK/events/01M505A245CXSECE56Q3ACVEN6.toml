@@ -1,0 +1,29 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-15T16:11:15Z"
+digest = "14d08af1c29b53968ed679197520875a12f9255dcdd9b9b3f303bf1ad56e3654"
+exit_code = 0
+inline = """
+.........                                                                [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.11/site-packages/starlette/testclient.py:53
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 2 warnings in 0.88s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_auth_game.py::test_session_endpoint_rejects_missing_server_key_before_reading_the_token tests/unit/test_auth_game.py::test_session_endpoint_rejects_wrong_server_key tests/unit/test_auth_game.py::test_session_endpoint_refuses_when_no_server_keys_are_configured tests/unit/test_server_keys.py"
+size = 921
+status = "measured"
+test_count = 9
+tests_digest = "888f5f5b82aa76ef44ad3e82c747a70ac5d821a24d02e899b5ed402baa1a0101"
+at = "2026-10-15T16:11:15Z"
+actor = "lognd"
+rev = 1

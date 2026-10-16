@@ -10,14 +10,8 @@ Company of Theseus, UF CEN3031, Fall 2026. All rights reserved, see
 
 > **Read this first (current status).**
 >
-> - The profile, match history and account settings pages need two open
->   pull requests merged into `main`: **#38** (the `/api/v1/me` API those
->   pages call) and **#39** (keeps you signed in while you click between
->   pages). Until both are merged, `main` lets you register and log in,
->   but logging in drops you back on the home page already signed out,
->   and the Profile page shows "Not Found".
-> - Even with both merged, **reloading the page (F5, or typing an address
->   into the address bar) signs you out.** The sign-in is kept only in
+> - **Reloading the page (F5, or typing an address into the address
+>   bar) signs you out.** The sign-in is kept only in
 >   the open tab's memory, never on disk. Moving between pages by
 >   clicking the links in the top bar keeps you signed in. Ticket
 >   `~6TZCHZ0` tracks staying signed in across reloads.
@@ -27,7 +21,8 @@ Contents:
 1. [What is this?](#what-is-this) -- game vs. platform, and how they talk
 2. [Which guide do I need?](#which-guide-do-i-need)
 3. [Step-by-step: run the platform on your computer](#step-by-step-run-the-platform-on-your-computer)
-   -- written for someone who has never used a terminal
+   -- written for someone who has never used a terminal; Step 1 runs
+   the **doctor**, which checks everything and tells you how to fix it
 4. [Demo script for standup](#demo-script-for-standup)
 5. [Connecting the game to the platform](#connecting-the-game-to-the-platform)
 6. [Hosting a demo for other computers](#hosting-a-demo-for-other-computers)
@@ -106,8 +101,15 @@ to type, what it does, and what you should see. Text that looks like
 boxes hold commands: copy **one line at a time**, paste it into the
 terminal, and press Enter.
 
+The short version: open a terminal (Step 0), download the code and run
+the **doctor** (Step 1). The doctor checks everything below for you,
+and for anything that is wrong it prints numbered steps that fix it and
+a link to the part of this guide that explains it. Steps 2-6 are the
+same instructions written out in full, for when you want to know what
+the doctor asks you to do, or when something goes wrong.
+
 The first time takes roughly 30-60 minutes, mostly downloads. Later
-starts take about 2 minutes (see
+starts take about a minute (see
 [Starting again later](#starting-again-later)).
 
 ### Step 0: What a terminal is, and how to open one
@@ -132,8 +134,10 @@ Things that confuse everyone the first time:
   `Ctrl+C` (hold Control, press C). On a Mac this is also Control, not
   Command.
 - **Several terminals at once**: the platform is three programs running
-  together, and two of them keep their terminal busy. You will open one
-  extra terminal window (or tab) for each.
+  together. The `start` command (Step 5) runs them in the background, so
+  one terminal is enough. Only if you start each part by hand do two of
+  them keep their terminal busy, with one extra terminal window (or tab)
+  each.
 
 How to open one:
 
@@ -154,9 +158,129 @@ How to open one:
 - **Linux (Ubuntu)**: press `Ctrl+Alt+T`, or open "Terminal" from the
   app menu.
 
-### Step 1: Install the tools (one time)
+### Step 1: Get the code and run the doctor
 
-You need four programs. Each has a "check" command: if it prints a
+First check that Git (the tool that downloads code) is there:
+
+```
+git --version
+```
+
+If it prints something like `git version 2.34.1`, go on. If it says
+`command not found` (or, on a Mac, a box offers to install "command line
+developer tools"), do [2a. Git](#2a-git) first, then come back.
+
+Now download the code and run the doctor:
+
+```
+mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/lognd/project-hullbreach-platform.git platform
+cd platform
+./doctor.sh
+```
+
+What each line does:
+
+1. `mkdir -p ~/projects` makes a folder called `projects` in your home
+   folder (`~` means "my home folder"). Prints nothing.
+2. `cd ~/projects` moves the terminal _into_ that folder. `cd` means
+   "change directory" (directory = folder).
+3. `git clone ...` downloads this repo into a new folder called
+   `platform`. You should see `Cloning into 'platform'...` and a few
+   lines counting objects. The repo is public, so no login is needed.
+4. `cd platform` moves into the downloaded code. **Every later command
+   is run from here.** In a new terminal, first type
+   `cd ~/projects/platform`.
+5. `./doctor.sh` runs the doctor.
+
+Windows note: keep the code inside Ubuntu (`~/projects`), not under
+`/mnt/c/...`, where everything is many times slower. If you downloaded
+the code in Windows itself and double-clicked `doctor.cmd`, it explains
+how to get into the Ubuntu window; follow it, then do this step there.
+
+**What the doctor does.** First it looks for the four tools (Git, uv,
+Docker, Node.js). For a missing one it says what it is for and how to
+install it, and for most it offers to run the official installer: it
+asks `[y/N]`, and only `y` then Enter installs anything. Then it runs
+the full checklist. Each row looks like this:
+
+```
+[PASS]    uv               uv 0.11.19
+[FAIL]    env-file         there is no .env settings file
+            How to fix:
+              1. Copy the example: cp .env.example .env
+              2. ...
+            More help: README 'Step 4: Create your settings file': https://...
+[FAIL]    docker-daemon    the Docker engine is not running
+[PENDING] db-container     waiting for: docker-daemon (fix that first)
+```
+
+- **PASS**: fine.
+- **WARN**: works, but read the text; sometimes it is fine for your demo.
+- **FAIL**: broken. Do its numbered "How to fix" steps.
+- **PENDING**: not checked yet, because it needs a FAIL above it fixed
+  first.
+
+The last lines name the **first FAIL**. Fix that one, then run
+`./doctor.sh` again; repeat until there is no FAIL. The doctor never
+shows your passwords or keys, and it changes nothing without asking,
+except that it may start the API and website for a moment to test them
+and stops them again afterwards. Its sign-up test creates a temporary
+account called `doctor-<date and time>` and deletes it again.
+
+Useful variations:
+
+- `./doctor.sh --only db-connect` runs one check (plus the checks it
+  needs). The names are in the table below.
+- `./doctor.sh --demo website` checks only what the website demo needs,
+  then prints the commands to start it. The other demos are
+  `--demo platform` (sign in to the game with a website account),
+  `--demo guest` and `--demo online` (game demos that do not need this
+  platform at all; the doctor says so and points you to the game's own
+  doctor).
+- `./doctor.sh --collect` also writes a support file
+  (`hullbreach-support-<date>.zip`) to send to the team when you are
+  stuck. Passwords and keys are replaced by `<redacted>` and the `.env`
+  file itself is never copied.
+- `make doctor` does the same as `./doctor.sh`, and
+  `uv run hullbreach_server doctor` runs the checklist without the tool
+  check at the start.
+
+The checks, in order (each FAIL links to the section that explains it):
+
+| Check           | What it checks                                                                 | Explained in                                                      |
+| --------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `os`            | Linux, macOS or WSL (not Git Bash or plain Windows)                            | [Step 0](#step-0-what-a-terminal-is-and-how-to-open-one)          |
+| `git`           | Git is installed                                                               | [2a. Git](#2a-git)                                                |
+| `repo`          | this folder is a clone and is up to date with GitHub                           | [Step 1](#step-1-get-the-code-and-run-the-doctor)                 |
+| `uv`            | uv is installed                                                                | [2c. uv](#2c-uv)                                                  |
+| `python`        | the Python version uv uses                                                     | [2c. uv](#2c-uv)                                                  |
+| `py-deps`       | the Python packages are installed (`uv sync`)                                  | [Step 3](#step-3-install-the-projects-packages)                   |
+| `node`          | Node.js and npm, new enough for `package.json` and `.nvmrc`                    | [2d. Node.js](#2d-nodejs)                                         |
+| `web-deps`      | the website packages are installed (`npm ci`)                                  | [Step 3](#step-3-install-the-projects-packages)                   |
+| `docker`        | Docker is installed                                                            | [2b. Docker](#2b-docker)                                          |
+| `docker-daemon` | Docker is running                                                              | [2b. Docker](#2b-docker)                                          |
+| `env-file`      | a `.env` settings file exists (its contents are never read by this check)      | [Step 4](#step-4-create-your-settings-file)                       |
+| `compose-file`  | `docker-compose.yml` is valid                                                  | [Database problems](#database-problems)                           |
+| `settings`      | every required setting is set (says which, never the values)                   | [Step 4](#step-4-create-your-settings-file)                       |
+| `game-keys`     | a game-server key is set (only needed for signed-in game play)                 | [Connecting the game](#connecting-the-game-to-the-platform)       |
+| `ports`         | the database, API and website ports are free, or used by this platform         | [Database problems](#database-problems)                           |
+| `db-container`  | the database container is running and healthy                                  | [Database problems](#database-problems)                           |
+| `db-connect`    | the API's settings can log in to the database                                  | [Database problems](#database-problems)                           |
+| `migrations`    | the database tables are up to date                                             | [Database problems](#database-problems)                           |
+| `seed`          | the item catalog and the first admin account are loaded                        | [Database problems](#database-problems)                           |
+| `api`           | the API answers on its port                                                    | [API problems](#api-problems)                                     |
+| `web`           | the website loads and passes `/api` requests to the API                        | [Website problems](#website-problems)                             |
+| `e2e`           | register, log in, view and edit a profile, match history, as a real user would | [Signing in on the website](#signing-in-on-the-website)           |
+| `game-session`  | a game server with the right key can check a player's sign-in                  | [Game cannot reach the platform](#game-cannot-reach-the-platform) |
+| `lan`           | what other computers on your network need (address, firewall, WSL)             | [Hosting](#hosting-a-demo-for-other-computers)                    |
+
+### Step 2: Install the tools (one time)
+
+The doctor (Step 1) checks these four programs (checks `git`, `uv`,
+`node`, `docker` and `docker-daemon`) and offers to install a missing
+one for you. This is the same thing done by hand. Each has a "check" command: if it prints a
 version number, that tool is ready.
 
 | Tool           | What it is for                                                      |
@@ -166,7 +290,7 @@ version number, that tool is ready.
 | uv             | Installs the right Python and the API's packages, and runs the API. |
 | Node.js (+npm) | Runs the website's development server.                              |
 
-#### 1a. Git
+#### 2a. Git
 
 - **Windows (in the Ubuntu window) and Linux**: type the line below. It
   asks for your password (invisible), then installs Git.
@@ -180,7 +304,7 @@ version number, that tool is ready.
 Check: `git --version` prints something like `git version 2.34.1` (any
 version is fine).
 
-#### 1b. Docker
+#### 2b. Docker
 
 - **Windows**: download Docker Desktop from
   https://www.docker.com/products/docker-desktop/ and install it, keeping
@@ -206,7 +330,7 @@ its sign-in screen.
 Check: `docker compose version` prints something like
 `Docker Compose version 2.40.3` (any 2.x is fine).
 
-#### 1c. uv
+#### 2c. uv
 
 Same on every system (on Windows, in the Ubuntu window):
 
@@ -221,7 +345,7 @@ afterwards so it notices the new program.
 Check: `uv --version` prints something like `uv 0.11.19`. Do **not**
 install Python yourself; uv fetches the right version.
 
-#### 1d. Node.js
+#### 2d. Node.js
 
 Same on every system:
 
@@ -242,34 +366,6 @@ What this does: downloads Node.js version 22 and makes it the default.
 Check: `node --version` prints `v22.` and more digits (for example
 `v22.18.0`), and `npm --version` prints a number such as `10.9.3`. Any
 Node 20 or newer works.
-
-### Step 2: Download the code
-
-```
-mkdir -p ~/projects
-cd ~/projects
-git clone https://github.com/lognd/project-hullbreach-platform.git platform
-cd platform
-```
-
-What each line does:
-
-1. `mkdir -p ~/projects` makes a folder called `projects` in your home
-   folder (`~` means "my home folder"). Prints nothing.
-2. `cd ~/projects` moves the terminal _into_ that folder. `cd` means
-   "change directory" (directory = folder).
-3. `git clone ...` downloads this repo into a new folder called
-   `platform`. You should see `Cloning into 'platform'...` and a few
-   lines counting objects. The repo is public, so no login is needed.
-4. `cd platform` moves into the downloaded code. **Every later command
-   is run from here.** In a new terminal, first type
-   `cd ~/projects/platform`.
-
-Check: `ls` (list files) shows names including `README.md`,
-`docker-compose.yml`, `package.json` and `pyproject.toml`.
-
-Windows note: keep the code inside Ubuntu (`~/projects`), not under
-`/mnt/c/...`, where everything is many times slower.
 
 ### Step 3: Install the project's packages
 
@@ -294,6 +390,9 @@ folder. It takes about a minute and ends like
 follow: ignore it, and do **not** run `npm audit fix` (it rewrites files
 the whole team shares).
 
+The doctor's `py-deps` and `web-deps` checks say when either needs to
+run again (for example after `git pull` brought new packages).
+
 ### Step 4: Create your settings file
 
 The platform reads its settings, including the database password, from a
@@ -317,117 +416,145 @@ example `blue-ocean-4821`) and put it in the file:
    `hullbreach:change-me-local-only@localhost`. Replace
    `change-me-local-only` there with **the same password**. The two must
    match exactly, or the API cannot get into the database.
-4. Save and quit: `Ctrl+O`, Enter, then `Ctrl+X`.
+4. Go to the line `HULLBREACH_ADMIN_PASSWORD=changeme` and replace
+   `changeme` with a password for the first admin account.
+5. Save and quit: `Ctrl+O`, Enter, then `Ctrl+X`.
 
 Leave everything else as it is. (`HULLBREACH_GAME_SERVER_API_KEYS` is only
-for the game; see
-[Connecting the game](#connecting-the-game-to-the-platform).)
+needed when a game server signs players in through this platform; run
+`uv run hullbreach_server server-key` and it tells you what to put
+there. See [Connecting the game](#connecting-the-game-to-the-platform).)
 
-### Step 5: Start the database
+Run `./doctor.sh` again afterwards: its `env-file` and `settings` checks
+confirm the file is there and every required setting is filled in, and
+`db-connect` confirms the two passwords match. It names settings but
+never prints their values.
 
-Make sure Docker Desktop is open (Windows/Mac), then:
-
-```
-docker compose up -d db
-```
-
-What this does: starts Postgres in the background (`-d` = "detached":
-you get the prompt back). The first time it downloads Postgres (about
-100 MB). The output ends with lines like:
+### Step 5: Start everything
 
 ```
- Container platform-db-1  Created
- Container platform-db-1  Starting
- Container platform-db-1  Started
+uv run hullbreach_server start
 ```
 
-Wait about 10 seconds, then check it:
+(`make start` does the same.) What this does, in order: starts the
+database in Docker and waits until it is healthy, creates or updates the
+database tables, loads the item catalog and the first admin account,
+then starts the API and the website **in the background**, so this
+terminal stays free. It ends like this:
 
 ```
-docker compose ps
+The platform is running
+  Website:  http://localhost:5173
+  API:      http://127.0.0.1:8000/api/v1/health
+  Logs:     /home/you/projects/platform/.hullbreach/logs
 ```
 
-You should see one row whose STATUS ends in `(healthy)`, like this:
+Running it again is harmless: whatever already runs is left alone. The
+first time, Docker downloads Postgres (about 100 MB), so it takes a
+while. If it stops with "Problem: ..." and numbered steps, do those
+steps, or run `./doctor.sh` for a full diagnosis.
 
-```
-NAME            IMAGE                COMMAND                  SERVICE   CREATED         STATUS                   PORTS
-platform-db-1   postgres:17-alpine   "docker-entrypoint.s..."   db        7 seconds ago   Up 6 seconds (healthy)   127.0.0.1:5432->5432/tcp
-```
+Other commands for the running platform (each also works as
+`make <name>`):
 
-If it says `(health: starting)`, wait a few seconds and run it again. If
-you see `port is already allocated` or a `POSTGRES_PASSWORD` error, see
-[Troubleshooting: database](#database-steps-5-6).
+| Command                               | What it does                                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `uv run hullbreach_server status`     | shows what is running, and on which address                                                   |
+| `uv run hullbreach_server stop`       | stops the website, the API and the database; your accounts are kept                           |
+| `uv run hullbreach_server demo-users` | makes two player accounts for a demo and prints their passwords once                          |
+| `uv run hullbreach_server server-key` | makes a game-server key and says exactly where to put it                                      |
+| `uv run hullbreach_server lan`        | starts everything so other computers on your network can connect                              |
+| `uv run hullbreach_server reset-db`   | **deletes every account** and makes an empty database; asks you to type the volume name first |
 
-### Step 6: Create the database tables (do not skip)
+The API's and website's output goes to files in `.hullbreach/logs`
+(`api.log`, `web.log`), not to the terminal.
 
-```
-uv run hullbreach_server db upgrade
-```
+#### Starting each part by hand
 
-What this does: creates the tables (users, sessions, matches and so on)
-in the empty database. **If you skip it, the website still loads, but
-registering fails with "request failed"**, because there is nowhere to
-store the account. You will see many lines; the important ones are:
+The `start` command above does all of this for you. These are the
+manual commands, for when you want to see each part's output in its own
+terminal or `start` does not work.
 
-```
-running alembic upgrade head
-...
-Running upgrade 0f6d70e4d209 -> 550676f68926, create sessions table
-...
-migrations are at head
-```
+1. **Database.** Make sure Docker Desktop is open (Windows/Mac), then:
 
-Running it again is harmless (it just says `migrations are at head`).
-Run it again whenever you download newer code with `git pull`.
+   ```
+   docker compose up -d db
+   ```
 
-### Step 7: Start the API (terminal 1)
+   This starts Postgres in the background (`-d` = "detached": you get
+   the prompt back). The output ends with lines like
+   `Container platform-db-1  Started`. Wait about 10 seconds, then check
+   it with `docker compose ps`: you should see one row whose STATUS ends
+   in `(healthy)`, like this:
 
-```
-uv run hullbreach_server
-```
+   ```
+   NAME            IMAGE                COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+   platform-db-1   postgres:17-alpine   "docker-entrypoint.s..."   db        7 seconds ago   Up 6 seconds (healthy)   127.0.0.1:5432->5432/tcp
+   ```
 
-What this does: starts the API. **This terminal is now busy** as long as
-the API runs; leave it open. Among the first lines you should see:
+   If it says `(health: starting)`, wait a few seconds and run it again.
+   If you see `port is already allocated` or a `POSTGRES_PASSWORD`
+   error, see [Database problems](#database-problems).
 
-```
-database connectivity check succeeded
-serving on http://127.0.0.1:8000
-INFO:     Started server process [12345]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-```
+2. **Tables (do not skip).**
 
-(The number in brackets differs every time.) Check: open a web browser
-and go to http://127.0.0.1:8000/api/v1/health. The page shows
-`{"status":"ok","version":"0.1.0"}`. The interactive API reference is at
-http://127.0.0.1:8000/api/docs.
+   ```
+   uv run hullbreach_server db upgrade
+   uv run hullbreach_server db seed
+   ```
 
-### Step 8: Start the website (terminal 2)
+   The first line creates the tables (users, sessions, matches and so
+   on) in the empty database. **If you skip it, the website still loads,
+   but registering fails with "request failed"**, because there is
+   nowhere to store the account. It ends with `migrations are at head`.
+   The second line loads the item catalog and creates the first admin
+   account from `HULLBREACH_ADMIN_USERNAME` / `HULLBREACH_ADMIN_PASSWORD`.
+   Both are harmless to run again; run them again whenever you download
+   newer code with `git pull`.
 
-Open a **new** terminal window or tab (the first one is busy with the
-API), go to the code, and start the website:
+3. **API (terminal 1).**
 
-```
-cd ~/projects/platform
-npm run dev
-```
+   ```
+   uv run hullbreach_server
+   ```
 
-What this does: starts the website's development server. This terminal
-is now busy too. You should see this (your terminal draws the `->`
-arrows as a single arrow character):
+   **This terminal is now busy** as long as the API runs; leave it
+   open. Among the first lines you should see:
 
-```
-> hullbreach-web@0.1.0 dev
-> vite
+   ```
+   database connectivity check succeeded
+   serving on http://127.0.0.1:8000
+   INFO:     Application startup complete.
+   INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+   ```
 
-  VITE v8.3.0  ready in 656 ms
+   Check: open http://127.0.0.1:8000/api/v1/health in a web browser. The
+   page shows `{"status":"ok","version":"0.1.0"}`. The interactive API
+   reference is at http://127.0.0.1:8000/api/docs.
 
-  ->  Local:   http://localhost:5173/
-  ->  Network: use --host to expose
-```
+4. **Website (terminal 2).** Open a **new** terminal window or tab (the
+   first one is busy with the API), then:
 
-### Step 9: Try it
+   ```
+   cd ~/projects/platform
+   npm run dev
+   ```
+
+   This terminal is now busy too. You should see this (your terminal
+   draws the `->` arrows as a single arrow character):
+
+   ```
+     VITE v8.3.0  ready in 656 ms
+
+     ->  Local:   http://localhost:5173/
+     ->  Network: use --host to expose
+   ```
+
+To stop parts started by hand, press `Ctrl+C` in the website terminal
+and in the API terminal, then run `docker compose stop` for the
+database.
+
+### Step 6: Try it
 
 Open http://localhost:5173 in your browser. You should see a dark page
 titled **Project Hullbreach** with "Build a ship. Breach a hull." and
@@ -437,57 +564,70 @@ titled **Project Hullbreach** with "Build a ship. Breach a hull." and
    digits, `_`, `.` or `-`), an email, and a password (8 or more
    characters), and submit. You should see **Registration complete**.
 2. Click **Log in** and sign in with the same username and password.
-   With PRs #38 and #39 merged, the top bar now shows your username,
-   **Profile**, **Matches**, **Settings** and **Log out**. On a `main`
-   without them you land on the home page signed out again; that is the
-   known issue [at the top](#project-hullbreach-platform).
+   The top bar now shows your username, **Profile**, **Matches**,
+   **Settings** and **Log out**.
+
+Want ready-made accounts for a demo? Run
+`uv run hullbreach_server demo-users`. It makes the player accounts
+`demo_pilot_1` and `demo_pilot_2` and asks you for one password for
+both (press Enter instead to have one made up and printed once; it is
+never written to a file or log).
 
 That is the whole platform running. Next: the
 [demo script](#demo-script-for-standup).
 
 ### Stopping everything
 
-1. In the website terminal, press `Ctrl+C`. The prompt comes back.
-2. In the API terminal, press `Ctrl+C`. It prints
-   `INFO:     Application shutdown complete.` and the prompt comes back.
-3. Stop the database (your accounts are kept):
-   ```
-   docker compose stop
-   ```
+```
+uv run hullbreach_server stop
+```
 
-`docker compose down` also stops it and also keeps your data.
-`docker compose down -v` **deletes every account**; next time you start
-from empty and must do Step 6 again.
+(or `make stop`) stops the website, the API and the database. Your
+accounts are kept. If you started parts by hand, press `Ctrl+C` in their
+terminals instead, then `docker compose stop`.
+
+`docker compose down` also stops the database and also keeps your data.
+`docker compose down -v` and `uv run hullbreach_server reset-db`
+**delete every account**; the next `start` begins from an empty
+database.
 
 ### Starting again later
 
-After a restart, open Docker Desktop (Windows/Mac), then in one
-terminal:
+After a restart, open Docker Desktop (Windows/Mac), then:
 
 ```
 cd ~/projects/platform
-docker compose up -d db
-uv run hullbreach_server
-```
-
-and in a second terminal:
-
-```
-cd ~/projects/platform
-npm run dev
+uv run hullbreach_server start
 ```
 
 If you downloaded newer code with `git pull` since last time, run
-`uv sync`, `npm ci` and `uv run hullbreach_server db upgrade` before
-starting the API.
+`./doctor.sh` first: it says when `uv sync` or `npm ci` must run again
+(`start` already updates the database tables).
+
+### Running a second copy, or using other ports
+
+The platform uses ports 5432 (database), 8000 (API) and 5173 (website).
+If something else already uses one (the doctor's `ports` check says
+what), or you want a second copy beside the first, set these in `.env`
+(or in the terminal with `export NAME=value`) before `start`:
+
+| Setting                | Default         | What it changes                                                                             |
+| ---------------------- | --------------- | ------------------------------------------------------------------------------------------- |
+| `HULLBREACH_DB_PORT`   | `5432`          | the database's port; change the port inside `HULLBREACH_DATABASE_URL` to match              |
+| `HULLBREACH_PORT`      | `8000`          | the API's port; the website passes `/api` requests to it automatically                      |
+| `HULLBREACH_WEB_PORT`  | `5173`          | the website's port                                                                          |
+| `HULLBREACH_HOST`      | `127.0.0.1`     | which network the API listens on (`lan` sets `0.0.0.0` for you)                             |
+| `COMPOSE_PROJECT_NAME` | the folder name | Docker's name for this copy's database; a second copy needs its own so it gets its own data |
 
 ## Demo script for standup
 
-Rehearse once before the meeting, then do it live. Have the API and
-website running ([Steps 5-8](#step-5-start-the-database)). Use a
-throwaway account such as `demo_pilot` / `demo-password-123`, with a new
-name each time (names cannot be reused). Items 3-5 need PRs #38 and #39
-on the code you run.
+Rehearse once before the meeting, then do it live. Beforehand run
+`./doctor.sh --demo website`; when it shows no FAIL, run
+`uv run hullbreach_server start`
+([Step 5](#step-5-start-everything)). Use a throwaway account such as
+`demo_pilot` / `demo-password-123`, with a new name each time (names
+cannot be reused), or the accounts from
+`uv run hullbreach_server demo-users`.
 
 Move around **only by clicking the links in the top bar**. Do not reload
 the page or type addresses during the demo; that signs you out (see
@@ -518,16 +658,39 @@ the page or type addresses during the demo; that signs you out (see
       with the same account, and join a match. The steps, and what the
       game shows, are in the game README's
       [Play with the platform](https://github.com/lognd/project-hullbreach-game#readme)
-      section. On the platform side, only the API (Step 7) must be
-      running.
+      section. On the platform side, only the API must be running
+      (`start` runs it). `./doctor.sh --demo platform` checks this side
+      and prints the values the game needs.
 
 ## Connecting the game to the platform
 
+The game can be demoed three ways. The doctor knows each one: run
+`./doctor.sh --demo <name>` and it checks only what that demo needs and
+ends with the exact next commands.
+
+| Demo       | What players do                                           | Needs this platform?                |
+| ---------- | --------------------------------------------------------- | ----------------------------------- |
+| `online`   | join each other through the game's online lobby (Relay)   | no                                  |
+| `guest`    | play without any account                                  | no                                  |
+| `platform` | sign in with a website account; the game server checks it | yes: the API, and a game-server key |
+
+For `online` and `guest` the doctor says there is nothing to start here
+and points you to the
+[game's doctor](https://github.com/lognd/project-hullbreach-game#readme).
+For `platform` it checks the platform end to end, including a test
+sign-in checked the way a game server checks it (check `game-session`),
+and then prints a "Values for the game" block: the
+`HULLBREACH_PLATFORM_URL` the game should use (this computer's, and the
+network address for another computer), `HULLBREACH_PLATFORM_SERVER_KEY`
+and `HULLBREACH_REQUIRE_PLATFORM_AUTH=1`. Give those to the game's
+doctor on the game computer.
+
 The game finds the platform by address. Its default is
-`http://127.0.0.1:8000`, exactly where Step 7 starts the API, so **if
-the game and the platform run on the same computer, there is nothing to
-configure**: start the platform (Steps 5-7), then follow the game
-README's "Play with the platform" section.
+`http://127.0.0.1:8000`, exactly where `start` runs the API, so **if the
+game and the platform run on the same computer, only the game-server
+key needs setting up** (below): start the platform
+([Step 5](#step-5-start-everything)), then follow the game README's
+"Play with the platform" section.
 
 - **Windows + WSL**: a game running on Windows (for example in the Unity
   editor) reaches an API started in the Ubuntu window at
@@ -543,25 +706,46 @@ README's "Play with the platform" section.
   `HULLBREACH_PLATFORM_URL` environment variable). The game README has
   the exact launch commands.
 - **Requiring sign-in**: by default a game server lets guests in.
-  Started with `-hullbreachRequirePlatformAuth`, it disconnects anyone
+  Started with `-hullbreachRequirePlatformAuth` (or the environment
+  variable `HULLBREACH_REQUIRE_PLATFORM_AUTH=1`), it disconnects anyone
   not signed in with "This server requires a Hullbreach account. Sign in
   and reconnect."
 - **Game server key** (`HULLBREACH_GAME_SERVER_API_KEYS` in `.env`): a
-  shared secret meant to prove a game server is genuine. Make one with
-  `python3 -c "import secrets; print(secrets.token_urlsafe(32))"`, put it
-  after `HULLBREACH_GAME_SERVER_API_KEYS=` in the platform's `.env`
-  (then restart the API), and give the game server the same value as
-  `HULLBREACH_PLATFORM_SERVER_KEY`. **The platform does not check it yet**
-  when a game server verifies a player (ticket `~48H1VAK`), so a missing
-  or wrong key changes nothing in a demo today. Setting it now keeps the
-  demo working once that ticket lands.
+  shared secret that proves a game server is genuine. **It is required**
+  for signed-in play: the platform refuses to verify a player for a game
+  server that does not send a matching key. Make one with
+  `uv run hullbreach_server server-key` (or `make server-key`). It
+  prints a new key once and says where it goes: after
+  `HULLBREACH_GAME_SERVER_API_KEYS=` in the platform's `.env` (then
+  `uv run hullbreach_server stop` and `start` again), and the same value
+  as `HULLBREACH_PLATFORM_SERVER_KEY` on the game server. The doctor's
+  `game-keys` check says whether one is set (never its value), and
+  `game-session` proves the running API accepts it. Guest play (no
+  sign-in) does not need it.
 
 ## Hosting a demo for other computers
 
 This is for a demo on one Wi-Fi network (for example laptops in the same
 room). It is not internet hosting.
 
-On the computer that runs the platform:
+On the computer that runs the platform, the short way:
+
+```
+uv run hullbreach_server lan
+```
+
+(or `make lan`). It starts the database, API and website listening on
+the network, then prints the address to share, for example
+`Website for a friend:  http://192.168.1.23:5173` and
+`Platform URL for a game server:  http://192.168.1.23:8000`. On WSL it
+also prints the exact Windows commands that let the traffic through
+(and how to undo them), and asks `[y/N]` before running them; Windows
+then asks for permission itself. Answer `N` to run them by hand instead.
+`./doctor.sh --only lan` checks whether other computers can reach the
+platform and what is in the way. Then test from the other computer as in
+step 6 of the long way below.
+
+The long way, by hand:
 
 1. Start the API so other machines may connect (`0.0.0.0` means "accept
    connections from the network, not only from this computer"):
@@ -622,8 +806,6 @@ So nobody presents this as deployed:
 - The website runs on its development server (`npm run dev`). This repo
   has no production web hosting setup.
 - Reloading the page signs you out (ticket `~6TZCHZ0`).
-- The game server key is not enforced on the session check (ticket
-  `~48H1VAK`).
 - Nothing records match results yet (T-0054), so ELO never changes and
   match history stays empty.
 - The login attempt limit lives in the API's memory; restarting the API
@@ -632,10 +814,19 @@ So nobody presents this as deployed:
 
 ## Troubleshooting
 
-Find your symptom, then read the cause and apply the fix. Text in quotes
-is what the program actually prints.
+First run `./doctor.sh`: it finds most of these problems itself and
+prints the fix. Each part below names the doctor checks that cover it,
+so `./doctor.sh --only <check>` re-tests just that after a fix. Still
+stuck? `./doctor.sh --collect` writes a support file (passwords and keys
+removed) to send to the team.
+
+Otherwise find your symptom, then read the cause and apply the fix. Text
+in quotes is what the program actually prints.
 
 ### Installing and downloading
+
+Doctor checks: `os`, `git`, `repo`, `uv`, `python`, `py-deps`, `node`,
+`web-deps`, `docker`.
 
 - **"command not found" for `uv`, `nvm`, `node` or `npm`**
   - Cause: the tool was installed after this terminal was opened, so the
@@ -657,7 +848,10 @@ is what the program actually prints.
     downloads.
   - Fix: switch to eduroam or a phone hotspot.
 
-### Database (Steps 5-6)
+### Database problems
+
+Doctor checks: `docker-daemon`, `compose-file`, `ports`, `db-container`,
+`db-connect`, `migrations`, `seed`.
 
 - **Something like "Cannot connect to the Docker daemon", or "The
   command 'docker' could not be found in this WSL 2 distro"**
@@ -678,21 +872,27 @@ is what the program actually prints.
 - **`Bind for 0.0.0.0:5432 failed: port is already allocated`**
   - Cause: another database (another copy of this project, or a Postgres
     installed on your computer) already uses port 5432.
+  - Doctor check: `ports` names the program holding the port.
   - Fix, easiest: stop the other one (`docker ps` lists running
     containers; `docker stop <name>` stops one). Fix, if you need both:
-    in `docker-compose.yml` change `"127.0.0.1:5432:5432"` to
-    `"127.0.0.1:5433:5432"`, and in `.env` change `@localhost:5432/` to
-    `@localhost:5433/` in `HULLBREACH_DATABASE_URL`, then
-    `docker compose up -d db` again. Do not commit that
-    `docker-compose.yml` change.
+    pick another port with `HULLBREACH_DB_PORT` (for example
+    `HULLBREACH_DB_PORT=5433` in `.env`) and change `@localhost:5432/` to
+    `@localhost:5433/` in `HULLBREACH_DATABASE_URL`, then run
+    `uv run hullbreach_server start` again. See
+    [Running a second copy, or using other ports](#running-a-second-copy-or-using-other-ports).
 - **`docker compose ps` shows `unhealthy`, or shows nothing**
   - Fix: `docker compose logs db` and read the last lines. If you changed
     `POSTGRES_PASSWORD` _after_ the first start, the old password is
     still the real one (it is stored with the data): put the old one
-    back, or wipe and recreate with `docker compose down -v`, then
-    `docker compose up -d db` and Step 6 (this deletes all accounts).
+    back, or wipe and recreate with `uv run hullbreach_server reset-db`
+    (this deletes all accounts; it asks first), then
+    `uv run hullbreach_server start`.
 
-### API (Step 7)
+### API problems
+
+Doctor checks: `settings`, `ports`, `api`. The API started by `start`
+writes its output to `.hullbreach/logs/api.log`; read the last lines
+there.
 
 - **`configuration error: invalid configuration: database_url: Field required`**
   - Cause: no `.env`, or `HULLBREACH_DATABASE_URL` is missing from it.
@@ -705,13 +905,16 @@ is what the program actually prints.
     passwords in `.env` character by character.
 - **`[Errno 98] error while attempting to bind on address ('127.0.0.1', 8000): address already in use`**
   - Cause: an API is already running, probably in a terminal you forgot.
-  - Fix: find that terminal and press `Ctrl+C`, or close it. (Starting
-    on another port with `--port 8001` works for the API alone, but the
-    website always sends requests to 8000.)
+  - Doctor check: `ports` names the program holding the port.
+  - Fix: `uv run hullbreach_server stop`, or find that terminal and press
+    `Ctrl+C`. To run on another port instead, set `HULLBREACH_PORT` (the
+    website follows it); see
+    [Running a second copy, or using other ports](#running-a-second-copy-or-using-other-ports).
 - **Registering fails: the page shows "request failed", and the API
   terminal prints a long error containing
   `relation "users" does not exist`**
-  - Cause: Step 6 was skipped, so the database has no tables. (The
+  - Cause: the tables step was skipped (`start` does it for you), so the
+    database has no tables. Doctor check: `migrations`. (The
     `/api/v1/health` and `/api/v1/ready` pages still say ok, because the
     database itself is reachable.)
   - Fix: `uv run hullbreach_server db upgrade`, then register again. No
@@ -719,19 +922,26 @@ is what the program actually prints.
 - **http://127.0.0.1:8000/api/v1/health says "This site can't be
   reached"**
   - Cause: the API is not running, or the address is slightly different.
-  - Fix: check the API terminal says `Uvicorn running`; type exactly
+  - Fix: `uv run hullbreach_server status` must show the API running
+    (or the API terminal says `Uvicorn running`); type exactly
     `http://127.0.0.1:8000` (not `https`, and prefer `127.0.0.1` over
     `localhost`).
 
-### Website (Steps 8-9)
+### Website problems
+
+Doctor checks: `web-deps`, `ports`, `web`. The website started by
+`start` writes its output to `.hullbreach/logs/web.log`.
 
 - **The website terminal prints `http proxy error: /api/v1/...` and
   `Error: connect ECONNREFUSED 127.0.0.1:8000`; the page shows "request
   failed"**
-  - Cause: the website is up but the API is not (or not on port 8000).
-    The website passes every `/api/...` request to `127.0.0.1:8000`, set
-    in `vite.config.ts`.
-  - Fix: start the API (Step 7) on the default port.
+  - Cause: the website is up but the API is not (or not on the port the
+    website expects). The website passes every `/api/...` request to
+    `127.0.0.1` on `HULLBREACH_PORT` (default 8000), set in
+    `vite.config.ts`.
+  - Fix: `uv run hullbreach_server start` (see
+    [Step 5](#step-5-start-everything)), with the same `HULLBREACH_PORT`
+    for both.
 - **`Port 5173 is in use, trying another one...`**
   - Cause: another website dev server is already running.
   - Fix: harmless. Use the `Local:` address it prints instead (for
@@ -745,6 +955,9 @@ is what the program actually prints.
     terminal shows the same error.
 
 ### Signing in on the website
+
+Doctor check: `e2e` (registers, signs in and edits a temporary account,
+then deletes it).
 
 - **"invalid username or password"**
   - Cause: wrong username or password. Usernames ignore upper/lower
@@ -761,22 +974,26 @@ is what the program actually prints.
     that does not look like a real address.
 - **I logged in, then I was signed out**
   - Cause: the page was reloaded or an address was typed (sign-in lives
-    only in the tab's memory), or you run a `main` without PR #39, where
-    logging in itself reloads the page.
+    only in the tab's memory).
   - Fix: log in again and move around only by clicking links. Ticket
     `~6TZCHZ0` tracks fixing this.
 - **The Profile page says "Not Found"**
-  - Cause: PR #38 (the `/api/v1/me` API) is not in the code you run.
-  - Fix: run a `main` that includes PR #38.
+  - Cause: your copy of the code is older than the `/api/v1/me` API
+    (PR #38).
+  - Fix: `git pull`, then `./doctor.sh` (its `repo` check says when your
+    copy is behind).
 
 ### Game cannot reach the platform
+
+Doctor checks: `game-keys`, `game-session`, `lan`; and
+`./doctor.sh --demo platform` for the values the game needs.
 
 The quoted messages here are shown by the game (see the game README).
 
 - **The game says "Cannot reach the Hullbreach servers (...)" when
   signing in**
   - Causes and fixes, most likely first:
-    1. The API is not running: Step 7.
+    1. The API is not running: [Step 5](#step-5-start-everything).
     2. The game is on another computer and still uses the default
        `http://127.0.0.1:8000`. `127.0.0.1` always means "this same
        computer", so it points at the player's own machine. Launch the
@@ -801,16 +1018,27 @@ The quoted messages here are shown by the game (see the game README).
     `-hullbreachRequirePlatformAuth` and you joined without signing in.
   - Fix: sign in on the game's sign-in screen, then reconnect.
 - **"Your platform session is invalid or expired. Sign in again."**
-  - Cause: the platform told the game server your sign-in is not valid:
-    you logged out, it expired (after 14 days), the platform database was
-    wiped, or the game server uses a _different_ platform than the one
-    you signed in to.
-  - Fix: sign in again; make sure game client and game server use the
-    same `-hullbreachPlatformUrl`.
+  - Cause: the platform refused the game server's check (HTTP 401) and
+    said why in the response's `detail`. The API's terminal also logs a
+    key refusal as `require_game_server: rejected (Missing)` or
+    `rejected (Invalid)`; no such line means the sign-in itself was bad.
+    - `server key missing` or `invalid server key`: the game server's
+      `HULLBREACH_PLATFORM_SERVER_KEY` is unset or is not one of the
+      platform's `HULLBREACH_GAME_SERVER_API_KEYS`. Fix: copy the exact
+      value across (no spaces or quotes), then restart both.
+    - `not authenticated`: your sign-in really is not valid: you logged
+      out, it expired (after 14 days), the platform database was wiped,
+      or the game server uses a _different_ platform than the one you
+      signed in to. Fix: sign in again; make sure game client and game
+      server use the same `-hullbreachPlatformUrl`.
 - **"Could not verify your platform session (...)"**
-  - Cause: the game server could not reach the platform at all. Same
+  - Cause: the game server could not reach the platform at all (same
     causes as "Cannot reach the Hullbreach servers" above, checked from
-    the game server's computer.
+    the game server's computer), or the platform answered HTTP 503
+    `server key not configured`: `HULLBREACH_GAME_SERVER_API_KEYS` is
+    empty in the platform's `.env`. Fix: set it (see
+    [Connecting the game](#connecting-the-game-to-the-platform)) and
+    restart the API.
 
 ## Developer guide
 
@@ -891,7 +1119,7 @@ or `package.json`; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Developer setup (once)
 
-On top of the tools from [Step 1](#step-1-install-the-tools-one-time):
+On top of the tools from [Step 2](#step-2-install-the-tools-one-time):
 
 ### Git identity
 
