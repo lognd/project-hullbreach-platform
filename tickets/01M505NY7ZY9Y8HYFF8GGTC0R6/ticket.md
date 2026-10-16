@@ -8,7 +8,7 @@ points = 8
 parent = "01M2H5T104B4HY0X1B5KX80SJ7"
 reporter = "lognd"
 created = "2026-10-15T16:17:46Z"
-updated = "2026-10-15T16:18:01Z"
+updated = "2026-10-16T14:43:21Z"
 persona = "first-time operator who has never used a terminal"
 capability = "run one doctor command that checks every prerequisite and tells me exactly how to fix what is wrong, then start, stop and demo the platform with named scripts"
 outcome_text = "I can demo the website and the guest, online and platform game modes without help"
@@ -17,7 +17,7 @@ scope = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "src/hullb
 
 [[acceptance]]
 text = "given a fresh clone, when ./doctor.sh is run, then every check prints PASS, WARN or FAIL and each failure prints numbered fix steps and a README link"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a running stack, when make start, stop, status, reset-db, demo-users, server-key and lan are used, then each goes through one CLI implementation"

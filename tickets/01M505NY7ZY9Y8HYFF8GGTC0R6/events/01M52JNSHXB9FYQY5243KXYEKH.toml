@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-16T14:43:21Z"
+digest = "3d7b8b37e2a85fd48e9c8e4cba09bee37d28919734d4eecce33beb45f363c9a9"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.04s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_wrapper.py::test_wrapper_explains_missing_tools_and_never_installs_without_a_yes"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "63d660d7162984c83fdb08464e8a0e1763ea7c805c8cd95f5a3f31aa1d5ae8ea"
+at = "2026-10-16T14:43:21Z"
+actor = "lognd"
+rev = 1
