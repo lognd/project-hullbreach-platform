@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, Integer, UniqueConstraint, Uuid
+from sqlalchemy import ForeignKey, Index, Integer, UniqueConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from hullbreach_server.db.engine import Base
@@ -24,6 +24,8 @@ class RatingChange(Base):
         UniqueConstraint(
             "match_id", "user_id", name="uq_rating_changes_match_id_user_id"
         ),
+        # Serves the leaderboard's "latest change per player" window (T-0062).
+        Index("ix_rating_changes_user_id_created_at", "user_id", "created_at"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)

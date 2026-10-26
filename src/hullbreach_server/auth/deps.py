@@ -89,3 +89,31 @@ def require_admin(ctx: AuthContext = Depends(get_current_user)) -> AuthContext:
         _log.warning("require_admin: user %s is not an admin", ctx.user.id)
         raise HTTPException(status_code=403, detail="admin role required")
     return ctx
+
+
+# frob:ticket 01M2H5T11YNBSP9Y9VBR29F5P0
+# frob:tests tests/unit/test_leaderboard.py::test_bad_or_missing_token_is_anonymous
+# frob:tests tests/unit/test_leaderboard.py::test_caller_outside_top_gets_rank
+# frob:doc docs/index.md#leaderboard
+def get_optional_user(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
+    db: DBSession = Depends(get_db),
+) -> User | None:
+    """Return the caller's user when the bearer token is valid, else None (never 401).
+
+    For public routes that only personalize: a missing, expired or revoked
+    token reads as an anonymous visitor.
+    """
+    if credentials is None:
+        return None
+    result = resolve_session(db, credentials.credentials)
+    if result.is_err:
+        _log.info(
+            "get_optional_user: treating caller as anonymous (%s)", result.danger_err
+        )
+        return None
+    user = db.get(User, result.danger_ok.user_id)
+    if user is not None:
+        request.state.user_id = str(user.id)
+    return user
