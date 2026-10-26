@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["jira:SCRUM-141", "owner:lognd", "milestone:0.2.0"]
+new = ["jira:SCRUM-141", "owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_server/db/migrations/versions/c41e5f7a9b02_create_rating_changes_table.py"]
+at = "2026-10-26T03:47:28Z"
+actor = "lognd"
+rev = 1
