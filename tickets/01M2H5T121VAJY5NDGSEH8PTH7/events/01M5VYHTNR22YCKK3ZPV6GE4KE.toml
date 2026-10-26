@@ -1,0 +1,8 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/catalog.py", "src/hullbreach_server/db/migrations/", "src/hullbreach_server/db/models/inventory.py", "src/hullbreach_server/db/models/item.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_catalog.py", "tests/unit/test_item_models.py", "web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx"]
+new = ["src/hullbreach_server/api/catalog.py", "src/hullbreach_server/db/migrations/", "src/hullbreach_server/db/models/inventory.py", "src/hullbreach_server/db/models/item.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_catalog.py", "tests/unit/test_item_models.py", "web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx", "src/hullbreach_server/api/__init__.py", "src/hullbreach_server/api/me.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/db/seed.py", "src/hullbreach_server/services/profile.py", "src/hullbreach_server/auth/schemas.py", "tests/system/test_build.py", "tests/unit/test_seed.py", "tests/unit/test_me.py", "docs/index.md"]
+reason = "wire catalog and inventory into router, seed, profile, docs"
+at = "2026-10-26T11:11:55Z"
+actor = "a-carten"
+rev = 1

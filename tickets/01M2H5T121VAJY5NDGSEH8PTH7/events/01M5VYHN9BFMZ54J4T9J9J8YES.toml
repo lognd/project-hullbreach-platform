@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: a-carten in platform/.claude/worktrees/agent-ac3147013eedbaa4e; scope: src/hullbreach_server/api/catalog.py, src/hullbreach_server/db/migrations/, src/hullbreach_server/db/models/inventory.py, src/hullbreach_server/db/models/item.py, src/hullbreach_server/services/catalog.py, tests/unit/test_catalog.py, tests/unit/test_item_models.py, web/src/components/ItemCard.tsx, web/src/pages/Store.tsx, web/tests/unit/Store.test.tsx; ttl 7200s"
+at = "2026-10-26T11:11:49Z"
+actor = "a-carten"
+rev = 1

@@ -122,3 +122,26 @@ def test_get_me_without_token_returns_401(client) -> None:
 
     assert response.status_code == 401
     assert response.json() == {"detail": "not authenticated"}
+
+
+# frob:ticket 01M2H5T10YFV60H1CQDEEH5164
+def test_get_me_lists_owned_items_in_inventory(client, db_session) -> None:
+    """Given an owned item, GET /me lists it under inventory on the next load."""
+    from hullbreach_server.db.models.inventory import InventoryEntry
+    from hullbreach_server.db.models.item import Item
+
+    headers = _register_and_login(client, "flagship")
+    player = _user(db_session, "flagship")
+    item = Item(slug="hull-skin-x", name="Skin X", price_cents=10, category="hull-skin")
+    db_session.add(item)
+    db_session.flush()
+    db_session.add(
+        InventoryEntry(user_id=player.id, item_id=item.id, acquired_at=_EPOCH)
+    )
+    db_session.commit()
+
+    body = client.get("/api/v1/me", headers=headers).json()
+
+    assert [(s["slug"], s["name"]) for s in body["inventory"]] == [
+        ("hull-skin-x", "Skin X")
+    ]

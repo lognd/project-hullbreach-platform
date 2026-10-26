@@ -22,6 +22,7 @@ from hullbreach_server.auth import (
 from hullbreach_server.db import get_db
 from hullbreach_server.logging import get_logger
 from hullbreach_server.services.account_deletion import delete_account
+from hullbreach_server.services.catalog import OwnedItem, list_inventory
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
@@ -147,3 +148,29 @@ def get_my_matches(
     page = result.danger_ok
     _log.info("served %d history matches for user %s", len(page.items), ctx.user.id)
     return page
+
+
+# frob:ticket 01M2H5T121VAJY5NDGSEH8PTH7
+# frob:tests tests/unit/test_catalog.py::test_me_inventory_lists_owned_items
+# frob:tests tests/unit/test_catalog.py::test_me_inventory_requires_auth
+# frob:doc docs/index.md#catalog
+@router.get(
+    "/inventory",
+    response_model=list[OwnedItem],
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        503: {"model": ErrorDetail, "description": "Database unavailable"},
+    },
+)
+def get_my_inventory(
+    db: Session = Depends(get_db), ctx: AuthContext = Depends(get_current_user)
+) -> list[OwnedItem] | JSONResponse:
+    """Return every item the caller owns, oldest acquisition first."""
+    result = list_inventory(db, ctx.user.id)
+    if result.is_err:
+        return JSONResponse(
+            status_code=503, content={"detail": "inventory unavailable"}
+        )
+    owned = result.danger_ok
+    _log.info("served %d inventory item(s) for user %s", len(owned), ctx.user.id)
+    return owned

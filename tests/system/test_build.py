@@ -94,20 +94,11 @@ def test_no_syntax_errors_in_src():
     assert not errors, "Syntax errors found:\n" + "\n".join(errors)
 
 
-def _ignore_migration_owned_items_table(object_, name, type_, reflected, compare_to):
-    """Exclude the migration-owned `items` table (T-0008/T-0101) from the
-    diff: it deliberately has no ORM model yet (design D3, T-0066 owns
-    that), so it is not on `Base.metadata` and would otherwise show up
-    as a false "extra table" diff."""
-    return not (type_ == "table" and name == "items")
-
-
 # frob:ticket 01M2H5T1074T5Q5JVANXG215XS
 # frob:ticket 01M2KR6R359Z2X63K2113CTW2Y
 def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
     """Given a fresh database, running the Alembic upgrade head matches the
-    declarative models exactly (compare_metadata reports no diffs, aside
-    from the intentionally model-less `items` table -- see D3)."""
+    declarative models exactly (compare_metadata reports no diffs)."""
     db_path = tmp_path / "upgrade_check.db"
     engine = create_db_engine(
         f"sqlite:///{db_path}",
@@ -121,10 +112,7 @@ def test_db_upgrade_head_matches_declarative_metadata(tmp_path):
     command.upgrade(alembic_cfg, "head")
 
     with engine.connect() as connection:
-        context = MigrationContext.configure(
-            connection,
-            opts={"include_object": _ignore_migration_owned_items_table},
-        )
+        context = MigrationContext.configure(connection)
         diffs = compare_metadata(context, Base.metadata)
 
     assert diffs == []

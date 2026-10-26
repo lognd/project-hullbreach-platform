@@ -2,16 +2,10 @@
 docs/design/sprint-1.md section 4 ("Seed idempotency and the items
 problem") and decision D3.
 
-`items` has no ORM model yet (T-0066, milestone 0.3.0 owns that), so this
-module hand-declares the table on its own `MetaData` (never `Base`'s).
-The table itself is owned by the Alembic migration
-(`db/migrations/versions/abbcc4cb6b34_create_items_table.py`, T-0101) --
-`db upgrade` creates it in every real environment. `_upsert_items`'s
-`Table.create(bind=..., checkfirst=True)` call is a no-op there; it
-exists only because `tests/unit/test_seed.py`'s SQLite fixture
-(`tests/unit/conftest.py::db_session`) builds its schema from
-`Base.metadata.create_all`, not from running Alembic, and `items` is
-deliberately not on `Base.metadata`.
+`items` is the `db/models/item.py::Item` model (S20). The Alembic migrations
+own the table in every real environment; the unit-test SQLite fixture
+(`tests/unit/conftest.py::db_session`) builds it with
+`Base.metadata.create_all`.
 """
 
 from __future__ import annotations
@@ -28,24 +22,13 @@ from typani import Err, ErrorSet, Ok, Result
 
 from hullbreach_server.auth.passwords import hash_password
 from hullbreach_server.auth.schemas import RegisterRequest
+from hullbreach_server.db.models.item import DEFAULT_CATEGORY, Item
 from hullbreach_server.db.models.user import Role, User
 from hullbreach_server.logging import get_logger, sanitize_for_log
 
 _log = get_logger(__name__)
 
 _SEED_ITEMS_PATH = Path(__file__).with_name("seed_items.json")
-
-_items_metadata = sa.MetaData()
-
-# frob:doc docs/index.md#public-api
-_items_table = sa.Table(
-    "items",
-    _items_metadata,
-    sa.Column("id", sa.Uuid(), primary_key=True, default=uuid.uuid4),
-    sa.Column("slug", sa.String(64), nullable=False, unique=True),
-    sa.Column("name", sa.String(120), nullable=False),
-    sa.Column("price_cents", sa.Integer(), nullable=False),
-)
 
 
 # noqa: E501  # frob:tests tests/unit/test_seed.py::test_seed_returns_err_when_admin_password_unset_and_no_admin_exists
@@ -65,11 +48,12 @@ class SeedError(ErrorSet):
 
 
 class _SeedItem(BaseModel):
-    """One validated row of db/seed_items.json (extra keys such as category ignored)."""
+    """One validated row of db/seed_items.json."""
 
     slug: str
     name: str
     price: int
+    category: str = DEFAULT_CATEGORY
 
 
 def _load_seed_items() -> Result[list[_SeedItem], SeedError]:
@@ -82,29 +66,30 @@ def _load_seed_items() -> Result[list[_SeedItem], SeedError]:
         return Err(SeedError.InvalidSeedData)
 
 
+# frob:ticket 01M2H5T121VAJY5NDGSEH8PTH7
 def _upsert_items(session: Session, items: list[_SeedItem]) -> None:
-    """Upsert every catalog row by `slug`; a changed name or price is updated.
-
-    `Table.create(checkfirst=True)` is a no-op once T-0101's migration has
-    run (the normal case); it exists so the unit-test SQLite fixture,
-    which never runs Alembic, still has the table.
-    """
-    bind = session.get_bind()
-    _items_table.create(bind=bind, checkfirst=True)
-
-    dialect_name = bind.dialect.name
+    """Upsert every catalog row by `slug`; changed name, price, category update."""
+    dialect_name = session.get_bind().dialect.name
     if dialect_name == "postgresql":
         from sqlalchemy.dialects.postgresql import insert as dialect_insert
     else:
         from sqlalchemy.dialects.sqlite import insert as dialect_insert
 
     for item in items:
-        stmt = dialect_insert(_items_table).values(
-            slug=item.slug, name=item.name, price_cents=item.price
+        stmt = dialect_insert(Item).values(
+            id=uuid.uuid4(),
+            slug=item.slug,
+            name=item.name,
+            price_cents=item.price,
+            category=item.category,
         )
         stmt = stmt.on_conflict_do_update(
             index_elements=["slug"],
-            set_={"name": stmt.excluded.name, "price_cents": stmt.excluded.price_cents},
+            set_={
+                "name": stmt.excluded.name,
+                "price_cents": stmt.excluded.price_cents,
+                "category": stmt.excluded.category,
+            },
         )
         session.execute(stmt)
 

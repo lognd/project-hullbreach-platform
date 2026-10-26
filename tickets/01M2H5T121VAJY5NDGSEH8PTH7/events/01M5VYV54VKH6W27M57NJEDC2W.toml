@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "API half done: Item/Inventory models, migration a2c4e6f8b0d1, GET /catalog, GET /me/inventory (criterion 2 bound). Left open: web Store page (ItemCard/Store.tsx, child JSDP5KP) which satisfies the browse-and-preview half of criterion 1."
+at = "2026-10-26T11:17:01Z"
+actor = "a-carten"
+rev = 1
