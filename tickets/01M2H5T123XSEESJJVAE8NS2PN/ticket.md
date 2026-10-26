@@ -2,7 +2,8 @@
 id = "01M2H5T123XSEESJJVAE8NS2PN"
 title = "GET /api/v1/catalog with category filter and owned flag for the caller"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 2
 parent = "01M2H5T121VAJY5NDGSEH8PTH7"
