@@ -1,0 +1,8 @@
+kind = "field"
+field = "labels"
+old = ["jira:SCRUM-42", "owner:lognd", "milestone:0.3.0"]
+new = ["jira:SCRUM-42", "owner:lognd", "milestone:0.3.0", "creates:src/hullbreach_server/db/migrations/versions/b3d5f7a9c1e2_add_currency_ledger.py"]
+reason = "wire balance into profile, register ledger model and migration"
+at = "2026-10-26T11:20:12Z"
+actor = "a-carten"
+rev = 1
