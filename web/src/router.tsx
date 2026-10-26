@@ -15,7 +15,11 @@ import { Page } from "@/components/Page";
 const LOOP = [
   ["01", "Build", "Assemble your ship block by block: hull, thrusters, weapons."],
   ["02", "Fly", "Real gravity, real momentum. Mass you add is mass you have to move."],
-  ["03", "Breach", "Hits load the hull block by block. Overload one and it breaks open."],
+  [
+    "03",
+    "Breach",
+    "Hits load the hull block by block. Overload one and it breaks open.",
+  ],
   ["04", "Rank", "Every match moves your ELO and lands in your match history."],
 ] as const;
 
@@ -26,23 +30,25 @@ function Landing() {
     <main className="flex w-full flex-1 flex-col bg-paper text-ink">
       <div className="mx-auto grid w-full max-w-[72rem] items-start gap-space-48 px-space-16 py-space-48 sm:px-space-24 lg:grid-cols-2 lg:py-space-64">
         <div className="flex flex-col gap-space-24">
-          <div className="flex flex-col gap-space-12 border-l-4 border-accent pl-space-16">
-            <p className="font-mono text-font-size-12 uppercase tracking-widest text-accent">
-              Ship combat, block by block
-            </p>
-            <h1 className="text-font-size-48 font-bold leading-none tracking-tight">Project Hullbreach</h1>
+          <div className="flex flex-col gap-space-12">
+            <h1 className="font-display text-font-size-48 uppercase leading-none tracking-wider">
+              Project Hullbreach
+            </h1>
+            <h2 className="font-display text-font-size-24 uppercase leading-tight tracking-wider text-accent">
+              Build. Breach. Claim the void.
+            </h2>
           </div>
           <p className="max-w-[32rem] text-font-size-20 text-muted">
-            Build a ship one block at a time. Fly it under real gravity. Break the enemy&apos;s hull before it
-            breaks yours.
+            Build a spaceship one block at a time. Fly it under real gravity. Break the
+            enemy&apos;s hull before it breaks yours.
           </p>
           <div className="flex flex-wrap gap-space-12">
             {session === null ? (
               <>
-                <ButtonLink href="/register" variant="primary">
-                  Register
+                <ButtonLink href="/login" variant="primary">
+                  Log in
                 </ButtonLink>
-                <ButtonLink href="/login">Log in</ButtonLink>
+                <ButtonLink href="/register">Create account</ButtonLink>
               </>
             ) : (
               <>
@@ -53,9 +59,12 @@ function Landing() {
               </>
             )}
           </div>
-          <ol className="grid gap-space-4 sm:grid-cols-2">
+          <ol className="grid gap-space-8 sm:grid-cols-2">
             {LOOP.map(([step, name, line]) => (
-              <li key={step} className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
+              <li
+                key={step}
+                className="flex flex-col gap-space-4 border border-line bg-panel px-space-16 py-space-12"
+              >
                 <span className="font-mono text-font-size-12 uppercase tracking-widest text-accent">
                   {step} {name}
                 </span>
@@ -73,11 +82,18 @@ function Landing() {
 /** Fallback route for an unmatched path. */
 function NotFound() {
   return (
-    <Page eyebrow="404" title="Page not found.">
+    <Page
+      crumbs={[{ label: "404" }]}
+      title="Page not found."
+      purpose="That address does not lead anywhere in the app."
+    >
       <p className="text-font-size-16 text-muted">
-        Nothing is docked at this address.{" "}
-        <AppLink href="/" className="font-medium text-accent underline underline-offset-4 hover:text-ink">
-          Back to the hangar
+        Check the address, or{" "}
+        <AppLink
+          href="/"
+          className="font-medium text-accent underline underline-offset-4 hover:text-ink"
+        >
+          go back to the start
         </AppLink>
       </p>
     </Page>

@@ -42,8 +42,12 @@ export function Register() {
 
   if (submitted) {
     return (
-      <Page eyebrow="Callsign registered" title="Registration complete" width="form">
-        <p className="text-font-size-16 text-muted">Your account is ready. Log in to start climbing from 1200.</p>
+      <Page
+        crumbs={[{ label: "Register" }]}
+        title="Registration complete"
+        purpose="Your account is ready. Log in to start climbing from 1200."
+        width="form"
+      >
         <div>
           <ButtonLink href="/login" variant="primary">
             Log in
@@ -54,54 +58,58 @@ export function Register() {
   }
 
   return (
-    <Page eyebrow="New pilot" title="Register" width="form">
-      <p className="text-font-size-16 text-muted">Claim a callsign. Your ELO starts at 1200.</p>
+    <Page
+      crumbs={[{ label: "Register" }]}
+      title="Register"
+      purpose="Create an account. Your ELO starts at 1200."
+      width="form"
+    >
       {formError !== null ? (
         <Notice tone="error" role="alert" id={FORM_ERROR_ID}>
           {formError}
         </Notice>
       ) : null}
-      <Panel className="p-space-24">
-      <form
-        onSubmit={(event) => {
-          void handleSubmit(event);
-        }}
-        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
-        className="flex flex-col gap-space-16"
-      >
-        <TextField
-          id="register-username"
-          name="username"
-          label="Username"
-          autoComplete="username"
-          value={username}
-          error={fieldErrors.username}
-          onChange={setUsername}
-        />
-        <TextField
-          id="register-email"
-          name="email"
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          error={fieldErrors.email}
-          onChange={setEmail}
-        />
-        <TextField
-          id="register-password"
-          name="password"
-          label="Password"
-          type="password"
-          autoComplete="new-password"
-          value={password}
-          error={fieldErrors.password}
-          onChange={setPassword}
-        />
-        <Button type="submit" variant="primary">
-          Register
-        </Button>
-      </form>
+      <Panel label="New account" className="p-space-24">
+        <form
+          onSubmit={(event) => {
+            void handleSubmit(event);
+          }}
+          aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+          className="flex flex-col gap-space-16"
+        >
+          <TextField
+            id="register-username"
+            name="username"
+            label="Username"
+            autoComplete="username"
+            value={username}
+            error={fieldErrors.username}
+            onChange={setUsername}
+          />
+          <TextField
+            id="register-email"
+            name="email"
+            label="Email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            error={fieldErrors.email}
+            onChange={setEmail}
+          />
+          <TextField
+            id="register-password"
+            name="password"
+            label="Password"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            error={fieldErrors.password}
+            onChange={setPassword}
+          />
+          <Button type="submit" variant="primary">
+            Register
+          </Button>
+        </form>
       </Panel>
     </Page>
   );

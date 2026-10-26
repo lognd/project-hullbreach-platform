@@ -48,7 +48,8 @@ function SettingsForm({ session }: { session: StoredSession }) {
     if (payload.email !== undefined || payload.password !== undefined) {
       if (currentPassword === "") {
         setFieldErrors({
-          current_password: "Enter your current password to change your email or password.",
+          current_password:
+            "Enter your current password to change your email or password.",
         });
         return;
       }
@@ -75,7 +76,12 @@ function SettingsForm({ session }: { session: StoredSession }) {
   }
 
   return (
-    <Page eyebrow="Account" title="Account settings" width="form">
+    <Page
+      crumbs={[{ label: "Settings" }]}
+      title="Account settings"
+      purpose="Change your display name, email or password."
+      width="form"
+    >
       {saved ? (
         <Notice tone="ok" role="status">
           Settings saved.
@@ -86,66 +92,70 @@ function SettingsForm({ session }: { session: StoredSession }) {
           {formError}
         </Notice>
       ) : null}
-      <Panel className="p-space-24">
-      <form
-        onSubmit={(event) => {
-          void handleSubmit(event);
-        }}
-        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
-        className="flex flex-col gap-space-16"
-      >
-        <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0">
-          <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">Identity</legend>
-        <TextField
-          id="settings-username"
-          name="username"
-          label="Display name"
-          autoComplete="username"
-          value={username}
-          error={fieldErrors.username}
-          onChange={setUsername}
-        />
-        </fieldset>
-        <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0 border-t border-line pt-space-16">
-          <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">Credentials</legend>
-        <TextField
-          id="settings-email"
-          name="email"
-          label="New email"
-          type="email"
-          autoComplete="email"
-          hint="Blank keeps the current address."
-          value={email}
-          error={fieldErrors.email}
-          onChange={setEmail}
-        />
-        <TextField
-          id="settings-password"
-          name="password"
-          label="New password"
-          type="password"
-          autoComplete="new-password"
-          hint="Blank keeps the current password."
-          value={password}
-          error={fieldErrors.password}
-          onChange={setPassword}
-        />
-        <TextField
-          id="settings-current_password"
-          name="current_password"
-          label="Current password"
-          type="password"
-          autoComplete="current-password"
-          hint="Required to change email or password."
-          value={currentPassword}
-          error={fieldErrors.current_password}
-          onChange={setCurrentPassword}
-        />
-        </fieldset>
-        <Button type="submit" variant="primary">
-          Save changes
-        </Button>
-      </form>
+      <Panel label="Account" className="p-space-24">
+        <form
+          onSubmit={(event) => {
+            void handleSubmit(event);
+          }}
+          aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+          className="flex flex-col gap-space-16"
+        >
+          <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0">
+            <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">
+              Identity
+            </legend>
+            <TextField
+              id="settings-username"
+              name="username"
+              label="Display name"
+              autoComplete="username"
+              value={username}
+              error={fieldErrors.username}
+              onChange={setUsername}
+            />
+          </fieldset>
+          <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0 border-t border-line pt-space-16">
+            <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">
+              Credentials
+            </legend>
+            <TextField
+              id="settings-email"
+              name="email"
+              label="New email"
+              type="email"
+              autoComplete="email"
+              hint="Blank keeps the current address."
+              value={email}
+              error={fieldErrors.email}
+              onChange={setEmail}
+            />
+            <TextField
+              id="settings-password"
+              name="password"
+              label="New password"
+              type="password"
+              autoComplete="new-password"
+              hint="Blank keeps the current password."
+              value={password}
+              error={fieldErrors.password}
+              onChange={setPassword}
+            />
+            <TextField
+              id="settings-current_password"
+              name="current_password"
+              label="Current password"
+              type="password"
+              autoComplete="current-password"
+              hint="Required to change email or password."
+              value={currentPassword}
+              error={fieldErrors.current_password}
+              onChange={setCurrentPassword}
+            />
+          </fieldset>
+          <Button type="submit" variant="primary">
+            Save changes
+          </Button>
+        </form>
       </Panel>
     </Page>
   );

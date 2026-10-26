@@ -98,14 +98,18 @@ export function History() {
   );
 
   return (
-    <Page eyebrow="Pilot record" title="Match history">
+    <Page
+      crumbs={[{ label: "Profile", href: "/me" }, { label: "Matches" }]}
+      title="Match history"
+      purpose="Every finished match with its result and rating change, newest first."
+    >
       {state.loaded && state.matches.length === 0 ? (
         <EmptyState
           title="No matches yet."
           hint="Every finished match is logged here with its rating change."
           action={
-            <ButtonLink href="/" variant="primary">
-              Back to start
+            <ButtonLink href="/me" variant="primary">
+              Back to profile
             </ButtonLink>
           }
         />
@@ -118,7 +122,8 @@ export function History() {
             ))}
           </ul>
           <p className="font-mono text-font-size-12 uppercase tracking-widest tabular-nums text-muted">
-            {state.matches.length} loaded{state.nextCursor === null ? ", end of record" : ""}
+            {state.matches.length} loaded
+            {state.nextCursor === null ? ", end of record" : ""}
           </p>
         </div>
       ) : null}
