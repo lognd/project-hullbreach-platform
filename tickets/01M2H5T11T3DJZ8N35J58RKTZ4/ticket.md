@@ -2,7 +2,8 @@
 id = "01M2H5T11T3DJZ8N35J58RKTZ4"
 title = "S18 Browse my match history"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 5
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
