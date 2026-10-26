@@ -6,8 +6,10 @@ target or documented in the [README](../README.md); nothing here is new.
 ## Before you start
 
 - Installed: Git, uv, Docker (running), Node.js. Check with `./doctor.sh`
-  (use `./doctor.sh --demo website` for this demo); proceed when there is
-  no FAIL.
+  (use `./doctor.sh --demo website` for this demo). On a fresh clone it
+  also reports FAIL for web-deps, env-file, compose-file and settings;
+  that is expected, `make demo` installs and creates those. Any other
+  FAIL (a missing tool, a port in use) must be fixed first.
 - Free ports 5432 (database), 8000 (API), 5173 (website), or pick others
   (see Troubleshooting).
 - Two terminals open in the checkout, plus a browser.
