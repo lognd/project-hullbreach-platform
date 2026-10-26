@@ -1,0 +1,7 @@
+kind = "transition"
+from = "open"
+to = "released"
+reason = "release adopt 0.2.0-demo"
+at = "2026-10-26T17:50:03Z"
+actor = "a-carten"
+rev = 1

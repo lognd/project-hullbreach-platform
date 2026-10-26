@@ -10,11 +10,10 @@ Company of Theseus, UF CEN3031, Fall 2026. All rights reserved, see
 
 > **Read this first (current status).**
 >
-> - **Reloading the page (F5, or typing an address into the address
->   bar) signs you out.** The sign-in is kept only in
->   the open tab's memory, never on disk. Moving between pages by
->   clicking the links in the top bar keeps you signed in. Ticket
->   `~6TZCHZ0` tracks staying signed in across reloads.
+> - **Reloading the page keeps you signed in.** The token lives only in
+>   the open tab's memory, never on disk; on load the site restores your
+>   session from an HttpOnly cookie. Clicking the links in the top bar
+>   is still the smoothest way to move around during a demo.
 
 Contents:
 
@@ -667,9 +666,8 @@ Rehearse once before the meeting, then do it live. Beforehand run
 ([One-command demo](#one-command-demo)), which already has match
 history, or register a new name (names cannot be reused).
 
-Move around **only by clicking the links in the top bar**. Do not reload
-the page or type addresses during the demo; that signs you out (see
-[the note at the top](#project-hullbreach-platform)).
+Move around by clicking the links in the top bar (a reload also keeps
+you signed in; see [the note at the top](#project-hullbreach-platform)).
 
 - [ ] **1. Register.** http://localhost:5173 -> **Register** -> fill the
       form -> "Registration complete". Optionally register the same
@@ -843,7 +841,6 @@ So nobody presents this as deployed:
   passwords in demos.
 - The website runs on its development server (`npm run dev`). This repo
   has no production web hosting setup.
-- Reloading the page signs you out (ticket `~6TZCHZ0`).
 - Nothing records match results yet (T-0054), so ELO never changes and
   match history stays empty.
 - The login attempt limit lives in the API's memory; restarting the API
@@ -1011,10 +1008,9 @@ then deletes it).
     than letters, digits, `_ . -`; password shorter than 8; or an email
     that does not look like a real address.
 - **I logged in, then I was signed out**
-  - Cause: the page was reloaded or an address was typed (sign-in lives
-    only in the tab's memory).
-  - Fix: log in again and move around only by clicking links. Ticket
-    `~6TZCHZ0` tracks fixing this.
+  - Cause: the session cookie expired, was cleared, or the session was
+    revoked (for example by logging out in another tab).
+  - Fix: log in again.
 - **The Profile page says "Not Found"**
   - Cause: your copy of the code is older than the `/api/v1/me` API
     (PR #38).
