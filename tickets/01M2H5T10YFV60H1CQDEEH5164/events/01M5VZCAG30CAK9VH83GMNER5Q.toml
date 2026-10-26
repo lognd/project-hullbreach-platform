@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Server gaps closed: currency is the real ledger balance and owned skins are real inventory (criteria 1-2 bound). Criterion 3 (phone width) is web-side and has no bound evidence yet; left open."
+at = "2026-10-26T11:26:23Z"
+actor = "a-carten"
+rev = 1
