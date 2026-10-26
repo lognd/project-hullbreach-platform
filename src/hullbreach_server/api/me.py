@@ -5,20 +5,23 @@ docs/index.md#player-api.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from hullbreach_server.auth import (
     AuthContext,
     ConflictResponse,
+    DeleteMeRequest,
     ErrorDetail,
     UpdateMeRequest,
     UserProfile,
+    clear_session_cookie,
     get_current_user,
 )
 from hullbreach_server.db import get_db
 from hullbreach_server.logging import get_logger
+from hullbreach_server.services.account_deletion import delete_account
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
@@ -83,6 +86,38 @@ def patch_me(
         )
     user = result.danger_ok
     return UserProfile.from_user(user, current_rating(db, user.id))
+
+
+# frob:ticket 01M2H5T11594WX75ZK5S9FQ3HQ
+# noqa: E501  # frob:tests tests/unit/test_me_delete.py::test_delete_me_anonymizes_and_keeps_match_history
+# noqa: E501  # frob:tests tests/unit/test_me_delete.py::test_delete_me_with_wrong_password_returns_403_and_changes_nothing
+# noqa: E501  # frob:tests tests/unit/test_me_delete.py::test_delete_me_with_cookie_needs_csrf_and_clears_cookie
+# frob:doc docs/index.md#player-api
+@router.delete(
+    "",
+    status_code=204,
+    response_class=Response,
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        403: {"model": ConflictResponse, "description": "Current password wrong"},
+    },
+)
+def delete_me(
+    payload: DeleteMeRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> Response:
+    """Delete the caller's account (password required): anonymize it, drop sessions, clear the cookie."""  # noqa: E501
+    result = delete_account(db, ctx.user, payload.current_password)
+    if result.is_err:
+        error = result.danger_err
+        return JSONResponse(
+            status_code=403, content={"detail": error.detail, "field": error.field}
+        )
+    out = Response(status_code=204)
+    clear_session_cookie(out, request.app.state.cfg.cors_origins)
+    return out
 
 
 # frob:tests tests/unit/test_me_matches.py::test_get_me_matches_pages_with_cursor

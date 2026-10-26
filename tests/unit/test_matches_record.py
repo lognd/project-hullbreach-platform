@@ -190,3 +190,18 @@ def test_post_match_openapi_documents_the_contract(client) -> None:
     responses = spec["paths"][_URL]["post"]["responses"]
 
     assert {"200", "201", "401", "404", "409", "422"} <= set(responses)
+
+
+# frob:ticket 01M2H5T10SJRRFCSNHGH9AF0ZF
+# frob:tests src/hullbreach_server/api/matches.py::post_match kind="unit"
+def test_signed_out_client_cannot_record_a_ranked_match(
+    client, db_session, pilots, report
+) -> None:
+    """Given a signed-out client, ranked recording is refused and nothing is stored."""
+    _, flagship, rival = pilots
+    client.cookies.clear()
+
+    response = client.post("/api/v1/matches", json=report(flagship, rival))
+
+    assert response.status_code == 401
+    assert db_session.query(Match).count() == 0

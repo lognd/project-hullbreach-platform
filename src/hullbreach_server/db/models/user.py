@@ -57,6 +57,9 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         UTCDateTime(), nullable=False, server_default=func.now()
     )
+    # Set when the owner deletes the account (T-0037): the row is anonymized
+    # and kept so match history and the leaderboard stay intact.
+    deleted_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
 
 
 # Case-insensitive uniqueness (the exact-match unique constraints on the

@@ -80,6 +80,18 @@ class UpdateMeRequest(BaseModel):
         return None if value is None else value.lower()
 
 
+# frob:ticket 01M2H5T11594WX75ZK5S9FQ3HQ
+# frob:doc docs/index.md#player-api
+# frob:tests tests/unit/test_me_delete.py::test_delete_me_without_password_returns_422
+class DeleteMeRequest(BaseModel):
+    """DELETE /api/v1/me's body: the account password, as confirmation."""
+
+    model_config = {"extra": "forbid"}
+
+    # frob:invariant INV-002
+    current_password: str = Field(max_length=PASSWORD_MAX_LENGTH)
+
+
 # frob:doc docs/index.md#auth-api
 # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
 # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_response_never_exposes_password_hash

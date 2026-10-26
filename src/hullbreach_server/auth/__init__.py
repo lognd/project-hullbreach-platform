@@ -24,6 +24,7 @@ from hullbreach_server.auth.passwords import (
 )
 from hullbreach_server.auth.schemas import (
     ConflictResponse,
+    DeleteMeRequest,
     ErrorDetail,
     LoginRequest,
     LoginResponse,
@@ -66,6 +67,7 @@ __all__ = [
     "ServerKeyError",
     "SessionError",
     "SessionInfo",
+    "DeleteMeRequest",
     "UpdateMeRequest",
     "UserProfile",
     "check_server_key",

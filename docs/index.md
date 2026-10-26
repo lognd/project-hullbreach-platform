@@ -394,7 +394,9 @@ that already collide case-insensitively or hold an unknown role. The seventh rev
 `rating_changes` matching `db/models/rating.py`. The eighth revision
 (`d52f6a8b0c13_index_rating_changes_for_leaderboard.py`, T-0062) adds
 `ix_rating_changes_user_id_created_at` on `rating_changes (user_id,
-created_at)` for the leaderboard's latest-rating-per-player query.
+created_at)` for the leaderboard's latest-rating-per-player query. The ninth
+revision (`e7a3b9c1d2f4_add_users_deleted_at.py`, T-0037) adds the nullable
+`users.deleted_at` that marks an anonymized (deleted) account.
 
 ### Elo rating
 
@@ -675,6 +677,23 @@ fetched to know, no COUNT). `limit` defaults to 20 and is bounded 1..100
 `{"items": [], "next_cursor": null}`. `tests/system/test_account_flow.py`
 drives register, login, `GET /me`, `PATCH /me`, `GET /me/matches` and
 logout through `create_app` on an Alembic-migrated database.
+
+`DELETE /api/v1/me` (`api/me.py::delete_me`, T-0037) deletes the caller's
+account. It needs auth (a bearer token, or the session cookie plus the
+`X-Hullbreach-Web` CSRF header) and a `DeleteMeRequest` body
+`{"current_password"}`; a missing password is a 422 and a wrong one is a 403
+`{"detail": "current password is incorrect", "field": "current_password"}`
+that changes nothing. `services/account_deletion.py::delete_account` returns
+a typani `Result[None, DeleteError]`. On success the user row is anonymized,
+never removed: the username becomes `deleted-<24 hex of the id>`, the email
+`<that>@deleted.invalid`, the password hash an unusable random one, the role
+`player`, and `deleted_at` is stamped. Every session row of the user is
+deleted, so old tokens are 401, and the response is 204 with the session
+cookie cleared. Matches, stats and rating changes are kept; wherever another
+player sees a deleted user's name (`GET /me/matches` opponent, the
+leaderboard) it is the placeholder `deleted player`
+(`services/matches.py::display_name`). The old username and email are freed
+for new registrations.
 
 ### Player API client and the profile page
 
