@@ -2,12 +2,13 @@
 id = "01M2H5T11XDV04575V7T3S9A68"
 title = "S19 See where I stand"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T08:54:25Z"
+updated = "2026-10-26T08:54:33Z"
 aliases = ["T-0061"]
 labels = ["jira:SCRUM-40", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/leaderboard.py", "src/hullbreach_server/services/leaderboard.py", "tests/unit/test_leaderboard.py", "web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx"]
