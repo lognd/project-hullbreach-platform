@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = 'Finding: syntax is a bare flow attr, `attr timeout;` (frob docs/strata/reliability.md REL2xx; also `attr async;`/`attr local;`). Verified with python `frob sys audit`: adding it to f_register/f_login_web/f_logout and dropping the REL200 waivers clears REL200 but raises 3 new REL201 errors ("bound endpoint hullbreach_server_api code has no real timeout= token"): the proof is a `\btimeout\s*=` scan of the flow endpoint code (hullbreach_server_api, Python), not web/src (TS uses AbortController/signal). Waivers left in place. To finish: either add a timeout= token in the api-side code the flow binds to, or ask frob for a TS-aware/dst-vs-src fix; then add `attr timeout;` and delete the 3 waivers. The stale localStorage comment is fixed separately. Note: the CLI frob 0.532 does not evaluate strata; use python frob `sys audit`.'
+at = "2026-10-26T23:58:31Z"
+actor = "a-carten"
+rev = 1
