@@ -24,8 +24,9 @@ node browser : foreign {
     may "client_storage" via "web/src/auth/session.ts";
     may "fetch_url" via "web/src/api/auth.ts";
     // web/src/auth/session.ts's StoredSession.token is the bearer session
-    // token persisted to localStorage (T-0019's issue_session, mirrored
-    // client-side); PII category "credentials", same declaration form
+    // token held in memory only (never web storage); a reload restores the
+    // session through the server's HttpOnly cookie (T-0019's issue_session,
+    // mirrored client-side); PII category "credentials", same declaration form
     // T-0015 used for db.password_hash.
     carries "credentials";
     waive "REL200:f_register" reason "T-0017 implemented the register form/fetch call (web/src/api/auth.ts::register) without a request timeout; T-0102 adds one and will declare/prove it there" ticket "T-0102";
