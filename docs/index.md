@@ -185,21 +185,26 @@ already invalid, so logging out twice with the same token 401s the
 second time.
 
 `GET /api/v1/auth/session` (`src/hullbreach_server/api/auth.py::session`)
-also requires a bearer token and returns a `SessionInfo` (`user_id`,
-`role`) with 200 -- deliberately minimal, no `username`/`email`, since
-the game server's only need is "who is this and what can they do"
-(T-0026). It shares `get_current_user` with `logout`, so a missing,
-malformed, expired, or revoked token gets the same uniform 401.
+is the game-server-only verify call (ticket `~48H1VAK`): it requires a
+valid `X-Server-Key` header (see Game-server keys below) and the player's
+bearer token, and returns a `SessionInfo` (`user_id`, `role`) with 200 --
+deliberately minimal, no `username`/`email`, since the game server's only
+need is "who is this and what can they do" (T-0026). The key is checked
+first, by a route-level `require_game_server` dependency, so a key problem
+never reaches the token check. Once the key is accepted the token goes
+through `get_current_user`, so a missing, malformed, expired, or revoked
+token gets the same uniform 401 `{"detail": "not authenticated"}`. The
+website never calls this route; it checks its own token with `GET /me`.
 
 The game client authenticates the same way the browser does: it calls
 `POST /api/v1/auth/login` verbatim (no separate route or client-kind
 flag -- the design's `f_login_game` flow and `f_login_web` share the
 identical `attr "POST /api/v1/auth/login"`), gets back the same
 `LoginResponse`, and then presents that token to its own server, which
-calls `GET /api/v1/auth/session` server-side to validate it and learn
-the player's id and role (T-0026). Neither endpoint distinguishes a
-game-client caller from a browser caller; there is nothing in the
-request that could, by design.
+calls `GET /api/v1/auth/session` server-side, with its `X-Server-Key`, to
+validate it and learn the player's id and role (T-0026). The login route
+does not distinguish a game-client caller from a browser caller; only the
+verify call is server-only.
 
 ### Game-server keys
 
@@ -207,20 +212,31 @@ The game server authenticates with a shared secret, not a player session
 (T-0052). `AppConfig.game_server_api_keys` is a list of `SecretStr`s, read
 from `HULLBREACH_GAME_SERVER_API_KEYS` (comma-separated; `.env.example`
 lists it) or the `[tool.hullbreach_server]` table (there is no CLI flag,
-the CLI only has `--host` and `--port`); the default is empty, and an empty list means no server can authenticate. The
-values never appear in a `repr` or in logs. `require_game_server`
+the CLI only has `--host` and `--port`); the default is empty. The values
+never appear in a `repr` or in logs. `require_game_server`
 (`src/hullbreach_server/auth/server_keys.py`) is the FastAPI dependency a
 game-server-only route lists: it reads the `X-Server-Key` header and
-answers 401 `{"detail": "not authenticated"}` for a missing, wrong or
-unconfigured key (never FastAPI's default 403). The comparison is
-`check_server_key`, which returns a typani `Result[None, ServerKeyError]`
-(`Missing` or `Invalid`) and compares every configured key with
-`hmac.compare_digest` so timing does not reveal a match. No production
-route uses the dependency yet; `POST /api/v1/matches` (T-0054) is the first.
-In particular `GET /api/v1/auth/session`, the call a game server makes to
-verify a player, does not check `X-Server-Key` today, so any holder of a
-session token can call it; ticket `~48H1VAK` tracks requiring the key
-there.
+compares it with `check_server_key`, which returns a typani
+`Result[None, ServerKeyError]` and compares every configured key with
+`hmac.compare_digest` so timing does not reveal a match. Each error maps
+to one response through `SERVER_KEY_REJECTIONS`, so a game server (and the
+game doctor) can tell the cases apart from the body alone:
+
+| Situation                                 | Status | `detail`                    |
+| ----------------------------------------- | ------ | --------------------------- |
+| platform has no keys configured           | 503    | `server key not configured` |
+| request has no `X-Server-Key` header      | 401    | `server key missing`        |
+| header does not match any configured key  | 401    | `invalid server key`        |
+| key accepted, bearer token missing or bad | 401    | `not authenticated`         |
+
+An unconfigured platform refuses with 503 rather than 401 because the
+fault is on the platform operator's side, not the caller's: set
+`HULLBREACH_GAME_SERVER_API_KEYS` and restart the API (the refusal is also
+logged at ERROR naming that variable). A wrong key is logged at WARNING;
+the presented value never is. FastAPI's default 403 for a missing header
+is never used. The one route guarded by the dependency today is
+`GET /api/v1/auth/session` (ticket `~48H1VAK`); `POST /api/v1/matches`
+(T-0054) will be the next.
 
 ### Matches
 
@@ -412,8 +428,10 @@ in again via `/login`; there is no cross-tab sync. A cookie-based
 
 `web/src/api/auth.ts` is the one `fetch` wrapper every auth-facing page
 uses (docs/design/sprint-1.md sec.5/6): `register`/`login` POST their
-request body and resolve to a `UserProfile`/`LoginResponse`; `logout`/
-`fetchSession` send a `Bearer` `Authorization` header. Any non-2xx
+request body and resolve to a `UserProfile`/`LoginResponse`; `logout`
+sends a `Bearer` `Authorization` header. There is deliberately no client
+for `GET /api/v1/auth/session`: that route needs a game-server key a
+browser never holds, so the website checks its token with `GET /me`. Any non-2xx
 response is normalized into a thrown `ApiError {status, detail, field?}`
 -- `field` is present only when the server named one (409's duplicate
 username/email), letting a caller show the error next to that field

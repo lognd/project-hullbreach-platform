@@ -1,0 +1,1 @@
+GET /api/v1/auth/session now requires a valid X-Server-Key from a configured game server; the platform answers 503 "server key not configured" when HULLBREACH_GAME_SERVER_API_KEYS is empty, 401 "server key missing" or "invalid server key" for a bad key, and 401 "not authenticated" for a bad player token

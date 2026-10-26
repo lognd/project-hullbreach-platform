@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["owner:lognd", "creates:changelog.d/*.security.md"]
+new = ["owner:lognd", "creates:changelog.d/*.security.md", "milestone:0.2.0"]
+at = "2026-10-15T16:02:43Z"
+actor = "lognd"
+rev = 1

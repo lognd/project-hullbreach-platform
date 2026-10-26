@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: lognd in scratchpad/pr1; scope: src/hullbreach_server/api/auth.py, src/hullbreach_server/auth/server_keys.py, tests/unit/test_auth_game.py, tests/unit/test_server_keys.py, tests/unit/test_auth_logout.py, tests/unit/test_me_edit.py, docs/index.md, README.md, docs/design/sprint-1.md, docs/picking-up-work.md, web/src/api/auth.ts, web/tests/unit/Register.test.tsx, .env.example, changelog.d/*.security.md; ttl 7200s"
+at = "2026-10-15T16:02:43Z"
+actor = "lognd"
+rev = 1
