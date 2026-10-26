@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given valid credentials, when logging in, then the response sets an HttpOnly SameSite session cookie and still returns the bearer token for the game client", "given only the session cookie, when calling GET /api/v1/me, then the caller is authenticated; given the cookie on a state-changing request without the CSRF header, then it is refused 403", "given a cookie session, when logging out, then the session is revoked and the cookie cleared", "given a signed-in web user, when the page reloads, then the session is restored from the cookie via GET /api/v1/me and no token is in script-readable storage", "given a bearer-token request with no cookie, when state-changing calls are made, then they behave exactly as before (game client unaffected)"]
+moved = []
+at = "2026-10-26T09:30:32Z"
+actor = "a-carten"
+rev = 1
