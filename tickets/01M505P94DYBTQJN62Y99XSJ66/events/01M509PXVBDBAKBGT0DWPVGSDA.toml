@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-15T17:28:12Z"
+digest = "8f748b183e4ca4dd91b5bdb7ed0d91c59170351f0f06771316185129cb54a747"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.31s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_checks_tools.py::test_missing_tools_fail_with_the_wrapper_as_the_fix"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "e00c3ca6cb1d0dc8d0ab22ba157d4c2daac69e12b1985c7309e5b6a939ce12a8"
+at = "2026-10-15T17:28:12Z"
+actor = "lognd"
+rev = 1

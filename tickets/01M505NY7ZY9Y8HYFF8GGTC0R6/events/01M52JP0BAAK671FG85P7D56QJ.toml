@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-16T14:43:28Z"
+digest = "cdcd954cef4f61f8e3ee4a2f3342d404c2ec2aab856820f3e7ded250353e14f9"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.38s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_lifecycle.py::test_start_restarts_an_api_that_outlived_a_stopped_database"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "32e53129187c44a345a65e6cb30e274beaf6eeab4d3736eb9a21ea8dd950671e"
+at = "2026-10-16T14:43:28Z"
+actor = "lognd"
+rev = 1

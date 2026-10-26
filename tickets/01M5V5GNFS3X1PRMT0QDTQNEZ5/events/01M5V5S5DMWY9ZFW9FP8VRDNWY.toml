@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a player with a changed rating, when they call /me or log in, then the real ELO is shown"]
+moved = []
+at = "2026-10-26T03:59:01Z"
+actor = "lognd"
+rev = 1

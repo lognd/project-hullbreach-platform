@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [5]
+captured_at = "2026-10-15T17:27:23Z"
+digest = "a2ae6672c89384c7e8c04de9ae7a80320ffedf7e6adce1044697d20a432bed6c"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.39s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_lan.py::test_lan_starts_on_all_interfaces_and_asks_before_windows_changes"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "cec1d6834055a2bc40d3248175f4c9a3fba3290fec3d05e3da394e82aed5873f"
+at = "2026-10-15T17:27:23Z"
+actor = "lognd"
+rev = 1

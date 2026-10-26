@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-15T17:27:20Z"
+digest = "30f9e563d24c5bd69727626dda8359dd14799b2d6429ccfffd645c0a1a9b36f4"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.41s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_lifecycle.py::test_status_lists_each_part"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "030cd6c927649b0b39479c6ef04d5fbb93dc08e7e3847363df3ee6ad83bf0e07"
+at = "2026-10-15T17:27:20Z"
+actor = "lognd"
+rev = 1

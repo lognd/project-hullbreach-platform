@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-15T17:28:12Z"
+digest = "8f748b183e4ca4dd91b5bdb7ed0d91c59170351f0f06771316185129cb54a747"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.31s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_doctor.py::test_failed_check_marks_dependents_pending"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "191ab9cd2e707842c736e4c9cae2a67d035c801d32a1bc635ef69e4dea0acab2"
+at = "2026-10-15T17:28:12Z"
+actor = "lognd"
+rev = 1

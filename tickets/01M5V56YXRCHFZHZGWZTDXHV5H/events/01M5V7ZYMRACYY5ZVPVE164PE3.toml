@@ -1,0 +1,18 @@
+kind = "evidence"
+captured_at = "2026-10-26T04:37:40Z"
+digest = "3d94d52d6fc244b9882060f1321fd8633fc7055c2cc8bc0c2226917fc8aab70e"
+exit_code = 0
+inline = """
+.............                                                            [100%]
+13 passed in 0.63s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_demo.py tests/unit/test_ops_smoke.py"
+size = 99
+status = "measured"
+test_count = 13
+tests_digest = "49d6b4d7dc94715c574d9e1f54e9e16c630dbbdae8de41f8629517d1cbcfd2d6"
+at = "2026-10-26T04:37:40Z"
+actor = "a-carten"
+rev = 1

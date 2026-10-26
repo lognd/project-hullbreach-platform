@@ -93,18 +93,18 @@ Start with T-0031 or T-0056; both are self-contained. T-0054 needs T-0052
 
 ### Lane B: web pages (E3, E4, E5, E6)
 
-| Ticket | What                                               | Copy from                                         |
-| ------ | -------------------------------------------------- | ------------------------------------------------- |
-| T-0046 | Landing page with real content and calls to action | the `Landing()` stub in `router.tsx`              |
-| T-0048 | Cookie notice, dismissal in localStorage           | `auth/session.ts` for the localStorage pattern    |
-| T-0049 | Data policy page, linked from the footer           | `pages/Login.tsx` for page shape                  |
-| T-0032 | Profile page, phone-width responsive               | `pages/Login.tsx`, `api/auth.ts` `fetchSession()` |
-| T-0035 | Account settings form                              | `pages/Register.tsx` (inline validation)          |
-| T-0038 | Delete-account confirmation                        | `components/Header.tsx` (logout control)          |
-| T-0060 | Match history with paging                          | T-0032                                            |
-| T-0063 | Leaderboard page                                   | T-0060                                            |
-| T-0068 | Store page with category tabs                      | T-0032                                            |
-| T-0102 | Request timeout in `api/auth.ts`                   | none, one function                                |
+| Ticket | What                                               | Copy from                                      |
+| ------ | -------------------------------------------------- | ---------------------------------------------- |
+| T-0046 | Landing page with real content and calls to action | the `Landing()` stub in `router.tsx`           |
+| T-0048 | Cookie notice, dismissal in localStorage           | `auth/session.ts` for the localStorage pattern |
+| T-0049 | Data policy page, linked from the footer           | `pages/Login.tsx` for page shape               |
+| T-0032 | Profile page, phone-width responsive               | `pages/Login.tsx`, `api/me.ts` `fetchMe()`     |
+| T-0035 | Account settings form                              | `pages/Register.tsx` (inline validation)       |
+| T-0038 | Delete-account confirmation                        | `components/Header.tsx` (logout control)       |
+| T-0060 | Match history with paging                          | T-0032                                         |
+| T-0063 | Leaderboard page                                   | T-0060                                         |
+| T-0068 | Store page with category tabs                      | T-0032                                         |
+| T-0102 | Request timeout in `api/auth.ts`                   | none, one function                             |
 
 T-0046, T-0048, T-0049 and T-0102 need no backend and are the fastest first
 PRs in the repo. Pages that read data (T-0032 onward) can be built against
