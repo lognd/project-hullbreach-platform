@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given a stray settings file in a parent folder, when the first make demo runs with a non-default HULLBREACH_DB_PORT, then the database step uses the new file's port"]
+moved = []
+at = "2026-10-26T08:12:56Z"
+actor = "a-carten"
+rev = 1
