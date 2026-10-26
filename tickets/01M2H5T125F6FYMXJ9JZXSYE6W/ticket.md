@@ -2,12 +2,12 @@
 id = "01M2H5T125F6FYMXJ9JZXSYE6W"
 title = "S21 Earn currency by playing"
 type = "story"
-category = "todo"
+category = "in-progress"
 priority = "medium"
 parent = "01M2H5T1205GXC7WDK3G949GYJ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:23Z"
+updated = "2026-10-26T11:20:05Z"
 aliases = ["T-0069"]
 labels = ["jira:SCRUM-42", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/db/models/ledger.py", "src/hullbreach_server/services/currency.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py"]
