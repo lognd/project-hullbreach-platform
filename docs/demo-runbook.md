@@ -60,13 +60,13 @@ target or documented in the [README](../README.md); nothing here is new.
 
 ## Troubleshooting
 
-| Symptom | Cause | Fix |
-| --- | --- | --- |
-| Signed out suddenly | Page reload or typed URL (INV-006) | Sign in again; use top-bar links only |
-| `make demo` or doctor says a port is in use | Another stack on 5432/8000/5173 | Set `HULLBREACH_DB_PORT`, `HULLBREACH_PORT`, `HULLBREACH_WEB_PORT` (and the port in `HULLBREACH_DATABASE_URL`) in `.env`, plus a distinct `COMPOSE_PROJECT_NAME` if another copy's database is up; then `make demo`. Use the printed URLs |
-| `make demo` says the database rejected the password | Old database volume from an earlier `.env` | Restore the old `.env`, or `uv run hullbreach_server reset-db` (deletes all accounts) then `make demo` |
-| `make smoke` says nothing answers | Stack not running | `make demo` first; `make status` shows what runs |
-| curl to `/matches` answers 401 | Missing or wrong `X-Server-Key` | Use a value from `HULLBREACH_GAME_SERVER_API_KEYS` in `.env` |
-| curl to `/matches` answers 503 | No server key configured | `make server-key` prints what to set; restart with `make stop` then `make demo` |
-| Console is empty | Stack not running or wrong checkout | Run `make console` from the same checkout as `make demo` |
-| Anything else | | `make status`, `./doctor.sh`, logs in `.hullbreach/logs` |
+| Symptom                                             | Cause                                      | Fix                                                                                                                                                                                                                                       |
+| --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Signed out suddenly                                 | Page reload or typed URL (INV-006)         | Sign in again; use top-bar links only                                                                                                                                                                                                     |
+| `make demo` or doctor says a port is in use         | Another stack on 5432/8000/5173            | Set `HULLBREACH_DB_PORT`, `HULLBREACH_PORT`, `HULLBREACH_WEB_PORT` (and the port in `HULLBREACH_DATABASE_URL`) in `.env`, plus a distinct `COMPOSE_PROJECT_NAME` if another copy's database is up; then `make demo`. Use the printed URLs |
+| `make demo` says the database rejected the password | Old database volume from an earlier `.env` | Restore the old `.env`, or `uv run hullbreach_server reset-db` (deletes all accounts) then `make demo`                                                                                                                                    |
+| `make smoke` says nothing answers                   | Stack not running                          | `make demo` first; `make status` shows what runs                                                                                                                                                                                          |
+| curl to `/matches` answers 401                      | Missing or wrong `X-Server-Key`            | Use a value from `HULLBREACH_GAME_SERVER_API_KEYS` in `.env`                                                                                                                                                                              |
+| curl to `/matches` answers 503                      | No server key configured                   | `make server-key` prints what to set; restart with `make stop` then `make demo`                                                                                                                                                           |
+| Console is empty                                    | Stack not running or wrong checkout        | Run `make console` from the same checkout as `make demo`                                                                                                                                                                                  |
+| Anything else                                       |                                            | `make status`, `./doctor.sh`, logs in `.hullbreach/logs`                                                                                                                                                                                  |
