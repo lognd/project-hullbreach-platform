@@ -2,11 +2,12 @@
 id = "01M5V5GNFS3X1PRMT0QDTQNEZ5"
 title = "Profile rating should read current_rating, not the 1200 default"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-26T03:54:23Z"
-updated = "2026-10-26T03:59:03Z"
+updated = "2026-10-26T03:59:04Z"
 scope = ["src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/services/profile.py"]
 
 [[acceptance]]
