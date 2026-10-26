@@ -28,8 +28,9 @@ function rememberDismissal(): void {
 }
 
 // frob:ticket 01M2H5T11GEGRR23QSDXER9PXR
+// frob:ticket 01M5VSBWBK5KZ4H6913F333GGC
 // frob:doc docs/index.md#landing-and-policy-pages
-/** A dismissible strip stating the site sets no cookies and keeps one localStorage flag; hidden for good once dismissed. */
+/** A dismissible strip naming the one session cookie and the one localStorage flag; hidden for good once dismissed. */
 export function CookieNotice() {
   const [hidden, setHidden] = useState(wasDismissed);
   if (hidden) {
@@ -42,8 +43,8 @@ export function CookieNotice() {
     >
       <Notice tone="info">
         <p className="m-space-0 max-w-[40rem]">
-          This site sets no cookies. Dismissing this notice stores one flag in your
-          browser.{" "}
+          This site sets one strictly necessary session cookie to keep you signed in.
+          Dismissing this notice stores one flag in your browser.{" "}
           <AppLink
             href="/cookie-policy"
             className="text-accent underline underline-offset-4 hover:text-ink"

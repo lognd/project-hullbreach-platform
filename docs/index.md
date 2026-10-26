@@ -498,7 +498,10 @@ visitor clicks Dismiss and stays hidden on later loads; if storage is
 blocked it still hides for the current page load.
 
 `/data-policy` (`DataPolicy`) has Stored data, Purpose and Deletion
-sections, and `/cookie-policy` (`CookiePolicy`) says no cookies are set.
+sections, and `/cookie-policy` (`CookiePolicy`) names the one strictly necessary
+`hullbreach_session` cookie (opaque token, HttpOnly, SameSite=Lax, cleared
+on logout) and the localStorage notice flag; `CookieNotice` says the same
+in one sentence.
 Both are built from `PolicySection` and linked from the footer. The text
 only describes data the server really stores (account fields, match stats,
 session records); there is no self-service deletion, so the policy says to

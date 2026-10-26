@@ -4,19 +4,30 @@ import { Page } from "@/components/Page";
 import { PolicySection } from "@/components/PolicySection";
 
 // frob:ticket 01M2H5T11HZP2VXR9KV24Q8RV3
+// frob:ticket 01M5VSBWBK5KZ4H6913F333GGC
 // frob:doc docs/index.md#landing-and-policy-pages
-/** The `/cookie-policy` route: states that the site sets no cookies and names the one localStorage flag it keeps. */
+/** The `/cookie-policy` route: names the one session cookie the site sets and the one localStorage flag it keeps. */
 export function CookiePolicy() {
   return (
     <Page
       crumbs={[{ label: "Cookie policy" }]}
       title="Cookie policy"
-      purpose="This site sets no cookies. It keeps one flag in your browser."
+      purpose="This site sets one strictly necessary session cookie and keeps one flag in your browser."
     >
       <PolicySection id="cookies" title="Cookies">
         <p>
-          This site does not set cookies, and it has no analytics, advertising or
-          tracking scripts. Fonts are served from the site itself, not a third party.
+          This site sets one cookie, <code className="font-mono">hullbreach_session</code>
+          . It is strictly necessary: it keeps you signed in, so a page reload does not
+          sign you out. It holds an opaque session token and nothing else, no name or
+          email address. It is HttpOnly, so scripts on the page cannot read it, and
+          SameSite=Lax. The browser sends it only to this site&apos;s{" "}
+          <code className="font-mono">/api</code> paths.
+        </p>
+        <p>
+          The cookie is set when you log in and cleared when you log out. It also
+          expires when your session does. The site has no analytics, advertising or
+          tracking scripts, and fonts are served from the site itself, not a third
+          party.
         </p>
       </PolicySection>
       <PolicySection id="browser-storage" title="Browser storage">
@@ -28,9 +39,9 @@ export function CookiePolicy() {
           server.
         </p>
         <p>
-          Your sign-in token is held in memory only, not in cookies or storage, so
-          reloading the page signs you out. Clear the entry in your browser&apos;s site
-          data settings at any time and the notice will show again.
+          Nothing else is kept in browser storage. Clear the entry in your
+          browser&apos;s site data settings at any time and the notice will show
+          again.
         </p>
       </PolicySection>
       <PolicySection id="more" title="More">

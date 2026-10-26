@@ -2,6 +2,7 @@ import { Page } from "@/components/Page";
 import { PolicySection } from "@/components/PolicySection";
 
 // frob:ticket 01M2H5T11HZP2VXR9KV24Q8RV3
+// frob:ticket 01M5VSBWBK5KZ4H6913F333GGC
 // frob:doc docs/index.md#landing-and-policy-pages
 /** The `/data-policy` route: what the platform stores about a player, why, for how long, and how to have it removed. */
 export function DataPolicy() {
@@ -25,8 +26,8 @@ export function DataPolicy() {
         </p>
         <p>
           Signing in creates a session record holding a hash of your session token and
-          its creation, expiry and revocation times. The token itself lives only in
-          your browser&apos;s memory.
+          its creation, expiry and revocation times. The token itself is kept in
+          the HttpOnly session cookie in your browser and is cleared when you log out.
         </p>
         <p>
           Like any web server, the one behind this site may keep standard request logs
