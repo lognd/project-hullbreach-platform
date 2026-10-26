@@ -1,0 +1,10 @@
+kind = "create"
+title = "ensure_env/.env.example hardcode 5432 in HULLBREACH_DATABASE_URL"
+type = "bug"
+category = "todo"
+priority = "medium"
+scope = ["src/hullbreach_ops/demo.py", ".env.example"]
+body = "found while landing PR 45: HULLBREACH_DB_PORT=15432 leaves HULLBREACH_DATABASE_URL pointing at localhost:5432, so a demo on a non-default DB port connects to the wrong database. ensure_env should derive the URL port from HULLBREACH_DB_PORT (and CORS origin from HULLBREACH_WEB_PORT)."
+at = "2026-10-26T04:57:17Z"
+actor = "a-carten"
+rev = 1
