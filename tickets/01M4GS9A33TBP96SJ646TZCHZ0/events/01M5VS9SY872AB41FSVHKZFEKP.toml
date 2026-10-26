@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [4]
+captured_at = "2026-10-26T09:40:08Z"
+digest = "f360a9a52bcc259dabf5a4b85df41a1b84c467edcbac692590481e60a0a800ca"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/SessionRestore.test.tsx (4 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:40:09
+   Duration  481ms (transform 57ms, setup 78ms, import 20ms, tests 14ms, environment 288ms)
+
+JSON report written to /tmp/frob-vitest-3405517-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/SessionRestore.test.tsx"
+size = 314
+status = "measured"
+test_count = 4
+tests_digest = "f7954a593441f9ac59ed76cacec05b51fae4c910ab26eae1919775dd0667831c"
+at = "2026-10-26T09:40:08Z"
+actor = "a-carten"
+rev = 1
