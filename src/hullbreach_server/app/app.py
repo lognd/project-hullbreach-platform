@@ -16,8 +16,9 @@ from hullbreach_server.logging import get_logger
 
 _log = get_logger(__name__)
 
+# frob:ticket 01M5VVGXXRMT0RDH1KNAFF5F5S
 # The only methods and headers the API and its web client use (INV-004).
-_CORS_METHODS = ["GET", "POST", "OPTIONS"]
+_CORS_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 _CORS_HEADERS = ["Authorization", "Content-Type", "X-Hullbreach-Web"]
 
 

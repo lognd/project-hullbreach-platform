@@ -199,9 +199,31 @@ def test_cors_allows_only_the_api_methods_and_headers() -> None:
         )
     assert ok.status_code == 200
     assert ok.headers["access-control-allow-origin"] == "http://localhost:5173"
+    allowed = set(ok.headers["access-control-allow-methods"].split(", "))
+    assert allowed == {"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
     assert ok.headers["access-control-allow-credentials"] == "true"
     assert bad.status_code == 400
     assert "access-control-allow-origin" not in other.headers
+
+
+# frob:ticket 01M5VVGXXRMT0RDH1KNAFF5F5S
+@pytest.mark.parametrize("method", ["PUT", "PATCH", "DELETE"])
+def test_cors_preflight_allows_write_methods(method: str) -> None:
+    """Preflights for the PUT, PATCH and DELETE routes pass from an allowed origin."""
+    # frob:tests src/hullbreach_server/app/app.py::create_app kind="unit"
+    from fastapi.testclient import TestClient
+
+    app = create_app(AppConfig(database_url="sqlite://"))
+    with TestClient(app) as client:
+        response = client.options(
+            "/api/v1/health",
+            headers={
+                "Origin": "http://localhost:5173",
+                "Access-Control-Request-Method": method,
+            },
+        )
+    assert response.status_code == 200
+    assert method in response.headers["access-control-allow-methods"]
 
 
 def test_create_app_returns_fastapi_with_config_attached() -> None:
