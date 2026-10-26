@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-15T17:28:14Z"
+digest = "5f8f69d0eef9abc986069ac6e1df007c51b442ff365232031c1fd0f2a63705b8"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.23s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_readme_links.py::test_every_readme_link_points_at_a_real_heading"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "2e976b2c6358b41e19902dad9e8ad3d17bc4b01b8dcb4fb5e87c24d4837df729"
+at = "2026-10-15T17:28:14Z"
+actor = "lognd"
+rev = 1

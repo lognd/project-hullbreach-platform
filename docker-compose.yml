@@ -12,8 +12,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-hullbreach}
     # frob:invariant INV-005
     # Loopback only: the dev database is never reachable from the network.
+    # HULLBREACH_DB_PORT moves the host side so a second copy can run beside
+    # the first (see docs/index.md#operator-scripts-and-the-doctor).
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${HULLBREACH_DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

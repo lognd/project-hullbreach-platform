@@ -3,6 +3,8 @@ import sys
 
 from dotenv import load_dotenv
 
+from hullbreach_ops.cli import COMMANDS as OPS_COMMANDS
+from hullbreach_ops.cli import add_ops_commands, run_ops
 from hullbreach_server.app import App, AppConfig
 
 
@@ -17,6 +19,7 @@ def _build_parser() -> argparse.ArgumentParser:
     db_sub = db_p.add_subparsers(dest="db_command", required=True)
     db_sub.add_parser("upgrade", help="run pending Alembic migrations")
     db_sub.add_parser("seed", help="load catalog items and the first admin")
+    add_ops_commands(sub)
     return p
 
 
@@ -61,10 +64,13 @@ def _db_seed(args: argparse.Namespace) -> None:
 
 
 # frob:tests tests/unit/test_main.py::test_main_prints_help_and_exits_cleanly
+# frob:tests tests/unit/test_main.py::test_main_runs_operator_commands
 # frob:doc docs/index.md#public-api
 def main() -> None:
     load_dotenv()
     args = _build_parser().parse_args()
+    if args.command in OPS_COMMANDS:
+        sys.exit(run_ops(args))
     if args.command == "db":
         if args.db_command == "upgrade":
             _db_upgrade(args)

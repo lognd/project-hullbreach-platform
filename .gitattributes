@@ -5,3 +5,8 @@ tickets/_cycles/*/cycle.md merge=frob-ledger
 # Ledger files must stay LF even where core.autocrlf=true; the v2 reader and
 # the importer reject CRLF front matter.
 tickets/** text eol=lf
+
+# Shell scripts must keep LF to run on macOS/Linux/WSL; Windows scripts CRLF.
+*.sh text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
