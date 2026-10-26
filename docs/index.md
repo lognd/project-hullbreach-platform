@@ -670,6 +670,7 @@ uv, Docker and Node.js exist and offer their official installers after a
 | `demo-users` | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                |
 | `server-key` | generates a game-server key and says where it goes on both sides; never written to disk                                                       |
 | `lan`        | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`) |
+| `console`    | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console)) |
 
 Terminal output goes through `console.py`'s `Console`, not logging: every
 line is redacted (registered secret values plus anything that looks like a
@@ -760,6 +761,32 @@ proxy it registers a throwaway `smoke_<hex>` account, logs in, reads
 with the first configured server key (skipped when none is set), logs out
 and confirms the token no longer works. It stops at the first failing step
 and prints no password, token or key.
+
+### Demo console
+
+`make console` (or `uv run hullbreach_server console`) tails the API log
+(`.hullbreach/logs/api.log`, written by `make demo`) in a readable form so
+an audience can watch requests arrive. `make console-db` (`--db`) also
+shows the database changes the API makes. Options: `-n N` (lines of
+history, default 10), `--no-follow` (print and exit). Ctrl+C stops it.
+
+The API writes two kinds of line (`hullbreach_server/logging/events.py`,
+`app/access_log.py`):
+
+- `[access]`: one per request with time, method, path, status, duration,
+  the signed-in user id or `-`, and whether the request carried a game
+  server key (only its presence, never the value). Health polls are skipped.
+- `[event]`: one per database state change at INFO: user registered, login
+  ok/failed, logout and session revoked, match recorded (winner and rating
+  before -> after per player), idempotent replay, settings updated (field
+  names only, never values).
+
+Console format: `HH:MM:SS  METHOD  path  status  NNms  user=..  [server-key]`,
+and with `--db` `HH:MM:SS  DB      <text>`. Warnings and errors (such as a
+failed login) always show. Times are UTC. Passwords, tokens and keys are
+never logged. App-level event lines were chosen over Postgres statement
+logs because they need no database configuration and read as plain
+sentences.
 
 ## Sprint 1 design
 

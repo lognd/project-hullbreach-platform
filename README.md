@@ -639,6 +639,10 @@ Sign in at http://localhost:5173/login
 Username: demo_pilot    Password: demo-password-123
 ```
 
+To show the server working during a demo, run `make console` in a
+second terminal: one line per request, and `make console-db` adds the
+database changes (user registered, match recorded with rating changes).
+
 Open that address and sign in. Stop everything with `make stop` (your data
 is kept); running `make demo` again is safe and changes nothing that
 exists. To check the whole path from the command line, run `make smoke`:

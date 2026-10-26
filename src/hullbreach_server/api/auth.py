@@ -33,7 +33,7 @@ from hullbreach_server.auth import (
 )
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
-from hullbreach_server.logging import get_logger, sanitize_for_log
+from hullbreach_server.logging import get_logger, log_event, sanitize_for_log
 
 _log = get_logger(__name__)
 
@@ -106,7 +106,8 @@ def register(
         _log.warning("register: duplicate %s (lost insert race)", field)
         return _conflict(field)
     db.refresh(user)
-    _log.info("registered user %s", user.id)
+    # frob:ticket 01M5V5TXXWPT81BGF67BNZNJJN
+    log_event(_log, "user registered: %r (id %s)", user.username, user.id)
     return UserProfile.from_user(user)
 
 
@@ -136,7 +137,7 @@ def login(
     reserved = reserve_login_attempt(payload.username, now)
     if reserved.is_err:
         retry_after = reserved.danger_err.retry_after_seconds
-        _log.warning("login: rate limited for %s", shown)
+        _log.warning("login failed: %s (too many attempts, rate limited)", shown)
         return JSONResponse(
             status_code=429,
             content={"detail": "too many attempts, try again later"},
@@ -154,7 +155,8 @@ def login(
     else:
         verified = verify_password(payload.password, user.password_hash)
     if user is None or not verified:
-        _log.warning("login: invalid credentials for %s", shown)
+        reason = "unknown user" if user is None else "wrong password"
+        _log.warning("login failed: %s (%s)", shown, reason)
         return JSONResponse(
             status_code=401,
             content={"detail": "invalid username or password"},
@@ -163,7 +165,13 @@ def login(
     clear_failed_logins(payload.username)
     # noqa: E501  # frob:todo 01M2H5T12DHERRG7PFSX31A3MK refuse a suspended user here with 403 and the suspension reason, before issuing a session
     _session_row, token = issue_session(db, user)
-    _log.info("logged in user %s", user.id)
+    log_event(
+        _log,
+        "login ok: %r (id %s), session %s issued",
+        user.username,
+        user.id,
+        _session_row.id,
+    )
     return LoginResponse(token=token, user=UserProfile.from_user(user))
 
 
@@ -187,10 +195,21 @@ def logout(
     for the caller (`all=true`); 401 if the token is already invalid."""
     if all_sessions:
         revoke_all_sessions(db, ctx.user)
-        _log.info("logged out user %s (all sessions)", ctx.user.id)
+        log_event(
+            _log,
+            "logout: %r (id %s), all sessions revoked",
+            ctx.user.username,
+            ctx.user.id,
+        )
     else:
         revoke_session(db, ctx.session)
-        _log.info("logged out user %s (current session)", ctx.user.id)
+        log_event(
+            _log,
+            "logout: %r (id %s), session %s revoked",
+            ctx.user.username,
+            ctx.user.id,
+            ctx.session.id,
+        )
     return Response(status_code=204)
 
 

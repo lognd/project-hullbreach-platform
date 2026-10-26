@@ -152,3 +152,19 @@ def report() -> Any:
         return body
 
     return _report
+
+
+@pytest.fixture
+def server_logs(monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture):
+    """Capture every hullbreach_server log record, even after alembic's fileConfig.
+
+    System tests run alembic, whose fileConfig can leave app loggers disabled;
+    tests that assert on log lines re-enable them for their own duration.
+    """
+    import logging
+
+    caplog.set_level(logging.DEBUG)
+    for name, logger in list(logging.root.manager.loggerDict.items()):
+        if name.startswith("hullbreach_server") and isinstance(logger, logging.Logger):
+            monkeypatch.setattr(logger, "disabled", False)
+    return caplog

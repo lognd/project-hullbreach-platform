@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session as DBSession
 
@@ -39,6 +39,7 @@ class AuthContext:
 # frob:tests tests/unit/test_sessions.py::test_revoked_token_returns_401
 # noqa: E501  # frob:tests tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403
 def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
     db: DBSession = Depends(get_db),
 ) -> AuthContext:
@@ -67,6 +68,8 @@ def get_current_user(
         )
         raise HTTPException(status_code=401, detail="not authenticated")
 
+    # Read by AccessLogMiddleware to put the caller on the request's access line.
+    request.state.user_id = str(user.id)
     return AuthContext(user=user, session=session_row)
 
 

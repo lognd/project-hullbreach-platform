@@ -108,6 +108,8 @@ def test_demo_runs_every_stage_and_prints_the_login(
     assert demo.DEMO_PILOT in text
     assert demo.DEMO_PASSWORD in text
     assert "make stop" in text
+    assert "make console" in text
+    assert "make console-db" in text
 
 
 def test_demo_explains_a_stale_database_volume(

@@ -205,5 +205,7 @@ def demo(ctx: OpsContext, host: str | None = None) -> Result[None, OpsError]:
         if created
         else "  (already set up; the account and its history are unchanged)"
     )
+    ctx.console.line("  Watch requests live: make console")
+    ctx.console.line("  ...and database changes too: make console-db")
     ctx.console.line("  Stop everything with: make stop")
     return Ok(None)

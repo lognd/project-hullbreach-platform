@@ -20,7 +20,7 @@ from typani import Err, Ok, Result
 from hullbreach_server.db.models.match import Match, MatchPlayerStats
 from hullbreach_server.db.models.rating import RatingChange
 from hullbreach_server.db.models.user import User
-from hullbreach_server.logging import get_logger
+from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.rating.elo import STARTING_RATING, rate_match
 
 _log = get_logger(__name__)
@@ -373,7 +373,10 @@ def _replay(
                 detail="match_id already recorded with a different result",
             )
         )
-    _log.info("match %s replayed; returning the stored record", match.id)
+    # frob:ticket 01M5V5TXXWPT81BGF67BNZNJJN
+    log_event(
+        _log, "idempotent replay: match %s already recorded, nothing changed", match.id
+    )
     return Ok(Recorded(record=_load_record(db, match), created=False))
 
 
@@ -398,7 +401,7 @@ def record_match(db: DBSession, report: MatchReport) -> Result[Recorded, RecordE
 
     ids = sorted(player.user_id for player in report.players)
     found = {
-        user.id
+        user.id: user.username
         for user in db.scalars(
             select(User).where(User.id.in_(ids)).order_by(User.id).with_for_update()
         )
@@ -456,14 +459,15 @@ def record_match(db: DBSession, report: MatchReport) -> Result[Recorded, RecordE
         if winner is None:
             raise
         return _replay(db, winner, report)
-    _log.info(
-        "recorded match %s: %s beat %s (%s -> %s, %s -> %s)",
+    ratings = ", ".join(
+        f"{found[user_id]} {before[user_id]} -> {after[user_id]}"
+        for user_id in (report.winner_id, loser_id)
+    )
+    log_event(
+        _log,
+        "match recorded: %s, winner=%s, ratings %s",
         report.match_id,
-        report.winner_id,
-        loser_id,
-        before[report.winner_id],
-        after[report.winner_id],
-        before[loser_id],
-        after[loser_id],
+        found[report.winner_id],
+        ratings,
     )
     return Ok(Recorded(record=_load_record(db, match), created=True))
