@@ -1,0 +1,10 @@
+kind = "create"
+title = "README has stale pre-demo status claims (for example nothing records match results)"
+type = "docs"
+category = "todo"
+priority = "low"
+scope = ["README.md"]
+body = "found while rehearsing the demo script: README limitations list still says nothing records match results and ELO never changes."
+at = "2026-10-26T17:48:03Z"
+actor = "a-carten"
+rev = 1
