@@ -13,11 +13,6 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from hullbreach_server.db.models.user import Role, User
 
-# The starting ELO rating for a freshly registered player; not yet a
-# persisted column (currency/rating land in a later milestone), see
-# docs/design/sprint-1.md section 5.
-_DEFAULT_RATING = 1200
-
 # Bounds on every unauthenticated field (INV-002): they match the users
 # columns (String(32) / String(254)) and cap what reaches the Argon2 hasher.
 USERNAME_MAX_LENGTH = 32
@@ -91,9 +86,8 @@ class UpdateMeRequest(BaseModel):
 class UserProfile(BaseModel):
     """The profile shape every auth endpoint that returns a user echoes.
 
-    `currency` and `rating` are not yet backed by persisted columns (ELO
-    and currency land in later milestones); this response builder always
-    returns `currency=0` and the default starting rating.
+    `currency` is not yet a persisted column and is always 0; `rating` is
+    the caller-supplied current ELO (`services.matches.current_rating`).
     """
 
     model_config = {}
@@ -108,15 +102,15 @@ class UserProfile(BaseModel):
 
     # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
     @classmethod
-    def from_user(cls, user: User) -> UserProfile:
-        """Build a UserProfile from a `User` ORM row, filling in the not-yet-persisted defaults."""  # noqa: E501
+    def from_user(cls, user: User, rating: int) -> UserProfile:
+        """Build a UserProfile from a `User` row and the player's current `rating`."""
         return cls(
             id=user.id,
             username=user.username,
             email=user.email,
             role=user.role,
             currency=0,
-            rating=_DEFAULT_RATING,
+            rating=rating,
             created_at=user.created_at,
         )
 

@@ -34,6 +34,7 @@ from hullbreach_server.auth import (
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger, sanitize_for_log
+from hullbreach_server.services.matches import current_rating
 
 _log = get_logger(__name__)
 
@@ -107,7 +108,7 @@ def register(
         return _conflict(field)
     db.refresh(user)
     _log.info("registered user %s", user.id)
-    return UserProfile.from_user(user)
+    return UserProfile.from_user(user, current_rating(db, user.id))
 
 
 # noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user
@@ -164,7 +165,10 @@ def login(
     # noqa: E501  # frob:todo 01M2H5T12DHERRG7PFSX31A3MK refuse a suspended user here with 403 and the suspension reason, before issuing a session
     _session_row, token = issue_session(db, user)
     _log.info("logged in user %s", user.id)
-    return LoginResponse(token=token, user=UserProfile.from_user(user))
+    return LoginResponse(
+        token=token,
+        user=UserProfile.from_user(user, current_rating(db, user.id)),
+    )
 
 
 # frob:tests tests/unit/test_auth_logout.py::test_logout_returns_204

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 import secrets
+import uuid
 from datetime import UTC, datetime, timedelta
 
 from dotenv import dotenv_values
@@ -25,9 +26,9 @@ from hullbreach_ops.errors import OpsError
 from hullbreach_ops.settings import load_app_config
 from hullbreach_server.auth.passwords import hash_password
 from hullbreach_server.db.engine import create_db_engine
-from hullbreach_server.db.models.match import Match, MatchPlayerStats
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
+from hullbreach_server.services.matches import MatchReport, PlayerReport, record_match
 
 _log = get_logger(__name__)
 
@@ -46,6 +47,9 @@ _HISTORY = (
     ("demo_ace", True, 60 * 24 * 2, 502, 1300, 640),
     ("demo_rival", True, 60 * 24, 340, 870, 150),
 )
+
+# Namespace for the demo matches' fixed ids, so seeding is replayable.
+_NAMESPACE = uuid.UUID("6f1c1f0e-5d0a-4c53-9a53-0d3e6a1b7c10")
 
 _SECRET_LINES = {
     "POSTGRES_PASSWORD": "db",
@@ -102,60 +106,91 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
     return Ok(True)
 
 
-def _new_matches(pilot: User, others: dict[str, User], now: datetime) -> list[Match]:
-    """The demo match history, newest a day old, as ORM rows."""
-    matches: list[Match] = []
-    for opponent, won, minutes_ago, seconds, mine, theirs in _HISTORY:
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
+def _reports(pilot: User, others: dict[str, User]) -> list[tuple[MatchReport, int]]:
+    """The demo history as (report, minutes ago) pairs with fixed match ids."""
+    reports: list[tuple[MatchReport, int]] = []
+    for index, (opponent, won, minutes_ago, seconds, mine, theirs) in enumerate(
+        _HISTORY
+    ):
         other = others[opponent]
-        match = Match(
-            winner_id=pilot.id if won else other.id,
-            duration_seconds=seconds,
-            created_at=now - timedelta(minutes=minutes_ago),
+        reports.append(
+            (
+                MatchReport(
+                    match_id=uuid.uuid5(_NAMESPACE, f"match-{index}"),
+                    winner_id=pilot.id if won else other.id,
+                    duration_seconds=seconds,
+                    players=[
+                        _player(pilot.id, mine, seconds if not won else seconds - 20),
+                        _player(other.id, theirs, seconds if won else seconds - 20),
+                    ],
+                ),
+                minutes_ago,
+            )
         )
-        match.player_stats = [
-            MatchPlayerStats(
-                user_id=pilot.id,
-                damage_dealt=mine,
-                blocks_destroyed=mine // 60,
-                blocks_placed=mine // 45,
-                time_alive_seconds=seconds if not won else seconds - 20,
-            ),
-            MatchPlayerStats(
-                user_id=other.id,
-                damage_dealt=theirs,
-                blocks_destroyed=theirs // 60,
-                blocks_placed=theirs // 45,
-                time_alive_seconds=seconds if won else seconds - 20,
-            ),
-        ]
-        matches.append(match)
-    return matches
+    return reports
 
 
+def _player(user_id: uuid.UUID, damage: int, alive: int) -> PlayerReport:
+    """One demo player's counters, derived from their damage."""
+    return PlayerReport(
+        user_id=user_id,
+        damage_dealt=damage,
+        blocks_destroyed=damage // 60,
+        blocks_placed=damage // 45,
+        time_alive_seconds=alive,
+    )
+
+
+def _ensure_users(db: Session) -> tuple[dict[str, User], bool]:
+    """Get or create the demo accounts; the flag says whether any was created."""
+    existing = {
+        u.username: u
+        for u in db.scalars(select(User).where(User.username.in_(DEMO_ACCOUNTS)))
+    }
+    missing = [name for name in DEMO_ACCOUNTS if name not in existing]
+    if missing:
+        password_hash = hash_password(DEMO_PASSWORD)
+        for name in missing:
+            existing[name] = User(
+                username=name, email=f"{name}@example.com", password_hash=password_hash
+            )
+        db.add_all(existing[name] for name in missing)
+        db.commit()
+        _log.info("demo: created accounts %s", missing)
+    return existing, bool(missing)
+
+
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
 # frob:tests tests/unit/test_ops_demo.py::test_seed_demo_data_is_idempotent
+# noqa: E501  # frob:tests tests/unit/test_ops_demo.py::test_seed_demo_data_rates_the_history_through_record_match
 # frob:doc docs/index.md#one-command-demo
 def seed_demo_data(database_url: str) -> Result[bool, OpsError]:
-    """Create the demo accounts and their match history; Ok(False) if present."""
+    """Create the demo accounts and rate their history; Ok(False) if present.
+
+    Match ids are fixed, so a re-run (or one that follows a partial failure)
+    replays what exists and records only what is missing.
+    """
     engine = create_db_engine(database_url)
+    created = False
     try:
         with Session(engine) as db:
-            if db.scalar(select(User).where(User.username == DEMO_PILOT)):
-                _log.info("demo: demo accounts already exist")
-                return Ok(False)
-            password_hash = hash_password(DEMO_PASSWORD)
-            users = {
-                name: User(
-                    username=name,
-                    email=f"{name}@example.com",
-                    password_hash=password_hash,
-                )
-                for name in DEMO_ACCOUNTS
-            }
-            db.add_all(users.values())
-            db.flush()
+            users, created = _ensure_users(db)
             others = {k: v for k, v in users.items() if k != DEMO_PILOT}
-            db.add_all(_new_matches(users[DEMO_PILOT], others, datetime.now(UTC)))
-            db.commit()
+            now = datetime.now(UTC)
+            for report, minutes_ago in _reports(users[DEMO_PILOT], others):
+                played_at = now - timedelta(minutes=minutes_ago)
+                recorded = record_match(db, report, played_at)
+                if recorded.is_err:
+                    detail = recorded.danger_err.detail
+                    _log.error("demo: recording a demo match failed: %s", detail)
+                    return Err(
+                        OpsError(
+                            message=f"could not record the demo history ({detail})",
+                            fix=["Run: uv run hullbreach_server doctor"],
+                        )
+                    )
+                created = created or recorded.danger_ok.created
     except SQLAlchemyError as exc:
         _log.error("demo: seeding demo data failed: %s", type(exc).__name__)
         return Err(
@@ -166,8 +201,8 @@ def seed_demo_data(database_url: str) -> Result[bool, OpsError]:
         )
     finally:
         engine.dispose()
-    _log.info("demo: created %d demo accounts and %d matches", 3, len(_HISTORY))
-    return Ok(True)
+    _log.info("demo: seeded demo data (created something: %s)", created)
+    return Ok(created)
 
 
 # noqa: E501  # frob:tests tests/unit/test_ops_demo.py::test_demo_runs_every_stage_and_prints_the_login

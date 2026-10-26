@@ -385,8 +385,12 @@ def _replay(
 # noqa: E501  # frob:tests tests/unit/test_matches_record.py::test_post_match_reusing_an_id_with_a_different_body_is_409
 # noqa: E501  # frob:tests tests/unit/test_matches_record.py::test_post_match_with_an_unknown_player_is_404_and_records_nothing
 # noqa: E501  # frob:tests tests/unit/test_matches_record.py::test_recorded_match_shows_in_my_matches_and_the_profile
-def record_match(db: DBSession, report: MatchReport) -> Result[Recorded, RecordError]:
+def record_match(
+    db: DBSession, report: MatchReport, played_at: datetime | None = None
+) -> Result[Recorded, RecordError]:
     """Store `report` once and rate both players; a repeated id replays it.
+
+    `played_at` backdates the match (demo seeding); it defaults to now.
 
     The match id is the idempotency key. Player rows are locked in id
     order (`FOR UPDATE`, a no-op on SQLite) so two reports touching the
@@ -426,7 +430,7 @@ def record_match(db: DBSession, report: MatchReport) -> Result[Recorded, RecordE
     after = {report.winner_id: rated.danger_ok.winner, loser_id: rated.danger_ok.loser}
     before = {report.winner_id: winner_before, loser_id: loser_before}
 
-    now = datetime.now(timezone.utc)
+    now = played_at or datetime.now(timezone.utc)
     match = Match(
         id=report.match_id,
         winner_id=report.winner_id,

@@ -3,12 +3,14 @@
 Walks the path a player takes: website proxy -> API -> database. It registers
 a throwaway account, logs in, reads the profile and history, and logs out; if
 a game-server key is configured it also checks the game-facing session
-endpoint. Nothing is printed that is a password or token.
+endpoint and posts a match with that key, requiring /me's rating to rise.
+Nothing printed is a password, token or key.
 """
 
 from __future__ import annotations
 
 import secrets
+import uuid
 from collections.abc import Mapping
 from typing import Any
 
@@ -53,7 +55,75 @@ def _step(
     return Ok(response.json_body())
 
 
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
+def _check_rating_change(
+    ctx: OpsContext,
+    web: str,
+    api: str,
+    key: str,
+    auth: Mapping[str, str],
+    player_id: str,
+    before: int,
+    password: str,
+) -> Result[None, OpsError]:
+    """Have the smoke player beat a rival, then require a higher /me rating."""
+    rival = f"smoke_{secrets.token_hex(4)}"
+    rival_made = _step(
+        ctx,
+        "register a rival",
+        "POST",
+        f"{web}/auth/register",
+        201,
+        body={
+            "username": rival,
+            "email": f"{rival}@example.com",
+            "password": password,
+        },
+    )
+    if rival_made.is_err:
+        return Err(rival_made.danger_err)
+    counters = {"damage_dealt": 100, "time_alive_seconds": 60}
+    report = {
+        "match_id": str(uuid.uuid4()),
+        "winner_id": player_id,
+        "duration_seconds": 60,
+        "players": [
+            {"user_id": player_id, **counters},
+            {"user_id": rival_made.danger_ok["id"], **counters},
+        ],
+    }
+    posted = _step(
+        ctx,
+        "record a match with the server key",
+        "POST",
+        f"{api}/matches",
+        201,
+        headers={"X-Server-Key": key},
+        body=report,
+    )
+    if posted.is_err:
+        return Err(posted.danger_err)
+    after = _step(ctx, "profile after the match", "GET", f"{web}/me", 200, headers=auth)
+    if after.is_err:
+        return Err(after.danger_err)
+    rating = after.danger_ok.get("rating")
+    if not isinstance(rating, int) or rating <= before:
+        _log.warning("smoke: rating did not rise (%s -> %s)", before, rating)
+        return Err(
+            OpsError(
+                message=f"profile: rating did not rise ({before} -> {rating})",
+                fix=_FIX,
+            )
+        )
+    ctx.console.line(
+        f"  ok  rating changes after a recorded match ({before} -> {rating})"
+    )
+    _log.info("smoke: rating %s -> %s", before, rating)
+    return Ok(None)
+
+
 # frob:ticket 01M5V56YXRCHFZHZGWZTDXHV5H
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
 # frob:tests tests/unit/test_ops_smoke.py::test_smoke_walks_the_whole_account_flow
 # frob:tests tests/unit/test_ops_smoke.py::test_smoke_stops_at_the_first_failure
 # frob:doc docs/index.md#one-command-demo
@@ -70,7 +140,7 @@ def smoke(ctx: OpsContext) -> Result[None, OpsError]:
     password = secrets.token_urlsafe(12)
     ctx.console.add_secret(password)
     credentials = {"username": username, "password": password}
-    _step(
+    registered = _step(
         ctx,
         "register",
         "POST",
@@ -98,8 +168,12 @@ def smoke(ctx: OpsContext) -> Result[None, OpsError]:
             200,
             headers={**auth, "X-Server-Key": key},
         ).unwrap()
+        _check_rating_change(
+            ctx, web, api, key, auth, registered["id"], me["rating"], password
+        ).unwrap()
     else:
         ctx.console.line(f"  skip  game session check ({GAME_KEYS_VAR} is not set)")
+        ctx.console.line(f"  skip  rating check ({GAME_KEYS_VAR} is not set)")
     _step(ctx, "log out", "POST", f"{web}/auth/logout", 204, headers=auth).unwrap()
     _step(ctx, "old token is rejected", "GET", f"{web}/me", 401, headers=auth).unwrap()
     ctx.console.line("Smoke test passed.")

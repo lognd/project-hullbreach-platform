@@ -129,10 +129,11 @@ takes a `RegisterRequest` (`username` 3-32 chars of `[A-Za-z0-9_.-]`,
 `password` 8-128 chars; every bound is a 422 before any hashing, INV-002;
 `role` is deliberately not a field at all, never merely ignored) and returns a `UserProfile` (`id`, `username`,
 `email`, `role`, `currency`, `rating`, `created_at`) with 201 on success.
-`UserProfile.from_user` builds the response from the persisted `User`
-row, filling in `currency=0` and the default starting `rating` (1200) --
-neither is a real column yet (ELO and currency land in later
-milestones). A pre-query (`_duplicate_field`, case-insensitive) checks for
+`UserProfile.from_user(user, rating)` builds the response from the persisted
+`User` row and the caller-supplied `rating`, which register, login, `GET
+/me` and `PATCH /me` read from `services/matches.py::current_rating` (1200
+until the player has a rated match); `currency` is `0` (not a real column
+yet). A pre-query (`_duplicate_field`, case-insensitive) checks for
 an existing `username` or `email` before the insert, so a 409 response
 can name the specific offending field (`{"detail": "username already
 taken", "field": "username"}` or the `email` equivalent). The database's
@@ -536,7 +537,7 @@ through `get_current_user`. The response models live in the service layer
 `recent_matches` (the newest five `MatchSummary` rows). Two sections are
 honest defaults until their models land: `inventory` is always `[]` (no
 Item/Inventory ORM model or ownership table yet, T-0066), and `currency`
-and `rating` are `UserProfile.from_user`'s `0` and `1200` (see Auth API).
+is `0` and `rating` is the player's current ELO (see Auth API).
 
 A `MatchSummary` (`services/matches.py`) is one match from the player's
 point of view: `id`, `played_at` (the match's `created_at`), `opponent`
@@ -755,8 +756,11 @@ working browser -> website -> API -> database stack in one step, and
    website (see the table above).
 3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
    published on purpose: the database listens on 127.0.0.1 only) with two
-   opponents, `demo_rival` and `demo_ace`, and six matches of history.
-   Idempotent: nothing is changed once `demo_pilot` exists.
+   opponents, `demo_rival` and `demo_ace`, and six matches of history. Each match goes through
+   `services/matches.py::record_match` (backdated one to six days) with a
+   fixed match id, so ratings evolve from 1200 and history shows real
+   `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
+   same ids and changes nothing.
 
 If a database volume from an earlier setup is present, the freshly
 generated password will not match it. The database then rejects the
@@ -768,7 +772,9 @@ scripted check that the demo really works: through the website's `/api`
 proxy it registers a throwaway `smoke_<hex>` account, logs in, reads
 `/me` and `/me/matches`, calls the game-facing `GET /api/v1/auth/session`
 with the first configured server key (skipped when none is set), logs out
-and confirms the token no longer works. It stops at the first failing step
+and confirms the token no longer works. When a server key is set it also
+registers a rival, posts a match (the smoke player wins) to
+`POST /api/v1/matches` with that key and requires `/me`'s rating to rise. It stops at the first failing step
 and prints no password, token or key.
 
 ## Sprint 1 design
