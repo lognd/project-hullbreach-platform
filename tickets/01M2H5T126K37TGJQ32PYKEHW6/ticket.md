@@ -2,7 +2,8 @@
 id = "01M2H5T126K37TGJQ32PYKEHW6"
 title = "Currency ledger model and payout rules applied on match record"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 3
 parent = "01M2H5T125F6FYMXJ9JZXSYE6W"
