@@ -714,7 +714,7 @@ uv, Docker and Node.js exist and offer their official installers after a
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
 | `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
-| `demo-match` | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after |
+| `demo-match` | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after        |
 | `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
 | `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
 | `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
