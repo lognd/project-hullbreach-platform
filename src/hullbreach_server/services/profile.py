@@ -23,7 +23,11 @@ from hullbreach_server.auth import (
 from hullbreach_server.db.models.session import Session
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
-from hullbreach_server.services.matches import MatchSummary, recent_matches
+from hullbreach_server.services.matches import (
+    MatchSummary,
+    current_rating,
+    recent_matches,
+)
 
 _log = get_logger(__name__)
 
@@ -56,7 +60,7 @@ class MeResponse(UserProfile):
 # frob:tests tests/unit/test_me.py::test_get_me_returns_all_five_sections
 def build_me(db: DBSession, user: User) -> MeResponse:
     """Aggregate `user`'s profile, balance, rating, inventory and last five matches."""
-    profile = UserProfile.from_user(user)
+    profile = UserProfile.from_user(user, current_rating(db, user.id))
     # noqa: E501  # frob:todo 01M2H5T1227K1HMGED2B5K9JYQ list the player's owned skins once the Item/Inventory models exist
     inventory: list[OwnedSkin] = []
     matches = recent_matches(db, user, RECENT_MATCH_COUNT)

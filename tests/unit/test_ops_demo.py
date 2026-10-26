@@ -16,7 +16,9 @@ from hullbreach_ops.errors import OpsError
 from hullbreach_server.db import Base
 from hullbreach_server.db.engine import create_db_engine
 from hullbreach_server.db.models.match import Match
+from hullbreach_server.db.models.rating import RatingChange
 from hullbreach_server.db.models.user import User
+from hullbreach_server.services.matches import current_rating, match_page
 
 EXAMPLE = (
     "POSTGRES_PASSWORD=change-me\n"
@@ -68,6 +70,37 @@ def test_seed_demo_data_is_idempotent(tmp_path: Path) -> None:
     with Session(engine) as db:
         assert db.scalar(select(func.count()).select_from(User)) == 3
         assert db.scalar(select(func.count()).select_from(Match)) == 6
+    engine.dispose()
+
+
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
+def test_seed_demo_data_rates_the_history_through_record_match(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/demo.py::seed_demo_data kind="unit"
+    url = f"sqlite:///{tmp_path / 'demo.db'}"
+    engine = create_db_engine(url)
+    Base.metadata.create_all(engine)
+
+    assert demo.seed_demo_data(url).danger_ok is True
+    assert demo.seed_demo_data(url).danger_ok is False
+
+    with Session(engine) as db:
+        assert db.scalar(select(func.count()).select_from(RatingChange)) == 12
+        pilot = db.scalar(select(User).where(User.username == demo.DEMO_PILOT))
+        assert pilot is not None
+        ratings = {
+            u.username: current_rating(db, u.id) for u in db.scalars(select(User))
+        }
+        assert ratings[demo.DEMO_PILOT] != 1200
+        assert len(set(ratings.values())) == 3
+        assert sum(ratings.values()) == 3 * 1200
+        page = match_page(db, pilot, None, 10).danger_ok
+        oldest, newest = page.items[-1], page.items[0]
+        assert oldest.rating_before == 1200
+        assert oldest.rating_after > 1200
+        assert newest.rating_after == ratings[demo.DEMO_PILOT]
+        assert newest.stats["damage_dealt"] > 0
+        # played_at is staggered into the past, not all "now"
+        assert oldest.played_at < newest.played_at
     engine.dispose()
 
 

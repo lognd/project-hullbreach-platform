@@ -27,6 +27,9 @@ class FakeStack(FakeHttp):
         self.broken = broken
         self.username = ""
         self.logged_out = False
+        self.rating = 1200
+        self.matches: list[Any] = []
+        self.match_key = ""
 
     def request(
         self,
@@ -43,7 +46,19 @@ class FakeStack(FakeHttp):
         if self.broken and route == self.broken:
             return Ok(HttpResponse(status=500, body="{}"))
         if route == "/auth/register":
-            self.username = json_body["username"]
+            self.username = self.username or json_body["username"]
+            return Ok(
+                HttpResponse(
+                    status=201, body=json.dumps({"id": f"id-{json_body['username']}"})
+                )
+            )
+        if route == "/matches":
+            self.match_key = (headers or {}).get("X-Server-Key", "")
+            if self.match_key != KEY:
+                return Ok(HttpResponse(status=401, body="{}"))
+            self.matches.append(json_body)
+            if json_body["winner_id"] == f"id-{self.username}":
+                self.rating = 1216 if not self.broken == "rating" else 1200
             return Ok(HttpResponse(status=201, body="{}"))
         if route == "/auth/login":
             return Ok(HttpResponse(status=200, body=json.dumps({"token": TOKEN})))
@@ -57,7 +72,10 @@ class FakeStack(FakeHttp):
             return Ok(HttpResponse(status=401, body="{}"))
         if route == "/me":
             return Ok(
-                HttpResponse(status=200, body=json.dumps({"username": self.username}))
+                HttpResponse(
+                    status=200,
+                    body=json.dumps({"username": self.username, "rating": self.rating}),
+                )
             )
         return Ok(HttpResponse(status=200, body="{}"))
 
@@ -72,6 +90,10 @@ def test_smoke_walks_the_whole_account_flow(tmp_path: Path) -> None:
     text = output(ctx)
     assert "Smoke test passed." in text
     assert "game session check" in text
+    assert "rating changes after a recorded match" in text
+    assert len(stack.matches) == 1
+    assert stack.match_key == KEY
+    assert stack.rating == 1216
     assert TOKEN not in text
     assert KEY not in text
     assert stack.logged_out
@@ -83,6 +105,7 @@ def test_smoke_skips_the_game_check_without_a_key(tmp_path: Path) -> None:
 
     assert smoke.smoke(ctx).is_ok
     assert "skip  game session check" in output(ctx)
+    assert "skip  rating check" in output(ctx)
 
 
 def test_smoke_stops_at_the_first_failure(tmp_path: Path) -> None:
@@ -103,3 +126,16 @@ def test_smoke_explains_a_stack_that_is_not_running(tmp_path: Path) -> None:
 
     assert result.is_err
     assert "make demo" in result.danger_err.fix[0]
+
+
+# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
+def test_smoke_fails_when_the_rating_does_not_change(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/smoke.py::smoke kind="unit"
+    stack = FakeStack(broken="rating")
+    ctx = make_ctx(tmp_path, {smoke.GAME_KEYS_VAR: KEY}, http=stack)
+
+    result = smoke.smoke(ctx)
+
+    assert result.is_err
+    assert "rating" in result.danger_err.message
+    assert not stack.logged_out
