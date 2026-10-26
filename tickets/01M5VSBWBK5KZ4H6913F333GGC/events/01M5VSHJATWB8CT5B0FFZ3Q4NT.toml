@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given the cookie policy and notice render, then they name the hullbreach_session cookie and no longer claim the site sets no cookies"]
+moved = []
+at = "2026-10-26T09:44:24Z"
+actor = "a-carten"
+rev = 1
