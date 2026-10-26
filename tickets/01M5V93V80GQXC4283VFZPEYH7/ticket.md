@@ -2,11 +2,12 @@
 id = "01M5V93V80GQXC4283VFZPEYH7"
 title = "ensure_env/.env.example hardcode 5432 in HULLBREACH_DATABASE_URL"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T04:57:17Z"
-updated = "2026-10-26T05:07:37Z"
+updated = "2026-10-26T05:07:38Z"
 scope = ["src/hullbreach_ops/demo.py", ".env.example"]
 
 [[acceptance]]
