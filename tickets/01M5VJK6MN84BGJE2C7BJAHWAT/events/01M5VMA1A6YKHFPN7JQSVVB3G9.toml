@@ -1,0 +1,18 @@
+kind = "evidence"
+captured_at = "2026-10-26T08:12:53Z"
+digest = "fc6df75a42e0baf6cf98dc455e3643b335438c1257de11a7559b2270ba9ab189"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.35s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_demo.py::test_ensure_env_replaces_values_loaded_from_a_stray_env"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "eefa0d637f23854e3349ea1b1f1f1495fe7d9b63dd2e840c9faf4099a560c9b7"
+at = "2026-10-26T08:12:53Z"
+actor = "a-carten"
+rev = 1

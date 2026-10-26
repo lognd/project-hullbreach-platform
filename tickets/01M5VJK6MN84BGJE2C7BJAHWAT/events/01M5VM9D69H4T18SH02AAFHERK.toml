@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_ops/**"]
+new = ["src/hullbreach_ops/**", "tests/unit/test_ops_demo.py", "docs/demo-script.md"]
+at = "2026-10-26T08:12:33Z"
+actor = "a-carten"
+rev = 1
