@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { navigate } from "@/components/navigate";
 import { Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { Panel } from "@/components/Readout";
 import { TextField } from "@/components/TextField";
 
 /** Id of the form-level error banner, referenced by the form's aria-describedby. */
@@ -40,45 +41,55 @@ export function Login() {
   }
 
   return (
-    <Page eyebrow="Pilot access" title="Log in" width="form">
+    <Page
+      crumbs={[{ label: "Log in" }]}
+      title="Log in"
+      purpose="Use your username and password to continue."
+      width="form"
+    >
       {formError !== null ? (
         <Notice tone="error" role="alert" id={FORM_ERROR_ID}>
           {formError}
         </Notice>
       ) : null}
-      <form
-        onSubmit={(event) => {
-          void handleSubmit(event);
-        }}
-        aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
-        className="flex flex-col gap-space-16"
-      >
-        <TextField
-          id="login-username"
-          name="username"
-          label="Username"
-          autoComplete="username"
-          value={username}
-          error={undefined}
-          onChange={setUsername}
-        />
-        <TextField
-          id="login-password"
-          name="password"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          error={undefined}
-          onChange={setPassword}
-        />
-        <Button type="submit" variant="primary">
-          Log in
-        </Button>
-      </form>
+      <Panel label="Sign in" className="p-space-24">
+        <form
+          onSubmit={(event) => {
+            void handleSubmit(event);
+          }}
+          aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
+          className="flex flex-col gap-space-16"
+        >
+          <TextField
+            id="login-username"
+            name="username"
+            label="Username"
+            autoComplete="username"
+            value={username}
+            error={undefined}
+            onChange={setUsername}
+          />
+          <TextField
+            id="login-password"
+            name="password"
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            error={undefined}
+            onChange={setPassword}
+          />
+          <Button type="submit" variant="primary">
+            Log in
+          </Button>
+        </form>
+      </Panel>
       <p className="text-font-size-14 text-muted">
         No account?{" "}
-        <AppLink href="/register" className="font-medium text-accent underline underline-offset-4 hover:text-ink">
+        <AppLink
+          href="/register"
+          className="font-medium text-accent underline underline-offset-4 hover:text-ink"
+        >
           Register
         </AppLink>
       </p>

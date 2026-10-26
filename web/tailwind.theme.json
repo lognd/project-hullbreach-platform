@@ -11,20 +11,34 @@
     "muted": "var(--color-muted)",
     "panel": "var(--color-panel)",
     "paper": "var(--color-paper)",
-    "stress-fail": "var(--color-stress-fail)",
-    "stress-ok": "var(--color-stress-ok)",
-    "stress-warn": "var(--color-stress-warn)"
+    "signal": "var(--color-signal)"
   },
   "fontFamily": {
     "base": [
+      "IBM Plex Sans",
       "system-ui",
       "Segoe UI",
       "Roboto",
       "Helvetica Neue",
       "Arial",
+      "sans-serif",
+      "IBM Plex Mono",
+      "ui-monospace",
+      "SFMono-Regular",
+      "Menlo",
+      "Consolas",
+      "monospace",
+      "Audiowide"
+    ],
+    "display": [
+      "Audiowide",
+      "system-ui",
+      "Segoe UI",
+      "Arial",
       "sans-serif"
     ],
     "mono": [
+      "IBM Plex Mono",
       "ui-monospace",
       "SFMono-Regular",
       "Menlo",

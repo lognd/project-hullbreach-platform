@@ -11,61 +11,64 @@ css_root = "web/src/styles"
 tokens_file = "tokens.css"
 root_font_size = 16
 
-# Dark, in-cockpit palette. "ink" is text, "paper" is the background,
-# following crunk's role convention even though this UI is dark-first.
-# stress-* mirror the in-game green-to-red hull-stress gradient.
+# Blueprint palette: a technical drawing on dark drafting paper. "ink" is
+# text, "paper" is the background, following crunk's role convention even
+# though this UI is dark-first. "accent" is the cyan drafting line;
+# "signal" is orange and RESERVED for the one primary action per screen,
+# the ELO number, losses and alerts -- nothing else may use it. No purple.
 [palette]
-ink = "#e6e8ef"
-paper = "#0b0d12"
-panel = "#161a24"
-muted = "#8b93a7"
-# Hairline dividers and panel edges. Decorative only, never text: it is
-# deliberately absent from [palette.roles]. Input borders use muted (6.3:1
-# on paper) so form controls clear WCAG 1.4.11's 3:1 non-text floor.
-line = "#2a3142"
-accent = "#3ba0ff"
-stress-ok = "#3fd17c"
-stress-warn = "#f0b429"
-stress-fail = "#ff4d4f"
+ink = "#D6E4EC"
+paper = "#0B1620"
+panel = "#0F1D2A"
+muted = "#7F96A6"
+# Hairline dividers and quiet panel edges: the accent at ~28% over paper,
+# pre-mixed because alpha utilities (TW003) are banned. Decorative only,
+# never text: it is deliberately absent from [palette.roles]. Input borders
+# use muted (5.9:1 on paper) so form controls clear WCAG 1.4.11's 3:1
+# non-text floor.
+line = "#224858"
+accent = "#5CC8E8"
+signal = "#FF6A1F"
 
 [palette.roles]
 body = ["ink", "paper"]
 panel = ["ink", "panel"]
 muted = ["muted", "paper"]
 accent = ["accent", "paper"]
-danger = ["stress-fail", "paper"]
+danger = ["signal", "paper"]
 # Every pair the pages actually draw, so CONTRAST001 guards all of them:
-# readouts on panels, win/loss/warn text, and the primary button (paper
-# text on an accent fill).
+# readouts on panels, win/loss/alert text, and the primary button (paper
+# text on a signal fill, flipping to a paper-on-ink hover).
 muted-panel = ["muted", "panel"]
 accent-panel = ["accent", "panel"]
-danger-panel = ["stress-fail", "panel"]
-ok = ["stress-ok", "paper"]
-ok-panel = ["stress-ok", "panel"]
-warn = ["stress-warn", "paper"]
-warn-panel = ["stress-warn", "panel"]
+danger-panel = ["signal", "panel"]
+on-signal = ["paper", "signal"]
 on-accent = ["paper", "accent"]
+on-ink = ["paper", "ink"]
 
 [scales]
 spacing = [0, 4, 8, 12, 16, 24, 32, 48, 64]
 font_sizes = [12, 14, 16, 20, 24, 32, 48, 64]
-# Hard-edged hull plating, not pill-shaped SaaS cards: nothing rounder
-# than 4px. TW005 already rejects Tailwind's own rounded-lg/2xl/full keys.
+# Drafting-sheet corners: square. Nothing rounder than 4px is allowed and
+# the pages use 0. TW005 already rejects Tailwind's own rounded-lg/2xl/full.
 radii = [0, 2, 4]
 
-# System fonts only: nothing is downloaded, so what is declared is what
-# renders. "mono" is the readout face for numbers (ELO, durations, dates)
-# and the small uppercase labels -- the cockpit-instrument voice.
+# Self-hosted via @fontsource (no CDN, font-display swap), each with a system
+# fallback so first paint never waits on a download. "display" (Audiowide,
+# solid fill, uppercase, tracked) is for the wordmark and h1/h2 only; "mono"
+# (IBM Plex Mono) is the readout face for data and labels; "base" (IBM Plex
+# Sans) is body copy.
 [typography]
 families = [
-  "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif",
-  "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace",
+  "IBM Plex Sans", "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif",
+  "IBM Plex Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace",
+  "Audiowide",
 ]
 weights = [400, 500, 600, 700]
 
 [typography.stacks]
-base = ["system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"]
-mono = ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
+mono = ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
+display = ["Audiowide", "system-ui", "Segoe UI", "Arial", "sans-serif"]
 
 [layers]
 base = 0

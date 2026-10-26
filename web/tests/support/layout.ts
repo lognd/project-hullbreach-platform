@@ -8,7 +8,7 @@ const FIXED_WIDTH = /^(?:min-)?w-\[(\d*\.?\d+)(rem|px)\]$/;
 export function overflowRisks(root: HTMLElement, viewportPx: number): string[] {
   const risks: string[] = [];
   for (const element of root.querySelectorAll<HTMLElement>("[class]")) {
-    for (const token of element.className.split(/\s+/)) {
+    for (const token of (element.getAttribute("class") ?? "").split(/\s+/)) {
       if (token === "whitespace-nowrap") {
         risks.push(`${element.tagName.toLowerCase()}: ${token}`);
         continue;

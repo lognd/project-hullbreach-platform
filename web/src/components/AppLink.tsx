@@ -4,7 +4,11 @@ import { navigate } from "@/components/navigate";
 /** True for a click the browser should handle itself: another button, or a modifier asking for a new tab/window. */
 function isBrowserClick(event: MouseEvent<HTMLAnchorElement>): boolean {
   return (
-    event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
   );
 }
 
