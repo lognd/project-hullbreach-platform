@@ -6,12 +6,12 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T04:57:17Z"
-updated = "2026-10-26T05:07:35Z"
+updated = "2026-10-26T05:07:37Z"
 scope = ["src/hullbreach_ops/demo.py", ".env.example"]
 
 [[acceptance]]
 text = "Given HULLBREACH_DB_PORT is set, when ensure_env writes .env, then the database URL uses that port"
-bound = false
+bound = true
 +++
 
 found while landing PR 45: HULLBREACH_DB_PORT=15432 leaves HULLBREACH_DATABASE_URL pointing at localhost:5432, so a demo on a non-default DB port connects to the wrong database. ensure_env should derive the URL port from HULLBREACH_DB_PORT (and CORS origin from HULLBREACH_WEB_PORT).

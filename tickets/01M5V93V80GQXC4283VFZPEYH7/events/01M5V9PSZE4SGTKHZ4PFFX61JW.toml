@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T05:07:37Z"
+digest = "39639084e73ef72f87c484898dc5161114ac9a0986799bcabc387f13ab696758"
+exit_code = 0
+inline = """
+..........                                                               [100%]
+10 passed in 0.63s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_demo.py"
+size = 99
+status = "measured"
+test_count = 10
+tests_digest = "cba8cea3fbded84aeab2aeedc9fd9c6b4ef0cf1bd74cf293a16f6a8e33b4abc4"
+at = "2026-10-26T05:07:37Z"
+actor = "a-carten"
+rev = 1
