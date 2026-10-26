@@ -234,9 +234,9 @@ fault is on the platform operator's side, not the caller's: set
 `HULLBREACH_GAME_SERVER_API_KEYS` and restart the API (the refusal is also
 logged at ERROR naming that variable). A wrong key is logged at WARNING;
 the presented value never is. FastAPI's default 403 for a missing header
-is never used. The one route guarded by the dependency today is
-`GET /api/v1/auth/session` (ticket `~48H1VAK`); `POST /api/v1/matches`
-(T-0054) will be the next.
+is never used. The routes guarded by the dependency today are
+`GET /api/v1/auth/session` (ticket `~48H1VAK`) and `POST /api/v1/matches`
+(T-0054).
 
 ### Matches
 
@@ -250,9 +250,61 @@ one per player: `match_id` (FK to `matches.id`, `ON DELETE CASCADE`),
 defaulting to 0. `(match_id, user_id)` is unique, so a player has at most
 one stats row per match. The user FKs deliberately have no `ON DELETE`
 action: deleting an account anonymizes the user row and keeps its matches
-(T-0037), so a hard delete of a player with matches must fail. The
-idempotency key, rating changes and currency payout land with T-0054,
-T-0057 and T-0070.
+(T-0037), so a hard delete of a player with matches must fail. Currency payout lands with T-0070.
+
+`RatingChange` (`db/models/rating.py`, table `rating_changes`, T-0057) is
+one player's rating in one match: `match_id` (FK, `ON DELETE CASCADE`),
+`user_id` (FK, indexed), `rating_before`, `rating_after` and `created_at`;
+`(match_id, user_id)` is unique. A player's current rating is their latest
+`rating_after`, else 1200 (`services/matches.py::current_rating`).
+
+#### POST /api/v1/matches
+
+The game server reports a finished match (T-0054). The route requires the
+`X-Server-Key` header (see Game-server keys); a player bearer token alone is
+a 401. The body is a `MatchReport` (`services/matches.py`, unknown fields
+rejected):
+
+```json
+{
+  "match_id": "<uuid, chosen by the game server>",
+  "winner_id": "<uuid, one of the players>",
+  "duration_seconds": 240,
+  "players": [
+    {"user_id": "<uuid>", "damage_dealt": 900, "blocks_destroyed": 14,
+     "blocks_placed": 30, "time_alive_seconds": 240},
+    {"user_id": "<uuid>", "damage_dealt": 400, "blocks_destroyed": 14,
+     "blocks_placed": 30, "time_alive_seconds": 240}
+  ]
+}
+```
+
+`players` holds exactly two different users; every counter is a
+non-negative integer (default 0). Only decisive matches are modeled, as in
+the Elo section: `winner_id` is required, there is no draw or forfeit. The
+platform locks both players, rates them with `rate_match` from their
+`current_rating`, stores the `Match`, both `MatchPlayerStats` and both
+`RatingChange` rows in one transaction, and answers with a `MatchRecord`:
+`match_id`, `winner_id`, `duration_seconds`, `played_at` and `players`
+(sorted by `user_id`), each with the counters plus `rating_before` and
+`rating_after`.
+
+`match_id` is the idempotency key. The first report answers 201; a repeat
+of the same `match_id` with the same body answers 200 with the identical
+stored record and rates nothing again, so a game server can retry safely.
+
+| Situation                                   | Status | Body                                   |
+| ------------------------------------------- | ------ | -------------------------------------- |
+| recorded                                    | 201    | `MatchRecord`                          |
+| same `match_id`, same body (replay)         | 200    | `MatchRecord`, identical to the first  |
+| same `match_id`, different body             | 409    | `{"detail", "field": "match_id"}`      |
+| a `user_id` has no account                  | 404    | `{"detail", "field": "players"}`       |
+| invalid body (winner not a player, ...)     | 422    | FastAPI validation errors              |
+| missing or wrong `X-Server-Key`             | 401    | `{"detail"}`                           |
+| no server keys configured                   | 503    | `{"detail"}`                           |
+
+The match then appears in `GET /api/v1/me/matches` and in the profile's
+`recent_matches` for both players.
 
 ### Database migrations
 
@@ -310,7 +362,9 @@ revision (`3b8e6f1c9d24_user_role_check_and_ci_unique.py`) adds the
 `ck_users_role` CHECK the users migration only promised (SQLAlchemy's
 `Enum(native_enum=False)` does not create one by default) and unique
 indexes on `lower(username)` / `lower(email)`; it fails on existing rows
-that already collide case-insensitively or hold an unknown role.
+that already collide case-insensitively or hold an unknown role. The seventh revision
+(`c41e5f7a9b02_create_rating_changes_table.py`, T-0057) creates
+`rating_changes` matching `db/models/rating.py`.
 
 ### Elo rating
 
@@ -481,9 +535,10 @@ point of view: `id`, `played_at` (the match's `created_at`), `opponent`
 `rating_before`, `rating_after` and `stats` (the player's own
 `damage_dealt`, `blocks_destroyed`, `blocks_placed` and
 `time_alive_seconds`). Matches are ordered newest first by
-`(created_at, id)`. No rating change is recorded per match yet, so
-`rating_before` and `rating_after` are both the starting rating (1200)
-until the RatingChange model exists (T-0057).
+`(created_at, id)`. `rating_before` and `rating_after` come from the
+player's `RatingChange` row for that match (see Matches); a match with no
+row (none is recorded outside `POST /api/v1/matches`) shows the starting
+rating (1200) for both.
 
 `PATCH /api/v1/me` (`api/me.py::patch_me`, T-0034) edits the player's
 `username`, `email` and `password`. The body is an `UpdateMeRequest`

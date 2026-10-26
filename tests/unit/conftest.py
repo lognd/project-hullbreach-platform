@@ -96,3 +96,59 @@ def client(app: Any) -> Iterator[Any]:
 def server_key_headers() -> dict[str, str]:
     """The X-Server-Key header a game server sends, matching the `app` fixture."""
     return {"X-Server-Key": UNIT_SERVER_KEY}
+
+
+# frob:ticket 01M2H5T11PZ6JDPS66PNFRX5S2
+@pytest.fixture
+def pilots(client: Any, db_session: Any) -> tuple[dict[str, str], Any, Any]:
+    """Two registered players: flagship's bearer headers, flagship, rival."""
+    from hullbreach_server.db.models.user import User
+
+    password = "correct horse battery staple"
+    tokens = {}
+    for name in ("flagship", "rival"):
+        client.post(
+            "/api/v1/auth/register",
+            json={
+                "username": name,
+                "email": f"{name}@example.com",
+                "password": password,
+            },
+        )
+        tokens[name] = client.post(
+            "/api/v1/auth/login", json={"username": name, "password": password}
+        ).json()["token"]
+
+    def _row(name: str) -> Any:
+        return db_session.query(User).filter(User.username == name).one()
+
+    return (
+        {"Authorization": f"Bearer {tokens['flagship']}"},
+        _row("flagship"),
+        _row("rival"),
+    )
+
+
+# frob:ticket 01M2H5T11PZ6JDPS66PNFRX5S2
+@pytest.fixture
+def report() -> Any:
+    """A factory for a valid POST /matches body in which `winner` beat `loser`."""
+    import uuid
+
+    def _report(
+        winner: Any, loser: Any, match_id: Any = None, **over: Any
+    ) -> dict[str, Any]:
+        stats = {"blocks_destroyed": 14, "blocks_placed": 30, "time_alive_seconds": 240}
+        body: dict[str, Any] = {
+            "match_id": str(match_id or uuid.uuid4()),
+            "winner_id": str(winner.id),
+            "duration_seconds": 240,
+            "players": [
+                {"user_id": str(winner.id), "damage_dealt": 900, **stats},
+                {"user_id": str(loser.id), "damage_dealt": 400, **stats},
+            ],
+        }
+        body.update(over)
+        return body
+
+    return _report
