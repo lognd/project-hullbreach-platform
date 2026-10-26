@@ -45,10 +45,10 @@ export function DataPolicy() {
       </PolicySection>
       <PolicySection id="deletion" title="Deletion">
         <p>
-          There is no self-service account deletion yet. To have your account and its
-          match records removed, ask the project maintainers through the repository
-          issue tracker. You can change your username, email address and password at
-          any time under Settings, and logging out revokes your session.
+          You can delete your account yourself under Settings, in the danger zone: enter
+          your password to confirm and your account, sessions and match records are
+          removed and you are signed out. You can also change your username, email
+          address and password there at any time, and logging out revokes your session.
         </p>
         <p>This is a class project in pre-release; do not rely on it for long-term storage.</p>
       </PolicySection>

@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { ApiError } from "@/api/auth";
-import { updateMe, type UpdateMeRequest } from "@/api/me";
-import { saveSession, useSession, type StoredSession } from "@/auth/session";
+import { deleteMe, updateMe, type UpdateMeRequest } from "@/api/me";
+import { clearSession, saveSession, useSession, type StoredSession } from "@/auth/session";
 import { Button } from "@/components/Button";
 import { Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { navigate } from "@/components/navigate";
 import { Panel } from "@/components/Readout";
 import { SignInPrompt } from "@/components/SignInPrompt";
 import { TextField } from "@/components/TextField";
@@ -14,6 +15,100 @@ const FORM_ERROR_ID = "settings-form-error";
 
 /** Field-keyed validation errors, e.g. `{ username: "username already taken" }`. */
 type FieldErrors = Record<string, string>;
+
+/** Id of the deletion error banner, referenced by the confirm form's aria-describedby. */
+const DELETE_ERROR_ID = "settings-delete-error";
+
+// frob:ticket 01M2H5T1168H89BH4V49VR22FC
+// frob:doc docs/index.md#account-settings-page
+/** Danger zone: a Delete account button opens a password confirm step; on 204 it signs out locally and goes to the landing page, on failure it shows the server's error and keeps the account. */
+function DangerZone({ session }: { session: StoredSession }) {
+  const [confirming, setConfirming] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function handleDelete(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    setError(null);
+    if (password === "") {
+      setError("Enter your password to confirm deletion.");
+      return;
+    }
+    setBusy(true);
+    try {
+      await deleteMe(session.token, password);
+      clearSession();
+      navigate("/");
+    } catch (caught) {
+      setBusy(false);
+      setError(
+        caught instanceof ApiError
+          ? caught.detail
+          : "Something went wrong. Please try again.",
+      );
+    }
+  }
+
+  function cancel(): void {
+    setConfirming(false);
+    setPassword("");
+    setError(null);
+  }
+
+  return (
+    <Panel label="Danger zone" className="p-space-24">
+      <div className="flex flex-col gap-space-16">
+        <p className="m-space-0">
+          Deleting your account permanently removes your profile, sessions and match
+          records. This cannot be undone.
+        </p>
+        {!confirming ? (
+          <Button
+            variant="primary"
+            onClick={() => {
+              setConfirming(true);
+            }}
+          >
+            Delete account
+          </Button>
+        ) : (
+          <form
+            onSubmit={(event) => {
+              void handleDelete(event);
+            }}
+            aria-describedby={error !== null ? DELETE_ERROR_ID : undefined}
+            className="flex flex-col gap-space-16"
+          >
+            {error !== null ? (
+              <Notice tone="error" role="alert" id={DELETE_ERROR_ID}>
+                {error}
+              </Notice>
+            ) : null}
+            <TextField
+              id="settings-delete-password"
+              name="delete_password"
+              label="Password to confirm deletion"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              error={undefined}
+              onChange={setPassword}
+            />
+            <div className="flex flex-wrap gap-space-16">
+              <Button type="submit" variant="primary" disabled={busy}>
+                Permanently delete my account
+              </Button>
+              <Button onClick={cancel} disabled={busy}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        )}
+      </div>
+    </Panel>
+  );
+}
 
 /** The form for a known session: sends only changed fields, and shows server errors next to the offending field or as a banner. */
 function SettingsForm({ session }: { session: StoredSession }) {
@@ -157,6 +252,7 @@ function SettingsForm({ session }: { session: StoredSession }) {
           </Button>
         </form>
       </Panel>
+      <DangerZone session={session} />
     </Page>
   );
 }

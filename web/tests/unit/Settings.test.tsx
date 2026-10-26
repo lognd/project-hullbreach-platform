@@ -193,4 +193,71 @@ describe("Settings page", () => {
     );
     expect(screen.queryByRole("button", { name: /save/i })).not.toBeInTheDocument();
   });
+
+  // frob:tests web/src/pages/Settings.tsx::Settings kind="unit"
+  it("requires the confirm step and a password before any delete request", async () => {
+    signIn();
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<Settings />);
+
+    await user.click(screen.getByRole("button", { name: /^delete account$/i }));
+    expect(fetchMock).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: /permanently delete/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/enter your password/i);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  // frob:tests web/src/pages/Settings.tsx::Settings kind="unit"
+  // frob:tests web/src/api/me.ts::deleteMe kind="unit"
+  it("deletes the account, signs out locally and goes to the landing page", async () => {
+    signIn();
+    window.history.pushState({}, "", "/settings");
+    const fetchMock = stubFetch(new Response(null, { status: 204 }));
+    const user = userEvent.setup();
+    render(<Settings />);
+
+    await user.click(screen.getByRole("button", { name: /^delete account$/i }));
+    await user.type(screen.getByLabelText(/password to confirm/i), "correct-horse");
+    await user.click(screen.getByRole("button", { name: /permanently delete/i }));
+
+    await vi.waitFor(() => {
+      expect(loadSession()).toBeNull();
+    });
+    expect(window.location.pathname).toBe("/");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/v1/me",
+      expect.objectContaining({
+        method: "DELETE",
+        credentials: "include",
+        headers: expect.objectContaining({
+          Authorization: "Bearer tok-1",
+          "X-Hullbreach-Web": "1",
+        }),
+      }),
+    );
+    expect(sentBody(fetchMock)).toEqual({ current_password: "correct-horse" });
+  });
+
+  // frob:tests web/src/pages/Settings.tsx::Settings kind="unit"
+  it("shows the server error and keeps the session when the password is wrong", async () => {
+    signIn();
+    stubFetch(jsonResponse({ detail: "current password is incorrect" }, 403));
+    const user = userEvent.setup();
+    render(<Settings />);
+
+    await user.click(screen.getByRole("button", { name: /^delete account$/i }));
+    await user.type(screen.getByLabelText(/password to confirm/i), "wrong");
+    await user.click(screen.getByRole("button", { name: /permanently delete/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "current password is incorrect",
+    );
+    expect(loadSession()?.username).toBe("flagship");
+
+    await user.click(screen.getByRole("button", { name: /cancel/i }));
+    expect(screen.queryByLabelText(/password to confirm/i)).not.toBeInTheDocument();
+  });
 });

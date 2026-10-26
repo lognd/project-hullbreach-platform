@@ -79,6 +79,13 @@ async function parseErrorBody(
   return { detail: "request failed" };
 }
 
+// frob:doc docs/index.md#auth-api-client-and-the-register-page
+/** Builds the ApiError for a non-ok Response, so every client throws the same normalized shape. */
+export async function errorFromResponse(response: Response): Promise<ApiError> {
+  const { detail, field } = await parseErrorBody(response);
+  return new ApiError(response.status, detail, field);
+}
+
 /** Default per-request budget; a hung server must not hang the page (~R5PHHZC). */
 export const REQUEST_TIMEOUT_MS = 10_000;
 
@@ -124,8 +131,7 @@ export async function requestJson<T>(
 ): Promise<T> {
   const response = await apiFetch(path, init, timeoutMs);
   if (!response.ok) {
-    const { detail, field } = await parseErrorBody(response);
-    throw new ApiError(response.status, detail, field);
+    throw await errorFromResponse(response);
   }
   return (await response.json()) as T;
 }
@@ -167,7 +173,6 @@ export async function logout(token: string): Promise<void> {
     headers: bearerHeaders(token),
   });
   if (!response.ok) {
-    const { detail, field } = await parseErrorBody(response);
-    throw new ApiError(response.status, detail, field);
+    throw await errorFromResponse(response);
   }
 }
