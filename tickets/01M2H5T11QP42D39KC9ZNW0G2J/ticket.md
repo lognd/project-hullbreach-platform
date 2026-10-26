@@ -8,7 +8,7 @@ points = 5
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:26:36Z"
+updated = "2026-10-26T09:26:37Z"
 aliases = ["T-0055"]
 labels = ["jira:SCRUM-38", "owner:lognd", "milestone:0.2.0"]
 scope = ["docs/index.md", "src/hullbreach_server/db/models/rating.py", "src/hullbreach_server/rating/elo.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_elo.py", "tests/unit/test_rating_history.py"]
@@ -23,7 +23,7 @@ bound = true
 
 [[acceptance]]
 text = "given a rating change, when stored, then it is attached to the match so history can be reconstructed"
-bound = false
+bound = true
 +++
 
 As a player, I want my rating to go up when I beat a stronger opponent and down less when I lose to one, so that the number reflects skill and not just play count.
