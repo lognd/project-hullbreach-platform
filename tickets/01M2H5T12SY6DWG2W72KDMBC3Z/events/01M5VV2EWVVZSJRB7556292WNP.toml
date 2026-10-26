@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["needs-game", "jira:SCRUM-175", "owner:lognd", "milestone:0.2.0"]
+new = ["needs-game", "jira:SCRUM-175", "owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_server/services/designs.py", "creates:src/hullbreach_server/db/migrations/versions/*_create_designs_table.py", "creates:changelog.d/01M2H5T12SY6DWG2W72KDMBC3Z.added.md"]
+at = "2026-10-26T10:11:06Z"
+actor = "a-carten"
+rev = 1

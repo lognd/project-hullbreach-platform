@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/db/models/design.py", "src/hullbreach_server/api/designs.py", "tests/unit/test_designs.py"]
+new = ["src/hullbreach_server/db/models/design.py", "src/hullbreach_server/api/designs.py", "tests/unit/test_designs.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/api/__init__.py", "docs/index.md", "src/hullbreach_server/services/designs.py", "src/hullbreach_server/db/migrations/versions/*_create_designs_table.py", "changelog.d/01M2H5T12SY6DWG2W72KDMBC3Z.added.md"]
+at = "2026-10-26T10:11:06Z"
+actor = "a-carten"
+rev = 1

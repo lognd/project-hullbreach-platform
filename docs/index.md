@@ -396,7 +396,9 @@ that already collide case-insensitively or hold an unknown role. The seventh rev
 `ix_rating_changes_user_id_created_at` on `rating_changes (user_id,
 created_at)` for the leaderboard's latest-rating-per-player query. The ninth
 revision (`e7a3b9c1d2f4_add_users_deleted_at.py`, T-0037) adds the nullable
-`users.deleted_at` that marks an anonymized (deleted) account.
+`users.deleted_at` that marks an anonymized (deleted) account. The tenth
+revision (`f1b6c2d8a3e5_create_designs_table.py`, S35) creates `designs`
+matching `db/models/design.py`.
 
 ### Elo rating
 
@@ -694,6 +696,30 @@ player sees a deleted user's name (`GET /me/matches` opponent, the
 leaderboard) it is the placeholder `deleted player`
 (`services/matches.py::display_name`). The old username and email are freed
 for new registrations.
+
+### Ship designs
+
+`/api/v1/designs` stores a player's saved ship designs (S35,
+`api/designs.py`, `services/designs.py`, `db/models/design.py`). Every route
+needs a bearer token and is owner-only: another player's design is a 404,
+the same as a missing one. `GET /designs` lists the caller's designs (id,
+name, format_version, block_count, updated_at; newest update first),
+`POST /designs` creates one (201), `GET /designs/{id}` returns it with the
+design JSON, `PUT /designs/{id}` replaces name and design, and
+`DELETE /designs/{id}` answers 204. The body is `{name, design}` where
+`name` is 1..64 characters and `design` is the game's `BlockGridDesign`
+object.
+
+Validation mirrors `BlockGridDesign.cs`: `version` must be 1 (422 on
+`design.version` otherwise), 1..4096 blocks, grid coordinates -128..127,
+`mods` 0..255, a non-empty `type` string, no two blocks on one cell, no
+unknown keys, nesting of at most 6. The compact JSON text may be at most
+1048576 characters; larger is a 413 whose detail names that limit. A player
+may keep 50 designs; the 51st create is a 409. Errors are `{detail, field}`.
+The server does not check block type names or connectivity; the game owns
+those. The service returns typani `Result[T, DesignError]` and the router
+maps `DesignError.kind` to the status. The `designs` table is created by
+`f1b6c2d8a3e5_create_designs_table.py`.
 
 ### Player API client and the profile page
 
