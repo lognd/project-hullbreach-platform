@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Acceptance 3 (signed-out client: ranked matches refused) now has a test, bound as evidence: tests/unit/test_matches_record.py::test_signed_out_client_cannot_record_a_ranked_match (POST /matches without a server key is 401 and records nothing). Acceptances 1 and 2 are game-client and game-server work with no test in this repo, so the ticket stays open."
+at = "2026-10-26T09:52:44Z"
+actor = "a-carten"
+rev = 1
