@@ -344,8 +344,9 @@ mounts the tree with `RouterProvider`, not `App` directly.
 
 `web/src/components/Header.tsx` reads `useSession()` (below) and shows
 Register/Log in links when signed out, or Profile, Matches and Settings
-links, the username and a Log out control when signed in; the link for the
-page being shown carries `aria-current="page"`; every control is a real `<a>`/`<button>` (never a
+links, the username and a bordered Log out control when signed in; the
+link for the page being shown carries `aria-current="page"` and a cyan
+underline, and every page shows a `Breadcrumb` trail above its title; every control is a real `<a>`/`<button>` (never a
 `<div onClick>`) so tab order and Enter-activation work by construction.
 The signed-in Log out control calls `api/auth.ts`'s `logout()` with the
 session's token (best-effort: an expired token or a network error does
@@ -365,44 +366,60 @@ hook the header uses for `aria-current`.
 
 ### Visual design rules
 
-The site should read as a ship-combat console, not a template. These rules
-are enforced, not suggested:
+The site reads as a blueprint / technical drawing of a spaceship: dark
+navy paper, cyan hairlines, one signal orange. These rules are enforced,
+not suggested:
 
-- Corners: `crunk.toml` declares radii 0, 2 and 4 only and `RADIUS001`
-  is an error, so `rounded-2xl` cards cannot come back. Buttons and chips
-  use `rounded-radius-2`.
+- Palette: `crunk.toml` declares paper `#0B1620`, panel `#0F1D2A`, ink,
+  muted, a pre-mixed hairline, cyan `accent` and signal orange. Orange is
+  reserved for the primary button, the ELO number and losses/alerts; there
+  is no purple and no gradient text. The page background is a grid-paper
+  tile (`web/public/grid.svg`, referenced from `reset.css`).
+- Corners: radius 0 everywhere (`RADIUS001` is an error); boxes are
+  square with 1px hairlines.
 - No decoration for its own sake: `web/tests/unit/designRules.test.ts`
   fails on gradient, shadow, blur, backdrop and gradient-text utilities in
   `className` strings, on `gradient`/`box-shadow`/`text-shadow`/
   `backdrop-filter`/`blur()` in stylesheets, and on any non-ASCII
-  character (emojis, decorative unicode) anywhere under `web/src`.
-- Type: the system sans stack for prose and the system mono stack for
-  labels, numbers and buttons (`font-mono`, uppercase, tracked); no web
-  fonts are loaded.
+  character anywhere under `web/src`. There are no title blocks,
+  dimension dividers or registration marks.
+- Type: Audiowide (solid, uppercase, tracked, `font-display`) only for the
+  wordmark and h1/h2; IBM Plex Mono for labels and numbers; IBM Plex Sans
+  for prose. All three are self-hosted through `@fontsource` packages
+  imported in `web/src/main.tsx` with `font-display: swap`; nothing loads
+  from a CDN. Tokens: `--font-family-base`, `--font-family-mono`,
+  `--font-family-display` in `web/src/styles/tokens.css`.
 - Focus: `web/src/styles/base/reset.css` draws one keyboard-only accent
   outline, offset 2px, on every control.
 - Contrast: every text/background pair is a `[roles]` entry in
-  `crunk.toml`, checked to WCAG AA by `crunk check` (`ok`, `warn`,
-  `on-accent` and the `*-panel` roles cover badges and notices).
-- Layout: pages are left-aligned columns under a `Page` header (`// `
-  eyebrow, title, hairline rule with a short accent tick); nothing is
-  centered for its own sake.
-- HUD motifs: `Panel` is a hairline box with two accent corner brackets;
-  ratings and stats are mono `tabular-nums`; Win/Loss is a word plus a
-  colored left edge, never color alone.
+  `crunk.toml`, checked to WCAG AA by `crunk check`. Minimum text is 12px.
+- Layout: each page has one purpose and one primary action. A page is a
+  left-aligned column: breadcrumb ("you are here"), display-face h1, a
+  one-line purpose, then content. Every chart and drawing sits inside a
+  bordered, padded `Panel`/figure that clips (`overflow-hidden`), uses
+  inset coordinates and `vector-effect="non-scaling-stroke"`, so nothing
+  touches or crosses its frame at 1280 or 390px.
+- Panels: `Panel` is a hairline box (`tone="primary"` for the one cyan
+  panel a page is about) with an optional label chip set into its top
+  border. Ratings and stats are mono `tabular-nums`; Win/Loss is a word
+  plus a colored left edge, never color alone. Touch targets are at least
+  44px tall.
 - Motion: 120ms color/border easing on links, buttons and inputs only,
   and only under `prefers-reduced-motion: no-preference`.
 - States: every data page has Loading plus `SkeletonRows`, an
   `EmptyState` with a next step, and an error `Notice` with Try again.
-- Shared components, not one-offs: `Page` (shell and width), `Button` /
-  `ButtonLink` (primary accent fill, secondary outline), `TextField`
-  (label, hint, error tied by `aria-describedby`, `aria-invalid`),
-  `Notice` / `Loading` (error, ok and loading states with roles `alert` /
-  `status`), `AppLink`, and `HullReadout` (the landing page's block-ship
-  stress grid, colored with the `stress-*` palette), plus `Panel` /
-  `StatTile` / `EmptyState` / `SkeletonRows` (`web/src/components/Readout.tsx`).
+- Shared components, not one-offs: `Page` and `Breadcrumb` (shell,
+  trail, title, purpose), `Button` / `ButtonLink` (orange primary,
+  cyan-outline secondary), `TextField` (label, hint, error tied by
+  `aria-describedby`, `aria-invalid`), `Notice` / `Loading`, `AppLink`,
+  `HullReadout` (the landing page's side-view spaceship line drawing),
+  `EloTrace` (ELO over the last matches; fewer than two ratings shows a
+  hatched "no data yet" placeholder), plus `Panel` / `StatTile` /
+  `SectionHeading` / `EmptyState` / `SkeletonRows`
+  (`web/src/components/Readout.tsx`).
 - Copy is concrete and terse: name the thing (ELO, match history, hull),
-  never "seamless", "unleash" or "get started today".
+  never "seamless", "unleash" or "get started today". The setting is
+  space, so no sea or naval wording.
 
 ### Session persistence
 
@@ -535,9 +552,12 @@ client (register, log in, `fetchMe`) against a running API when
 `HULLBREACH_LIVE_API=http://127.0.0.1:8001 npm test`) and is skipped
 otherwise.
 
-The profile header is `StatTile`s: ELO and Balance, plus "Last 5"
-(wins-losses) and "Net ELO", computed client-side from the same five
-`recent_matches` and shown only when matches exist. Loading shows
+The profile has one primary `Panel` (label "ELO"): the large orange
+rating next to an `EloTrace` built from `recent_matches` (oldest
+`rating_before`, then each `rating_after`, chronological). A quieter
+"Summary" panel holds "Last 5" (wins-losses) and "Net ELO", computed
+client-side from the same five matches and shown only when matches exist,
+and Balance. The primary action is "View match history". Loading shows
 `SkeletonRows`, empty skins and matches are `EmptyState`s, and a failed
 request is an error `Notice` with Try again.
 
