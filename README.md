@@ -1,8 +1,9 @@
 # Project Hullbreach: Platform
 
 This is the non-game half of Hullbreach: the website, the REST API behind
-it, and the Postgres database that stores accounts, sessions, ELO and
-match history. The Unity game lives in a separate repo,
+it, and the Postgres database that stores accounts, sessions, ELO, match
+history, the cosmetic store, equipped skins, saved ship designs and the
+leaderboard. The Unity game lives in a separate repo,
 [project-hullbreach-game](https://github.com/lognd/project-hullbreach-game#readme).
 
 Company of Theseus, UF CEN3031, Fall 2026. All rights reserved, see
@@ -10,6 +11,13 @@ Company of Theseus, UF CEN3031, Fall 2026. All rights reserved, see
 
 > **Read this first (current status).**
 >
+> - **Match results are recorded.** The game server reports finished
+>   matches with `POST /api/v1/matches` (a game-server key is required):
+>   ELO, history and currency payouts update, and `make demo-match`
+>   plays the game server for you. The matchmaking queue is in memory, so
+>   an API restart empties it.
+> - **Settings** can delete the account (password required): the name is
+>   anonymized and matches are kept.
 > - **Reloading the page keeps you signed in.** The token lives only in
 >   the open tab's memory, never on disk; on load the site restores your
 >   session from an HttpOnly cookie. Clicking the links in the top bar
@@ -678,17 +686,19 @@ you signed in; see [the note at the top](#project-hullbreach-platform)).
       **Log out**.
 - [ ] **3. Profile.** Click **Profile**: your name, ELO **1200** (every
       new pilot starts there), Balance **0**, "No skins yet." and "No
-      matches yet."
+      matches yet." (A fresh account; `demo_pilot` shows its seeded
+      history and a starter balance, and its skins can be equipped here.)
 - [ ] **4. Edit account.** Click **Settings**. Change the **Display
       name** and save: "Settings saved." and the top bar updates. To
       change email or password you must also fill **Current password**:
       leaving it empty shows "Enter your current password to change your
       email or password.", and a wrong one shows "current password is
       incorrect".
-- [ ] **5. Match history.** Click **Matches**: "No matches yet." The
-      page and API are real, but nothing records matches yet (the game
-      server's result upload, ticket T-0054, is not built), so every
-      history is empty for now.
+- [ ] **5. Match history.** Click **Matches**: a fresh account shows
+      "No matches yet."; `demo_pilot` shows six seeded matches with
+      rating changes. Run `make demo-match` and refresh to see a new
+      one. Then open **Leaderboard** (it refreshes itself every 5 s) and
+      **Store** (buy a cheap `demo-` item, then equip it on Profile).
 - [ ] **6. Log out**, then log back in with the changed details.
 - [ ] **7. Game sign-in.** Start the game, sign in on its sign-in screen
       with the same account, and join a match. The steps, and what the
@@ -841,8 +851,8 @@ So nobody presents this as deployed:
   passwords in demos.
 - The website runs on its development server (`npm run dev`). This repo
   has no production web hosting setup.
-- Nothing records match results yet (T-0054), so ELO never changes and
-  match history stays empty.
+- The matchmaking queue is in memory and process-local: an API restart
+  empties it, and it needs a single API process.
 - The login attempt limit lives in the API's memory; restarting the API
   resets it.
 - The database is a Docker container on one laptop, with no backups.

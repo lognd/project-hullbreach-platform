@@ -1,0 +1,10 @@
+kind = "create"
+title = "docs/index.md intro omits store, currency, designs, leaderboard, deletion"
+type = "docs"
+category = "todo"
+priority = "low"
+scope = ["docs/index.md"]
+body = "found while working ~HK5YACP: intro paragraph still lists admin moderation as owned; list current features."
+at = "2026-10-26T18:11:11Z"
+actor = "a-carten"
+rev = 1
