@@ -394,6 +394,8 @@ def _replay(
 
 # frob:ticket 01M2H5T11PZ6JDPS66PNFRX5S2
 # frob:ticket 01M2H5T11SW5W3X3716GRY6J80
+# frob:ticket 01M5W0FEFC9SAFH2QQREV8F33K
+# noqa: E501  # frob:tests tests/unit/test_currency.py::test_match_is_flushed_before_its_ledger_rows_are_staged
 # frob:doc docs/index.md#matches
 # noqa: E501  # frob:tests tests/unit/test_matches_record.py::test_post_match_records_match_stats_and_rates_both_players
 # noqa: E501  # frob:tests tests/unit/test_matches_record.py::test_post_match_twice_with_same_id_is_one_match_and_one_rating
@@ -466,8 +468,13 @@ def record_match(
         )
         for user_id in ids
     )
-    add_match_payouts(db, report.match_id, report.winner_id, loser_id, now)
     try:
+        # frob:ticket 01M5W0FEFC9SAFH2QQREV8F33K
+        # The ledger has no relationship() to the match, so the unit of work
+        # would not order its insert after the match's; flush the match first
+        # or PostgreSQL rejects the ledger rows' foreign key.
+        db.flush()
+        add_match_payouts(db, report.match_id, report.winner_id, loser_id, now)
         db.commit()
     except IntegrityError:
         # A concurrent report of the same match id won the insert race.

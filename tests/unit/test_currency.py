@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+from sqlalchemy import event
+from sqlalchemy.orm import Session
+
 from hullbreach_server.db.models.ledger import CurrencyLedger
+from hullbreach_server.db.models.match import Match
 from hullbreach_server.services.currency import LOSS_PAYOUT, WIN_PAYOUT, balance
 
 _URL = "/api/v1/matches"
@@ -69,3 +73,28 @@ def test_rejected_match_pays_nothing(
 
     assert response.status_code == 404
     assert db_session.query(CurrencyLedger).count() == 0
+
+
+# frob:ticket 01M5W0FEFC9SAFH2QQREV8F33K
+def test_match_is_flushed_before_its_ledger_rows_are_staged(
+    client, server_key_headers, pilots, report
+) -> None:
+    """Given a posted match, the first flush holds no ledger rows (PostgreSQL FK order)."""
+    _headers, winner, loser = pilots
+    first_flush: list[list[type]] = []
+
+    def record(session, _context, _instances) -> None:
+        if not first_flush:
+            first_flush.append([type(obj) for obj in session.new])
+
+    event.listen(Session, "before_flush", record)
+    try:
+        response = client.post(
+            _URL, json=report(winner, loser), headers=server_key_headers
+        )
+    finally:
+        event.remove(Session, "before_flush", record)
+
+    assert response.status_code == 201
+    assert Match in first_flush[0]
+    assert CurrencyLedger not in first_flush[0]
