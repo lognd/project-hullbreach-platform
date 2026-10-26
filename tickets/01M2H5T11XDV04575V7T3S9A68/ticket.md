@@ -7,14 +7,14 @@ priority = "medium"
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-09-15T00:00:00Z"
+updated = "2026-10-26T08:54:20Z"
 aliases = ["T-0061"]
 labels = ["jira:SCRUM-40", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/leaderboard.py", "src/hullbreach_server/services/leaderboard.py", "tests/unit/test_leaderboard.py", "web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx"]
 
 [[acceptance]]
 text = "given any visitor, when the leaderboard loads, then rank, name, rating, and matches played show for the top players"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a logged-in player outside the visible range, when the leaderboard loads, then their own rank shows"
