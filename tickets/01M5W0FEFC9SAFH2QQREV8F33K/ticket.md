@@ -6,9 +6,9 @@ category = "todo"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-26T11:45:34Z"
-updated = "2026-10-26T11:45:34Z"
-labels = ["owner:a-carten"]
-scope = ["src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py", "changelog.d/*"]
+updated = "2026-10-26T11:48:31Z"
+labels = ["owner:a-carten", "creates:changelog.d/01M5W0FEFC9SAFH2QQREV8F33K.fixed.md"]
+scope = ["src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py", "changelog.d/01M5W0FEFC9SAFH2QQREV8F33K.fixed.md"]
 +++
 
 Found in real-browser store QA: record_match staged currency_ledger rows with no relationship() to the match, so PostgreSQL got the ledger INSERT before the matches INSERT (fk_currency_ledger_match_id_matches). make demo died seeding demo accounts; POST /matches would 500 on Postgres. SQLite tests do not enforce FKs. Fix: flush the match before staging payouts.
