@@ -105,6 +105,25 @@ describe("Header (signed out)", () => {
     session.clearSession();
   });
 
+  // frob:ticket 01M2H5T1242JFMB5A03JSDP5KP
+  // frob:tests web/src/components/Header.tsx::Header kind="unit"
+  it("links the public Store to signed-out visitors and signed-in players", async () => {
+    const session = await import(sessionModulePath);
+    const { Header } = await import(headerModulePath);
+    render(<Header />);
+    expect(screen.getByRole("link", { name: "Store" })).toHaveAttribute("href", "/store");
+    cleanup();
+    session.saveSession({
+      token: "tok-1",
+      userId: "user-1",
+      username: "flagship",
+      role: "player",
+    });
+    render(<Header />);
+    expect(screen.getByRole("link", { name: "Store" })).toHaveAttribute("href", "/store");
+    session.clearSession();
+  });
+
   it(
     "renders every interactive control as a real anchor or button element",
     async () => {

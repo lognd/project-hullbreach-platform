@@ -504,7 +504,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, `/leaderboard` (public), `/me` (the profile page), `/me/matches`, `/settings`, `/data-policy`, `/cookie-policy`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/leaderboard` (public), `/store` (public to browse), `/me` (the profile page), `/me/matches`, `/settings`, `/data-policy`, `/cookie-policy`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the `CookieNotice`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -512,7 +512,7 @@ router context renders nothing rather than throwing. `web/src/main.tsx`
 mounts the tree with `RouterProvider`, not `App` directly.
 
 `web/src/components/Header.tsx` reads `useSession()` (below) and shows
-a public Leaderboard link, then Register/Log in links when signed out, or Profile, Matches and Settings
+public Leaderboard and Store links, then Register/Log in links when signed out, or Profile, Matches and Settings
 links, the username and a bordered Log out control when signed in; the
 link for the page being shown carries `aria-current="page"` and a cyan
 underline, and every page shows a `Breadcrumb` trail above its title; every control is a real `<a>`/`<button>` (never a
@@ -914,6 +914,36 @@ list, a "Your rank" row is added below it. The ELO is the one orange
 nobody is ranked, and a failed request shows an alert with Try again.
 Stale responses (StrictMode's double-run effects, a changed token) are
 dropped. The page does not paginate; it shows the server's default top 100.
+
+### Store page
+
+`web/src/pages/Store.tsx` is routed at `/store` and is public to browse. It
+lists the catalog through `fetchCatalog` in `web/src/api/store.ts`:
+`GET /api/v1/catalog` (see Catalog above; the tests use `makeCatalog` in
+`web/tests/fixtures/store.ts`). A row of category buttons ("All" plus the
+server's `categories`, `aria-pressed` on the active one) refetches with
+`?category=`; the full category list is kept while a filtered load runs.
+Each item is an `ItemCard` (`web/src/components/ItemCard.tsx`): a bordered
+card with the preview image (or a bordered placeholder with the category
+initial when `preview_url` is null), name, category, price in mono, and a
+cyan "Owned" tag when `owned`. The grid is one column at 390 px, two from
+`sm`, three from `lg`.
+
+Signed-out visitors see an info notice with a Log in button and a "Log in
+to buy" link on every unowned card instead of Buy. A signed-in player sees
+a Balance readout (from `GET /api/v1/me`; "--" when it cannot be read) and
+a Buy button per unowned card. Buy opens an inline confirm step ("Spend N
+to buy X?") with the one orange Confirm button and a Cancel; only Confirm
+calls `purchaseItem` (`POST /api/v1/store/purchase`). On success the card
+turns Owned and the balance becomes the receipt's `balance`, then `/me` is
+re-read to reconcile. A refusal shows an alert on that card and leaves the
+balance alone: 402 shows the server's price-and-balance text, 404 "no
+longer in the catalog", 409 "already own" (and the card is marked Owned),
+401 "session has expired, log in again", anything else the generic
+"Something went wrong" line. The initial load shows a Loading line and
+`SkeletonRows`; an empty category shows an `EmptyState`; a failed load
+shows an alert with Try again. Stale responses are dropped as on the
+Leaderboard page.
 
 ## Operator scripts and the doctor
 
