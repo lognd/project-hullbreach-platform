@@ -606,8 +606,8 @@ uv, Docker and Node.js exist and offer their official installers after a
 | Command      | What it does                                                                                                                                  |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
-| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history |
-| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)        |
+| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
+| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
 | `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
 | `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
 | `status`     | what is running, on which port                                                                                                                |
