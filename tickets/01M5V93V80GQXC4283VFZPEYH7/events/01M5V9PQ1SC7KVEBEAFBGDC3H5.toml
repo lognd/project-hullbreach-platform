@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given HULLBREACH_DB_PORT is set, when ensure_env writes .env, then the database URL uses that port"]
+moved = []
+at = "2026-10-26T05:07:35Z"
+actor = "a-carten"
+rev = 1
