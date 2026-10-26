@@ -1,0 +1,1 @@
+Web sessions now survive a page reload: login sets an HttpOnly SameSite session cookie (bearer token flow unchanged), the app restores it via GET /api/v1/me, cookie writes require an X-Hullbreach-Web CSRF header, and web requests time out after 10 s.

@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/api/auth.ts"]
+new = ["web/src/api/auth.ts", "web/tests/unit/SessionRestore.test.tsx"]
+at = "2026-10-26T09:38:32Z"
+actor = "a-carten"
+rev = 1

@@ -175,6 +175,21 @@ variable (the server checks it at startup and exits non-zero), and the
 request-time readers fall back to the default with an ERROR log instead
 of raising a 500.
 
+Login also sets the web session cookie (`auth/cookies.py::set_session_cookie`,
+~6TZCHZ0): `hullbreach_session` carries the same token, `HttpOnly`,
+`SameSite=Lax`, `Path=/api`, `Max-Age` equal to the session's remaining
+life, and `Secure` unless every `HULLBREACH_CORS_ORIGINS` entry is plain-http
+loopback (`cookie_secure`), so local `make demo` works over http while any
+deployed origin gets `Secure`. The JSON `token` is unchanged, so the game
+client's bearer flow is untouched. `get_current_user`/`get_optional_user`
+take the bearer header first and fall back to the cookie
+(`auth/cookies.py::extract_token`, a typani `Result`). CSRF: a request
+authenticated by cookie alone must carry the `X-Hullbreach-Web` header on any
+method other than GET/HEAD/OPTIONS or it is refused 403 (a cross-site form
+cannot set a custom header, and a cross-site `fetch` needs a CORS preflight
+that INV-004 refuses; `SameSite=Lax` is the second layer). The header is in
+the CORS allow-list; bearer requests never need it.
+
 `POST /api/v1/auth/logout` (`src/hullbreach_server/api/auth.py::logout`)
 requires `Authorization: Bearer <token>` (via `get_current_user`) and
 revokes it: `all=false` (the default query param, bound to the
@@ -183,7 +198,8 @@ presented session (`revoke_session`); `all=true` revokes every
 non-revoked session for that user (`revoke_all_sessions`, T-0019). 204
 No Content on success; 401 (via `get_current_user`) if the token is
 already invalid, so logging out twice with the same token 401s the
-second time.
+second time. A cookie-authenticated logout (with the CSRF header) also
+expires the cookie in the response.
 
 `GET /api/v1/auth/session` (`src/hullbreach_server/api/auth.py::session`)
 is the game-server-only verify call (ticket `~48H1VAK`): it requires a
@@ -554,16 +570,25 @@ cookie (INV-006), so injected script cannot read the bearer token back from
 storage. `saveSession`/`loadSession`/`clearSession` read and write that
 variable; `useSession` is the React hook (`useSyncExternalStore`) `Header`
 and any consumer read it through, re-rendering on login, logout and profile
-updates. Consequence: a full page reload signs the user out and they sign
-in again via `/login`; there is no cross-tab sync. A cookie-based
-(HttpOnly) restore is a server-side follow-up.
+updates. A reload no longer signs the user out: `main.tsx` awaits
+`restoreSession()` before first render, which calls `GET /api/v1/me` with
+the server's HttpOnly `hullbreach_session` cookie (`credentials: "include"`,
+3 s budget) and, on 200, saves a session whose `token` is `""` (the cookie
+authenticates; `bearerHeaders("")` sends no header). On 401, a timeout or an
+unreachable server it stays signed out and the app renders normally. There is
+no cross-tab sync. In dev the vite proxy keeps `/api` same-origin, so the
+cookie needs no CORS.
 
 ### Auth API client and the register page
 
 `web/src/api/auth.ts` is the one `fetch` wrapper every auth-facing page
 uses (docs/design/sprint-1.md sec.5/6): `register`/`login` POST their
 request body and resolve to a `UserProfile`/`LoginResponse`; `logout`
-sends a `Bearer` `Authorization` header. There is deliberately no client
+sends a `Bearer` `Authorization` header (or relies on the cookie). Every
+request goes through `apiFetch`, which adds `credentials: "include"`, the
+`X-Hullbreach-Web` CSRF header and an `AbortController` timeout (10 s default,
+`REQUEST_TIMEOUT_MS`); a timeout or network failure rejects with `ApiError`
+status 0 (~R5PHHZC). There is deliberately no client
 for `GET /api/v1/auth/session`: that route needs a game-server key a
 browser never holds, so the website checks its token with `GET /me`. Any non-2xx
 response is normalized into a thrown `ApiError {status, detail, field?}`

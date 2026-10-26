@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/auth.py"]
+new = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/deps.py", "src/hullbreach_server/auth/__init__.py", "src/hullbreach_server/app/app.py", "web/src/auth/session.ts", "web/src/main.tsx", "web/src/components/Header.tsx", "web/src/api/auth.ts", "docs/index.md", "docs/demo-runbook.md", "invariants/INV-006.md", "src/hullbreach_server/auth/cookies.py", "tests/unit/test_auth_cookie.py", "web/tests/unit/SessionRestore.test.tsx", "changelog.d/01M4GS9A33TBP96SJ646TZCHZ0.changed.md"]
+at = "2026-10-26T09:30:32Z"
+actor = "a-carten"
+rev = 1

@@ -63,6 +63,8 @@ def _seed(client, db_session, ratings: dict[str, list[int]]) -> None:
     for name, history in ratings.items():
         _register(client, name)
         _rate(db_session, name, history)
+    # Login now sets a session cookie; drop it so callers stay anonymous unless they send a bearer.
+    client.cookies.clear()
 
 
 # frob:ticket 01M2H5T11YNBSP9Y9VBR29F5P0

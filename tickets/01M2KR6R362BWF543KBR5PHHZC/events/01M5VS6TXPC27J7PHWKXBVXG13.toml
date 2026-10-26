@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Every fetch in web/src/api/auth.ts aborts after a timeout and rejects with ApiError status 0"]
+moved = []
+at = "2026-10-26T09:38:32Z"
+actor = "a-carten"
+rev = 1

@@ -50,13 +50,18 @@ describe("Leaderboard page", () => {
     expect(rows[0]).toHaveTextContent("1490");
     expect(rows[2]).toHaveTextContent("pilot-3");
     expect(screen.getByText("3 shown of 3 ranked")).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledWith("/api/v1/leaderboard", undefined);
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    expect(init.credentials).toBe("include");
+    expect(init.headers).not.toHaveProperty("Authorization");
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("/api/v1/leaderboard");
   });
 
   // frob:tests web/src/pages/Leaderboard.tsx::Leaderboard kind="unit"
   it("highlights the signed-in player's row and sends their token", async () => {
     signInAs(2);
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(makeBoard(3, 3, makeEntry(2))));
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(makeBoard(3, 3, makeEntry(2))));
     vi.stubGlobal("fetch", fetchMock);
     render(<Leaderboard />);
 
@@ -131,7 +136,9 @@ describe("Leaderboard page", () => {
     const user = userEvent.setup();
     render(<Leaderboard />);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("leaderboard unavailable");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "leaderboard unavailable",
+    );
     await user.click(screen.getByRole("button", { name: "Try again" }));
 
     expect(await screen.findByText("pilot-2")).toBeInTheDocument();

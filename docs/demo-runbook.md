@@ -33,9 +33,9 @@ target or documented in the [README](../README.md); nothing here is new.
 2. Browser: http://localhost:5173/login, sign in as `demo_pilot` /
    `demo-password-123`.
 3. Navigate **only with the in-app links** in the top bar (Profile,
-   Matches, Settings, Log out). A full page reload or typing an address
-   signs you out by design (INV-006: the session token lives in memory).
-   If it happens, just sign in again.
+   Matches, Settings, Log out). A page reload keeps you signed in: login sets
+   an HttpOnly session cookie and the app restores it on load. Log out clears
+   it.
 4. Terminal 2: `make console` shows one line per API request;
    `make console-db` also shows database changes (user registered, match
    recorded with rating changes). Leave it visible next to the browser.
@@ -75,7 +75,6 @@ target or documented in the [README](../README.md); nothing here is new.
 
 | Symptom                                             | Cause                                      | Fix                                                                                                                                                                                                                                       |
 | --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Signed out suddenly                                 | Page reload or typed URL (INV-006)         | Sign in again; use top-bar links only                                                                                                                                                                                                     |
 | `make demo` or doctor says a port is in use         | Another stack on 5432/8000/5173            | Set `HULLBREACH_DB_PORT`, `HULLBREACH_PORT`, `HULLBREACH_WEB_PORT` (and the port in `HULLBREACH_DATABASE_URL`) in `.env`, plus a distinct `COMPOSE_PROJECT_NAME` if another copy's database is up; then `make demo`. Use the printed URLs |
 | `make demo` says the database rejected the password | Old database volume from an earlier `.env` | Restore the old `.env`, or `uv run hullbreach_server reset-db` (deletes all accounts) then `make demo`                                                                                                                                    |
 | `make smoke` says nothing answers                   | Stack not running                          | `make demo` first; `make status` shows what runs                                                                                                                                                                                          |

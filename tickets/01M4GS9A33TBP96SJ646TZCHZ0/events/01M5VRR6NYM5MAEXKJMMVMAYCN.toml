@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["owner:lognd"]
+new = ["owner:lognd", "creates:src/hullbreach_server/auth/cookies.py", "creates:tests/unit/test_auth_cookie.py", "creates:web/tests/unit/SessionRestore.test.tsx", "creates:changelog.d/01M4GS9A33TBP96SJ646TZCHZ0.changed.md"]
+at = "2026-10-26T09:30:32Z"
+actor = "a-carten"
+rev = 1
