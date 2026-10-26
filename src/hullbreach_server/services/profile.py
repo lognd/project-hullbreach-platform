@@ -25,6 +25,7 @@ from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.services.catalog import list_inventory
 from hullbreach_server.services.currency import balance
+from hullbreach_server.services.equip import SkinRef, equipped_skin
 from hullbreach_server.services.matches import (
     MatchSummary,
     current_rating,
@@ -55,6 +56,8 @@ class MeResponse(UserProfile):
     """GET /api/v1/me's body: the profile plus inventory and recent matches."""
 
     inventory: list[OwnedSkin]
+    # frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+    equipped_skin: SkinRef | None
     recent_matches: list[MatchSummary]
 
 
@@ -76,7 +79,11 @@ def build_me(db: DBSession, user: User) -> MeResponse:
     matches = recent_matches(db, user, RECENT_MATCH_COUNT)
     _log.debug("built profile for user %s (%d matches)", user.id, len(matches))
     return MeResponse(
-        **profile.model_dump(), inventory=inventory, recent_matches=matches
+        **profile.model_dump(),
+        inventory=inventory,
+        # frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+        equipped_skin=equipped_skin(db, user.id),
+        recent_matches=matches,
     )
 
 

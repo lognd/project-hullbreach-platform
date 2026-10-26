@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["needs-game", "milestone:0.3.0"]
+new = ["needs-game", "milestone:0.3.0", "creates:src/hullbreach_server/services/equip.py", "creates:src/hullbreach_server/db/migrations/versions/c8d0e2f4a6b8_create_equipped_skins_table.py", "creates:changelog.d/*.added.md"]
+at = "2026-10-26T11:42:28Z"
+actor = "a-carten"
+rev = 1

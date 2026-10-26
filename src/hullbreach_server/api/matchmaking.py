@@ -5,6 +5,7 @@ docs/index.md#matchmaking-queue.
 from __future__ import annotations
 
 import threading
+import uuid
 
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import JSONResponse
@@ -13,6 +14,7 @@ from sqlalchemy.orm import Session
 from hullbreach_server.auth import AuthContext, ErrorDetail, get_current_user
 from hullbreach_server.db import get_db
 from hullbreach_server.logging import get_logger
+from hullbreach_server.services.equip import equipped_skin
 from hullbreach_server.services.matchmaking import (
     MatchmakingQueue,
     QueueError,
@@ -43,6 +45,27 @@ def get_queue(request: Request) -> MatchmakingQueue:
     return queue
 
 
+# frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+# frob:doc docs/index.md#equipped-skin
+def _with_skins(db: Session, user_id: uuid.UUID, status: QueueStatus) -> QueueStatus:
+    """Fill a matched status with both players' equipped skin slugs, read now."""
+    match = status.match
+    if match is None:
+        return status
+    mine = equipped_skin(db, user_id)
+    theirs = equipped_skin(db, match.opponent_id)
+    filled = match.model_copy(
+        update={
+            "skin": None if mine is None else mine.slug,
+            "opponent_skin": None if theirs is None else theirs.slug,
+        }
+    )
+    _log.debug(
+        "match %s skins: %s vs %s", match.match_id, filled.skin, filled.opponent_skin
+    )
+    return status.model_copy(update={"match": filled})
+
+
 # frob:ticket 01M2H5T12QQ1GTD3DJW1KEGC1Y
 # frob:doc docs/index.md#matchmaking-queue
 @router.post(
@@ -62,7 +85,7 @@ def join_queue(
     result = queue.join(ctx.user.id, rating_of(db, ctx.user.id))
     if result.is_err:
         return JSONResponse(status_code=409, content=result.danger_err.model_dump())
-    return result.danger_ok
+    return _with_skins(db, ctx.user.id, result.danger_ok)
 
 
 # frob:ticket 01M2H5T12QQ1GTD3DJW1KEGC1Y
@@ -73,11 +96,12 @@ def join_queue(
     responses={401: {"model": ErrorDetail, "description": "Token invalid"}},
 )
 def queue_status(
+    db: Session = Depends(get_db),
     ctx: AuthContext = Depends(get_current_user),
     queue: MatchmakingQueue = Depends(get_queue),
 ) -> QueueStatus:
     """Return the caller's queue state; once matched, the match id and server."""
-    return queue.status(ctx.user.id)
+    return _with_skins(db, ctx.user.id, queue.status(ctx.user.id))
 
 
 # frob:ticket 01M2H5T12QQ1GTD3DJW1KEGC1Y
