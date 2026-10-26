@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T09:41:17Z"
-updated = "2026-10-26T09:43:47Z"
+updated = "2026-10-26T09:44:20Z"
 scope = ["web/src/pages/CookiePolicy.tsx", "web/src/components/CookieNotice.tsx", "web/tests/unit/CookiePolicy.test.tsx", "web/tests/unit/CookieNotice.test.tsx", "web/src/pages/DataPolicy.tsx", "docs/index.md"]
 +++
 
