@@ -439,7 +439,7 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, `/me` (the profile page), `/me/matches`, `/settings`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/leaderboard` (public), `/me` (the profile page), `/me/matches`, `/settings`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
 `Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
@@ -447,7 +447,7 @@ router context renders nothing rather than throwing. `web/src/main.tsx`
 mounts the tree with `RouterProvider`, not `App` directly.
 
 `web/src/components/Header.tsx` reads `useSession()` (below) and shows
-Register/Log in links when signed out, or Profile, Matches and Settings
+a public Leaderboard link, then Register/Log in links when signed out, or Profile, Matches and Settings
 links, the username and a bordered Log out control when signed in; the
 link for the page being shown carries `aria-current="page"` and a cyan
 underline, and every page shows a `Breadcrumb` trail above its title; every control is a real `<a>`/`<button>` (never a
@@ -711,6 +711,22 @@ belong to an earlier list (StrictMode's double-run effects, a changed
 token) are dropped, so no match is listed twice. The page does not
 virtualize the list; it relies on the server's page size to keep the DOM
 small, and the page size is the server's default (no `limit` is sent).
+
+### Leaderboard page
+
+`web/src/pages/Leaderboard.tsx` is routed at `/leaderboard`, is public, and
+lists the top players by ELO through `fetchLeaderboard` in
+`web/src/api/leaderboard.ts`: `GET /api/v1/leaderboard` (T-0062; the tests
+use `makeBoard` in `web/tests/fixtures/leaderboard.ts`). The response is
+`{entries, me, total_players}`. A signed-in player's token is sent, so the
+server also returns `me`: their own rank. Their row is highlighted
+(`aria-current`, accent border, a "You" tag); when they are outside the top
+list, a "Your rank" row is added below it. The ELO is the one orange
+(`signal`) figure in each row. A footer reads "N shown of M ranked".
+`SkeletonRows` fill the first load, an `EmptyState` replaces the list when
+nobody is ranked, and a failed request shows an alert with Try again.
+Stale responses (StrictMode's double-run effects, a changed token) are
+dropped. The page does not paginate; it shows the server's default top 100.
 
 ## Operator scripts and the doctor
 
