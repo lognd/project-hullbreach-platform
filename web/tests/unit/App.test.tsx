@@ -15,4 +15,12 @@ describe("App", () => {
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
   });
+
+  // frob:tests web/src/App.tsx::App kind="unit"
+  it("shows the cookie notice in the shell", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("region", { name: "Cookie notice" }),
+    ).toBeInTheDocument();
+  });
 });

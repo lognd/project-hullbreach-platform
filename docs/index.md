@@ -439,9 +439,9 @@ build. Utilities are namespaced to the declared scales: `bg-paper`,
 ### Routing and page shell
 
 `web/src/router.tsx` builds a `createBrowserRouter` data router: `/` (the
-landing content), `/register`, `/login`, `/leaderboard` (public), `/me` (the profile page), `/me/matches`, `/settings`, and a `*` not-found fallback, all
+landing content), `/register`, `/login`, `/leaderboard` (public), `/me` (the profile page), `/me/matches`, `/settings`, `/data-policy`, `/cookie-policy`, and a `*` not-found fallback, all
 routed as children of `web/src/App.tsx`'s page shell. `App` renders
-`Header`, the routed `Outlet`, and `Footer` -- and stays renderable with no
+`Header`, the `CookieNotice`, the routed `Outlet`, and `Footer` -- and stays renderable with no
 `Outlet` match (or no router at all) since a bare `<Outlet/>` outside a
 router context renders nothing rather than throwing. `web/src/main.tsx`
 mounts the tree with `RouterProvider`, not `App` directly.
@@ -467,6 +467,26 @@ session (see Session persistence), so the header, footer and login flow
 never do. Modifier and middle clicks on an `AppLink` fall through to the
 browser so open-in-new-tab still works. `usePathname()` is the matching
 hook the header uses for `aria-current`.
+
+### Landing and policy pages
+
+`web/src/pages/Landing.tsx` is the `/` page: the premise, sign-in calls to
+action (Create account and Log in when signed out, Profile and Match history
+when signed in), a Download panel and the four beats of a match. No game
+build is published yet, so the panel says so instead of linking a file; it
+becomes a link when the release ticket lands.
+
+`web/src/components/CookieNotice.tsx` renders once in the page shell. It
+stores `hullbreach.cookie-notice` = `dismissed` in `localStorage` when the
+visitor clicks Dismiss and stays hidden on later loads; if storage is
+blocked it still hides for the current page load.
+
+`/data-policy` (`DataPolicy`) has Stored data, Purpose and Deletion
+sections, and `/cookie-policy` (`CookiePolicy`) says no cookies are set.
+Both are built from `PolicySection` and linked from the footer. The text
+only describes data the server really stores (account fields, match stats,
+session records); there is no self-service deletion, so the policy says to
+ask the maintainers.
 
 ### Visual design rules
 
