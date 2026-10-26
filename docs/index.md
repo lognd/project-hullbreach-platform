@@ -375,7 +375,10 @@ revision (`3b8e6f1c9d24_user_role_check_and_ci_unique.py`) adds the
 indexes on `lower(username)` / `lower(email)`; it fails on existing rows
 that already collide case-insensitively or hold an unknown role. The seventh revision
 (`c41e5f7a9b02_create_rating_changes_table.py`, T-0057) creates
-`rating_changes` matching `db/models/rating.py`.
+`rating_changes` matching `db/models/rating.py`. The eighth revision
+(`d52f6a8b0c13_index_rating_changes_for_leaderboard.py`, T-0062) adds
+`ix_rating_changes_user_id_created_at` on `rating_changes (user_id,
+created_at)` for the leaderboard's latest-rating-per-player query.
 
 ### Elo rating
 
@@ -394,6 +397,26 @@ random sample (floor edges included) to check that the winner never loses
 rating and the loser never gains. Applying
 the result to stored ratings and attaching it to a match is later work
 (T-0057).
+
+### Leaderboard
+
+`GET /api/v1/leaderboard?limit=` (T-0061, T-0062) is public: no key and no
+token are needed, and the page works for a signed-out visitor. It ranks
+every player with at least one `rating_changes` row by current ELO (the
+`rating_after` of their latest change; ties break by username so the order
+is total). `limit` is the number of rows, default and maximum 100; 0 or
+more than 100 is a 422. The 200 body is `{entries, me, total_players}`:
+`entries` are `{rank, user_id, username, rating, matches_played}` best
+first, `total_players` is the field size, and `me` is the caller's own
+entry (with their true rank, even when it is below the visible rows) when
+the request carries a valid bearer token and the caller has played, else
+null. An invalid or expired token is treated as anonymous, not a 401,
+because the board is public (`auth/deps.py::get_optional_user`). A
+database failure is a 503 `{"detail": "leaderboard unavailable"}`. The
+logic is `services/leaderboard.py::leaderboard`, a typani `Result` over
+one ranked window query; the index added by the eighth migration keeps
+it off a full table scan. Open question from T-0061, kept at the story's
+default: top 100 with no pagination and no minimum match count.
 
 ## Web frontend
 

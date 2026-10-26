@@ -5,7 +5,12 @@ submodules, so moving a private module never breaks a caller.
 
 from __future__ import annotations
 
-from hullbreach_server.auth.deps import AuthContext, get_current_user, require_admin
+from hullbreach_server.auth.deps import (
+    AuthContext,
+    get_current_user,
+    get_optional_user,
+    require_admin,
+)
 from hullbreach_server.auth.passwords import (
     hash_password,
     verify_against_dummy_hash,
@@ -59,6 +64,7 @@ __all__ = [
     "clear_failed_logins",
     "current_time",
     "get_current_user",
+    "get_optional_user",
     "hash_password",
     "issue_session",
     "require_admin",
