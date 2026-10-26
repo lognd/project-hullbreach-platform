@@ -10,6 +10,7 @@ from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session as DBSession
 
+from hullbreach_server.auth.cookies import TokenError, extract_token
 from hullbreach_server.auth.sessions import resolve_session
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.session import Session
@@ -38,22 +39,30 @@ class AuthContext:
 # frob:tests tests/unit/test_sessions.py::test_expired_token_returns_401
 # frob:tests tests/unit/test_sessions.py::test_revoked_token_returns_401
 # noqa: E501  # frob:tests tests/unit/test_sessions.py::test_missing_authorization_header_returns_401_not_403
+# frob:ticket 01M4GS9A33TBP96SJ646TZCHZ0
+# frob:tests tests/unit/test_auth_cookie.py::test_cookie_authenticates_me
 def get_current_user(
     request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
     db: DBSession = Depends(get_db),
 ) -> AuthContext:
-    """Resolve the bearer token to its session and user, or raise 401.
+    """Resolve the bearer token or session cookie to its user, or raise 401/403.
+
+    403 only for a cookie-authenticated write lacking the CSRF header.
 
     A plain `def` on purpose: FastAPI runs it in the threadpool, the same
     place as the sync `get_db` session it uses, instead of blocking the
     event loop with synchronous SQLAlchemy I/O.
     """
-    if credentials is None:
-        _log.warning("get_current_user: missing Authorization header")
+    bearer = credentials.credentials if credentials else None
+    extracted = extract_token(request, bearer)
+    if extracted.is_err:
+        _log.warning("get_current_user: %s", extracted.danger_err)
+        if extracted.danger_err is TokenError.CsrfHeaderMissing:
+            raise HTTPException(status_code=403, detail="CSRF header required")
         raise HTTPException(status_code=401, detail="not authenticated")
 
-    result = resolve_session(db, credentials.credentials)
+    result = resolve_session(db, extracted.danger_ok)
     if result.is_err:
         _log.warning("get_current_user: %s", result.danger_err)
         raise HTTPException(status_code=401, detail="not authenticated")
@@ -105,9 +114,11 @@ def get_optional_user(
     For public routes that only personalize: a missing, expired or revoked
     token reads as an anonymous visitor.
     """
-    if credentials is None:
+    bearer = credentials.credentials if credentials else None
+    extracted = extract_token(request, bearer)
+    if extracted.is_err:
         return None
-    result = resolve_session(db, credentials.credentials)
+    result = resolve_session(db, extracted.danger_ok)
     if result.is_err:
         _log.info(
             "get_optional_user: treating caller as anonymous (%s)", result.danger_err

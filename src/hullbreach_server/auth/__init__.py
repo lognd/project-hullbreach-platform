@@ -5,6 +5,12 @@ submodules, so moving a private module never breaks a caller.
 
 from __future__ import annotations
 
+from hullbreach_server.auth.cookies import (
+    CSRF_HEADER_NAME,
+    SESSION_COOKIE_NAME,
+    clear_session_cookie,
+    set_session_cookie,
+)
 from hullbreach_server.auth.deps import (
     AuthContext,
     get_current_user,
@@ -47,6 +53,8 @@ from hullbreach_server.auth.sessions import (
 )
 
 __all__ = [
+    "CSRF_HEADER_NAME",
+    "SESSION_COOKIE_NAME",
     "AuthContext",
     "AuthEnvError",
     "ConflictResponse",
@@ -61,6 +69,7 @@ __all__ = [
     "UpdateMeRequest",
     "UserProfile",
     "check_server_key",
+    "clear_session_cookie",
     "clear_failed_logins",
     "current_time",
     "get_current_user",
@@ -74,6 +83,7 @@ __all__ = [
     "revoke_all_sessions",
     "revoke_other_sessions",
     "revoke_session",
+    "set_session_cookie",
     "validate_auth_env",
     "verify_against_dummy_hash",
     "verify_password",

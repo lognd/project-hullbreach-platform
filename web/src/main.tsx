@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
+import { restoreSession } from "@/auth/session";
 import { router } from "@/router";
 import "@fontsource/audiowide/400.css";
 import "@fontsource/ibm-plex-mono/400.css";
@@ -15,8 +16,11 @@ if (root === null) {
   throw new Error("#root element not found");
 }
 
-createRoot(root).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-);
+// Restore the cookie session before first paint so a reload does not flash signed-out.
+void restoreSession().then(() => {
+  createRoot(root).render(
+    <StrictMode>
+      <RouterProvider router={router} />
+    </StrictMode>,
+  );
+});

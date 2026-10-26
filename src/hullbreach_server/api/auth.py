@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -20,6 +20,7 @@ from hullbreach_server.auth import (
     SessionInfo,
     UserProfile,
     clear_failed_logins,
+    clear_session_cookie,
     current_time,
     get_current_user,
     hash_password,
@@ -28,6 +29,7 @@ from hullbreach_server.auth import (
     reserve_login_attempt,
     revoke_all_sessions,
     revoke_session,
+    set_session_cookie,
     verify_against_dummy_hash,
     verify_password,
 )
@@ -127,7 +129,10 @@ def register(
     },
 )
 def login(
-    payload: LoginRequest, db: Session = Depends(get_db)
+    payload: LoginRequest,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
 ) -> LoginResponse | JSONResponse:
     """Issue a bearer token for valid credentials; 401 identically for an unknown
     user or a wrong password, 429 (with Retry-After) after too many recent
@@ -173,6 +178,10 @@ def login(
         user.id,
         _session_row.id,
     )
+    # frob:ticket 01M4GS9A33TBP96SJ646TZCHZ0
+    set_session_cookie(
+        response, token, _session_row.expires_at, request.app.state.cfg.cors_origins
+    )
     return LoginResponse(
         token=token,
         user=UserProfile.from_user(user, current_rating(db, user.id)),
@@ -191,6 +200,7 @@ def login(
     responses={401: {"model": ErrorDetail, "description": "Token invalid"}},
 )
 def logout(
+    request: Request,
     all_sessions: bool = Query(False, alias="all"),
     db: Session = Depends(get_db),
     ctx: AuthContext = Depends(get_current_user),
@@ -214,7 +224,10 @@ def logout(
             ctx.user.id,
             ctx.session.id,
         )
-    return Response(status_code=204)
+    # frob:ticket 01M4GS9A33TBP96SJ646TZCHZ0
+    out = Response(status_code=204)
+    clear_session_cookie(out, request.app.state.cfg.cors_origins)
+    return out
 
 
 # noqa: E501  # frob:tests tests/unit/test_auth_game.py::test_session_endpoint_returns_player_id_and_role_for_valid_token

@@ -79,11 +79,50 @@ async function parseErrorBody(
   return { detail: "request failed" };
 }
 
+/** Default per-request budget; a hung server must not hang the page (~R5PHHZC). */
+export const REQUEST_TIMEOUT_MS = 10_000;
+
+/** Header every web request carries so the server accepts cookie-authenticated writes (CSRF defence, ~6TZCHZ0). */
+export const CSRF_HEADER = "X-Hullbreach-Web";
+
+// frob:ticket 01M2KR6R362BWF543KBR5PHHZC
+// frob:ticket 01M4GS9A33TBP96SJ646TZCHZ0
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
-/** Fetches `path`, parsing the JSON body or throwing an ApiError for a non-ok response; shared by every API client module. */
-export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  // frob:todo 01M2KR6R362BWF543KBR5PHHZC pass AbortSignal.timeout(...) in init so a hung server cannot hang the page
-  const response = await fetch(path, init);
+/** fetch() with the session cookie (credentials: include), the CSRF header and an AbortController timeout; a timeout rejects with an ApiError of status 0; other network failures propagate unchanged. */
+export async function apiFetch(
+  path: string,
+  init: RequestInit = {},
+  timeoutMs: number = REQUEST_TIMEOUT_MS,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+  try {
+    return await fetch(path, {
+      ...init,
+      credentials: "include",
+      headers: { ...(init.headers as Record<string, string>), [CSRF_HEADER]: "1" },
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new ApiError(0, "request timed out");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// frob:doc docs/index.md#auth-api-client-and-the-register-page
+/** Fetches `path` via apiFetch, parsing the JSON body or throwing an ApiError for a non-ok response; shared by every API client module. */
+export async function requestJson<T>(
+  path: string,
+  init?: RequestInit,
+  timeoutMs?: number,
+): Promise<T> {
+  const response = await apiFetch(path, init, timeoutMs);
   if (!response.ok) {
     const { detail, field } = await parseErrorBody(response);
     throw new ApiError(response.status, detail, field);
@@ -92,8 +131,11 @@ export async function requestJson<T>(path: string, init?: RequestInit): Promise<
 }
 
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
-/** The Authorization header for a signed-in request, shared by every API client module that sends a bearer token. */
+/** The Authorization header for a signed-in request; empty for a cookie-restored session (token ""), which authenticates by cookie instead. */
 export function bearerHeaders(token: string): Record<string, string> {
+  if (token === "") {
+    return {};
+  }
   return { Authorization: `Bearer ${token}` };
 }
 
@@ -120,7 +162,7 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** POST /api/v1/auth/logout with the caller's bearer token; 204 on success, throws an ApiError otherwise. */
 export async function logout(token: string): Promise<void> {
-  const response = await fetch(`${AUTH_BASE}/logout`, {
+  const response = await apiFetch(`${AUTH_BASE}/logout`, {
     method: "POST",
     headers: bearerHeaders(token),
   });

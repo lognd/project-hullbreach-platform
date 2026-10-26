@@ -18,7 +18,7 @@ _log = get_logger(__name__)
 
 # The only methods and headers the API and its web client use (INV-004).
 _CORS_METHODS = ["GET", "POST", "OPTIONS"]
-_CORS_HEADERS = ["Authorization", "Content-Type"]
+_CORS_HEADERS = ["Authorization", "Content-Type", "X-Hullbreach-Web"]
 
 
 # noqa: E501  # frob:tests tests/unit/test_app.py::test_create_app_returns_fastapi_with_config_attached

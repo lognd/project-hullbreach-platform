@@ -32,9 +32,9 @@ export type MeResponse = UserProfile & {
 };
 
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
-/** GET /api/v1/me with the caller's bearer token; 200 MeResponse on success, 401 rejects with an ApiError. */
-export async function fetchMe(token: string): Promise<MeResponse> {
-  return requestJson<MeResponse>(ME_BASE, { headers: bearerHeaders(token) });
+/** GET /api/v1/me with the caller's bearer token (or the session cookie when token is ""); 200 MeResponse on success, 401 rejects with an ApiError. */
+export async function fetchMe(token: string, timeoutMs?: number): Promise<MeResponse> {
+  return requestJson<MeResponse>(ME_BASE, { headers: bearerHeaders(token) }, timeoutMs);
 }
 
 // frob:doc docs/index.md#account-settings-page
