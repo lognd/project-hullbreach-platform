@@ -22,7 +22,7 @@ from hullbreach_server.auth import (
 )
 from hullbreach_server.db.models.session import Session
 from hullbreach_server.db.models.user import User
-from hullbreach_server.logging import get_logger
+from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.services.matches import (
     MatchSummary,
     current_rating,
@@ -156,8 +156,11 @@ def update_profile(
         _log.warning("profile edit for user %s: %s taken (lost race)", user.id, field)
         return Err(_taken(field))
     db.refresh(user)
-    _log.info(
-        "profile edit for user %s: changed %s",
+    # frob:ticket 01M5V5TXXWPT81BGF67BNZNJJN
+    log_event(
+        _log,
+        "settings updated: %r (id %s), changed %s",
+        user.username,
         user.id,
         ", ".join([*changes, *(["password"] if password_changed else [])]),
     )

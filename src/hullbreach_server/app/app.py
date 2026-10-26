@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from hullbreach_server import __version__
 from hullbreach_server.api import api_router
+from hullbreach_server.app.access_log import AccessLogMiddleware
 from hullbreach_server.app.config import AppConfig
 from hullbreach_server.auth import validate_auth_env
 from hullbreach_server.db import dispose_engine, init_engine
@@ -54,6 +55,8 @@ def create_app(cfg: AppConfig) -> FastAPI:
         allow_methods=_CORS_METHODS,
         allow_headers=_CORS_HEADERS,
     )
+    # Added after CORS so it is outermost and sees every response, preflights included.
+    app.add_middleware(AccessLogMiddleware)
     app.state.cfg = cfg
     app.include_router(api_router, prefix="/api/v1")
     return app
@@ -95,4 +98,9 @@ class App:
             sys.exit(1)
 
         _log.info("serving on http://%s:%d", self._cfg.host, self._cfg.port)
-        uvicorn.run(create_app(self._cfg), host=self._cfg.host, port=self._cfg.port)
+        uvicorn.run(
+            create_app(self._cfg),
+            host=self._cfg.host,
+            port=self._cfg.port,
+            access_log=False,  # AccessLogMiddleware writes the structured line
+        )

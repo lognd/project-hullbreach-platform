@@ -141,6 +141,16 @@ class Console:
         self._stream.write(shown + "\n")
         self._stream.flush()
 
+    def highlight(self, text: str, token: str, ansi: str) -> None:
+        """Print `text`, colouring the first `token` with `ansi` if colour is on."""
+        clean = self.redact(text)
+        self._transcript.append(clean)
+        shown = clean
+        if self._color and token in clean:
+            shown = clean.replace(token, f"\x1b[{ansi}m{token}\x1b[0m", 1)
+        self._stream.write(shown + "\n")
+        self._stream.flush()
+
     def steps(self, steps: Sequence[str], indent: str = "            ") -> None:
         """Print numbered steps, one per line."""
         for number, step in enumerate(steps, start=1):

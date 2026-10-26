@@ -38,6 +38,7 @@ COMMANDS = {
     "reset-db": "DELETE the local database and create it again (asks first)",
     "demo-users": "create two demo player accounts",
     "server-key": "make a game-server key and say where it goes",
+    "console": "live view of API requests (add --db for database changes)",
     "lan": "start so other computers on the network can connect",
 }
 _LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s: %(message)s"
@@ -64,6 +65,24 @@ def add_ops_commands(sub: argparse._SubParsersAction) -> None:
                 "--collect",
                 action="store_true",
                 help="also write a redacted support zip to send to the team",
+            )
+        if name == "console":
+            parser.add_argument(
+                "--db",
+                action="store_true",
+                help="also show database changes (registered, match recorded, ...)",
+            )
+            parser.add_argument(
+                "-n",
+                "--lines",
+                type=int,
+                default=10,
+                help="how many recent lines to show first (default 10)",
+            )
+            parser.add_argument(
+                "--no-follow",
+                action="store_true",
+                help="print the recent lines and exit instead of following",
             )
         if name in ("start", "demo"):
             parser.add_argument(
@@ -96,7 +115,7 @@ def _report(console: Console, error: OpsError) -> None:
 
 def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
     """Run one operator command; the exit code is 0 on success."""
-    from hullbreach_ops import accounts, demo, lan, lifecycle, smoke
+    from hullbreach_ops import accounts, demo, lan, lifecycle, smoke, watch
     from hullbreach_ops.collect import collect
     from hullbreach_ops.doctor import doctor, passed
 
@@ -123,6 +142,10 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         result: Result[object, OpsError] = lifecycle.start(ctx, args.bind_host)
     elif args.command == "demo":
         result = demo.demo(ctx, args.bind_host)
+    elif args.command == "console":
+        result = watch.watch(
+            ctx, show_events=args.db, lines=args.lines, follow=not args.no_follow
+        )
     else:
         result = simple[args.command](ctx)
     if result.is_err:
