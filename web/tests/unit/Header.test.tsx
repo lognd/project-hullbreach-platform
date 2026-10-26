@@ -59,6 +59,14 @@ describe("Header (signed out)", () => {
     expect(screen.getByText(/hullbreach/i)).toBeInTheDocument();
   });
 
+  it("labels the brand button for assistive tech", async () => {
+    const { Header } = await import(headerModulePath);
+    render(<Header />);
+    expect(
+      screen.getByRole("button", { name: "Open menu" }),
+    ).toBeInTheDocument();
+  });
+
   it("shows Register and Login links when signed out", async () => {
     const { Header } = await import(headerModulePath);
     render(<Header />);
