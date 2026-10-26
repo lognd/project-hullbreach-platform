@@ -945,7 +945,11 @@ list, a "Your rank" row is added below it. The ELO is the one orange
 `SkeletonRows` fill the first load, an `EmptyState` replaces the list when
 nobody is ranked, and a failed request shows an alert with Try again.
 Stale responses (StrictMode's double-run effects, a changed token) are
-dropped. The page does not paginate; it shows the server's default top 100.
+dropped. While the tab is visible the page re-fetches every
+`POLL_INTERVAL_MS` (5 s) without a loading state, and a failed poll keeps
+the last board and shows no error; polling stops when the tab is hidden
+(and catches up when it shows again) or the page unmounts (ticket
+`01M5W2589RQ8Y6MAAMNA32EHF9`). The page does not paginate; it shows the server's default top 100.
 
 ### Store page
 
