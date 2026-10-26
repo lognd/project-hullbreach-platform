@@ -271,10 +271,20 @@ rejected):
   "winner_id": "<uuid, one of the players>",
   "duration_seconds": 240,
   "players": [
-    {"user_id": "<uuid>", "damage_dealt": 900, "blocks_destroyed": 14,
-     "blocks_placed": 30, "time_alive_seconds": 240},
-    {"user_id": "<uuid>", "damage_dealt": 400, "blocks_destroyed": 14,
-     "blocks_placed": 30, "time_alive_seconds": 240}
+    {
+      "user_id": "<uuid>",
+      "damage_dealt": 900,
+      "blocks_destroyed": 14,
+      "blocks_placed": 30,
+      "time_alive_seconds": 240
+    },
+    {
+      "user_id": "<uuid>",
+      "damage_dealt": 400,
+      "blocks_destroyed": 14,
+      "blocks_placed": 30,
+      "time_alive_seconds": 240
+    }
   ]
 }
 ```
@@ -293,15 +303,15 @@ platform locks both players, rates them with `rate_match` from their
 of the same `match_id` with the same body answers 200 with the identical
 stored record and rates nothing again, so a game server can retry safely.
 
-| Situation                                   | Status | Body                                   |
-| ------------------------------------------- | ------ | -------------------------------------- |
-| recorded                                    | 201    | `MatchRecord`                          |
-| same `match_id`, same body (replay)         | 200    | `MatchRecord`, identical to the first  |
-| same `match_id`, different body             | 409    | `{"detail", "field": "match_id"}`      |
-| a `user_id` has no account                  | 404    | `{"detail", "field": "players"}`       |
-| invalid body (winner not a player, ...)     | 422    | FastAPI validation errors              |
-| missing or wrong `X-Server-Key`             | 401    | `{"detail"}`                           |
-| no server keys configured                   | 503    | `{"detail"}`                           |
+| Situation                               | Status | Body                                  |
+| --------------------------------------- | ------ | ------------------------------------- |
+| recorded                                | 201    | `MatchRecord`                         |
+| same `match_id`, same body (replay)     | 200    | `MatchRecord`, identical to the first |
+| same `match_id`, different body         | 409    | `{"detail", "field": "match_id"}`     |
+| a `user_id` has no account              | 404    | `{"detail", "field": "players"}`      |
+| invalid body (winner not a player, ...) | 422    | FastAPI validation errors             |
+| missing or wrong `X-Server-Key`         | 401    | `{"detail"}`                          |
+| no server keys configured               | 503    | `{"detail"}`                          |
 
 The match then appears in `GET /api/v1/me/matches` and in the profile's
 `recent_matches` for both players.
