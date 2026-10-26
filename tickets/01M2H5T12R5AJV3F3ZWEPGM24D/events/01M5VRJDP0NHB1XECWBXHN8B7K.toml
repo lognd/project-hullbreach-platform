@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Missing: nothing implemented yet in src/ or web/src for this feature (no corresponding module, endpoint or page)."
+at = "2026-10-26T09:27:23Z"
+actor = "a-carten"
+rev = 1
