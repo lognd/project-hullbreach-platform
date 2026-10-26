@@ -20,6 +20,7 @@ from hullbreach_server.auth import hash_password, verify_password
 from hullbreach_server.db.models.session import Session
 from hullbreach_server.db.models.user import Role, User
 from hullbreach_server.logging import get_logger, log_event
+from hullbreach_server.services.equip import clear_equipped
 
 _log = get_logger(__name__)
 
@@ -64,6 +65,8 @@ def delete_account(
         )
     old_name = user.username
     db.execute(delete(Session).where(Session.user_id == user.id))
+    # frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+    clear_equipped(db, user.id)
     user.username = _anonymous_username(user)
     user.email = f"{user.username}@deleted.invalid"
     user.password_hash = hash_password(secrets.token_urlsafe(32))
