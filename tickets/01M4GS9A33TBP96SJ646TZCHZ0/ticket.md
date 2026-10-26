@@ -6,7 +6,7 @@ category = "todo"
 priority = "low"
 reporter = "a-carten"
 created = "2026-10-09T16:52:32Z"
-updated = "2026-10-26T09:40:08Z"
+updated = "2026-10-26T09:40:12Z"
 labels = ["owner:lognd", "creates:src/hullbreach_server/auth/cookies.py", "creates:tests/unit/test_auth_cookie.py", "creates:web/tests/unit/SessionRestore.test.tsx", "creates:changelog.d/01M4GS9A33TBP96SJ646TZCHZ0.changed.md"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/deps.py", "src/hullbreach_server/auth/__init__.py", "src/hullbreach_server/app/app.py", "web/src/auth/session.ts", "web/src/main.tsx", "web/src/components/Header.tsx", "web/src/api/auth.ts", "docs/index.md", "docs/demo-runbook.md", "invariants/INV-006.md", "src/hullbreach_server/auth/cookies.py", "tests/unit/test_auth_cookie.py", "web/tests/unit/SessionRestore.test.tsx", "changelog.d/01M4GS9A33TBP96SJ646TZCHZ0.changed.md", "web/tests/unit/Leaderboard.test.tsx", "tests/unit/test_leaderboard.py", "web/src/api/me.ts"]
 
@@ -20,7 +20,7 @@ bound = true
 
 [[acceptance]]
 text = "given only the session cookie, when calling GET /api/v1/me, then the caller is authenticated; given the cookie on a state-changing request without the CSRF header, then it is refused 403"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a cookie session, when logging out, then the session is revoked and the cookie cleared"
