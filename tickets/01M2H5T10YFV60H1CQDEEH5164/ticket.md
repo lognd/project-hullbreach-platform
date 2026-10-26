@@ -8,14 +8,14 @@ points = 5
 parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:22Z"
+updated = "2026-10-26T11:26:18Z"
 aliases = ["T-0030"]
 labels = ["jira:SCRUM-30", "owner:a-carten", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx"]
 
 [[acceptance]]
 text = "given a logged-in player, when they open their profile, then username, rating, currency, owned skins, and last five matches show"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a new match or purchase, when the profile loads, then it reflects the change without a code change or manual refresh of the database"
