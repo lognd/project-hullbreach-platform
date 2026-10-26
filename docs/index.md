@@ -448,8 +448,9 @@ consume.
 - `POST /api/v1/queue` joins at the caller's current rating (latest
   `rating_changes.rating_after`, else the starting 1200), frozen for the
   wait. Body-less. 200 with a `QueueStatus`; joining again while queued is a
-  no-op that keeps the original place. 409 `{kind: "already_matched",
-  detail}` if the caller still holds an unacknowledged match (see DELETE).
+  no-op that keeps the original place. 409 with `kind` set to
+  `already_matched` (and a `detail` string) if the caller still holds an
+  unacknowledged match (see DELETE).
 - `GET /api/v1/queue` polls; poll about once a second. 200 `QueueStatus`:
   `{state, rating, waited_seconds, window, match}`. `state` is `idle` (not
   in the queue), `queued` (`rating`, `waited_seconds` and the current
