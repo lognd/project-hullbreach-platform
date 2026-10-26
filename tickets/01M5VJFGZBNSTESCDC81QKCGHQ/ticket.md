@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T07:40:57Z"
-updated = "2026-10-26T07:40:57Z"
+updated = "2026-10-26T09:27:04Z"
 scope = ["src/hullbreach_ops/**", "tests/unit/**", "docs/**", "README.md", "Makefile"]
 +++
 
