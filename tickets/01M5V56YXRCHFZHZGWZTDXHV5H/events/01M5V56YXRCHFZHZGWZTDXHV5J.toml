@@ -1,0 +1,10 @@
+kind = "create"
+title = "One-command demo and front-to-back smoke test"
+type = "task"
+category = "todo"
+priority = "high"
+scope = ["src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "Makefile", "README.md", "docs/index.md", "changelog.d/**"]
+body = "Class demo: make demo brings up db, migrations, API, web and a demo account; make smoke checks register/login/me/session."
+at = "2026-10-26T03:49:05Z"
+actor = "lognd"
+rev = 1

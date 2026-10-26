@@ -36,6 +36,7 @@ def test_every_command_is_wired() -> None:
     args = parser.parse_args(["doctor", "--demo", "platform", "--only", "api"])
     assert (args.demo, args.only, args.collect) == ("platform", "api", False)
     assert parser.parse_args(["start", "--host", "0.0.0.0"]).bind_host == "0.0.0.0"
+    assert parser.parse_args(["demo", "--host", "0.0.0.0"]).bind_host == "0.0.0.0"
     with pytest.raises(SystemExit):
         parser.parse_args(["doctor", "--demo", "nonsense"])
 

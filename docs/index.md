@@ -606,6 +606,8 @@ uv, Docker and Node.js exist and offer their official installers after a
 | Command      | What it does                                                                                                                                  |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
+| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
+| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
 | `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
 | `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
 | `status`     | what is running, on which port                                                                                                                |
@@ -673,6 +675,36 @@ when the run ends. `--demo website` skips `game-keys`, `game-session` and
 `lan`; `--demo guest` and `--demo online` need nothing from the platform
 and point to the game's doctor; `--demo platform` runs everything and
 ends with the values the game server and clients need.
+
+### One-command demo
+
+`uv run hullbreach_server demo` (or `make demo`) takes a fresh checkout to a
+working browser -> website -> API -> database stack in one step, and
+`make stop` stops it. `hullbreach_ops/demo.py` runs, in order:
+
+1. `ensure_env`: when `.env` does not exist, copy `.env.example` with a
+   generated database password (also inside the database URL), admin
+   password and game-server key, mode 0600. An existing `.env` is never
+   touched, and no secret value is printed.
+2. `lifecycle.start`: database, migrations, catalog and admin seed, API,
+   website (see the table above).
+3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
+   published on purpose: the database listens on 127.0.0.1 only) with two
+   opponents, `demo_rival` and `demo_ace`, and six matches of history.
+   Idempotent: nothing is changed once `demo_pilot` exists.
+
+If a database volume from an earlier setup is present, the freshly
+generated password will not match it. The database then rejects the
+login, and `demo` says so and offers the two ways out (restore the old
+`.env`, or `reset-db`); it never deletes a volume itself.
+
+`smoke` (`make smoke`, `hullbreach_server smoke`, `smoke.py`) is the
+scripted check that the demo really works: through the website's `/api`
+proxy it registers a throwaway `smoke_<hex>` account, logs in, reads
+`/me` and `/me/matches`, calls the game-facing `GET /api/v1/auth/session`
+with the first configured server key (skipped when none is set), logs out
+and confirms the token no longer works. It stops at the first failing step
+and prints no password, token or key.
 
 ## Sprint 1 design
 
