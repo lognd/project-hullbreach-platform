@@ -2,7 +2,8 @@
 id = "01M2H5T11QP42D39KC9ZNW0G2J"
 title = "S17 Update ratings after a match"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 5
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
