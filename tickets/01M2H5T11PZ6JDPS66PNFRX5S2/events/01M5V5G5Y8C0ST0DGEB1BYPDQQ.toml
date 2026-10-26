@@ -1,0 +1,28 @@
+kind = "evidence"
+captured_at = "2026-10-26T03:54:04Z"
+digest = "7a4c8e5082be3324108c7ab599058840d78c0a54b4e7593ea8fe37289b8bae5a"
+exit_code = 0
+inline = """
+..........                                                               [100%]
+=============================== warnings summary ===============================
+tests/unit/test_matches_record.py::test_post_match_records_match_stats_and_rates_both_players
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_matches_record.py::test_post_match_records_match_stats_and_rates_both_players
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 2 warnings in 2.08s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_matches_record.py"
+size = 989
+status = "measured"
+test_count = 10
+tests_digest = "fbd99e86f699ff0eab1088562b0107dd48ee99c89e1abee2aee87863ef552177"
+at = "2026-10-26T03:54:04Z"
+actor = "lognd"
+rev = 1
