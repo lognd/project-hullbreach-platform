@@ -345,11 +345,9 @@ at the repo root remains for bare `alembic` runs and the tests.) `db seed` calls
 `db/seed.py::seed(session)` (T-0008), which idempotently upserts (a changed
 name or price is updated) `db/seed_items.json`'s catalog (120 cosmetic entries across 8
 categories, matched by `slug` so a re-run never duplicates a row) into
-a hand-declared `items` table (created by the fourth migration below,
-T-0101; `seed.py`'s own `Table.create(checkfirst=True)` call is a no-op
-wherever that migration has run and exists only for the unit-test
-SQLite fixture, which builds its schema from `Base.metadata` rather
-than running Alembic), and creates the first admin account
+the `items` table (the `db/models/item.py::Item` model, S20; the unit-test
+SQLite fixture builds it from `Base.metadata`, real databases from the
+migrations below), and creates the first admin account
 via `auth.passwords.hash_password` when no `User` with `role ==
 Role.admin` exists, reading `HULLBREACH_ADMIN_USERNAME`/`_EMAIL`/
 `_PASSWORD` and returning `Err(SeedError.MissingAdminPassword)` rather
@@ -378,11 +376,8 @@ creates the `sessions` table matching
 `src/hullbreach_server/db/models/session.py::Session` exactly, including
 its FK to `users.id` (`ON DELETE CASCADE`) and the indexed `user_id`
 column. The fourth revision (`abbcc4cb6b34_create_items_table.py`,
-T-0101) creates the `items` table `db/seed.py` upserts into --
-deliberately not backed by an ORM model yet (T-0066 owns that), so
-`tests/system/test_build.py`'s `compare_metadata` check excludes it via
-an `include_object` filter rather than reporting a false "extra table"
-diff. The fifth revision
+T-0101) creates the `items` table `db/seed.py` upserts into (the `Item`
+model since S20). The fifth revision
 (`7d2c4a91e0b3_create_matches_tables.py`, T-0053) creates `matches` and
 `match_player_stats` matching `db/models/match.py` exactly. The sixth
 revision (`3b8e6f1c9d24_user_role_check_and_ci_unique.py`) adds the
@@ -398,7 +393,9 @@ created_at)` for the leaderboard's latest-rating-per-player query. The ninth
 revision (`e7a3b9c1d2f4_add_users_deleted_at.py`, T-0037) adds the nullable
 `users.deleted_at` that marks an anonymized (deleted) account. The tenth
 revision (`f1b6c2d8a3e5_create_designs_table.py`, S35) creates `designs`
-matching `db/models/design.py`.
+matching `db/models/design.py`. The eleventh revision
+(`a2c4e6f8b0d1_add_catalog_and_inventory.py`, S20) adds `items.category`
+and `items.preview_url` and creates `inventory`.
 
 ### Elo rating
 
@@ -668,6 +665,22 @@ and `useSession` reflects it immediately in the same page load. Any
 Login has no field-level errors (the login contract never names a
 `field`).
 
+### Catalog
+
+Items live in `items` (`db/models/item.py::Item`: `slug`, `name`,
+`price_cents`, `category`, optional `preview_url`) and ownership in
+`inventory` (`db/models/inventory.py::InventoryEntry`), unique per
+`(user_id, item_id)` so an item can never be owned twice.
+`GET /api/v1/catalog?category=` (`api/catalog.py::get_catalog`, public)
+returns `{items, categories}`: each item has `id`, `slug`, `name`,
+`category`, `price`, `preview_url` and `owned` (true only for a caller
+who sent a valid token), ordered by category then name; `categories`
+always lists every category so a client can render tabs while filtered.
+`GET /api/v1/me/inventory` (auth required) returns the caller's
+`OwnedItem` rows, oldest first. A database failure is a 503
+`{"detail": "catalog unavailable"}`. Both are served by
+`services/catalog.py`, which returns typani `Result`s.
+
 ### Player API
 
 `src/hullbreach_server/api/me.py` serves the signed-in player's own
@@ -681,10 +694,10 @@ through `get_current_user`. The response models live in the service layer
 (`services/profile.py::build_me`): the `UserProfile` fields (`id`,
 `username`, `email`, `role`, `currency`, `rating`, `created_at`) plus
 `inventory` (a list of `OwnedSkin` `{id, slug, name}`) and
-`recent_matches` (the newest five `MatchSummary` rows). Two sections are
-honest defaults until their models land: `inventory` is always `[]` (no
-Item/Inventory ORM model or ownership table yet, T-0066), and `currency`
-is `0` and `rating` is the player's current ELO (see Auth API).
+`recent_matches` (the newest five `MatchSummary` rows). `inventory` lists
+every item the player owns (see Catalog), empty when they own none, and
+`rating` is the player's current ELO (see Auth API); `currency` is `0` until
+the currency ledger lands.
 
 A `MatchSummary` (`services/matches.py`) is one match from the player's
 point of view: `id`, `played_at` (the match's `created_at`), `opponent`
