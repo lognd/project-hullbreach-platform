@@ -63,6 +63,8 @@ _CORS_LOCAL_PORT = re.compile(r"(?<=//localhost:)\d+")
 
 # frob:ticket 01M5V56YXRCHFZHZGWZTDXHV5H
 # frob:ticket 01M5V93V80GQXC4283VFZPEYH7
+# frob:ticket 01M5VJK6MN84BGJE2C7BJAHWAT
+# frob:tests tests/unit/test_ops_demo.py::test_ensure_env_replaces_values_loaded_from_a_stray_env
 # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_uses_the_chosen_ports
 # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_writes_a_filled_env_once
 # frob:doc docs/index.md#one-command-demo
@@ -84,6 +86,7 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
             )
         )
     db_port = str(ctx.settings.db_port)
+    api_port = str(ctx.settings.api_port)
     web_port = str(ctx.settings.web_port)
     fresh = {
         "db": secrets.token_urlsafe(18),
@@ -100,6 +103,8 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
             line = _DB_URL_PORT.sub(db_port, line)
         elif name == "HULLBREACH_DB_PORT":
             line = f"{name}={db_port}"
+        elif name == "HULLBREACH_PORT":
+            line = f"{name}={api_port}"
         elif name == "HULLBREACH_WEB_PORT":
             line = f"{name}={web_port}"
         elif name == "HULLBREACH_CORS_ORIGINS":
@@ -111,9 +116,15 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
     except OSError as exc:
         return Err(OpsError(message=f"cannot write .env ({type(exc).__name__})"))
     # dotenv was loaded before this file existed; the child processes need it.
+    # The new file wins over what was loaded: a stray .env in a parent folder
+    # (load_dotenv searches upward) must not outrank it, or the database step
+    # would use that file's port and password.
     for key, value in dotenv_values(target).items():
-        if value is not None:
-            ctx.environ.setdefault(key, value)
+        if value is None:
+            continue
+        if ctx.environ.get(key, value) != value:
+            _log.warning("demo: new .env replaces a different loaded %s", key)
+        ctx.environ[key] = value
     ctx.console.line("  Settings: created .env with fresh passwords (kept private)")
     _log.info(
         "demo: wrote a fresh .env (db port %s, web port %s)",

@@ -52,6 +52,7 @@ def test_ensure_env_writes_a_filled_env_once(tmp_path: Path) -> None:
 
 
 PORT_EXAMPLE = (
+    "HULLBREACH_PORT=8000\n"
     "HULLBREACH_WEB_PORT=5173\n"
     "HULLBREACH_DB_PORT=5432\n"
     "HULLBREACH_DATABASE_URL=postgresql://hullbreach:change-me@localhost:5432/hb\n"
@@ -76,6 +77,28 @@ def test_ensure_env_uses_the_chosen_ports(tmp_path: Path) -> None:
     assert "5432/" not in text.replace("15432/", "")
     assert "HULLBREACH_WEB_PORT=15173\n" in text
     assert "HULLBREACH_CORS_ORIGINS=http://localhost:15173\n" in text
+
+
+# frob:ticket 01M5VJK6MN84BGJE2C7BJAHWAT
+def test_ensure_env_replaces_values_loaded_from_a_stray_env(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/demo.py::ensure_env kind="unit"
+    ctx = make_ctx(
+        tmp_path,
+        {
+            "HULLBREACH_DB_PORT": "15432",
+            "HULLBREACH_PORT": "18000",
+            # What load_dotenv() took from a .env in a parent folder.
+            "HULLBREACH_DATABASE_URL": "postgresql://hullbreach:old@localhost:5432/hb",
+        },
+    )
+    (ctx.settings.root / ".env.example").write_text(PORT_EXAMPLE, encoding="utf-8")
+
+    assert demo.ensure_env(ctx).danger_ok is True
+
+    url = ctx.environ["HULLBREACH_DATABASE_URL"]
+    assert "@localhost:15432/hb" in url
+    assert ":old@" not in url
+    assert ctx.environ["HULLBREACH_PORT"] == "18000"
 
 
 # frob:ticket 01M5V93V80GQXC4283VFZPEYH7
