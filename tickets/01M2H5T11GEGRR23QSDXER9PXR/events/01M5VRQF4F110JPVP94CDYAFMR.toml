@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/components/CookieNotice.tsx", "web/tests/unit/CookieNotice.test.tsx"]
+new = ["web/src/components/CookieNotice.tsx", "web/tests/unit/CookieNotice.test.tsx", "web/src/App.tsx", "web/tests/unit/App.test.tsx"]
+at = "2026-10-26T09:30:08Z"
+actor = "a-carten"
+rev = 1
