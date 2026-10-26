@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_ops/**", "src/hullbreach_server/__main__.py", "README.md", "docs/**"]
+new = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "src/hullbreach_ops/**"]
+at = "2026-10-15T16:18:01Z"
+actor = "lognd"
+rev = 1

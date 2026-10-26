@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-15T17:28:14Z"
+digest = "8f748b183e4ca4dd91b5bdb7ed0d91c59170351f0f06771316185129cb54a747"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.31s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_doctor.py::test_demo_profiles_pick_their_checks"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "6395bb14092d20fe792b42493c06dae8df97d02daf2ddb3bda7fdb8977dac6ba"
+at = "2026-10-15T17:28:14Z"
+actor = "lognd"
+rev = 1

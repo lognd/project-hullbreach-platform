@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: lognd in scratchpad/pr2; scope: src/hullbreach_server/__main__.py, README.md, docs/**, package.json, frob.toml, design/hullbreach.strata, changelog.d/**, src/hullbreach_ops/**, tests/unit/test_ops_*.py, doctor.sh, doctor.cmd, doctor.ps1, .nvmrc, .gitattributes, invariants/INV-007.md, tests/unit/ops_fakes.py, tests/unit/test_main.py, Makefile, .env.example; ttl 7200s"
+at = "2026-10-15T17:28:06Z"
+actor = "lognd"
+rev = 1

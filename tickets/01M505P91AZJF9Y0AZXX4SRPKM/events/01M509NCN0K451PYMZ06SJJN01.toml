@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [4]
+captured_at = "2026-10-15T17:27:21Z"
+digest = "ab6ed5b97307452a8628b1dcbc8adee35e880d2f6dbb898f24822dc0f9ee2482"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 0.30s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_accounts.py::test_demo_users_registers_two_accounts_and_never_transcribes_the_password"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "b1479af99213cbe713bd12b1cad91b5851889de9657b6f89717920bc9ae76dc0"
+at = "2026-10-15T17:27:21Z"
+actor = "lognd"
+rev = 1

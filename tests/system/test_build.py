@@ -167,7 +167,9 @@ def test_compose_publishes_postgres_on_loopback_with_no_default_password():
     """INV-005: the dev database is loopback-only and has no well-known credential."""
     # frob:tests src/hullbreach_server/app/config.py::AppConfig kind="integration"
     compose = (_SRC_ROOT.parent.parent / "docker-compose.yml").read_text()
-    assert '"127.0.0.1:5432:5432"' in compose
-    assert '"5432:5432"' not in compose
+    # The host port may move (HULLBREACH_DB_PORT) but the bind stays loopback.
+    assert '"127.0.0.1:${HULLBREACH_DB_PORT:-5432}:5432"' in compose
+    assert '- "5432:5432"' not in compose
+    assert '- "${HULLBREACH_DB_PORT' not in compose
     assert "POSTGRES_PASSWORD:?" in compose
     assert "POSTGRES_PASSWORD:-" not in compose

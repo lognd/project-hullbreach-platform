@@ -93,4 +93,6 @@ forbid_imports = [
   { from = "src/hullbreach_server/**", to = "pickle", reason = "POL-no-unsafe-deserialization (INV-007): pickle executes arbitrary code on untrusted bytes" },
   { from = "src/hullbreach_server/**", to = "marshal", reason = "POL-no-unsafe-deserialization (INV-007): marshal is not safe on untrusted bytes" },
   { from = "src/hullbreach_server/**", to = "shelve", reason = "POL-no-unsafe-deserialization (INV-007): shelve is pickle-backed" },
+  # The operator tooling (doctor, start/stop) may spawn processes; only the CLI entry point may load it.
+  { from = "src/hullbreach_server/*/**", to = "hullbreach_ops", reason = "POL-ops-outside-server (INV-007): request-handling code must not reach the process-spawning operator tooling" },
 ]

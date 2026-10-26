@@ -2,7 +2,8 @@
 PY_STAMP  := .venv/.install-stamp
 WEB_STAMP := node_modules/.install-stamp
 
-.PHONY: install install-py install-web clean run dev db build
+.PHONY: install install-py install-web clean run dev db build \
+        doctor start stop status reset-db demo-users server-key lan
 
 # T-3400: this Makefile intentionally does NOT ship format/lint/typecheck/
 # test/coverage/check targets. This is a frob-enabled polyglot project
@@ -52,6 +53,16 @@ dev: $(WEB_STAMP)
 
 build: $(WEB_STAMP)
 	npm run build
+
+# ---------- operator scripts ----------
+# One implementation each, in `hullbreach_server <command>` (src/hullbreach_ops);
+# these targets only spell them shorter. See docs/index.md#operator-scripts-and-the-doctor.
+
+doctor:
+	./doctor.sh
+
+start stop status reset-db demo-users server-key lan: $(PY_STAMP)
+	uv run hullbreach_server $@
 
 # ---------- clean ----------
 
