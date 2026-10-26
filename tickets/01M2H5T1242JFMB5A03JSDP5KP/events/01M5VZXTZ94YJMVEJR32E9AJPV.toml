@@ -1,0 +1,7 @@
+kind = "field"
+field = "labels"
+old = ["jira:SCRUM-183", "owner:a-carten", "milestone:0.3.0", "creates:web/src/api/store.ts", "creates:web/tests/fixtures/store.ts"]
+new = ["jira:SCRUM-183", "owner:a-carten", "milestone:0.3.0", "creates:web/src/api/store.ts", "creates:web/tests/fixtures/store.ts", "creates:changelog.d/01M2H5T129NG0XCDSDSKV6PFT9.added.md"]
+at = "2026-10-26T11:35:57Z"
+actor = "a-carten"
+rev = 1
