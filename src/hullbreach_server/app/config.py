@@ -56,6 +56,8 @@ class AppConfig(BaseModel):
     # Keys a game server presents in X-Server-Key (T-0052); empty means no
     # server can authenticate. Secret values: never logged or repr'd.
     game_server_api_keys: list[SecretStr] = []
+    # host:port the matchmaking queue hands to matched players (S29).
+    game_server_address: str = "127.0.0.1:7777"
 
     # frob:invariant INV-004
     @field_validator("cors_origins")
