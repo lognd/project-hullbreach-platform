@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/db/models/rating.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_rating_history.py"]
+new = ["src/hullbreach_server/db/models/rating.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_rating_history.py", "src/hullbreach_server/db/models/__init__.py", "docs/index.md", "src/hullbreach_server/db/migrations/versions/c41e5f7a9b02_create_rating_changes_table.py"]
+at = "2026-10-26T03:47:28Z"
+actor = "lognd"
+rev = 1
