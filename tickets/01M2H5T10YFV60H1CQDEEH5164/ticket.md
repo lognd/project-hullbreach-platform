@@ -8,7 +8,7 @@ points = 5
 parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T11:26:18Z"
+updated = "2026-10-26T11:26:19Z"
 aliases = ["T-0030"]
 labels = ["jira:SCRUM-30", "owner:a-carten", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx"]
@@ -19,7 +19,7 @@ bound = true
 
 [[acceptance]]
 text = "given a new match or purchase, when the profile loads, then it reflects the change without a code change or manual refresh of the database"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a phone-width screen, when the profile renders, then it is usable"
