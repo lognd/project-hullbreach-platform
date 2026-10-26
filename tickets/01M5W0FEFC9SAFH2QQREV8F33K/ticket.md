@@ -12,7 +12,7 @@ scope = ["src/hullbreach_server/services/matches.py", "tests/unit/test_currency.
 
 [[acceptance]]
 text = "Given a posted match, when it is recorded, then the match row is flushed before its currency ledger rows are staged"
-bound = false
+bound = true
 +++
 
 Found in real-browser store QA: record_match staged currency_ledger rows with no relationship() to the match, so PostgreSQL got the ledger INSERT before the matches INSERT (fk_currency_ledger_match_id_matches). make demo died seeding demo accounts; POST /matches would 500 on Postgres. SQLite tests do not enforce FKs. Fix: flush the match before staging payouts.
