@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T08:54:14Z"
+digest = "14a802ed92ee747721deb7d540359cb93635676bcfa2dd3d59e478e8632fe7f4"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Leaderboard.test.tsx (10 tests) 224ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  04:54:14
+   Duration  818ms (transform 100ms, setup 61ms, import 156ms, tests 224ms, environment 296ms)
+
+JSON report written to /tmp/frob-vitest-2921169-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Leaderboard.test.tsx"
+size = 318
+status = "measured"
+test_count = 10
+tests_digest = "0acdc44f0350afc6efeb7aa2f89795a86d2d7e1ec3ce98fed29dfaa62d29d14b"
+at = "2026-10-26T08:54:14Z"
+actor = "a-carten"
+rev = 1
