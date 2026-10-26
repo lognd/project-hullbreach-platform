@@ -1,0 +1,1 @@
+One command (make demo) that brings up the database, migrations, API, website and a demo account with match history, plus a smoke test (make smoke) that registers, logs in and reads the profile through the running stack.

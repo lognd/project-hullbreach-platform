@@ -637,6 +637,130 @@ token) are dropped, so no match is listed twice. The page does not
 virtualize the list; it relies on the server's page size to keep the DOM
 small, and the page size is the server's default (no `limit` is sent).
 
+## Operator scripts and the doctor
+
+`src/hullbreach_ops/` is the operator tooling a person runs on their own
+computer: the doctor and the start/stop/demo scripts (tickets `~99XSJ66`
+and `~X4SRPKM`). It is a separate package from `hullbreach_server` on
+purpose: it is the only code that runs other programs (docker, git, npm,
+uv), and INV-007 forbids `subprocess` under `src/hullbreach_server/**`.
+`frob.toml`'s `POL-ops-outside-server` rule and
+`tests/unit/test_ops_boundary.py` keep the request-handling code from
+importing it; only `hullbreach_server.__main__` does, and `hullbreach_ops/cli.py`
+imports the command modules lazily. Every program call goes through
+`proc.py` with an argv list, never a shell string.
+
+Each script is one implementation behind three entry points: the
+subcommand (`uv run hullbreach_server <command>`), the Makefile target of
+the same name, and, for the doctor, the wrappers `doctor.sh` (macOS, Linux,
+WSL) and `doctor.cmd`/`doctor.ps1` (Windows, which explain how to get into
+WSL and then hand over to `doctor.sh`). The wrappers only make sure git,
+uv, Docker and Node.js exist and offer their official installers after a
+`[y/N]` question; every real check is in Python.
+
+| Command      | What it does                                                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
+| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
+| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
+| `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
+| `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
+| `status`     | what is running, on which port                                                                                                                |
+| `reset-db`   | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                              |
+| `demo-users` | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                |
+| `server-key` | generates a game-server key and says where it goes on both sides; never written to disk                                                       |
+| `lan`        | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`) |
+
+Terminal output goes through `console.py`'s `Console`, not logging: every
+line is redacted (registered secret values plus anything that looks like a
+credential) and kept as a transcript. Log records go to
+`.hullbreach/logs/ops.log`; the API and website started by `start` write
+`api.log` and `web.log` next to it. `doctor --collect` zips the redacted
+transcript, the redacted ends of those logs and a few facts about the
+computer into `hullbreach-support-<timestamp>.zip`; it never includes
+`.env` or any setting value.
+
+Where things run comes from environment variables (or `.env`, loaded by
+`load_dotenv` in `__main__`), read by `settings.py::OpsSettings`:
+`HULLBREACH_PORT` (API, default 8000, also read by the server and by
+`vite.config.ts` for its `/api` proxy), `HULLBREACH_WEB_PORT` (website,
+5173), `HULLBREACH_DB_PORT` (host side of the compose port mapping, 5432),
+`HULLBREACH_HOST` and docker's own `COMPOSE_PROJECT_NAME`. Together they
+let a second copy of the stack run beside the first.
+
+The doctor (`doctor.py`) runs the checks of `REGISTRY` in order. Each
+returns a `CheckResult` (PASS, WARN, FAIL or PENDING, a one-line summary,
+numbered fix steps and a README section from `readme_links.py`, whose
+anchors `tests/unit/test_ops_readme_links.py` checks). A check lists the
+checks it needs; when one of those FAILs it is shown as PENDING instead of
+running, but the whole checklist is always printed, followed by the first
+FAIL to fix. The doctor never reads `.env` itself: `env-file` checks only
+that it exists, and `settings` loads it through `AppConfig` and reports
+each setting as set or not set, never its value.
+
+| Check id        | Needs                           | Checks                                                                                                                  |
+| --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `os`            |                                 | operating system, WSL detection                                                                                         |
+| `git`           |                                 | git installed                                                                                                           |
+| `repo`          | `git`                           | inside the checkout, up to date with its upstream                                                                       |
+| `uv`            |                                 | uv installed                                                                                                            |
+| `python`        | `uv`                            | the Python version the project needs                                                                                    |
+| `py-deps`       | `python`                        | `uv sync` done and current                                                                                              |
+| `node`          |                                 | Node.js and npm match `.nvmrc` / `engines`                                                                              |
+| `web-deps`      | `node`                          | `npm ci` done and current                                                                                               |
+| `docker`        |                                 | Docker installed                                                                                                        |
+| `docker-daemon` | `docker`                        | the Docker engine is running                                                                                            |
+| `env-file`      |                                 | `.env` exists (WARN when settings come from the environment instead)                                                    |
+| `compose-file`  | `docker`                        | `docker compose config` accepts `docker-compose.yml`                                                                    |
+| `settings`      | `py-deps`                       | the server's own settings loader accepts the settings                                                                   |
+| `game-keys`     | `settings`                      | `HULLBREACH_GAME_SERVER_API_KEYS` set (needed by the platform demo)                                                     |
+| `ports`         |                                 | API, website and database ports free or held by this stack; names the holder                                            |
+| `db-container`  | `docker-daemon`, `compose-file` | the database container is up and healthy                                                                                |
+| `db-connect`    | `db-container`, `settings`      | the API's database URL connects                                                                                         |
+| `migrations`    | `db-connect`                    | the schema is at the Alembic head                                                                                       |
+| `seed`          | `migrations`                    | the item catalog is loaded (WARN when there is no admin)                                                                |
+| `api`           | `migrations`, `py-deps`         | `/api/v1/health` answers (the doctor starts the API if needed)                                                          |
+| `web`           | `web-deps`, `api`               | the website and its `/api` proxy answer                                                                                 |
+| `e2e`           | `api`, `seed`                   | register a throwaway `doctor-<timestamp>` user, login, `GET`/`PATCH /me`, `/me/matches`; the user is deleted afterwards |
+| `game-session`  | `e2e`, `game-keys`              | `GET /api/v1/auth/session` refuses without a key and accepts a configured one                                           |
+| `lan`           | `api`                           | whether other computers can reach the API, and what is in the way                                                       |
+
+Services the doctor starts for a check (`api`, `web`) are stopped again
+when the run ends. `--demo website` skips `game-keys`, `game-session` and
+`lan`; `--demo guest` and `--demo online` need nothing from the platform
+and point to the game's doctor; `--demo platform` runs everything and
+ends with the values the game server and clients need.
+
+### One-command demo
+
+`uv run hullbreach_server demo` (or `make demo`) takes a fresh checkout to a
+working browser -> website -> API -> database stack in one step, and
+`make stop` stops it. `hullbreach_ops/demo.py` runs, in order:
+
+1. `ensure_env`: when `.env` does not exist, copy `.env.example` with a
+   generated database password (also inside the database URL), admin
+   password and game-server key, mode 0600. An existing `.env` is never
+   touched, and no secret value is printed.
+2. `lifecycle.start`: database, migrations, catalog and admin seed, API,
+   website (see the table above).
+3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
+   published on purpose: the database listens on 127.0.0.1 only) with two
+   opponents, `demo_rival` and `demo_ace`, and six matches of history.
+   Idempotent: nothing is changed once `demo_pilot` exists.
+
+If a database volume from an earlier setup is present, the freshly
+generated password will not match it. The database then rejects the
+login, and `demo` says so and offers the two ways out (restore the old
+`.env`, or `reset-db`); it never deletes a volume itself.
+
+`smoke` (`make smoke`, `hullbreach_server smoke`, `smoke.py`) is the
+scripted check that the demo really works: through the website's `/api`
+proxy it registers a throwaway `smoke_<hex>` account, logs in, reads
+`/me` and `/me/matches`, calls the game-facing `GET /api/v1/auth/session`
+with the first configured server key (skipped when none is set), logs out
+and confirms the token no longer works. It stops at the first failing step
+and prints no password, token or key.
+
 ## Sprint 1 design
 
 `docs/design/sprint-1.md` is the system design for milestone 0.1.0

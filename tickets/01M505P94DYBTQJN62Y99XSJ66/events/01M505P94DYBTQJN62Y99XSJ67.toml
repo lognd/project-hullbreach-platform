@@ -1,0 +1,14 @@
+kind = "create"
+title = "Doctor: hullbreach_server doctor with demo profiles, support bundle and bootstrap wrappers"
+type = "task"
+category = "todo"
+priority = "high"
+points = 8
+parent = "01M505NY7ZY9Y8HYFF8GGTC0R6"
+labels = ["owner:lognd", "milestone:0.2.0", "creates:src/hullbreach_ops/**", "creates:tests/unit/test_ops_*.py", "creates:doctor.sh", "creates:doctor.cmd", "creates:doctor.ps1", "creates:.nvmrc"]
+scope = ["src/hullbreach_server/__main__.py", "README.md", "docs/**", "package.json", "frob.toml", "design/hullbreach.strata", "changelog.d/**", "src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "doctor.sh", "doctor.cmd", "doctor.ps1", ".nvmrc"]
+acceptance = ["given any machine, when ./doctor.sh runs, then missing git, uv, docker or node is explained in plain English and the official installer is offered only behind a y/N prompt", "given a failing check, when the doctor reports, then it prints FAIL with numbered fix steps and a README link, and checks depending on it show PENDING", "given doctor --demo website, guest, platform or online, when it finishes, then only the checks that demo needs ran and the exact next commands and game-side values are printed", "given doctor --collect, when run, then a zip with the redacted doctor output and recent logs is written and no secret value appears in it", "given a .env file, when the doctor runs, then it reports settings as set or unset and never prints their values"]
+body = "Checks are a registry with ids and dependencies so README troubleshooting entries can cite check ids."
+at = "2026-10-15T16:17:57Z"
+actor = "lognd"
+rev = 1

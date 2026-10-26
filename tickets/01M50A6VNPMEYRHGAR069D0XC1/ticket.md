@@ -1,0 +1,21 @@
++++
+id = "01M50A6VNPMEYRHGAR069D0XC1"
+title = "Downgrading migration 3b8e6f1c9d24 fails: constraint name prefixed twice"
+type = "bug"
+category = "todo"
+priority = "medium"
+reporter = "lognd"
+created = "2026-10-15T17:36:54Z"
+updated = "2026-10-15T17:36:54Z"
+scope = ["src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py"]
+
+[[acceptance]]
+text = "alembic downgrade -1 from head succeeds on a migrated database"
+bound = false
+
+[[acceptance]]
+text = "a test runs upgrade head, downgrade -1, upgrade head against Postgres"
+bound = false
++++
+
+alembic downgrade -1 from head fails with UndefinedObject: constraint ck_users_ck_users_role does not exist. downgrade() passes the full name ck_users_role to batch.drop_constraint, and the metadata naming convention ck_%(table_name)s_%(constraint_name)s prefixes it again (upgrade correctly passes just role). Fix: drop_constraint("role", type_="check") or op.f("ck_users_role"). The frob:accept TEST001 on downgrade claims it is exercised on downgrade; it never ran. Found while proving the doctor's migrations check.
