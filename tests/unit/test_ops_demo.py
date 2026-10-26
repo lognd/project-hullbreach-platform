@@ -51,6 +51,46 @@ def test_ensure_env_writes_a_filled_env_once(tmp_path: Path) -> None:
     assert (root / ".env").read_text(encoding="utf-8") == before
 
 
+PORT_EXAMPLE = (
+    "HULLBREACH_WEB_PORT=5173\n"
+    "HULLBREACH_DB_PORT=5432\n"
+    "HULLBREACH_DATABASE_URL=postgresql://hullbreach:change-me@localhost:5432/hb\n"
+    "HULLBREACH_CORS_ORIGINS=http://localhost:5173\n"
+)
+
+
+# frob:ticket 01M5V93V80GQXC4283VFZPEYH7
+def test_ensure_env_uses_the_chosen_ports(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/demo.py::ensure_env kind="unit"
+    ctx = make_ctx(
+        tmp_path,
+        {"HULLBREACH_DB_PORT": "15432", "HULLBREACH_WEB_PORT": "15173"},
+    )
+    (ctx.settings.root / ".env.example").write_text(PORT_EXAMPLE, encoding="utf-8")
+
+    assert demo.ensure_env(ctx).danger_ok is True
+
+    text = (ctx.settings.root / ".env").read_text(encoding="utf-8")
+    assert "HULLBREACH_DB_PORT=15432\n" in text
+    assert "@localhost:15432/hb" in text
+    assert "5432/" not in text.replace("15432/", "")
+    assert "HULLBREACH_WEB_PORT=15173\n" in text
+    assert "HULLBREACH_CORS_ORIGINS=http://localhost:15173\n" in text
+
+
+# frob:ticket 01M5V93V80GQXC4283VFZPEYH7
+def test_ensure_env_keeps_default_ports_when_unset(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/demo.py::ensure_env kind="unit"
+    ctx = make_ctx(tmp_path)
+    (ctx.settings.root / ".env.example").write_text(PORT_EXAMPLE, encoding="utf-8")
+
+    assert demo.ensure_env(ctx).danger_ok is True
+
+    text = (ctx.settings.root / ".env").read_text(encoding="utf-8")
+    assert "@localhost:5432/hb" in text
+    assert "http://localhost:5173" in text
+
+
 def test_ensure_env_without_example_is_an_error(tmp_path: Path) -> None:
     # frob:tests src/hullbreach_ops/demo.py::ensure_env kind="unit"
     result = demo.ensure_env(make_ctx(tmp_path))

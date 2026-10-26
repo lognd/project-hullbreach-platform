@@ -614,7 +614,7 @@ what), or you want a second copy beside the first, set these in `.env`
 
 | Setting                | Default         | What it changes                                                                             |
 | ---------------------- | --------------- | ------------------------------------------------------------------------------------------- |
-| `HULLBREACH_DB_PORT`   | `5432`          | the database's port; change the port inside `HULLBREACH_DATABASE_URL` to match              |
+| `HULLBREACH_DB_PORT`   | `5432`          | the database's port; the demo's first-run `.env` puts it in `HULLBREACH_DATABASE_URL`       |
 | `HULLBREACH_PORT`      | `8000`          | the API's port; the website passes `/api` requests to it automatically                      |
 | `HULLBREACH_WEB_PORT`  | `5173`          | the website's port                                                                          |
 | `HULLBREACH_HOST`      | `127.0.0.1`     | which network the API listens on (`lan` sets `0.0.0.0` for you)                             |

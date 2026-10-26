@@ -57,13 +57,17 @@ _SECRET_LINES = {
     "HULLBREACH_GAME_SERVER_API_KEYS": "key",
 }
 _DB_URL_PASSWORD = re.compile(r"(?<=//hullbreach:)[^@]*(?=@)")
+_DB_URL_PORT = re.compile(r"(?<=@localhost:)\d+(?=/)")
+_CORS_LOCAL_PORT = re.compile(r"(?<=//localhost:)\d+")
 
 
 # frob:ticket 01M5V56YXRCHFZHZGWZTDXHV5H
+# frob:ticket 01M5V93V80GQXC4283VFZPEYH7
+# frob:tests tests/unit/test_ops_demo.py::test_ensure_env_uses_the_chosen_ports
 # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_writes_a_filled_env_once
 # frob:doc docs/index.md#one-command-demo
 def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
-    """Write `.env` from `.env.example` with fresh secrets if it is missing."""
+    """Write `.env` from `.env.example` with fresh secrets and the chosen ports."""
     root = ctx.settings.root
     target = root / ".env"
     if target.exists():
@@ -79,6 +83,8 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
                 fix=["Run `git status` and restore .env.example, then run again."],
             )
         )
+    db_port = str(ctx.settings.db_port)
+    web_port = str(ctx.settings.web_port)
     fresh = {
         "db": secrets.token_urlsafe(18),
         "admin": secrets.token_urlsafe(18),
@@ -91,6 +97,13 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
             line = f"{name}={fresh[_SECRET_LINES[name]]}"
         elif name == "HULLBREACH_DATABASE_URL":
             line = _DB_URL_PASSWORD.sub(fresh["db"], line)
+            line = _DB_URL_PORT.sub(db_port, line)
+        elif name == "HULLBREACH_DB_PORT":
+            line = f"{name}={db_port}"
+        elif name == "HULLBREACH_WEB_PORT":
+            line = f"{name}={web_port}"
+        elif name == "HULLBREACH_CORS_ORIGINS":
+            line = _CORS_LOCAL_PORT.sub(web_port, line)
         out.append(line)
     try:
         target.write_text("\n".join(out) + "\n", encoding="utf-8")
@@ -102,7 +115,11 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
         if value is not None:
             ctx.environ.setdefault(key, value)
     ctx.console.line("  Settings: created .env with fresh passwords (kept private)")
-    _log.info("demo: wrote a fresh .env")
+    _log.info(
+        "demo: wrote a fresh .env (db port %s, web port %s)",
+        db_port,
+        web_port,
+    )
     return Ok(True)
 
 

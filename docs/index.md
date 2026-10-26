@@ -792,7 +792,10 @@ working browser -> website -> API -> database stack in one step, and
 
 1. `ensure_env`: when `.env` does not exist, copy `.env.example` with a
    generated database password (also inside the database URL), admin
-   password and game-server key, mode 0600. An existing `.env` is never
+   password and game-server key, mode 0600. If `HULLBREACH_DB_PORT` or
+   `HULLBREACH_WEB_PORT` is set in the environment, the new file uses it,
+   including the port in the database URL and the CORS origin (a bad port
+   is rejected earlier, when settings load). An existing `.env` is never
    touched, and no secret value is printed.
 2. `lifecycle.start`: database, migrations, catalog and admin seed, API,
    website (see the table above).
