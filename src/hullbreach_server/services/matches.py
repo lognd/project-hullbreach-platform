@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from sqlalchemy import Select, and_, or_, select
+from sqlalchemy import ColumnElement, Select, and_, case, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DBSession
 from typani import Err, Ok, Result
@@ -27,6 +27,9 @@ _log = get_logger(__name__)
 
 # Shown as the opponent when a match has no other player's stats row.
 _NO_OPPONENT = "unknown"
+
+# Shown in place of a deleted account's anonymized username (T-0037).
+DELETED_PLAYER_NAME = "deleted player"
 
 # Matches per history page when the client sends no `limit`, and the cap.
 DEFAULT_PAGE_SIZE = 20
@@ -53,6 +56,14 @@ class MatchSummary(BaseModel):
     stats: dict[str, int]
 
 
+# frob:ticket 01M2H5T11594WX75ZK5S9FQ3HQ
+def display_name() -> ColumnElement[str]:
+    """SQL for the name to show for a user: their username, or the deleted-player placeholder."""  # noqa: E501
+    return case(
+        (User.deleted_at.is_not(None), DELETED_PLAYER_NAME), else_=User.username
+    )
+
+
 def _player_matches(user: User) -> Select[tuple[Match, MatchPlayerStats]]:
     """Select (Match, the player's own stats row), newest first, ties by id."""
     return (
@@ -70,7 +81,7 @@ def _opponents(
     if not match_ids:
         return {}
     rows = db.execute(
-        select(MatchPlayerStats.match_id, User.username)
+        select(MatchPlayerStats.match_id, display_name().label("name"))
         .join(User, User.id == MatchPlayerStats.user_id)
         .where(
             MatchPlayerStats.match_id.in_(match_ids),
@@ -79,8 +90,8 @@ def _opponents(
         .order_by(User.username)
     ).all()
     names: dict[uuid.UUID, list[str]] = {}
-    for match_id, username in rows:
-        names.setdefault(match_id, []).append(username)
+    for match_id, name in rows:
+        names.setdefault(match_id, []).append(name)
     return {match_id: ", ".join(found) for match_id, found in names.items()}
 
 

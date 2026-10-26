@@ -15,6 +15,7 @@ from typani import Err, Ok, Result
 from hullbreach_server.db.models.rating import RatingChange
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
+from hullbreach_server.services.matches import display_name
 
 _log = get_logger(__name__)
 
@@ -74,7 +75,8 @@ def _ranked() -> Subquery:
     current = (
         select(
             latest.c.user_id,
-            User.username.label("username"),
+            User.username.label("sort_name"),
+            display_name().label("username"),
             latest.c.rating,
             latest.c.matches_played,
         )
@@ -84,7 +86,7 @@ def _ranked() -> Subquery:
     )
     return select(
         func.row_number()
-        .over(order_by=(current.c.rating.desc(), current.c.username.asc()))
+        .over(order_by=(current.c.rating.desc(), current.c.sort_name.asc()))
         .label("rank"),
         current.c.user_id,
         current.c.username,

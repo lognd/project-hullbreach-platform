@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/account_deletion.py", "tests/unit/test_me_delete.py", "src/hullbreach_server/db/models/user.py", "src/hullbreach_server/db/migrations/versions/e7a3b9c1d2f4_add_users_deleted_at.py", "src/hullbreach_server/services/matches.py", "src/hullbreach_server/services/leaderboard.py"]
+new = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/account_deletion.py", "tests/unit/test_me_delete.py", "src/hullbreach_server/db/models/user.py", "src/hullbreach_server/db/migrations/versions/e7a3b9c1d2f4_add_users_deleted_at.py", "src/hullbreach_server/services/matches.py", "src/hullbreach_server/services/leaderboard.py", "src/hullbreach_server/auth/schemas.py"]
+at = "2026-10-26T09:48:41Z"
+actor = "a-carten"
+rev = 1
