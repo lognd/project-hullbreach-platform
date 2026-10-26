@@ -173,7 +173,10 @@ def login(
         user.id,
         _session_row.id,
     )
-    return LoginResponse(token=token, user=UserProfile.from_user(user))
+    return LoginResponse(
+        token=token,
+        user=UserProfile.from_user(user, current_rating(db, user.id)),
+    )
 
 
 # frob:tests tests/unit/test_auth_logout.py::test_logout_returns_204

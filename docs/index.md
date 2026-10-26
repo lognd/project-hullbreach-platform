@@ -681,7 +681,7 @@ uv, Docker and Node.js exist and offer their official installers after a
 | `demo-users` | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                |
 | `server-key` | generates a game-server key and says where it goes on both sides; never written to disk                                                       |
 | `lan`        | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`) |
-| `console`    | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console)) |
+| `console`    | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console))                                     |
 
 Terminal output goes through `console.py`'s `Console`, not logging: every
 line is redacted (registered secret values plus anything that looks like a
