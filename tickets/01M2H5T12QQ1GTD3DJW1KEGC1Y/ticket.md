@@ -8,10 +8,10 @@ points = 5
 parent = "01M2H5T12PWAJEVZ18CDFJCG57"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:23Z"
+updated = "2026-10-26T10:20:34Z"
 aliases = ["T-0087"]
 labels = ["needs-game", "jira:SCRUM-168", "owner:lognd", "milestone:0.2.0"]
-scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
+scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py", "src/hullbreach_server/api/__init__.py", "src/hullbreach_server/app/config.py", "docs/index.md", "changelog.d/*", "tests/unit/test_app.py"]
 
 [[acceptance]]
 text = "given two players within 100 rating, when both are queued, then status returns the same match id and server address for both"
