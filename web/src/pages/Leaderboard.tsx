@@ -20,6 +20,9 @@ type BoardState = {
 
 const INITIAL: BoardState = { board: null, loading: false, error: null };
 
+/** How often an open, visible board re-fetches so a finished match shows without a re-click. */
+export const POLL_INTERVAL_MS = 5000;
+
 /** Column template shared by the rows and the label strip: rank, player, ELO, matches. */
 const GRID = "grid-cols-[2.5rem_minmax(0,1fr)_4rem_3rem] sm:grid-cols-[4rem_minmax(0,1fr)_6rem_6rem]";
 
@@ -67,7 +70,7 @@ function Row({ entry, mine }: { entry: LeaderboardEntry; mine: boolean }) {
 }
 
 // frob:doc docs/index.md#leaderboard-page
-/** Leaderboard page: public top players by ELO from GET /api/v1/leaderboard; a signed-in player's row is highlighted, and shown below the list when they rank outside it. */
+/** Leaderboard page: public top players by ELO from GET /api/v1/leaderboard; a signed-in player's row is highlighted, and shown below the list when they rank outside it; refreshes every 5s while the tab is visible. */
 export function Leaderboard() {
   const session = useSession();
   const token = session?.token ?? null;
@@ -109,6 +112,63 @@ export function Leaderboard() {
       generation.current += 1;
     };
   }, [load]);
+
+  // frob:ticket 01M5W2589RQ8Y6MAAMNA32EHF9
+  // Silent refresh while the tab is visible: no loading flag, no error on a
+  // failed poll, so the board never flickers; stale responses are dropped by
+  // the same generation guard the initial load uses.
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | null = null;
+    let inFlight = false;
+
+    const poll = async (): Promise<void> => {
+      if (inFlight) {
+        return;
+      }
+      inFlight = true;
+      const mine = generation.current;
+      try {
+        const board = await fetchLeaderboard(token);
+        if (generation.current === mine) {
+          setState({ board, loading: false, error: null });
+        }
+      } catch {
+        // Keep showing the last good board; the next tick tries again.
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    const stop = (): void => {
+      if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+    const start = (): void => {
+      stop();
+      timer = setInterval(() => {
+        void poll();
+      }, POLL_INTERVAL_MS);
+    };
+    const onVisibility = (): void => {
+      if (document.visibilityState === "visible") {
+        void poll();
+        start();
+      } else {
+        stop();
+      }
+    };
+
+    if (document.visibilityState === "visible") {
+      start();
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [token]);
 
   const { board, loading, error } = state;
   const outsideTop =

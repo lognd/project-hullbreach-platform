@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearSession, saveSession } from "@/auth/session";
 import { fetchLeaderboard } from "@/api/leaderboard";
-import { Leaderboard } from "@/pages/Leaderboard";
+import { Leaderboard, POLL_INTERVAL_MS } from "@/pages/Leaderboard";
 import { makeBoard, makeEntry } from "../fixtures/leaderboard";
 import { overflowRisks } from "../support/layout";
 
@@ -181,6 +181,115 @@ describe("Leaderboard page", () => {
     await screen.findByText(longName);
     expect(overflowRisks(container, 400)).toEqual([]);
     expect(screen.getByText(longName)).toHaveClass("wrap-anywhere");
+  });
+});
+
+/** Sets document.visibilityState for a test and fires visibilitychange. */
+function setVisibility(state: "visible" | "hidden"): void {
+  Object.defineProperty(document, "visibilityState", { configurable: true, value: state });
+  document.dispatchEvent(new Event("visibilitychange"));
+}
+
+/** Lets pending promises and timers up to `ms` run inside act. */
+async function advance(ms: number): Promise<void> {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(ms);
+  });
+}
+
+describe("Leaderboard polling", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    setVisibility("visible");
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    setVisibility("visible");
+  });
+
+  // frob:ticket 01M5W2589RQ8Y6MAAMNA32EHF9
+  // frob:tests web/src/pages/Leaderboard.tsx::Leaderboard kind="unit"
+  it("re-fetches every interval and swaps in the new board without a loading state", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve(jsonResponse(makeBoard(1, 1))))
+      .mockImplementation(() => Promise.resolve(jsonResponse(makeBoard(2, 2))));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<Leaderboard />);
+    await advance(0);
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+
+    await advance(POLL_INTERVAL_MS);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.queryByText("Loading leaderboard")).not.toBeInTheDocument();
+  });
+
+  // frob:ticket 01M5W2589RQ8Y6MAAMNA32EHF9
+  // frob:tests web/src/pages/Leaderboard.tsx::Leaderboard kind="unit"
+  it("does not poll while the tab is hidden and catches up when it shows again", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementation(() => Promise.resolve(jsonResponse(makeBoard(1, 1))));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<Leaderboard />);
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      setVisibility("hidden");
+    });
+    await advance(POLL_INTERVAL_MS * 3);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      setVisibility("visible");
+    });
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  // frob:ticket 01M5W2589RQ8Y6MAAMNA32EHF9
+  // frob:tests web/src/pages/Leaderboard.tsx::Leaderboard kind="unit"
+  it("stops polling and drops the listener on unmount", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementation(() => Promise.resolve(jsonResponse(makeBoard(1, 1))));
+    vi.stubGlobal("fetch", fetchMock);
+    const { unmount } = render(<Leaderboard />);
+    await advance(0);
+    unmount();
+
+    await advance(POLL_INTERVAL_MS * 3);
+    act(() => {
+      setVisibility("visible");
+    });
+    await advance(0);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  // frob:ticket 01M5W2589RQ8Y6MAAMNA32EHF9
+  // frob:tests web/src/pages/Leaderboard.tsx::Leaderboard kind="unit"
+  it("keeps the last board and shows no error when a poll fails", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve(jsonResponse(makeBoard(2, 2))))
+      .mockImplementationOnce(() => Promise.reject(new TypeError("offline")))
+      .mockImplementation(() => Promise.resolve(jsonResponse(makeBoard(3, 3))));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<Leaderboard />);
+    await advance(0);
+
+    await advance(POLL_INTERVAL_MS);
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+
+    await advance(POLL_INTERVAL_MS);
+    expect(screen.getAllByRole("listitem")).toHaveLength(3);
   });
 });
 
