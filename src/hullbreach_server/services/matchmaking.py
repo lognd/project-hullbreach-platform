@@ -43,6 +43,9 @@ class MatchAssignment(BaseModel):
     match_id: uuid.UUID
     server_address: str
     opponent_id: uuid.UUID
+    # Slugs of the equipped skins, read when the status is served (S12).
+    skin: str | None = None
+    opponent_skin: str | None = None
 
 
 # frob:ticket 01M2H5T12QQ1GTD3DJW1KEGC1Y

@@ -29,6 +29,7 @@ export const meFixture: MeResponse = {
     { id: "item-1", slug: "ember-hull", name: "Ember Hull" },
     { id: "item-2", slug: "frost-plating", name: "Frost Plating" },
   ],
+  equipped_skin: null,
   recent_matches: [0, 1, 2, 3, 4].map(makeMatch),
 };
 

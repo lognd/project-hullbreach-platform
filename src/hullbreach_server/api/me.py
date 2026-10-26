@@ -5,8 +5,11 @@ docs/index.md#player-api.
 
 from __future__ import annotations
 
+import uuid
+
 from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from hullbreach_server.auth import (
@@ -24,6 +27,7 @@ from hullbreach_server.logging import get_logger
 from hullbreach_server.services.account_deletion import delete_account
 from hullbreach_server.services.catalog import OwnedItem, list_inventory
 from hullbreach_server.services.currency import balance
+from hullbreach_server.services.equip import SkinRef, equip
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
@@ -177,3 +181,46 @@ def get_my_inventory(
     owned = result.danger_ok
     _log.info("served %d inventory item(s) for user %s", len(owned), ctx.user.id)
     return owned
+
+
+# HTTP status for each way an equip can be refused.
+_EQUIP_ERROR_STATUS = {"unknown_item": 404, "not_owned": 403}
+
+
+# frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+# frob:doc docs/index.md#equipped-skin
+class EquipRequest(BaseModel):
+    """PUT /me/equipped's body: the owned item to equip."""
+
+    item_id: uuid.UUID
+
+
+# frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+# frob:tests tests/unit/test_active_skin.py::test_equip_owned_skin_shows_on_me
+# frob:tests tests/unit/test_active_skin.py::test_equip_unowned_skin_is_403
+# frob:tests tests/unit/test_active_skin.py::test_equip_unknown_skin_is_404
+# frob:tests tests/unit/test_active_skin.py::test_equip_requires_auth
+# frob:doc docs/index.md#equipped-skin
+@router.put(
+    "/equipped",
+    response_model=SkinRef,
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        403: {"model": ErrorDetail, "description": "Item not owned"},
+        404: {"model": ErrorDetail, "description": "Unknown item"},
+    },
+)
+def put_equipped(
+    payload: EquipRequest,
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> SkinRef | JSONResponse:
+    """Equip an owned item for the caller; 403 if unowned, 404 if unknown."""
+    result = equip(db, ctx.user.id, payload.item_id)
+    if result.is_err:
+        error = result.danger_err
+        return JSONResponse(
+            status_code=_EQUIP_ERROR_STATUS[error.kind],
+            content={"detail": error.detail},
+        )
+    return result.danger_ok

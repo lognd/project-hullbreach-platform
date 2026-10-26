@@ -35,3 +35,21 @@ class InventoryEntry(Base):
     )
     # Set in Python (microsecond precision) so ordering is stable on SQLite.
     acquired_at: Mapped[datetime] = mapped_column(UTCDateTime(), nullable=False)
+
+
+# frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+# frob:doc docs/index.md#equipped-skin
+# frob:tests tests/unit/test_active_skin.py::test_equip_owned_skin_shows_on_me
+class EquippedSkin(Base):
+    """The one skin a player has equipped (the user id is the key)."""
+
+    __tablename__ = "equipped_skins"
+
+    # No ON DELETE action: a deleted account is anonymized, never removed.
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(), ForeignKey("users.id"), primary_key=True
+    )
+    item_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(), ForeignKey("items.id"), nullable=False
+    )
+    equipped_at: Mapped[datetime] = mapped_column(UTCDateTime(), nullable=False)

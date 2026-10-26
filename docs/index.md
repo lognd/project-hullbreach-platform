@@ -459,7 +459,9 @@ consume.
   `matched` status (or abandoned it) before it may join again. Only the
   caller's own state is cleared; the opponent keeps theirs.
 
-`match` is `{match_id, server_address, opponent_id}`. Both players of a pair
+`match` is `{match_id, server_address, opponent_id, skin, opponent_skin}`
+(`skin` and `opponent_skin` are the players' equipped skin slugs or `null`,
+see Equipped skin). Both players of a pair
 receive the same `match_id` (a UUID) and `server_address` (`host:port`, the
 `game_server_address` setting / `HULLBREACH_GAME_SERVER_ADDRESS`, default
 `127.0.0.1:7777`). The client connects to `server_address` and presents the
@@ -708,6 +710,27 @@ the balance left). Refusals carry `{"detail": ...}`: 402 insufficient funds
 401 no token. A refusal changes nothing. Unique `(user_id, item_id)` keys on
 `inventory` and `currency_ledger` back the check against concurrent buys.
 
+### Equipped skin
+
+`PUT /api/v1/me/equipped` (`api/me.py::put_equipped`, S12, ~HRZTTYB) equips
+one owned item as the caller's skin. Body `{"item_id": "<uuid>"}`; bearer
+token required (401). Success is 200 with the `SkinRef` `{id, slug, name}`.
+Refusals carry `{"detail": ...}`: 404 for an id no item has, 403 for an item
+the caller does not own; a refusal changes nothing. There is no skin
+category yet, so any owned item can be equipped; the catalog decides later
+which categories count. Equipping again replaces the choice (the same item
+again is a no-op 200). A player has at most one row in `equipped_skins`
+(primary key `user_id`, created by `c8d0e2f4a6b8_create_equipped_skins_table.py`);
+`services/equip.py::equip` returns a typani `Result[SkinRef, EquipError]`.
+Deleting the account clears the row (see Player API).
+
+The game reads the choice two ways. `GET /api/v1/me` reports it as
+`equipped_skin` (`SkinRef` or `null`). The matchmaking `match` also carries
+`skin` and `opponent_skin` (slugs or `null`), read when the status is
+served, so both players of a pair can draw each other's skin. How the game
+renders a slug (per ship, per block or a ship-wide palette) is a game
+decision, tracked outside this repo.
+
 ### Player API
 
 `src/hullbreach_server/api/me.py` serves the signed-in player's own
@@ -720,7 +743,8 @@ through `get_current_user`. The response models live in the service layer
 `GET /api/v1/me` (`api/me.py::get_me`, T-0031) returns a `MeResponse`
 (`services/profile.py::build_me`): the `UserProfile` fields (`id`,
 `username`, `email`, `role`, `currency`, `rating`, `created_at`) plus
-`inventory` (a list of `OwnedSkin` `{id, slug, name}`) and
+`inventory` (a list of `OwnedSkin` `{id, slug, name}`), `equipped_skin`
+(the `SkinRef` the player equipped, else `null`; see Equipped skin) and
 `recent_matches` (the newest five `MatchSummary` rows). `inventory` lists
 every item the player owns (see Catalog), empty when they own none, and
 `rating` is the player's current ELO (see Auth API); `currency` is the
@@ -815,7 +839,10 @@ resources under `/api/v1/me`. It reuses `api/auth.ts`'s `requestJson`
 `MeResponse` type is the contract of `GET /api/v1/me` (T-0031, see
 Player API): the `UserProfile` fields (`currency` is the balance, `rating`
 the Elo) plus `inventory` (owned skins) and `recent_matches` (newest
-first). `MatchSummary` is shared with the match history (T-0059). The
+first) and `equipped_skin` (or `null`). `equipSkin(token, itemId)` calls
+`PUT /api/v1/me/equipped` (see Equipped skin); `components/SkinPicker.tsx`
+renders the owned skins on the profile as `aria-pressed` toggle buttons and
+shows a refusal as an alert. `MatchSummary` is shared with the match history (T-0059). The
 shared fixture `web/tests/fixtures/me.ts` is a typed instance of that
 contract, so pages are tested without a server.
 

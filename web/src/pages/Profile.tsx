@@ -15,6 +15,7 @@ import {
   StatTile,
 } from "@/components/Readout";
 import { SignInPrompt } from "@/components/SignInPrompt";
+import { SkinPicker } from "@/components/SkinPicker";
 
 /** What the page is showing: waiting on the server, the loaded profile, or a failure message. */
 type ProfileState =
@@ -146,16 +147,7 @@ export function Profile() {
         {me.inventory.length === 0 ? (
           <EmptyState title="No skins yet." hint="Skins you own will be listed here." />
         ) : (
-          <ul className="flex flex-wrap gap-space-8">
-            {me.inventory.map((skin) => (
-              <li
-                key={skin.id}
-                className="wrap-anywhere border border-line bg-panel px-space-12 py-space-8 text-font-size-14"
-              >
-                {skin.name}
-              </li>
-            ))}
-          </ul>
+          <SkinPicker token={token} skins={me.inventory} initial={me.equipped_skin} />
         )}
       </section>
 

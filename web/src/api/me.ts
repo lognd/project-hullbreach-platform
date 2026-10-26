@@ -28,8 +28,20 @@ export type MatchSummary = {
 /** GET /api/v1/me's planned 200 body: the profile (currency is the balance) plus inventory and the last five matches, newest first (T-0031). */
 export type MeResponse = UserProfile & {
   inventory: OwnedSkin[];
+  equipped_skin: OwnedSkin | null;
   recent_matches: MatchSummary[];
 };
+
+// frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+// frob:doc docs/index.md#equipped-skin
+/** PUT /api/v1/me/equipped with the caller's bearer token; 200 with the equipped skin, 403 (not owned) or 404 (unknown) rejects with an ApiError. */
+export async function equipSkin(token: string, itemId: string): Promise<OwnedSkin> {
+  return requestJson<OwnedSkin>(`${ME_BASE}/equipped`, {
+    method: "PUT",
+    headers: { ...bearerHeaders(token), "content-type": "application/json" },
+    body: JSON.stringify({ item_id: itemId }),
+  });
+}
 
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
 /** GET /api/v1/me with the caller's bearer token (or the session cookie when token is ""); 200 MeResponse on success, 401 rejects with an ApiError. */

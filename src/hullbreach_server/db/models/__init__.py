@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from hullbreach_server.db.models.design import ShipDesign
-from hullbreach_server.db.models.inventory import InventoryEntry
+from hullbreach_server.db.models.inventory import EquippedSkin, InventoryEntry
 from hullbreach_server.db.models.item import Item
 from hullbreach_server.db.models.ledger import CurrencyLedger
 from hullbreach_server.db.models.match import Match, MatchPlayerStats
@@ -13,6 +13,7 @@ from hullbreach_server.db.models.user import Role, User
 
 __all__ = [
     "CurrencyLedger",
+    "EquippedSkin",
     "InventoryEntry",
     "Item",
     "Match",
