@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Header/Navigation tests exist, but the signed-in header must expose a Store link and no Store page or route exists yet (blocked on S20-S22). Verify the nav criteria after the store lands."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1
