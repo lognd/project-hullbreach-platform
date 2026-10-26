@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hullbreach_server.db.models.design import ShipDesign
 from hullbreach_server.db.models.match import Match, MatchPlayerStats
 from hullbreach_server.db.models.rating import RatingChange
 from hullbreach_server.db.models.session import Session
@@ -13,6 +14,7 @@ __all__ = [
     "RatingChange",
     "Role",
     "Session",
+    "ShipDesign",
     "User",
 ]
 
@@ -22,4 +24,3 @@ __all__ = [
 # noqa: E501  frob:todo 01M2H5T1227K1HMGED2B5K9JYQ Item and Inventory (models/item.py, models/inventory.py)
 # frob:todo 01M2H5T126K37TGJQ32PYKEHW6 CurrencyLedger (models/ledger.py)
 # noqa: E501  frob:todo 01M2H5T12DHERRG7PFSX31A3MK ModerationLog and User.suspended_* (models/moderation.py)
-# frob:todo 01M2H5T12SY6DWG2W72KDMBC3Z ShipDesign (models/design.py)
