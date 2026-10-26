@@ -1,0 +1,11 @@
+kind = "cut"
+version = "0.1.1-demo"
+commit = "61da8e0953c2eead6d12ea59f537b6a3f1402fab"
+at = "2026-10-26T05:01:16Z"
+actor = "a-carten"
+rev = 1
+
+[[tags]]
+name = "v0.1.1-demo"
+object = "e9897ceb55b067442abd6af0b41ab46c916e5041"
+commit = "61da8e0953c2eead6d12ea59f537b6a3f1402fab"
