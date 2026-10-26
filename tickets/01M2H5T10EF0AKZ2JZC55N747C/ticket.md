@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T10DT4023PZH1JHFEWQE"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:26:23Z"
+updated = "2026-10-26T09:26:24Z"
 aliases = ["T-0014"]
 labels = ["jira:SCRUM-25", "owner:lognd", "milestone:0.1.0"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/passwords.py", "src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/db/models/user.py", "tests/unit/test_auth_register.py", "tests/unit/test_passwords.py", "web/src/api/auth.ts", "web/src/pages/Register.tsx", "web/tests/unit/Register.test.tsx"]
@@ -22,7 +22,7 @@ bound = true
 
 [[acceptance]]
 text = "given any code path, when a password is handled, then it is never stored or logged in plain text"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a new account, when it is created, then it has the Player role, zero currency, and the starting rating"
