@@ -14,7 +14,11 @@ prints.
 2. Terminal A: `make console-db` (API requests plus database changes).
 3. Terminal B: empty, in the same checkout, for `make demo-match`.
 4. Browser: http://localhost:5173 (the home page).
-5. `make demo-match` is not needed yet; if you want a dry run, do it now
+5. `make demo` (and `make demo-match`) gives `demo_pilot` a one-time
+   starter balance of 300 (a real ledger row, reason `demo_grant`) and four
+   cheap catalog items (40 to 100), so the store step can buy something.
+   Ranked payouts (50/10) and the 120-item catalog are unchanged.
+6. `make demo-match` is not needed yet; if you want a dry run, do it now
    and note that it raises `demo_pilot`'s ELO for real.
 
 Navigate only with the in-app links. A reload or typed address signs you
@@ -22,20 +26,21 @@ out by design (INV-006).
 
 ## Run of show
 
-| Time | Do                                                                                            | Say / point at                                                                                                                                                       |
-| ---- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0:00 | Show the home page and terminal A side by side.                                               | Three layers: React website, FastAPI server, Postgres. The console is the server's own log.                                                                          |
-| 0:30 | Click **Create account**. Register `showtime` / `showtime@example.com` / `demo-password-123`. | Console: `POST /api/v1/auth/register 201` and a `DB  user registered: 'showtime'` line. The password is hashed, never logged.                                        |
-| 1:15 | **Log out**, then **Sign in** as `showtime`.                                                  | Console: `DB  login ok` and a `POST /auth/login 200`. The token lives in memory only.                                                                                |
-| 1:45 | Click **Profile**, then **Matches**.                                                          | Rating 1200, no matches yet. Each page load is a `GET /me` line with the user id.                                                                                    |
-| 2:15 | Log out, sign in as `demo_pilot` / `demo-password-123`, click **Profile**.                    | The seeded pilot: ELO about 1228 and 6 matches. Note the number.                                                                                                     |
-| 2:35 | Click **Leaderboard** (before the match).                                                     | Public top players by ELO; your row (`demo_pilot`) is highlighted and its ELO reads about 1228. Note the rank. Console: `GET /api/v1/leaderboard 200`.               |
-| 2:50 | Terminal B: `make demo-match`.                                                                | This is the game server speaking. It signs the request with the shared key (`X-Server-Key`); browsers never have it. Output ends `demo_pilot rating: 1228 -> 1243`.  |
-| 3:20 | Terminal A: point at the new lines.                                                           | `POST /api/v1/matches 201 [server-key]` (only the presence of a key is shown) and `DB  match recorded ... ratings demo_pilot 1228 -> 1243, rival_xxxx 1200 -> 1185`. |
-| 3:50 | Browser: click **Profile**, then **Matches** (no reload).                                     | New ELO and a new top row in history. Front end, server, database, and back.                                                                                         |
-| 4:15 | Click **Leaderboard** again (after the match).                                                | `demo_pilot` now reads 1243 and `rival_xxxx` has joined the board at 1185: the same public list, re-ranked by the match you just posted.                             |
-| 4:40 | Optional: `make smoke`, or run `make demo-match` again.                                       | One command walks register, login, profile, match, log out and checks every step.                                                                                    |
-| 4:55 | **Log out**; Terminal B: `make stop`.                                                         | Accounts are kept. Done.                                                                                                                                             |
+| Time | Do                                                                                            | Say / point at                                                                                                                                                                                            |
+| ---- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0:00 | Show the home page and terminal A side by side.                                               | Three layers: React website, FastAPI server, Postgres. The console is the server's own log.                                                                                                               |
+| 0:30 | Click **Create account**. Register `showtime` / `showtime@example.com` / `demo-password-123`. | Console: `POST /api/v1/auth/register 201` and a `DB  user registered: 'showtime'` line. The password is hashed, never logged.                                                                             |
+| 1:15 | **Log out**, then **Sign in** as `showtime`.                                                  | Console: `DB  login ok` and a `POST /auth/login 200`. The token lives in memory only.                                                                                                                     |
+| 1:45 | Click **Profile**, then **Matches**.                                                          | Rating 1200, no matches yet. Each page load is a `GET /me` line with the user id.                                                                                                                         |
+| 2:15 | Log out, sign in as `demo_pilot` / `demo-password-123`, click **Profile**.                    | The seeded pilot: ELO about 1228 and 6 matches. Note the number.                                                                                                                                          |
+| 2:35 | Click **Leaderboard** (before the match).                                                     | Public top players by ELO; your row (`demo_pilot`) is highlighted and its ELO reads about 1228. Note the rank. Console: `GET /api/v1/leaderboard 200`.                                                    |
+| 2:50 | Terminal B: `make demo-match`.                                                                | This is the game server speaking. It signs the request with the shared key (`X-Server-Key`); browsers never have it. Output ends `demo_pilot rating: 1228 -> 1243`.                                       |
+| 3:20 | Terminal A: point at the new lines.                                                           | `POST /api/v1/matches 201 [server-key]` (only the presence of a key is shown) and `DB  match recorded ... ratings demo_pilot 1228 -> 1243, rival_xxxx 1200 -> 1185`.                                      |
+| 3:50 | Browser: click **Profile**, then **Matches** (no reload).                                     | New ELO and a new top row in history. Front end, server, database, and back.                                                                                                                              |
+| 4:15 | Click **Leaderboard** again (after the match).                                                | `demo_pilot` now reads 1243 and `rival_xxxx` has joined the board at 1185: the same public list, re-ranked by the match you just posted.                                                                  |
+| 4:30 | Click **Store**, buy **Rookie Stripes** (40), then click **Profile** and press it to equip.   | The balance tile drops by 40 and the item moves to owned: a ledger debit and an inventory row in one transaction. Console: `POST /api/v1/store/purchase 201`. Skins over 100 are out of reach on purpose. |
+| 4:40 | Optional: `make smoke`, or run `make demo-match` again.                                       | One command walks register, login, profile, match, log out and checks every step.                                                                                                                         |
+| 4:55 | **Log out**; Terminal B: `make stop`.                                                         | Accounts are kept. Done.                                                                                                                                                                                  |
 
 ## The same steps by hand (curl)
 

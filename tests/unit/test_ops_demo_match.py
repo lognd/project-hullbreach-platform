@@ -5,8 +5,10 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
+import pytest
 from ops_fakes import FakeHttp, make_ctx, output
 from typani import Ok, Result
 
@@ -56,13 +58,30 @@ class FakeApi(FakeHttp):
         return Ok(HttpResponse(status=404, body="{}"))
 
 
-def test_demo_match_posts_a_match_and_shows_the_rating_change(tmp_path: Path) -> None:
+@pytest.fixture(autouse=True)
+def economy(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, str]]:
+    """Replace config and the demo-economy step with a recorder."""
+    calls: list[tuple[str, str]] = []
+    cfg = SimpleNamespace(database_url="sqlite://")
+    monkeypatch.setattr(demo_match, "load_app_config", lambda _s: Ok(cfg))
+    monkeypatch.setattr(
+        demo_match,
+        "ensure_demo_economy",
+        lambda url, name: calls.append((url, name)) or Ok(True),
+    )
+    return calls
+
+
+def test_demo_match_posts_a_match_and_shows_the_rating_change(
+    tmp_path: Path, economy: list[tuple[str, str]]
+) -> None:
     # frob:tests src/hullbreach_ops/demo_match.py::demo_match kind="unit"
     api = FakeApi()
     ctx = make_ctx(tmp_path, {GAME_KEYS_VAR: f"{KEY},other"}, http=api)
 
     assert demo_match.demo_match(ctx).is_ok
 
+    assert economy == [("sqlite://", "demo_pilot")]
     text = output(ctx)
     assert "demo_pilot rating: 1200 -> 1216" in text
     assert api.matches[0]["winner_id"] == "pilot-id"

@@ -1,0 +1,1 @@
+make demo and make demo-match grant demo_pilot a one-time starter balance (ledger reason demo_grant) and add four catalog items priced 100 or less, so a purchase can be shown live; production payouts are unchanged.

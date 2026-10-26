@@ -69,7 +69,14 @@ target or documented in the [README](../README.md); nothing here is new.
      new `match_id`.
 6. In the browser click **Profile** (not reload) to see the new ELO, then
    **Matches** for the new row.
-7. Finish: **Log out**, then `make stop` (accounts are kept).
+7. Show the store: click **Store**. `demo_pilot` has a starter balance of 300
+   (`make demo` and `make demo-match` grant it once as a ledger row with
+   reason `demo_grant`) and the catalog has four cheap demo items
+   (**Rookie Stripes** 40, **Rust Bucket Wrap** 60, **First Flight Decal** 80,
+   **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
+   skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
+   so do not try to buy those live.
+8. Finish: **Log out**, then `make stop` (accounts are kept).
 
 ## Troubleshooting
 

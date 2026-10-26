@@ -1095,6 +1095,17 @@ working browser -> website -> API -> database stack in one step, and
    fixed match id, so ratings evolve from 1200 and history shows real
    `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
    same ids and changes nothing.
+4. `demo_economy.ensure_demo_economy`: so the store can be shown live.
+   Items cost 199 and up while a ranked match pays 50 (win) or 10 (loss),
+   so the demo gives `demo_pilot` a one-time starter balance of 300 as a
+   real `currency_ledger` row (reason `demo_grant`) and adds four cheap
+   catalog items (slugs starting `demo-`, price 100 or less). Both are
+   idempotent (the grant is skipped when a `demo_grant` row exists for the
+   pilot, items are matched by slug). Production payout rules and
+   `seed_items.json` are untouched, and these rows exist only in a database
+   `make demo` or `make demo-match` was run against. `demo-match` runs the
+   same step before posting its match, so it also works on a stack that was
+   started before this existed.
 
 If a database volume from an earlier setup is present, the freshly
 generated password will not match it. The database then rejects the
