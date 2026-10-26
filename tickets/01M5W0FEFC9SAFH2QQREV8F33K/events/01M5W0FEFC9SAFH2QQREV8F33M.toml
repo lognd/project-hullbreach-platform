@@ -1,0 +1,11 @@
+kind = "create"
+title = "Match payouts violate the ledger FK on PostgreSQL (make demo fails)"
+type = "bug"
+category = "todo"
+priority = "high"
+labels = ["owner:a-carten"]
+scope = ["src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py", "changelog.d/*"]
+body = "Found in real-browser store QA: record_match staged currency_ledger rows with no relationship() to the match, so PostgreSQL got the ledger INSERT before the matches INSERT (fk_currency_ledger_match_id_matches). make demo died seeding demo accounts; POST /matches would 500 on Postgres. SQLite tests do not enforce FKs. Fix: flush the match before staging payouts."
+at = "2026-10-26T11:45:34Z"
+actor = "a-carten"
+rev = 1
