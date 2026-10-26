@@ -16,7 +16,9 @@ from typani import Err, Ok, Result, propagate
 from hullbreach_ops.accounts import GAME_KEYS_VAR
 from hullbreach_ops.context import OpsContext
 from hullbreach_ops.demo import DEMO_PASSWORD, DEMO_PILOT
+from hullbreach_ops.demo_economy import ensure_demo_economy
 from hullbreach_ops.errors import OpsError
+from hullbreach_ops.settings import load_app_config
 from hullbreach_ops.smoke import step
 from hullbreach_server.logging import get_logger
 
@@ -48,6 +50,8 @@ def demo_match(ctx: OpsContext) -> Result[None, OpsError]:
     web = f"{ctx.settings.web_url}/api/v1"
     api = f"{ctx.settings.api_url}/api/v1"
     ctx.console.heading("Demo match")
+    cfg = load_app_config(ctx.settings).unwrap()
+    ensure_demo_economy(cfg.database_url, DEMO_PILOT).unwrap()
     login = step(
         ctx,
         f"log in as {DEMO_PILOT}",

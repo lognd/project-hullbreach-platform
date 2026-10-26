@@ -186,6 +186,11 @@ def stages(monkeypatch: pytest.MonkeyPatch) -> list[str]:
     monkeypatch.setattr(
         demo, "seed_demo_data", lambda _u: done.append("seed") or Ok(True)
     )
+    monkeypatch.setattr(
+        demo,
+        "ensure_demo_economy",
+        lambda _u, _n: done.append("economy") or Ok(True),
+    )
     return done
 
 
@@ -198,7 +203,7 @@ def test_demo_runs_every_stage_and_prints_the_login(
 
     assert demo.demo(ctx).is_ok
 
-    assert stages == ["start", "seed"]
+    assert stages == ["start", "seed", "economy"]
     assert (ctx.settings.root / ".env").exists()
     text = output(ctx)
     assert demo.DEMO_PILOT in text

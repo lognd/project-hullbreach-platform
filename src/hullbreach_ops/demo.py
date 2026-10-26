@@ -22,6 +22,7 @@ from typani import Err, Ok, Result, propagate
 
 from hullbreach_ops import lifecycle
 from hullbreach_ops.context import OpsContext
+from hullbreach_ops.demo_economy import ensure_demo_economy
 from hullbreach_ops.errors import OpsError
 from hullbreach_ops.settings import load_app_config
 from hullbreach_server.auth.passwords import hash_password
@@ -260,11 +261,12 @@ def demo(ctx: OpsContext, host: str | None = None) -> Result[None, OpsError]:
         return started
     cfg = load_app_config(ctx.settings).unwrap()
     created = seed_demo_data(cfg.database_url).unwrap()
+    ensure_demo_economy(cfg.database_url, DEMO_PILOT).unwrap()
     ctx.console.heading("Demo account")
     ctx.console.line(f"  Sign in at {ctx.settings.web_url}/login")
     ctx.console.line(f"  Username: {DEMO_PILOT}    Password: {DEMO_PASSWORD}")
     ctx.console.line(
-        "  (with 6 matches of history)"
+        "  (with 6 matches of history and a starter balance to spend in the store)"
         if created
         else "  (already set up; the account and its history are unchanged)"
     )
