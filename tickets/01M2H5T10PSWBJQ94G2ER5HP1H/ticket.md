@@ -7,14 +7,14 @@ priority = "medium"
 parent = "01M2H5T10DT4023PZH1JHFEWQE"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-09-15T00:00:00Z"
+updated = "2026-10-26T09:26:26Z"
 aliases = ["T-0022"]
 labels = ["jira:SCRUM-27", "owner:lognd", "milestone:0.1.0"]
 scope = ["src/hullbreach_server/api/auth.py", "tests/unit/test_auth_logout.py", "web/src/components/Header.tsx", "web/tests/unit/Header.test.tsx"]
 
 [[acceptance]]
 text = "given a logged-in player, when they log out from any page, then they land on the landing page"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a logout, when the previous token is used, then the API rejects it"
