@@ -7,22 +7,22 @@ priority = "medium"
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-09-15T00:00:00Z"
+updated = "2026-10-26T09:26:34Z"
 aliases = ["T-0051"]
 labels = ["needs-game", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/matches.py", "src/hullbreach_server/app/config.py", "src/hullbreach_server/auth/server_keys.py", "src/hullbreach_server/db/migrations/", "src/hullbreach_server/db/models/match.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_match_models.py", "tests/unit/test_matches_record.py", "tests/unit/test_server_keys.py"]
 
 [[acceptance]]
 text = "given an authenticated game server, when it submits a result once, then it is recorded; when it resubmits, then it is recognized and not double-counted"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given an unauthenticated caller, when it submits a result, then it is rejected"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a recorded match, when either player's history is fetched within seconds, then it shows"
-bound = false
+bound = true
 +++
 
 As a game server, I want to report a completed match with both players, the winner, duration, and per-player stats, so that the platform is the single source of truth for what happened.
