@@ -1,0 +1,8 @@
+kind = "create"
+object = "cycle"
+goal = "Sprint 3: demo hardening, accounts and store"
+start = "2026-10-26"
+end = "2026-11-01"
+at = "2026-10-26T09:45:49Z"
+actor = "a-carten"
+rev = 1
