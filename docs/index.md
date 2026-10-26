@@ -438,6 +438,51 @@ one ranked window query; the index added by the eighth migration keeps
 it off a full table scan. Open question from T-0061, kept at the story's
 default: top 100 with no pagination and no minimum match count.
 
+### Matchmaking queue
+
+`/api/v1/queue` (S29, ~1KEGC1Y) pairs signed-in players into 1v1 matches.
+Every call needs the player's bearer token (401 otherwise). This is the
+contract the game client and the game server (mcnairrobotics, networking)
+consume.
+
+- `POST /api/v1/queue` joins at the caller's current rating (latest
+  `rating_changes.rating_after`, else the starting 1200), frozen for the
+  wait. Body-less. 200 with a `QueueStatus`; joining again while queued is a
+  no-op that keeps the original place. 409 `{kind: "already_matched",
+  detail}` if the caller still holds an unacknowledged match (see DELETE).
+- `GET /api/v1/queue` polls; poll about once a second. 200 `QueueStatus`:
+  `{state, rating, waited_seconds, window, match}`. `state` is `idle` (not
+  in the queue), `queued` (`rating`, `waited_seconds` and the current
+  `window` are set) or `matched` (`match` is set).
+- `DELETE /api/v1/queue` always answers 204. It leaves the queue, and also
+  acknowledges a made match: the client must call it once it has read a
+  `matched` status (or abandoned it) before it may join again. Only the
+  caller's own state is cleared; the opponent keeps theirs.
+
+`match` is `{match_id, server_address, opponent_id}`. Both players of a pair
+receive the same `match_id` (a UUID) and `server_address` (`host:port`, the
+`game_server_address` setting / `HULLBREACH_GAME_SERVER_ADDRESS`, default
+`127.0.0.1:7777`). The client connects to `server_address` and presents the
+`match_id`; the game server later reports the result with
+`POST /api/v1/matches` using that same `match_id`, which is how a queue
+match becomes a rated match. A made match is readable for 120 seconds, then
+forgotten.
+
+Pairing is nearest-rating-first within a widening window. A player accepts
+an opponent whose rating differs by at most `100 + 50 * floor(waited / 5s)`
+points; a pair forms when the gap is within the larger of the two players'
+windows, and each player (longest waiter first) takes the closest rating in
+reach, ties to the earlier joiner. Pairing runs on every join and poll, not
+on a timer, so a status poll is what lets a widened window take effect.
+
+Assumptions: the queue is in memory and process-local, so a restart empties
+it and the API must run one process per queue (a shared store is the later
+step); there is no cap on the window, so every waiter is eventually paired
+when two or more are queued; the game server has no lookup of queue
+matches yet, only the `match_id` echo above. The logic is
+`services/matchmaking.py::MatchmakingQueue`, a thread-safe class with an
+injectable clock; the routes are in `api/matchmaking.py`.
+
 ## Web frontend
 
 The React app under `web/` is the player-facing site: landing page, cookie
