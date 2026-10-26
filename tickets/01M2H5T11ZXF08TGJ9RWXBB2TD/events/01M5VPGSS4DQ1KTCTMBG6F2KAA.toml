@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx"]
+new = ["web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx", "web/src/router.tsx", "web/src/components/Header.tsx", "web/tests/unit/Header.test.tsx", "docs/index.md", "docs/demo-script.md", "web/src/api/leaderboard.ts", "web/tests/fixtures/leaderboard.ts", "changelog.d/01M2H5T11ZXF08TGJ9RWXBB2TD.added.md"]
+at = "2026-10-26T08:51:33Z"
+actor = "a-carten"
+rev = 1

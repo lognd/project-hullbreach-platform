@@ -80,6 +80,31 @@ describe("Header (signed out)", () => {
     );
   });
 
+  // frob:ticket 01M2H5T11ZXF08TGJ9RWXBB2TD
+  // frob:tests web/src/components/Header.tsx::Header kind="unit"
+  it("links the public Leaderboard to signed-out visitors and signed-in players", async () => {
+    const session = await import(sessionModulePath);
+    const { Header } = await import(headerModulePath);
+    render(<Header />);
+    expect(screen.getByRole("link", { name: "Leaderboard" })).toHaveAttribute(
+      "href",
+      "/leaderboard",
+    );
+    cleanup();
+    session.saveSession({
+      token: "tok-1",
+      userId: "user-1",
+      username: "flagship",
+      role: "player",
+    });
+    render(<Header />);
+    expect(screen.getByRole("link", { name: "Leaderboard" })).toHaveAttribute(
+      "href",
+      "/leaderboard",
+    );
+    session.clearSession();
+  });
+
   it(
     "renders every interactive control as a real anchor or button element",
     async () => {
