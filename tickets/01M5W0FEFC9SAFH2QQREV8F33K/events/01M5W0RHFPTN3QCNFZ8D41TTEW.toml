@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["Given a posted match, when it is recorded, then the match row is flushed before its currency ledger rows are staged"]
+moved = []
+at = "2026-10-26T11:50:32Z"
+actor = "a-carten"
+rev = 1
