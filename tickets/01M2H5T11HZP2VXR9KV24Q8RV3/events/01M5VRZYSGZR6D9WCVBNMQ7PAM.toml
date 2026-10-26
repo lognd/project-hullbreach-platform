@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/pages/DataPolicy.tsx", "web/src/components/Footer.tsx", "web/tests/unit/DataPolicy.test.tsx", "web/src/pages/CookiePolicy.tsx", "web/tests/unit/CookiePolicy.test.tsx", "web/src/components/PolicySection.tsx"]
+new = ["web/src/pages/DataPolicy.tsx", "web/src/components/Footer.tsx", "web/tests/unit/DataPolicy.test.tsx", "web/src/pages/CookiePolicy.tsx", "web/tests/unit/CookiePolicy.test.tsx", "web/src/components/PolicySection.tsx", "web/src/**", "web/tests/unit/**", "changelog.d/*.added.md", "docs/index.md"]
+at = "2026-10-26T09:34:47Z"
+actor = "a-carten"
+rev = 1

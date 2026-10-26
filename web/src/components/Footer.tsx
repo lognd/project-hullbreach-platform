@@ -8,7 +8,6 @@ export function Footer() {
       <span className="w-full font-mono uppercase tracking-widest sm:mr-auto sm:w-auto">
         Class project // pre-release
       </span>
-      {/* frob:todo 01M2H5T11HZP2VXR9KV24Q8RV3 both links 404 until the data-policy route and page exist */}
       <AppLink
         href="/cookie-policy"
         className="py-space-8 underline underline-offset-4 hover:text-ink"

@@ -255,13 +255,16 @@ describe("Footer keyboard access", () => {
   });
 
   // frob:tests web/src/App.tsx::App kind="unit"
-  it("the page shell is one tab sequence: header controls, then footer links", async () => {
+  it("the page shell is one tab sequence: header controls, cookie notice, then footer links", async () => {
     const { App } = await import(appModulePath);
     render(<App />);
     const user = userEvent.setup();
+    const notice = within(screen.getByRole("region", { name: "Cookie notice" }));
     const expected = [
       ...within(screen.getByRole("banner")).getAllByRole("link"),
       ...within(screen.getByRole("banner")).getAllByRole("button"),
+      ...notice.getAllByRole("link"),
+      ...notice.getAllByRole("button"),
       ...within(screen.getByRole("contentinfo")).getAllByRole("link"),
     ];
     for (const control of expected) {
@@ -309,6 +312,28 @@ describe("router", () => {
     render(<RouterProvider router={router} />);
     expect(
       screen.getByRole("heading", { name: /log ?in/i }),
+    ).toBeInTheDocument();
+  });
+
+  // frob:tests web/src/router.tsx::router kind="unit"
+  it("renders the data policy at /data-policy", async () => {
+    window.history.pushState({}, "", "/data-policy");
+    const { router } = await import(routerModulePath);
+    const { RouterProvider } = await import(routerDomModulePath);
+    render(<RouterProvider router={router} />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Data policy" }),
+    ).toBeInTheDocument();
+  });
+
+  // frob:tests web/src/router.tsx::router kind="unit"
+  it("renders the cookie policy at /cookie-policy", async () => {
+    window.history.pushState({}, "", "/cookie-policy");
+    const { router } = await import(routerModulePath);
+    const { RouterProvider } = await import(routerDomModulePath);
+    render(<RouterProvider router={router} />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Cookie policy" }),
     ).toBeInTheDocument();
   });
 

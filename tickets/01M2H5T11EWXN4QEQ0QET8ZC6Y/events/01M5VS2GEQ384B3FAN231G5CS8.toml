@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T09:36:09Z"
+digest = "d3cf6d2a2bba706fd7b8349465026ecb588c9dc4f6b554621a68e0133db2ad1c"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Landing.test.tsx (5 tests) 169ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  05:36:09
+   Duration  753ms (transform 89ms, setup 60ms, import 119ms, tests 169ms, environment 310ms)
+
+JSON report written to /tmp/frob-vitest-3351735-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Landing.test.tsx"
+size = 310
+status = "measured"
+test_count = 5
+tests_digest = "4a92d8abc32bddb841dd98412cf130552688e78e2a42e334ea336d2137939975"
+at = "2026-10-26T09:36:09Z"
+actor = "a-carten"
+rev = 1

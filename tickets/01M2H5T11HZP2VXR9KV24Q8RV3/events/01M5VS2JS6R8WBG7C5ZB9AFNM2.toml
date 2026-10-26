@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T09:36:12Z"
+digest = "64b7483626b801dced68d4b3b5282d3105371897db7e754b81cd37972eeff7d0"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/DataPolicy.test.tsx (4 tests) 127ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:36:12
+   Duration  736ms (transform 88ms, setup 58ms, import 115ms, tests 127ms, environment 334ms)
+
+JSON report written to /tmp/frob-vitest-3351872-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/DataPolicy.test.tsx"
+size = 313
+status = "measured"
+test_count = 4
+tests_digest = "3cab14ce81d73966f5624546f66a254e701442f080efdf6b8326ba8b5e6fc0b2"
+at = "2026-10-26T09:36:12Z"
+actor = "a-carten"
+rev = 1
