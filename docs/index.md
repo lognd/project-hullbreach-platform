@@ -695,6 +695,19 @@ to the loser. `(user_id, match_id)` is unique and the match id is the
 idempotency key, so a replayed or concurrently repeated report pays once
 and a refused report pays nothing.
 
+### Store
+
+`POST /api/v1/store/purchase` (`api/store.py`, bearer or session cookie)
+takes `{"item_id": <uuid>}` and buys that catalog item at its price
+(`services/store.py::purchase`). The debit (a negative `purchase` ledger row
+with the `item_id`) and the inventory grant commit in one transaction, after
+a row lock on the buyer, so the balance never goes negative and a double
+click charges once. Success is 200 with `{item, balance}` (the owned item and
+the balance left). Refusals carry `{"detail": ...}`: 402 insufficient funds
+(the message gives price and balance), 404 unknown item, 409 already owned,
+401 no token. A refusal changes nothing. Unique `(user_id, item_id)` keys on
+`inventory` and `currency_ledger` back the check against concurrent buys.
+
 ### Player API
 
 `src/hullbreach_server/api/me.py` serves the signed-in player's own
