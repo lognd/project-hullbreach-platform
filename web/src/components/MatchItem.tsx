@@ -50,13 +50,11 @@ export function MatchItem({
   detailed?: boolean;
 }) {
   const won = match.result === "win";
-  const tone = won
-    ? "border-l-stress-ok text-stress-ok"
-    : "border-l-stress-fail text-stress-fail";
+  const tone = won ? "border-l-accent text-accent" : "border-l-signal text-signal";
   const delta = match.rating_after - match.rating_before;
   return (
     <li
-      className={`grid items-baseline gap-x-space-12 gap-y-space-4 border border-l-2 border-line bg-panel px-space-16 py-space-12 sm:gap-x-space-16 ${GRID} ${tone}`}
+      className={`grid items-baseline gap-x-space-12 gap-y-space-8 border border-l-4 border-line bg-panel px-space-16 py-space-16 sm:gap-x-space-16 ${GRID} ${tone}`}
     >
       <span className="col-start-1 row-start-1 font-mono text-font-size-12 font-bold uppercase tracking-widest sm:col-auto sm:row-auto">
         {won ? "Win" : "Loss"}
