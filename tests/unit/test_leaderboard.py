@@ -158,3 +158,41 @@ def test_database_failure_is_503(client, monkeypatch) -> None:
 
     assert response.status_code == 503
     assert response.json() == {"detail": "leaderboard unavailable"}
+
+
+# frob:ticket 01M2H5T11YNBSP9Y9VBR29F5P0
+def test_rank_340_seen_in_top_100(client, db_session) -> None:
+    """Given a player ranked 340, fetching the top 100 returns their rank 340 in `me`."""
+    aces = [
+        User(
+            username=f"ace{index:03d}",
+            email=f"ace{index:03d}@example.com",
+            password_hash="x",
+        )
+        for index in range(339)
+    ]
+    db_session.add_all(aces)
+    db_session.flush()
+    first = Match(winner_id=aces[0].id, duration_seconds=60, created_at=_EPOCH)
+    db_session.add(first)
+    db_session.flush()
+    for index, user in enumerate(aces):
+        db_session.add(
+            RatingChange(
+                match_id=first.id,
+                user_id=user.id,
+                rating_before=1200,
+                rating_after=3000 - index,
+                created_at=_EPOCH,
+            )
+        )
+    db_session.commit()
+    headers = _register(client, "rank340")
+    _rate(db_session, "rank340", [1000])
+
+    body = client.get(_URL, params={"limit": 100}, headers=headers).json()
+
+    assert len(body["entries"]) == 100
+    assert body["entries"][-1]["rank"] == 100
+    assert body["me"]["rank"] == 340
+    assert body["total_players"] == 340

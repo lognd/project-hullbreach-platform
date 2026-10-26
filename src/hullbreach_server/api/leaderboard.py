@@ -27,6 +27,7 @@ router = APIRouter()
 # frob:ticket 01M2H5T11YNBSP9Y9VBR29F5P0
 # frob:tests tests/unit/test_leaderboard.py::test_public_ordered_by_rating
 # frob:tests tests/unit/test_leaderboard.py::test_caller_outside_top_gets_rank
+# frob:tests tests/unit/test_leaderboard.py::test_rank_340_seen_in_top_100
 # frob:tests tests/unit/test_leaderboard.py::test_empty_leaderboard
 # frob:tests tests/unit/test_leaderboard.py::test_database_failure_is_503
 # frob:doc docs/index.md#leaderboard
