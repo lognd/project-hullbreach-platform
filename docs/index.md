@@ -790,6 +790,11 @@ fetched to know, no COUNT). `limit` defaults to 20 and is bounded 1..100
 drives register, login, `GET /me`, `PATCH /me`, `GET /me/matches` and
 logout through `create_app` on an Alembic-migrated database.
 
+`tests/system/test_phone_width.py` is an opt-in real-browser check (S09): with
+the demo stack up (`make demo`) and `E2E_URL`, `E2E_USER`, `E2E_PASSWORD` and
+`PLAYWRIGHT_CORE` (a playwright-core install) set, it signs in at a 390px
+viewport and asserts `/me` does not scroll sideways; without them it skips.
+
 `DELETE /api/v1/me` (`api/me.py::delete_me`, T-0037) deletes the caller's
 account. It needs auth (a bearer token, or the session cookie plus the
 `X-Hullbreach-Web` CSRF header) and a `DeleteMeRequest` body

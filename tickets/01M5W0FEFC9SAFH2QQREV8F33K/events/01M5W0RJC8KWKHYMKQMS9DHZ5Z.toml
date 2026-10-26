@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "fixed"
+at = "2026-10-26T11:50:33Z"
+actor = "a-carten"
+rev = 1

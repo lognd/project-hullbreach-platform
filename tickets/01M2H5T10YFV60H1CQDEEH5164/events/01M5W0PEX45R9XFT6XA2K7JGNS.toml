@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx", "tests/system/test_phone_width.py", "tests/system/phone_width.mjs"]
+new = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx", "tests/system/test_phone_width.py", "tests/system/phone_width.mjs", "changelog.d/01M2H5T10YFV60H1CQDEEH5164.added.md"]
+at = "2026-10-26T11:49:24Z"
+actor = "a-carten"
+rev = 1
