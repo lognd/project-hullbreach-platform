@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Missing: no active-skin API; blocked on Item/Inventory models (~B5K9JYQ)."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1

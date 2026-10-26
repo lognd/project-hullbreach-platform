@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Missing: only a bare items table migration; no Item ORM model or catalog API."
+at = "2026-10-26T09:27:23Z"
+actor = "a-carten"
+rev = 1

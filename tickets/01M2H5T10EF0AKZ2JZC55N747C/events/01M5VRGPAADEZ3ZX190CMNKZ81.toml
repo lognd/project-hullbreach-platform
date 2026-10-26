@@ -1,0 +1,29 @@
+kind = "evidence"
+accepts = [1, 2]
+captured_at = "2026-10-26T09:26:25Z"
+digest = "8ed8de36b4cfe8bd9e039968972cb849a58b71eac2a724d06fe796f35fedd22c"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Register.test.tsx (11 tests) 800ms
+     \u{2713} shows field error next to the offending input  312ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  05:26:25
+   Duration  1.34s (transform 109ms, setup 65ms, import 98ms, tests 800ms, environment 293ms)
+
+JSON report written to /tmp/frob-vitest-3253384-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Register.test.tsx"
+size = 381
+status = "measured"
+test_count = 11
+tests_digest = "50625d7e727d908737ce6b3993d7fd941ae3f66e479e5b8bd609de2315434c05"
+at = "2026-10-26T09:26:25Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Partial: a Landing component exists inline in web/src/router.tsx (marked as an interim version) but there is no web/src/pages/Landing.tsx and no Landing test; the full landing page content is not done."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,18 @@
+kind = "evidence"
+captured_at = "2026-10-26T09:27:04Z"
+digest = "d90dde0179a9a13b1ab22113a0580d58f082b1a239950b4fe547cb9f78aa4498"
+exit_code = 0
+inline = """
+...                                                                      [100%]
+3 passed in 0.34s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_demo_match.py"
+size = 98
+status = "measured"
+test_count = 3
+tests_digest = "62364c428d092bc10bbc58465a3cc6879634e8b3d32fa7ae169da8d7e0bc46ea"
+at = "2026-10-26T09:27:04Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1, 2]
+captured_at = "2026-10-26T09:26:32Z"
+digest = "760c7f9ad213b6bd73d97f049fb00ccfdf22fe3c3f1e0c9c9567801e32dde68b"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Settings.test.tsx (8 tests) 651ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  05:26:33
+   Duration  1.26s (transform 123ms, setup 64ms, import 173ms, tests 651ms, environment 294ms)
+
+JSON report written to /tmp/frob-vitest-3255849-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Settings.test.tsx"
+size = 312
+status = "measured"
+test_count = 8
+tests_digest = "777f4889b24a5468af4aa253e5a42bfd5e14c09958eaadc3863a38812f73c621"
+at = "2026-10-26T09:26:32Z"
+actor = "a-carten"
+rev = 1

@@ -2,11 +2,12 @@
 id = "01M5VJFGZBNSTESCDC81QKCGHQ"
 title = "Demo script and make demo-match"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T07:40:57Z"
-updated = "2026-10-26T07:40:57Z"
+updated = "2026-10-26T09:27:05Z"
 scope = ["src/hullbreach_ops/**", "tests/unit/**", "docs/**", "README.md", "Makefile"]
 +++
 

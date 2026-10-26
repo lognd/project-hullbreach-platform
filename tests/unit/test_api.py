@@ -35,3 +35,18 @@ def test_ready_returns_503_when_database_unreachable(monkeypatch) -> None:
 
     assert response.status_code == 503
     assert response.json() == {"status": "not_ready", "database": "unreachable"}
+
+
+# frob:ticket 01M2H5T10BYCP87BPHK38Y09BN
+def test_health_over_http_needs_no_credentials_and_answers_under_100_ms(client) -> None:
+    """Given no credentials, GET /api/v1/health is 200 with the version in under 100 ms."""
+    import time
+
+    client.get("/api/v1/health")  # warm the app so the timing reflects steady state
+    started = time.perf_counter()
+    response = client.get("/api/v1/health")
+    elapsed_ms = (time.perf_counter() - started) * 1000
+
+    assert response.status_code == 200
+    assert response.json()["version"] == __version__
+    assert elapsed_ms < 100

@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Server-key session paths are covered in test_auth_game.py, but criterion 3 (ranked play refused when signed out) has no test mapping it; verify and bind before closing."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1

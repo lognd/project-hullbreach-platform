@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-26T09:26:24Z"
+digest = "db49b5c34459a5c5d0d1b41ed2edda4bf45b69a3f68a716c3b3cdc02262033b3"
+exit_code = 0
+inline = """
+......                                                                   [100%]
+6 passed in 0.59s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_passwords.py"
+size = 98
+status = "measured"
+test_count = 6
+tests_digest = "adf04d8fff52252ce3d49bb4e1d8cffdcea117369856fb343c7f6d517be07eac"
+at = "2026-10-26T09:26:24Z"
+actor = "a-carten"
+rev = 1

@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Missing: no DELETE /api/v1/me endpoint and no account-deletion service (api/me.py has only GET /me, PATCH /me, matches)."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1

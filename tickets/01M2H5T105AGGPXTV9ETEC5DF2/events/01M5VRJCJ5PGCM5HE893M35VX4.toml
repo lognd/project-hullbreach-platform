@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Criteria 1,3,4 have tests (test_main, test_build, test_seed) but criterion 2 (two machines share the same data) has only the weak LAN start test (test_ops_lan.py) and no test that two clients see one database; add one before closing."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1
