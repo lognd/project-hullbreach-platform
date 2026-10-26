@@ -2,11 +2,12 @@
 id = "01M2KR6R362BWF543KBR5PHHZC"
 title = "Add a request timeout to web/src/api/auth.ts's fetch calls"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 reporter = "human"
 created = "2026-09-16T00:00:00Z"
-updated = "2026-10-26T09:40:09Z"
+updated = "2026-10-26T09:40:29Z"
 aliases = ["T-0102"]
 labels = ["jira:none"]
 scope = ["web/src/api/auth.ts", "web/tests/unit/SessionRestore.test.tsx"]
