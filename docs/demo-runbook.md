@@ -1,6 +1,7 @@
 # Demo runbook
 
-One page for the live demo. Every command below is a real `Makefile`
+One page for the live demo. For a timed, minute-by-minute show see the [demo script](demo-script.md).
+Every command below is a real `Makefile`
 target or documented in the [README](../README.md); nothing here is new.
 
 ## Before you start
@@ -44,7 +45,8 @@ target or documented in the [README](../README.md); nothing here is new.
      server key, and checks the rating rose. The console shows each
      request and the `match recorded ... ratings 1200 -> 1216` DB line.
      Note this changes a smoke player, not `demo_pilot`.
-   - To change `demo_pilot`'s ELO on screen, POST a match with curl (the
+   - To change `demo_pilot`'s ELO on screen, run `make demo-match` (it
+     does the curl below for you and prints the rating change), or POST a match with curl (the
      game server's route, `POST /api/v1/matches`, needs the `X-Server-Key`
      header whose value is in `HULLBREACH_GAME_SERVER_API_KEYS` in your
      `.env`, set by `make demo`):

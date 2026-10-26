@@ -714,6 +714,7 @@ uv, Docker and Node.js exist and offer their official installers after a
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
 | `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
+| `demo-match` | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after        |
 | `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
 | `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
 | `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
@@ -821,6 +822,13 @@ and confirms the token no longer works. When a server key is set it also
 registers a rival, posts a match (the smoke player wins) to
 `POST /api/v1/matches` with that key and requires `/me`'s rating to rise. It stops at the first failing step
 and prints no password, token or key.
+
+`demo-match` (`make demo-match`, `demo_match.py`) is the no-curl way to
+play the game server in the demo: it logs in as the seeded `demo_pilot`,
+registers a fresh `rival_<hex>`, posts a pilot win to `POST /api/v1/matches`
+with the first key in `HULLBREACH_GAME_SERVER_API_KEYS`, and prints the
+pilot's rating before and after. It fails with fix steps when no key is
+set. The step-by-step show is [docs/demo-script.md](demo-script.md).
 
 ### Demo console
 

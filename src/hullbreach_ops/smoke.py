@@ -26,7 +26,7 @@ _log = get_logger(__name__)
 _FIX = ["Start the stack with: make demo", "Then run again: make smoke"]
 
 
-def _step(
+def step(
     ctx: OpsContext,
     name: str,
     method: str,
@@ -68,7 +68,7 @@ def _check_rating_change(
 ) -> Result[None, OpsError]:
     """Have the smoke player beat a rival, then require a higher /me rating."""
     rival = f"smoke_{secrets.token_hex(4)}"
-    rival_made = _step(
+    rival_made = step(
         ctx,
         "register a rival",
         "POST",
@@ -92,7 +92,7 @@ def _check_rating_change(
             {"user_id": rival_made.danger_ok["id"], **counters},
         ],
     }
-    posted = _step(
+    posted = step(
         ctx,
         "record a match with the server key",
         "POST",
@@ -103,7 +103,7 @@ def _check_rating_change(
     )
     if posted.is_err:
         return Err(posted.danger_err)
-    after = _step(ctx, "profile after the match", "GET", f"{web}/me", 200, headers=auth)
+    after = step(ctx, "profile after the match", "GET", f"{web}/me", 200, headers=auth)
     if after.is_err:
         return Err(after.danger_err)
     rating = after.danger_ok.get("rating")
@@ -133,14 +133,14 @@ def smoke(ctx: OpsContext) -> Result[None, OpsError]:
     web = f"{ctx.settings.web_url}/api/v1"
     api = f"{ctx.settings.api_url}/api/v1"
     ctx.console.heading("Smoke test")
-    _step(
+    step(
         ctx, "website proxies the API health check", "GET", f"{web}/health", 200
     ).unwrap()
     username = f"smoke_{secrets.token_hex(4)}"
     password = secrets.token_urlsafe(12)
     ctx.console.add_secret(password)
     credentials = {"username": username, "password": password}
-    registered = _step(
+    registered = step(
         ctx,
         "register",
         "POST",
@@ -148,19 +148,19 @@ def smoke(ctx: OpsContext) -> Result[None, OpsError]:
         201,
         body={**credentials, "email": f"{username}@example.com"},
     ).unwrap()
-    login = _step(ctx, "log in", "POST", f"{web}/auth/login", 200, body=credentials)
+    login = step(ctx, "log in", "POST", f"{web}/auth/login", 200, body=credentials)
     token = login.unwrap()["token"]
     ctx.console.add_secret(token)
     auth = {"Authorization": f"Bearer {token}"}
-    me = _step(ctx, "profile", "GET", f"{web}/me", 200, headers=auth).unwrap()
+    me = step(ctx, "profile", "GET", f"{web}/me", 200, headers=auth).unwrap()
     if me.get("username") != username:
         return Err(OpsError(message="profile: the API returned a different account"))
-    _step(ctx, "match history", "GET", f"{web}/me/matches", 200, headers=auth).unwrap()
+    step(ctx, "match history", "GET", f"{web}/me/matches", 200, headers=auth).unwrap()
     keys = [k for k in ctx.environ.get(GAME_KEYS_VAR, "").split(",") if k.strip()]
     if keys:
         key = keys[0].strip()
         ctx.console.add_secret(key)
-        _step(
+        step(
             ctx,
             "game session check",
             "GET",
@@ -174,7 +174,7 @@ def smoke(ctx: OpsContext) -> Result[None, OpsError]:
     else:
         ctx.console.line(f"  skip  game session check ({GAME_KEYS_VAR} is not set)")
         ctx.console.line(f"  skip  rating check ({GAME_KEYS_VAR} is not set)")
-    _step(ctx, "log out", "POST", f"{web}/auth/logout", 204, headers=auth).unwrap()
-    _step(ctx, "old token is rejected", "GET", f"{web}/me", 401, headers=auth).unwrap()
+    step(ctx, "log out", "POST", f"{web}/auth/logout", 204, headers=auth).unwrap()
+    step(ctx, "old token is rejected", "GET", f"{web}/me", 401, headers=auth).unwrap()
     ctx.console.line("Smoke test passed.")
     return Ok(None)
