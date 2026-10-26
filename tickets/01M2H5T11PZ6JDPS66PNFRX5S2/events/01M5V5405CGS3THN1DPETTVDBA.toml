@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/api/matches.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_matches_record.py"]
+new = ["src/hullbreach_server/api/matches.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_matches_record.py", "src/hullbreach_server/api/__init__.py", "docs/index.md", "src/hullbreach_server/db/models/match.py", "changelog.d/", "tests/unit/conftest.py"]
+at = "2026-10-26T03:47:28Z"
+actor = "lognd"
+rev = 1
