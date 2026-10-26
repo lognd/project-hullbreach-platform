@@ -1,8 +1,10 @@
 # hullbreach_server
 
 The platform API for Project Hullbreach. It owns everything that is not
-time-critical: accounts and token sessions, ELO, match history and stats,
-the item catalog and cosmetic store, and admin moderation. The game server
+time-critical: accounts, token sessions and account deletion, ELO, match
+history, stats and the leaderboard, matchmaking queue, the item catalog,
+cosmetic store, currency and equipped items, and saved ship designs. There
+is no admin moderation surface yet. The game server
 reports match results here over REST; the web frontend and the game client
 both authenticate against it. Real-time match traffic never touches it.
 
