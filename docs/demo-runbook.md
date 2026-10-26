@@ -13,6 +13,15 @@ target or documented in the [README](../README.md); nothing here is new.
 - Two terminals open in the checkout, plus a browser.
 - Rehearse once; the first `make demo` installs dependencies and is slow.
 
+> **If `make demo` says the database rejected the password:** a stale
+> `platform_pgdata` volume from an earlier `.env` is the cause. Run
+> `uv run hullbreach_server reset-db` (deletes all accounts), then
+> `make demo` again.
+
+> **`make server-key` changes nothing by itself.** It only prints the
+> value to set. Edit `.env` with it, then `make stop` and `make demo` to
+> restart the stack; until then curl to `/matches` still answers 503.
+
 ## Run it
 
 1. Terminal 1: `make demo`. It installs what is missing, starts the

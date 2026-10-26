@@ -104,6 +104,7 @@ export function Header() {
           order-1 rather than DOM position. */}
       <button
         type="button"
+        aria-label="Open menu"
         onClick={goHome}
         className="order-1 flex items-center gap-space-12 py-space-12 font-display text-font-size-20 uppercase tracking-widest text-ink"
       >
