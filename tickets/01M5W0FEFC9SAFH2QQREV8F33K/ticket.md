@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-26T11:45:34Z"
-updated = "2026-10-26T11:48:31Z"
+updated = "2026-10-26T11:49:41Z"
 labels = ["owner:a-carten", "creates:changelog.d/01M5W0FEFC9SAFH2QQREV8F33K.fixed.md"]
 scope = ["src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py", "changelog.d/01M5W0FEFC9SAFH2QQREV8F33K.fixed.md"]
 +++
