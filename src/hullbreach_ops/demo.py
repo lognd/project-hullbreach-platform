@@ -64,7 +64,7 @@ _CORS_LOCAL_PORT = re.compile(r"(?<=//localhost:)\d+")
 # frob:ticket 01M5V56YXRCHFZHZGWZTDXHV5H
 # frob:ticket 01M5V93V80GQXC4283VFZPEYH7
 # frob:ticket 01M5VJK6MN84BGJE2C7BJAHWAT
-# frob:tests tests/unit/test_ops_demo.py::test_ensure_env_replaces_values_loaded_from_a_stray_env
+# noqa: E501  # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_replaces_values_loaded_from_a_stray_env
 # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_uses_the_chosen_ports
 # frob:tests tests/unit/test_ops_demo.py::test_ensure_env_writes_a_filled_env_once
 # frob:doc docs/index.md#one-command-demo
