@@ -1,0 +1,28 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T09:36:10Z"
+digest = "1f39a6a6a7d8993938b35b6d80cd3f12d97f7883e00217c3c66cd4b1abc99991"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/CookieNotice.test.tsx (4 tests) 188ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:36:11
+   Duration  783ms (transform 83ms, setup 61ms, import 145ms, tests 188ms, environment 305ms)
+
+JSON report written to /tmp/frob-vitest-3351800-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/CookieNotice.test.tsx"
+size = 315
+status = "measured"
+test_count = 4
+tests_digest = "1799322cf46a899abece1ba9e7db1edc7a44d03658d252dad39c66bb2c3bfd99"
+at = "2026-10-26T09:36:10Z"
+actor = "a-carten"
+rev = 1
