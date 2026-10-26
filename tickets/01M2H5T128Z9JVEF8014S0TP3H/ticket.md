@@ -2,7 +2,8 @@
 id = "01M2H5T128Z9JVEF8014S0TP3H"
 title = "POST /api/v1/store/purchase as a single transaction with a uniqueness constraint on (user, item)"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 3
 parent = "01M2H5T127FEKMSVQSA2K2YHED"
