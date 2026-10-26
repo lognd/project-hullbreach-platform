@@ -15,7 +15,7 @@ DEFAULT_CATEGORY = "general"
 
 # frob:ticket 01M2H5T1227K1HMGED2B5K9JYQ
 # frob:doc docs/index.md#catalog
-# frob:tests tests/unit/test_item_models.py::test_item_defaults_category_and_has_no_preview
+# noqa: E501  # frob:tests tests/unit/test_item_models.py::test_item_defaults_category_and_has_no_preview
 class Item(Base):
     """One purchasable cosmetic; `slug` is its stable key, `price_cents` its price."""
 
