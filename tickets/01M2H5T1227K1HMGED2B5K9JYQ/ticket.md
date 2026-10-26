@@ -2,7 +2,8 @@
 id = "01M2H5T1227K1HMGED2B5K9JYQ"
 title = "Item and Inventory models with categories and migration"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 2
 parent = "01M2H5T121VAJY5NDGSEH8PTH7"
