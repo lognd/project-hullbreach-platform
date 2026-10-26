@@ -23,6 +23,7 @@ from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
     MatchPage,
+    current_rating,
     match_page,
 )
 from hullbreach_server.services.profile import MeResponse, build_me, update_profile
@@ -80,7 +81,8 @@ def patch_me(
             status_code=_UPDATE_ERROR_STATUS[error.kind],
             content={"detail": error.detail, "field": error.field},
         )
-    return UserProfile.from_user(result.danger_ok)
+    user = result.danger_ok
+    return UserProfile.from_user(user, current_rating(db, user.id))
 
 
 # frob:tests tests/unit/test_me_matches.py::test_get_me_matches_pages_with_cursor

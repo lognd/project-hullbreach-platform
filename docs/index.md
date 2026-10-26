@@ -129,10 +129,11 @@ takes a `RegisterRequest` (`username` 3-32 chars of `[A-Za-z0-9_.-]`,
 `password` 8-128 chars; every bound is a 422 before any hashing, INV-002;
 `role` is deliberately not a field at all, never merely ignored) and returns a `UserProfile` (`id`, `username`,
 `email`, `role`, `currency`, `rating`, `created_at`) with 201 on success.
-`UserProfile.from_user` builds the response from the persisted `User`
-row, filling in `currency=0` and the default starting `rating` (1200) --
-neither is a real column yet (ELO and currency land in later
-milestones). A pre-query (`_duplicate_field`, case-insensitive) checks for
+`UserProfile.from_user(user, rating)` builds the response from the persisted
+`User` row and the caller-supplied `rating`, which register, login, `GET
+/me` and `PATCH /me` read from `services/matches.py::current_rating` (1200
+until the player has a rated match); `currency` is `0` (not a real column
+yet). A pre-query (`_duplicate_field`, case-insensitive) checks for
 an existing `username` or `email` before the insert, so a 409 response
 can name the specific offending field (`{"detail": "username already
 taken", "field": "username"}` or the `email` equivalent). The database's
@@ -271,10 +272,20 @@ rejected):
   "winner_id": "<uuid, one of the players>",
   "duration_seconds": 240,
   "players": [
-    {"user_id": "<uuid>", "damage_dealt": 900, "blocks_destroyed": 14,
-     "blocks_placed": 30, "time_alive_seconds": 240},
-    {"user_id": "<uuid>", "damage_dealt": 400, "blocks_destroyed": 14,
-     "blocks_placed": 30, "time_alive_seconds": 240}
+    {
+      "user_id": "<uuid>",
+      "damage_dealt": 900,
+      "blocks_destroyed": 14,
+      "blocks_placed": 30,
+      "time_alive_seconds": 240
+    },
+    {
+      "user_id": "<uuid>",
+      "damage_dealt": 400,
+      "blocks_destroyed": 14,
+      "blocks_placed": 30,
+      "time_alive_seconds": 240
+    }
   ]
 }
 ```
@@ -293,15 +304,15 @@ platform locks both players, rates them with `rate_match` from their
 of the same `match_id` with the same body answers 200 with the identical
 stored record and rates nothing again, so a game server can retry safely.
 
-| Situation                                   | Status | Body                                   |
-| ------------------------------------------- | ------ | -------------------------------------- |
-| recorded                                    | 201    | `MatchRecord`                          |
-| same `match_id`, same body (replay)         | 200    | `MatchRecord`, identical to the first  |
-| same `match_id`, different body             | 409    | `{"detail", "field": "match_id"}`      |
-| a `user_id` has no account                  | 404    | `{"detail", "field": "players"}`       |
-| invalid body (winner not a player, ...)     | 422    | FastAPI validation errors              |
-| missing or wrong `X-Server-Key`             | 401    | `{"detail"}`                           |
-| no server keys configured                   | 503    | `{"detail"}`                           |
+| Situation                               | Status | Body                                  |
+| --------------------------------------- | ------ | ------------------------------------- |
+| recorded                                | 201    | `MatchRecord`                         |
+| same `match_id`, same body (replay)     | 200    | `MatchRecord`, identical to the first |
+| same `match_id`, different body         | 409    | `{"detail", "field": "match_id"}`     |
+| a `user_id` has no account              | 404    | `{"detail", "field": "players"}`      |
+| invalid body (winner not a player, ...) | 422    | FastAPI validation errors             |
+| missing or wrong `X-Server-Key`         | 401    | `{"detail"}`                          |
+| no server keys configured               | 503    | `{"detail"}`                          |
 
 The match then appears in `GET /api/v1/me/matches` and in the profile's
 `recent_matches` for both players.
@@ -526,7 +537,7 @@ through `get_current_user`. The response models live in the service layer
 `recent_matches` (the newest five `MatchSummary` rows). Two sections are
 honest defaults until their models land: `inventory` is always `[]` (no
 Item/Inventory ORM model or ownership table yet, T-0066), and `currency`
-and `rating` are `UserProfile.from_user`'s `0` and `1200` (see Auth API).
+is `0` and `rating` is the player's current ELO (see Auth API).
 
 A `MatchSummary` (`services/matches.py`) is one match from the player's
 point of view: `id`, `played_at` (the match's `created_at`), `opponent`
@@ -661,8 +672,8 @@ uv, Docker and Node.js exist and offer their official installers after a
 | Command      | What it does                                                                                                                                  |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
-| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history |
-| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)        |
+| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
+| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
 | `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
 | `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
 | `status`     | what is running, on which port                                                                                                                |
@@ -746,8 +757,11 @@ working browser -> website -> API -> database stack in one step, and
    website (see the table above).
 3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
    published on purpose: the database listens on 127.0.0.1 only) with two
-   opponents, `demo_rival` and `demo_ace`, and six matches of history.
-   Idempotent: nothing is changed once `demo_pilot` exists.
+   opponents, `demo_rival` and `demo_ace`, and six matches of history. Each match goes through
+   `services/matches.py::record_match` (backdated one to six days) with a
+   fixed match id, so ratings evolve from 1200 and history shows real
+   `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
+   same ids and changes nothing.
 
 If a database volume from an earlier setup is present, the freshly
 generated password will not match it. The database then rejects the
@@ -759,7 +773,9 @@ scripted check that the demo really works: through the website's `/api`
 proxy it registers a throwaway `smoke_<hex>` account, logs in, reads
 `/me` and `/me/matches`, calls the game-facing `GET /api/v1/auth/session`
 with the first configured server key (skipped when none is set), logs out
-and confirms the token no longer works. It stops at the first failing step
+and confirms the token no longer works. When a server key is set it also
+registers a rival, posts a match (the smoke player wins) to
+`POST /api/v1/matches` with that key and requires `/me`'s rating to rise. It stops at the first failing step
 and prints no password, token or key.
 
 ### Demo console

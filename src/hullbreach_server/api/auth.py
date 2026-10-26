@@ -34,6 +34,7 @@ from hullbreach_server.auth import (
 from hullbreach_server.db import get_db
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger, log_event, sanitize_for_log
+from hullbreach_server.services.matches import current_rating
 
 _log = get_logger(__name__)
 
@@ -108,7 +109,7 @@ def register(
     db.refresh(user)
     # frob:ticket 01M5V5TXXWPT81BGF67BNZNJJN
     log_event(_log, "user registered: %r (id %s)", user.username, user.id)
-    return UserProfile.from_user(user)
+    return UserProfile.from_user(user, current_rating(db, user.id))
 
 
 # noqa: E501  # frob:tests tests/unit/test_auth_login.py::test_login_valid_credentials_returns_200_with_token_and_user
