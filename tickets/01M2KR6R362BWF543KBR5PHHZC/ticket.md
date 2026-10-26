@@ -6,10 +6,14 @@ category = "todo"
 priority = "medium"
 reporter = "human"
 created = "2026-09-16T00:00:00Z"
-updated = "2026-10-26T09:27:23Z"
+updated = "2026-10-26T09:38:32Z"
 aliases = ["T-0102"]
 labels = ["jira:none"]
-scope = ["web/src/api/auth.ts"]
+scope = ["web/src/api/auth.ts", "web/tests/unit/SessionRestore.test.tsx"]
+
+[[acceptance]]
+text = "Every fetch in web/src/api/auth.ts aborts after a timeout and rejects with ApiError status 0"
+bound = false
 +++
 
 T-0017 implemented register()/login()/logout()/fetchSession() in web/src/api/auth.ts without a request timeout (e.g. AbortController-based); design/hullbreach.strata's REL200:f_register/f_login_web/f_logout waivers were written expecting T-0017 to declare/prove one. Add a real timeout (AbortSignal.timeout or equivalent) to every fetch call in this file and update/remove the corresponding REL200 waivers on the browser node.
