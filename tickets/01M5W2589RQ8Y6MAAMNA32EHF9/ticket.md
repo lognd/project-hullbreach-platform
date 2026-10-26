@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T12:14:57Z"
-updated = "2026-10-26T12:14:57Z"
+updated = "2026-10-26T12:21:15Z"
 scope = ["web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx", "docs/index.md", "docs/demo-script.md"]
 +++
 
