@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Assumptions (ticket was underspecified): queue is in memory and process-local (one API process per queue; restart empties it). Pairing is lazy on join/poll, nearest rating first, window 100 + 50 per 5s waited, no cap. Match assignment readable 120s; DELETE acknowledges a match and is required before rejoining (409 otherwise). Server address comes from new setting game_server_address (HULLBREACH_GAME_SERVER_ADDRESS, default 127.0.0.1:7777); match_id is echoed back in POST /matches. Contract documented in docs/index.md#matchmaking-queue. Not done: game-server-side lookup of queue matches, shared store for multi-process."
+at = "2026-10-26T10:23:36Z"
+actor = "a-carten"
+rev = 1
