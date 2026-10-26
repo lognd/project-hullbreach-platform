@@ -2,11 +2,12 @@
 id = "01M5WN754GJF5QJ45KD2A18PXW"
 title = "Rehearse demo script in a browser; fix stale demo docs"
 type = "docs"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T17:48:03Z"
-updated = "2026-10-26T17:48:03Z"
+updated = "2026-10-26T17:48:14Z"
 scope = ["docs/demo-script.md", "README.md"]
 +++
 
