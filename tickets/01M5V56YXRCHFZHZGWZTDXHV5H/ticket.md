@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "lognd"
 created = "2026-10-26T03:49:05Z"
-updated = "2026-10-26T03:49:05Z"
+updated = "2026-10-26T04:37:40Z"
 scope = ["src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "Makefile", "README.md", "docs/index.md", "changelog.d/**"]
 +++
 
