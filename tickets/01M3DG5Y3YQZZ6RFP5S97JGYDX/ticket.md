@@ -2,7 +2,8 @@
 id = "01M3DG5Y3YQZZ6RFP5S97JGYDX"
 title = "S08-2: Exclude role from the registration and profile-edit paths and test it"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "high"
 points = 1
 parent = "01M2H5T10VN6HGPSN5F492TGYA"
