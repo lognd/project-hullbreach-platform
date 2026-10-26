@@ -24,7 +24,7 @@ the cwd that has a `[tool.hullbreach_server]` table, and the one used is
 logged at INFO. `database_url` is required and has no default (INV-005).
 `cors_origins` must be explicit `http(s)` origins (no `*`, path or query;
 whitespace and empty entries in the env list are dropped), and `create_app`
-allows credentials only with those origins and only the `GET`/`POST`/`OPTIONS`
+allows credentials only with those origins and only the `GET`/`POST`/`PUT`/`PATCH`/`DELETE`/`OPTIONS`
 methods and `Authorization`/`Content-Type` headers the API uses (INV-004). Running with no subcommand still serves; a
 `db` subcommand group (`db upgrade`, `db seed`) instead runs the given
 database maintenance step and exits without building `App`/`create_app`.

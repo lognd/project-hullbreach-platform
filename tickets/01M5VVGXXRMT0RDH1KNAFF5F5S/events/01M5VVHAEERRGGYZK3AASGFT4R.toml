@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["given a CORS preflight for PUT, PATCH or DELETE from an allowed origin, then the server allows it"]
+moved = []
+at = "2026-10-26T10:19:13Z"
+actor = "a-carten"
+rev = 1
