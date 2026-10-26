@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-26T03:54:23Z"
-updated = "2026-10-26T03:54:23Z"
+updated = "2026-10-26T03:58:37Z"
 scope = ["src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/services/profile.py"]
 +++
 
