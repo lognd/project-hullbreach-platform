@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T10:19:00Z"
-updated = "2026-10-26T10:19:13Z"
+updated = "2026-10-26T10:19:39Z"
 scope = ["src/hullbreach_server/app/app.py", "tests/unit/test_app.py", "docs/index.md", "invariants/INV-004.md", "changelog.d/*"]
 
 [[acceptance]]
