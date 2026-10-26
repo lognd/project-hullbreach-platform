@@ -98,8 +98,9 @@ class DeleteMeRequest(BaseModel):
 class UserProfile(BaseModel):
     """The profile shape every auth endpoint that returns a user echoes.
 
-    `currency` is not yet a persisted column and is always 0; `rating` is
-    the caller-supplied current ELO (`services.matches.current_rating`).
+    `currency` is the caller-supplied ledger balance
+    (`services.currency.balance`); `rating` is the current ELO
+    (`services.matches.current_rating`).
     """
 
     model_config = {}
@@ -114,14 +115,14 @@ class UserProfile(BaseModel):
 
     # noqa: E501  # frob:tests tests/unit/test_auth_register.py::test_register_valid_request_returns_201_with_player_defaults
     @classmethod
-    def from_user(cls, user: User, rating: int) -> UserProfile:
-        """Build a UserProfile from a `User` row and the player's current `rating`."""
+    def from_user(cls, user: User, rating: int, currency: int) -> UserProfile:
+        """Build a UserProfile from a `User` row, current `rating` and `currency`."""
         return cls(
             id=user.id,
             username=user.username,
             email=user.email,
             role=user.role,
-            currency=0,
+            currency=currency,
             rating=rating,
             created_at=user.created_at,
         )
