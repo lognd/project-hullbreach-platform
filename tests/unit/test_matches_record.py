@@ -130,7 +130,7 @@ def test_post_match_with_an_unknown_player_is_404_and_records_nothing(
 
 
 # frob:ticket 01M2H5T11PZ6JDPS66PNFRX5S2
-# frob:tests src/hullbreach_server/api/matches.py::MatchReport kind="unit"
+# frob:tests src/hullbreach_server/services/matches.py::MatchReport kind="unit"
 def test_post_match_validation_errors_are_422(
     client, db_session, server_key_headers, pilots, report
 ) -> None:
