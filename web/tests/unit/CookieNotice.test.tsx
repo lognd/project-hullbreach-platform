@@ -18,6 +18,8 @@ describe("CookieNotice", () => {
   it("shows on a first visit with a link to the cookie policy", () => {
     render(<CookieNotice />);
     expect(screen.getByRole("region", { name: "Cookie notice" })).toBeInTheDocument();
+    expect(screen.getByText(/one strictly necessary session cookie/i)).toBeInTheDocument();
+    expect(screen.queryByText(/sets no cookies/i)).toBeNull();
     expect(screen.getByRole("link", { name: "Cookie policy" })).toHaveAttribute(
       "href",
       "/cookie-policy",
