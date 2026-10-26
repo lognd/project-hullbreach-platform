@@ -650,7 +650,9 @@ it registers, logs in, reads the profile and history, checks the
 game-facing session endpoint and logs out.
 
 For the presentation itself, follow the one-page
-[demo runbook](docs/demo-runbook.md).
+[demo runbook](docs/demo-runbook.md) and the timed
+[demo script](docs/demo-script.md) (about five minutes, front end to back
+end; `make demo-match` plays the game server for you).
 
 If `make demo` says the database rejected the password, an old database
 from an earlier setup is still on this computer. Put your old `.env` back,

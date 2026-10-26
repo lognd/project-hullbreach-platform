@@ -32,6 +32,7 @@ COMMANDS = {
     "doctor": "check everything and explain how to fix what is wrong",
     "demo": "one command: settings, database, API, website and demo account",
     "smoke": "register, log in and read the profile against the running stack",
+    "demo-match": "post a sample match as the game server (needs a server key)",
     "start": "start the database, API and website (prints the URLs)",
     "stop": "stop the website, API and database (keeps the data)",
     "status": "show what is running",
@@ -115,7 +116,7 @@ def _report(console: Console, error: OpsError) -> None:
 
 def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
     """Run one operator command; the exit code is 0 on success."""
-    from hullbreach_ops import accounts, demo, lan, lifecycle, smoke, watch
+    from hullbreach_ops import accounts, demo, demo_match, lan, lifecycle, smoke, watch
     from hullbreach_ops.collect import collect
     from hullbreach_ops.doctor import doctor, passed
 
@@ -137,6 +138,7 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         "server-key": accounts.server_key,
         "lan": lan.lan,
         "smoke": smoke.smoke,
+        "demo-match": demo_match.demo_match,
     }
     if args.command == "start":
         result: Result[object, OpsError] = lifecycle.start(ctx, args.bind_host)
