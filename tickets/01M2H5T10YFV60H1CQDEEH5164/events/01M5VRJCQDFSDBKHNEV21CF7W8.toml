@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Criterion 1 is partial: currency is hardcoded 0 (no persisted column or ledger) and owned skins are always [] (no Item/Inventory ORM models; see ~B5K9JYQ and ~PYKEHW6). Criterion 2 depends on purchases, which do not exist yet. Username, rating, last matches and phone-width layout are done and tested."
+at = "2026-10-26T09:27:22Z"
+actor = "a-carten"
+rev = 1
