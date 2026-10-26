@@ -8,10 +8,10 @@ points = 5
 parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T11:49:09Z"
+updated = "2026-10-26T11:49:24Z"
 aliases = ["T-0030"]
-labels = ["jira:SCRUM-30", "owner:a-carten", "milestone:0.2.0", "creates:tests/system/test_phone_width.py", "creates:tests/system/phone_width.mjs"]
-scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx", "tests/system/test_phone_width.py", "tests/system/phone_width.mjs"]
+labels = ["jira:SCRUM-30", "owner:a-carten", "milestone:0.2.0", "creates:tests/system/test_phone_width.py", "creates:tests/system/phone_width.mjs", "creates:changelog.d/01M2H5T10YFV60H1CQDEEH5164.added.md"]
+scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx", "tests/system/test_phone_width.py", "tests/system/phone_width.mjs", "changelog.d/01M2H5T10YFV60H1CQDEEH5164.added.md"]
 
 [[acceptance]]
 text = "given a logged-in player, when they open their profile, then username, rating, currency, owned skins, and last five matches show"
