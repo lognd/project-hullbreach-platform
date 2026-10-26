@@ -1,0 +1,5 @@
+kind = "changelog-exempt"
+reason = "ledger reconcile: already implemented and merged, no user-visible change"
+at = "2026-10-26T09:26:38Z"
+actor = "a-carten"
+rev = 1
