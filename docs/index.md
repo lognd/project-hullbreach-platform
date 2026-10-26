@@ -2,10 +2,8 @@
 
 The platform API for Project Hullbreach. It owns everything that is not
 time-critical: accounts and token sessions, ELO, match history and stats,
-the item catalog, cosmetic store and equipped skin, currency, saved ship
-designs, the leaderboard, a matchmaking queue and account deletion (admin
-moderation is a later milestone: only the `require_admin` guard exists).
-The game server reports match results here over REST; the web frontend and the game client
+the item catalog and cosmetic store, and admin moderation. The game server
+reports match results here over REST; the web frontend and the game client
 both authenticate against it. Real-time match traffic never touches it.
 
 New here? Start at [picking-up-work.md](picking-up-work.md). The Jira
