@@ -9,6 +9,7 @@ import { Leaderboard } from "@/pages/Leaderboard";
 import { Login } from "@/pages/Login";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
+import { Store } from "@/pages/Store";
 import { AppLink } from "@/components/AppLink";
 import { Page } from "@/components/Page";
 
@@ -54,7 +55,8 @@ export const router = createBrowserRouter([
       // Each queued page is one more route here plus a pages/<Name>.tsx and
       // a tests/unit/<Name>.test.tsx; copy pages/Login.tsx. Add this file to
       // the ticket's scope first (`frob ticket scope T-#### --add`).
-      // frob:todo 01M2H5T1242JFMB5A03JSDP5KP path store -> pages/Store.tsx
+      // frob:ticket 01M2H5T1242JFMB5A03JSDP5KP
+      { path: "store", element: <Store /> },
       // frob:todo 01M2H5T12E0JWYSBMM6HZ09J6Q path admin/* -> pages/admin/, gated on role is admin
       { path: "*", element: <NotFound /> },
     ],

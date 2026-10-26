@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx", "docs/index.md", "web/src/api/store.ts", "web/tests/fixtures/store.ts"]
+new = ["web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx", "docs/index.md", "web/src/api/store.ts", "web/tests/fixtures/store.ts", "changelog.d/01M2H5T1242JFMB5A03JSDP5KP.added.md", "web/src/router.tsx", "web/src/components/Header.tsx", "web/tests/unit/Header.test.tsx"]
+at = "2026-10-26T11:35:57Z"
+actor = "a-carten"
+rev = 1

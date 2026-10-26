@@ -62,7 +62,7 @@ function ShipGlyph() {
 }
 
 // frob:doc docs/index.md#routing-and-page-shell
-/** Site header: wordmark and a Leaderboard link, plus Register/Log in when signed out; Profile, Matches, Settings, the username and a bordered Log out button when signed in. */
+/** Site header: wordmark and Leaderboard and Store links, plus Register/Log in when signed out; Profile, Matches, Settings, the username and a bordered Log out button when signed in. */
 export function Header() {
   const session = useSession();
   const pathname = usePathname();
@@ -74,6 +74,7 @@ export function Header() {
         className="order-2 flex flex-wrap items-center gap-x-space-16 gap-y-space-4"
       >
         <NavLink href="/leaderboard" label="Leaderboard" current={pathname} />
+        <NavLink href="/store" label="Store" current={pathname} />
         {session === null ? (
           <>
             <NavLink href="/register" label="Register" current={pathname} />
