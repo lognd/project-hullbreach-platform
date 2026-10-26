@@ -19,6 +19,13 @@ describe("DataPolicy", () => {
   });
 
   // frob:tests web/src/pages/DataPolicy.tsx::DataPolicy kind="unit"
+  it("describes self-service deletion rather than calling it unavailable", () => {
+    render(<DataPolicy />);
+    expect(screen.getByText(/delete your account yourself/i)).toBeInTheDocument();
+    expect(screen.queryByText(/no self-service/i)).not.toBeInTheDocument();
+  });
+
+  // frob:tests web/src/pages/DataPolicy.tsx::DataPolicy kind="unit"
   it("names the fields the server really stores", () => {
     render(<DataPolicy />);
     expect(screen.getByText(/username and email address/i)).toBeInTheDocument();

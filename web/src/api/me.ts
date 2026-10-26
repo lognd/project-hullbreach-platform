@@ -1,4 +1,4 @@
-import { bearerHeaders, requestJson, type UserProfile } from "@/api/auth";
+import { apiFetch, bearerHeaders, errorFromResponse, requestJson, type UserProfile } from "@/api/auth";
 
 /** Base path for the signed-in player's own resources (docs/backlog.md: T-0031, T-0034, T-0059). */
 const ME_BASE = "/api/v1/me";
@@ -57,6 +57,20 @@ export async function updateMe(
     headers: { ...bearerHeaders(token), "content-type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
+
+// frob:ticket 01M2H5T1168H89BH4V49VR22FC
+// frob:doc docs/index.md#account-settings-page
+/** DELETE /api/v1/me with the account password; 204 on success (the server clears the session cookie), 403 (wrong password) or 422 rejects with an ApiError. */
+export async function deleteMe(token: string, currentPassword: string): Promise<void> {
+  const response = await apiFetch(ME_BASE, {
+    method: "DELETE",
+    headers: { ...bearerHeaders(token), "content-type": "application/json" },
+    body: JSON.stringify({ current_password: currentPassword }),
+  });
+  if (!response.ok) {
+    throw await errorFromResponse(response);
+  }
 }
 
 // frob:doc docs/index.md#match-history-page

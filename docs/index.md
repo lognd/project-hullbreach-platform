@@ -756,6 +756,14 @@ now shares. The fields sit in a `Panel` under Identity and Credentials
 fieldsets, and password inputs get a Show/Hide toggle (`aria-pressed`,
 deliberately not named "password" so label queries stay unambiguous).
 
+Below the form a "Danger zone" `Panel` holds account deletion (`deleteMe`
+in `web/src/api/me.ts`, `DELETE /api/v1/me` with `{current_password}`).
+"Delete account" opens a confirm step asking for the password; an empty
+password is refused locally, a 403 shows the server's detail as a
+`role="alert"` banner and keeps the session, and a 204 clears the in-memory
+session and navigates to `/` (the server clears the cookie). The data
+policy page's Deletion section describes this flow.
+
 ### Match history page
 
 `web/src/pages/History.tsx` is routed at `/me/matches` and lists the
