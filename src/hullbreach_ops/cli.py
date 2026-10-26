@@ -30,6 +30,8 @@ _log = get_logger(__name__)
 # frob:doc docs/index.md#operator-scripts-and-the-doctor
 COMMANDS = {
     "doctor": "check everything and explain how to fix what is wrong",
+    "demo": "one command: settings, database, API, website and demo account",
+    "smoke": "register, log in and read the profile against the running stack",
     "start": "start the database, API and website (prints the URLs)",
     "stop": "stop the website, API and database (keeps the data)",
     "status": "show what is running",
@@ -63,7 +65,7 @@ def add_ops_commands(sub: argparse._SubParsersAction) -> None:
                 action="store_true",
                 help="also write a redacted support zip to send to the team",
             )
-        if name == "start":
+        if name in ("start", "demo"):
             parser.add_argument(
                 "--host",
                 dest="bind_host",
@@ -94,7 +96,7 @@ def _report(console: Console, error: OpsError) -> None:
 
 def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
     """Run one operator command; the exit code is 0 on success."""
-    from hullbreach_ops import accounts, lan, lifecycle
+    from hullbreach_ops import accounts, demo, lan, lifecycle, smoke
     from hullbreach_ops.collect import collect
     from hullbreach_ops.doctor import doctor, passed
 
@@ -115,9 +117,12 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         "demo-users": accounts.demo_users,
         "server-key": accounts.server_key,
         "lan": lan.lan,
+        "smoke": smoke.smoke,
     }
     if args.command == "start":
         result: Result[object, OpsError] = lifecycle.start(ctx, args.bind_host)
+    elif args.command == "demo":
+        result = demo.demo(ctx, args.bind_host)
     else:
         result = simple[args.command](ctx)
     if result.is_err:

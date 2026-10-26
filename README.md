@@ -23,11 +23,12 @@ Contents:
 3. [Step-by-step: run the platform on your computer](#step-by-step-run-the-platform-on-your-computer)
    -- written for someone who has never used a terminal; Step 1 runs
    the **doctor**, which checks everything and tells you how to fix it
-4. [Demo script for standup](#demo-script-for-standup)
-5. [Connecting the game to the platform](#connecting-the-game-to-the-platform)
-6. [Hosting a demo for other computers](#hosting-a-demo-for-other-computers)
-7. [Troubleshooting](#troubleshooting) -- symptom, cause, fix
-8. [Developer guide](#developer-guide) -- for people changing the code
+4. [One-command demo](#one-command-demo) -- everything up with one command
+5. [Demo script for standup](#demo-script-for-standup)
+6. [Connecting the game to the platform](#connecting-the-game-to-the-platform)
+7. [Hosting a demo for other computers](#hosting-a-demo-for-other-computers)
+8. [Troubleshooting](#troubleshooting) -- symptom, cause, fix
+9. [Developer guide](#developer-guide) -- for people changing the code
 
 ## What is this?
 
@@ -619,15 +620,43 @@ what), or you want a second copy beside the first, set these in `.env`
 | `HULLBREACH_HOST`      | `127.0.0.1`     | which network the API listens on (`lan` sets `0.0.0.0` for you)                             |
 | `COMPOSE_PROJECT_NAME` | the folder name | Docker's name for this copy's database; a second copy needs its own so it gets its own data |
 
+## One-command demo
+
+For a demo you only need Git, uv, Docker and Node.js (run `./doctor.sh`
+if unsure). From the checkout:
+
+```
+make demo
+```
+
+(or `uv run hullbreach_server demo`). It creates your settings file with
+fresh passwords if you have none, starts the database, applies the
+migrations, loads the catalog, starts the API and the website, and creates
+a demo player with match history. It ends by printing:
+
+```
+Sign in at http://localhost:5173/login
+Username: demo_pilot    Password: demo-password-123
+```
+
+Open that address and sign in. Stop everything with `make stop` (your data
+is kept); running `make demo` again is safe and changes nothing that
+exists. To check the whole path from the command line, run `make smoke`:
+it registers, logs in, reads the profile and history, checks the
+game-facing session endpoint and logs out.
+
+If `make demo` says the database rejected the password, an old database
+from an earlier setup is still on this computer. Put your old `.env` back,
+or, if that data does not matter, run `uv run hullbreach_server reset-db`
+and then `make demo` again.
+
 ## Demo script for standup
 
 Rehearse once before the meeting, then do it live. Beforehand run
-`./doctor.sh --demo website`; when it shows no FAIL, run
-`uv run hullbreach_server start`
-([Step 5](#step-5-start-everything)). Use a throwaway account such as
-`demo_pilot` / `demo-password-123`, with a new name each time (names
-cannot be reused), or the accounts from
-`uv run hullbreach_server demo-users`.
+`./doctor.sh --demo website`; when it shows no FAIL, run `make demo`. Use a throwaway account such as
+`demo_pilot` / `demo-password-123` from `make demo`
+([One-command demo](#one-command-demo)), which already has match
+history, or register a new name (names cannot be reused).
 
 Move around **only by clicking the links in the top bar**. Do not reload
 the page or type addresses during the demo; that signs you out (see
