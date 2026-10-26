@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T11JBHEEDN4QMJSPKR91"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T08:54:20Z"
+updated = "2026-10-26T08:54:25Z"
 aliases = ["T-0061"]
 labels = ["jira:SCRUM-40", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/leaderboard.py", "src/hullbreach_server/services/leaderboard.py", "tests/unit/test_leaderboard.py", "web/src/pages/Leaderboard.tsx", "web/tests/unit/Leaderboard.test.tsx"]
@@ -18,7 +18,7 @@ bound = true
 
 [[acceptance]]
 text = "given a logged-in player outside the visible range, when the leaderboard loads, then their own rank shows"
-bound = false
+bound = true
 +++
 
 As a player, I want a leaderboard of the top-rated players, so that I have someone to aim for.
