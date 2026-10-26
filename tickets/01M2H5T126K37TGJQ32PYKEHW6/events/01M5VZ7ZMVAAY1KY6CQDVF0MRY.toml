@@ -1,0 +1,5 @@
+kind = "changelog-exempt"
+reason = "covered by the ZXSYE6W fragment"
+at = "2026-10-26T11:24:01Z"
+actor = "a-carten"
+rev = 1
