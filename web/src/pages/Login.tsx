@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { navigate } from "@/components/navigate";
 import { Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { Panel } from "@/components/Readout";
 import { TextField } from "@/components/TextField";
 
 /** Id of the form-level error banner, referenced by the form's aria-describedby. */
@@ -46,6 +47,7 @@ export function Login() {
           {formError}
         </Notice>
       ) : null}
+      <Panel className="p-space-24">
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
@@ -76,6 +78,7 @@ export function Login() {
           Log in
         </Button>
       </form>
+      </Panel>
       <p className="text-font-size-14 text-muted">
         No account?{" "}
         <AppLink href="/register" className="font-medium text-accent underline underline-offset-4 hover:text-ink">

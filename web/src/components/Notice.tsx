@@ -35,11 +35,12 @@ export function Notice({
 }
 
 // frob:doc docs/index.md#visual-design-rules
-/** The loading line every data page shows while its first request is in flight. */
+/** The loading line every data page shows while its first request is in flight; a static mono readout, so there is nothing to animate. */
 export function Loading({ label }: { label: string }) {
   return (
     <p role="status" aria-live="polite" className="font-mono text-font-size-14 uppercase tracking-wider text-muted">
       {label}
+      <span aria-hidden="true">...</span>
     </p>
   );
 }

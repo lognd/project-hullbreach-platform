@@ -26,3 +26,16 @@ body {
   color: var(--color-paper);
   background: var(--color-accent);
 }
+
+/* Control feedback only: 120ms color/border easing, skipped entirely when the
+   visitor asks for reduced motion. frob:doc docs/index.md#visual-design-rules */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  input {
+    transition:
+      color 120ms ease-out,
+      background-color 120ms ease-out,
+      border-color 120ms ease-out;
+  }
+}

@@ -19,8 +19,29 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+/** Column template shared by the rows and the column-label strip: result, opponent, ELO range, delta, date (sm and up); phones stack it in two lines. */
+const GRID =
+  "grid-cols-[3rem_minmax(0,1fr)_auto] sm:grid-cols-[4rem_minmax(0,1fr)_9rem_4rem_6rem]";
+
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
-/** One match row (opponent, result, date, ELO change; `detailed` adds duration and stats); wraps on narrow screens so long names never force horizontal scroll. */
+/** A decorative column-label strip for a list of MatchItems; aria-hidden and a div (not an li) so the list keeps exactly one item per match. */
+export function MatchColumns() {
+  return (
+    <div
+      aria-hidden="true"
+      className={`hidden gap-x-space-16 px-space-16 font-mono text-font-size-12 uppercase tracking-widest text-muted sm:grid ${GRID}`}
+    >
+      <span>Result</span>
+      <span>Opponent</span>
+      <span className="text-right">ELO</span>
+      <span className="text-right">Change</span>
+      <span className="text-right">Date</span>
+    </div>
+  );
+}
+
+// frob:doc docs/index.md#player-api-client-and-the-profile-page
+/** One match row (result, opponent, ELO range and change, date; `detailed` adds duration and stats); a table-like grid on sm+ and a two-line stack on phones so long names never force horizontal scroll. */
 export function MatchItem({
   match,
   detailed = false,
@@ -29,25 +50,34 @@ export function MatchItem({
   detailed?: boolean;
 }) {
   const won = match.result === "win";
-  const tone = won ? "border-stress-ok text-stress-ok" : "border-stress-fail text-stress-fail";
+  const tone = won
+    ? "border-l-stress-ok text-stress-ok"
+    : "border-l-stress-fail text-stress-fail";
   const delta = match.rating_after - match.rating_before;
   return (
-    <li className={`flex flex-wrap items-baseline gap-x-space-16 gap-y-space-4 border-l-4 bg-panel px-space-16 py-space-12 ${tone}`}>
-      <span className="w-full min-w-space-0 wrap-anywhere text-font-size-16 font-medium text-ink sm:w-auto sm:flex-1">
-        {match.opponent}
-      </span>
-      <span className="font-mono text-font-size-12 font-bold uppercase tracking-widest">
+    <li
+      className={`grid items-baseline gap-x-space-12 gap-y-space-4 border border-l-2 border-line bg-panel px-space-16 py-space-12 sm:gap-x-space-16 ${GRID} ${tone}`}
+    >
+      <span className="col-start-1 row-start-1 font-mono text-font-size-12 font-bold uppercase tracking-widest sm:col-auto sm:row-auto">
         {won ? "Win" : "Loss"}
       </span>
-      <span className="font-mono text-font-size-14 tabular-nums text-muted">
+      <span className="col-start-2 row-start-1 min-w-0 wrap-anywhere text-font-size-16 font-medium text-ink sm:col-auto sm:row-auto">
+        {match.opponent}
+      </span>{" "}
+      <span className="col-start-2 row-start-2 font-mono text-font-size-14 tabular-nums text-muted sm:col-auto sm:row-auto sm:text-right">
         {match.rating_before} {"->"} {match.rating_after}
       </span>
-      <span className="font-mono text-font-size-14 font-semibold tabular-nums">{formatDelta(delta)}</span>
-      <time dateTime={match.played_at} className="font-mono text-font-size-14 tabular-nums text-muted">
+      <span className="col-start-3 row-start-1 text-right font-mono text-font-size-14 font-semibold tabular-nums sm:col-auto sm:row-auto">
+        {formatDelta(delta)}
+      </span>
+      <time
+        dateTime={match.played_at}
+        className="col-start-3 row-start-2 text-right font-mono text-font-size-14 tabular-nums text-muted sm:col-auto sm:row-auto"
+      >
         {match.played_at.slice(0, 10)}
       </time>
       {detailed ? (
-        <p className="flex w-full flex-wrap gap-x-space-16 gap-y-space-4 font-mono text-font-size-12 uppercase tracking-wider tabular-nums text-muted">
+        <p className="col-span-full flex flex-wrap gap-x-space-16 gap-y-space-4 border-t border-line pt-space-8 font-mono text-font-size-12 uppercase tracking-wider tabular-nums text-muted">
           <Stat label="time" value={formatDuration(match.duration_seconds)} />
           {Object.entries(match.stats).map(([name, value]) => (
             <Stat key={name} label={name.replaceAll("_", " ")} value={value} />

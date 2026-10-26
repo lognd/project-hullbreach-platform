@@ -3,10 +3,11 @@ import { ApiError } from "@/api/auth";
 import { fetchMe, type MeResponse } from "@/api/me";
 import { useSession } from "@/auth/session";
 import { AppLink } from "@/components/AppLink";
-import { Button } from "@/components/Button";
-import { MatchItem } from "@/components/MatchItem";
+import { Button, ButtonLink } from "@/components/Button";
+import { MatchColumns, MatchItem } from "@/components/MatchItem";
 import { Loading, Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { EmptyState, SkeletonRows, StatTile } from "@/components/Readout";
 import { SignInPrompt } from "@/components/SignInPrompt";
 
 /** What the page is showing: waiting on the server, the loaded profile, or a failure message. */
@@ -71,22 +72,26 @@ export function Profile() {
     return (
       <Page eyebrow="Pilot record" title="Profile">
         <Loading label="Loading profile" />
+        <SkeletonRows count={3} />
       </Page>
     );
   }
 
   const { me } = state;
+  const last = me.recent_matches.slice(0, 5);
+  const wins = last.filter((match) => match.result === "win").length;
+  const net = last.reduce((sum, match) => sum + match.rating_after - match.rating_before, 0);
   return (
     <Page eyebrow="Pilot record" title={me.username} titleClassName="wrap-anywhere">
-      <dl className="grid grid-cols-2 gap-space-4 sm:max-w-[28rem]">
-        <div className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
-          <dt className="font-mono text-font-size-12 uppercase tracking-widest text-muted">ELO</dt>
-          <dd className="font-mono text-font-size-32 font-semibold tabular-nums text-accent">{me.rating}</dd>
-        </div>
-        <div className="flex flex-col gap-space-4 bg-panel px-space-16 py-space-12">
-          <dt className="font-mono text-font-size-12 uppercase tracking-widest text-muted">Balance</dt>
-          <dd className="font-mono text-font-size-32 font-semibold tabular-nums">{me.currency}</dd>
-        </div>
+      <dl className="grid grid-cols-2 gap-space-8 sm:grid-cols-4">
+        <StatTile label="ELO" value={me.rating} tone="accent" />
+        <StatTile label="Balance" value={me.currency} />
+        {last.length > 0 ? (
+          <>
+            <StatTile label="Last 5" value={`${wins}-${last.length - wins}`} />
+            <StatTile label="Net ELO" value={net > 0 ? `+${net}` : String(net)} tone={net >= 0 ? "ok" : "fail"} />
+          </>
+        ) : null}
       </dl>
 
       <section aria-labelledby="profile-skins" className="flex flex-col gap-space-12">
@@ -94,7 +99,7 @@ export function Profile() {
           Owned skins
         </h2>
         {me.inventory.length === 0 ? (
-          <p className="text-font-size-14 text-muted">No skins yet.</p>
+          <EmptyState title="No skins yet." hint="Skins you own will be listed here." />
         ) : (
           <ul className="flex flex-wrap gap-space-8">
             {me.inventory.map((skin) => (
@@ -119,13 +124,24 @@ export function Profile() {
           </AppLink>
         </div>
         {me.recent_matches.length === 0 ? (
-          <p className="text-font-size-14 text-muted">No matches yet.</p>
+          <EmptyState
+            title="No matches yet."
+            hint="Your last five results and rating changes will show here."
+            action={
+              <ButtonLink href="/" variant="primary">
+                Back to start
+              </ButtonLink>
+            }
+          />
         ) : (
-          <ul className="flex flex-col gap-space-4">
-            {me.recent_matches.slice(0, 5).map((match) => (
-              <MatchItem key={match.id} match={match} />
-            ))}
-          </ul>
+          <>
+            <MatchColumns />
+            <ul className="flex flex-col gap-space-4">
+              {last.map((match) => (
+                <MatchItem key={match.id} match={match} />
+              ))}
+            </ul>
+          </>
         )}
       </section>
     </Page>

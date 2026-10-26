@@ -42,7 +42,7 @@ export function Header() {
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-x-space-24 gap-y-space-8 border-b border-line bg-paper px-space-16 py-space-12 text-ink sm:px-space-24">
-      <nav aria-label="Account" className="order-2 flex flex-wrap items-center gap-x-space-16 gap-y-space-8">
+      <nav aria-label="Account" className="order-2 flex flex-wrap items-center gap-x-space-12 sm:gap-x-space-16 gap-y-space-8">
         {session === null ? (
           <>
             <NavLink href="/register" label="Register" current={pathname} />
@@ -53,7 +53,7 @@ export function Header() {
             <NavLink href="/me" label="Profile" current={pathname} />
             <NavLink href="/me/matches" label="Matches" current={pathname} />
             <NavLink href="/settings" label="Settings" current={pathname} />
-            <span className="wrap-anywhere border-l border-line pl-space-16 font-mono text-font-size-14 text-muted">
+            <span className="wrap-anywhere border-l border-line pl-space-12 sm:pl-space-16 font-mono text-font-size-14 text-muted">
               {session.username}
             </span>
             <button

@@ -384,14 +384,23 @@ are enforced, not suggested:
 - Contrast: every text/background pair is a `[roles]` entry in
   `crunk.toml`, checked to WCAG AA by `crunk check` (`ok`, `warn`,
   `on-accent` and the `*-panel` roles cover badges and notices).
-- Layout: pages are left-aligned columns under a `Page` header (mono
-  eyebrow, title, accent rule); nothing is centered for its own sake.
+- Layout: pages are left-aligned columns under a `Page` header (`// `
+  eyebrow, title, hairline rule with a short accent tick); nothing is
+  centered for its own sake.
+- HUD motifs: `Panel` is a hairline box with two accent corner brackets;
+  ratings and stats are mono `tabular-nums`; Win/Loss is a word plus a
+  colored left edge, never color alone.
+- Motion: 120ms color/border easing on links, buttons and inputs only,
+  and only under `prefers-reduced-motion: no-preference`.
+- States: every data page has Loading plus `SkeletonRows`, an
+  `EmptyState` with a next step, and an error `Notice` with Try again.
 - Shared components, not one-offs: `Page` (shell and width), `Button` /
   `ButtonLink` (primary accent fill, secondary outline), `TextField`
   (label, hint, error tied by `aria-describedby`, `aria-invalid`),
   `Notice` / `Loading` (error, ok and loading states with roles `alert` /
   `status`), `AppLink`, and `HullReadout` (the landing page's block-ship
-  stress grid, colored with the `stress-*` palette).
+  stress grid, colored with the `stress-*` palette), plus `Panel` /
+  `StatTile` / `EmptyState` / `SkeletonRows` (`web/src/components/Readout.tsx`).
 - Copy is concrete and terse: name the thing (ELO, match history, hull),
   never "seamless", "unleash" or "get started today".
 
@@ -526,6 +535,12 @@ client (register, log in, `fetchMe`) against a running API when
 `HULLBREACH_LIVE_API=http://127.0.0.1:8001 npm test`) and is skipped
 otherwise.
 
+The profile header is `StatTile`s: ELO and Balance, plus "Last 5"
+(wins-losses) and "Net ELO", computed client-side from the same five
+`recent_matches` and shown only when matches exist. Loading shows
+`SkeletonRows`, empty skins and matches are `EmptyState`s, and a failed
+request is an error `Notice` with Try again.
+
 ### Account settings page
 
 `web/src/pages/Settings.tsx` is routed at `/settings` and edits the
@@ -543,7 +558,9 @@ inline without a request) and says "Nothing to change." for an untouched
 form. On success it clears the secret fields and writes the new username
 into the stored session so a reload shows it. Signed out, the page renders
 `web/src/components/SignInPrompt.tsx`, the log-in prompt the profile page
-now shares.
+now shares. The fields sit in a `Panel` under Identity and Credentials
+fieldsets, and password inputs get a Show/Hide toggle (`aria-pressed`,
+deliberately not named "password" so label queries stay unambiguous).
 
 ### Match history page
 
@@ -555,6 +572,10 @@ Player API; the page's tests use `makeMatchPage` in
 A `MatchPage` is `{items, next_cursor}`; `next_cursor` is null on the last
 page. Each row is `web/src/components/MatchItem.tsx` in `detailed` mode
 (opponent, result, rating before and after, date, duration and stats).
+A `MatchColumns` strip (a div, so the list keeps one `li` per match)
+labels the columns on wide screens, and an "N loaded" readout under the
+list counts what is shown (the API has no total). `SkeletonRows` fill the
+first load and an `EmptyState` replaces the list when there are no matches.
 Load more requests the next cursor and appends the page; the control is
 disabled while a request is in flight, vanishes when the cursor is null,
 and after a failed request stays as a retry (labelled Try again if the

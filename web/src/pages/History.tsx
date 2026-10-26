@@ -2,10 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "@/api/auth";
 import { fetchMatches, type MatchSummary } from "@/api/me";
 import { useSession } from "@/auth/session";
-import { Button } from "@/components/Button";
-import { MatchItem } from "@/components/MatchItem";
+import { Button, ButtonLink } from "@/components/Button";
+import { MatchColumns, MatchItem } from "@/components/MatchItem";
 import { Loading, Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { EmptyState, SkeletonRows } from "@/components/Readout";
 import { SignInPrompt } from "@/components/SignInPrompt";
 
 /** The matches loaded so far, the cursor for the next page (null once exhausted), and whether a request is in flight. */
@@ -99,15 +100,34 @@ export function History() {
   return (
     <Page eyebrow="Pilot record" title="Match history">
       {state.loaded && state.matches.length === 0 ? (
-        <p className="text-font-size-14 text-muted">No matches yet.</p>
-      ) : (
-        <ul className="flex flex-col gap-space-4">
-          {state.matches.map((match) => (
-            <MatchItem key={match.id} match={match} detailed />
-          ))}
-        </ul>
-      )}
-      {state.loading && !state.loaded ? <Loading label="Loading matches" /> : null}
+        <EmptyState
+          title="No matches yet."
+          hint="Every finished match is logged here with its rating change."
+          action={
+            <ButtonLink href="/" variant="primary">
+              Back to start
+            </ButtonLink>
+          }
+        />
+      ) : state.matches.length > 0 ? (
+        <div className="flex flex-col gap-space-8">
+          <MatchColumns />
+          <ul className="flex flex-col gap-space-4">
+            {state.matches.map((match) => (
+              <MatchItem key={match.id} match={match} detailed />
+            ))}
+          </ul>
+          <p className="font-mono text-font-size-12 uppercase tracking-widest tabular-nums text-muted">
+            {state.matches.length} loaded{state.nextCursor === null ? ", end of record" : ""}
+          </p>
+        </div>
+      ) : null}
+      {state.loading && !state.loaded ? (
+        <>
+          <Loading label="Loading matches" />
+          <SkeletonRows count={5} />
+        </>
+      ) : null}
       {state.error !== null ? (
         <Notice tone="error" role="alert">
           <span>{state.error}</span>

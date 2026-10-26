@@ -28,9 +28,17 @@ export function Page({
   return (
     <main className="flex w-full flex-1 flex-col bg-paper text-ink">
       <div className={`mx-auto flex w-full ${WIDTH[width]} flex-col gap-space-24 px-space-16 py-space-48 sm:px-space-24`}>
-        <div className="flex flex-col gap-space-8 border-l-4 border-accent pl-space-16">
-          <p className="font-mono text-font-size-12 uppercase tracking-widest text-accent">{eyebrow}</p>
+        <div className="flex flex-col gap-space-8">
+          <p className="font-mono text-font-size-12 uppercase tracking-widest text-accent">
+            <span aria-hidden="true" className="text-muted">
+              {"// "}
+            </span>
+            {eyebrow}
+          </p>
           <h1 className={`text-font-size-32 font-semibold tracking-tight ${titleClassName ?? ""}`}>{title}</h1>
+          <div aria-hidden="true" className="border-t border-line">
+            <div className="-mt-px w-space-48 border-t-2 border-accent" />
+          </div>
         </div>
         {children}
       </div>

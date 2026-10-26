@@ -3,6 +3,7 @@ import { ApiError, register } from "@/api/auth";
 import { Button, ButtonLink } from "@/components/Button";
 import { Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { Panel } from "@/components/Readout";
 import { TextField } from "@/components/TextField";
 
 /** Field-keyed validation errors, e.g. `{ username: "username already taken" }`. */
@@ -60,6 +61,7 @@ export function Register() {
           {formError}
         </Notice>
       ) : null}
+      <Panel className="p-space-24">
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
@@ -100,6 +102,7 @@ export function Register() {
           Register
         </Button>
       </form>
+      </Panel>
     </Page>
   );
 }

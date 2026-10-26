@@ -5,6 +5,7 @@ import { saveSession, useSession, type StoredSession } from "@/auth/session";
 import { Button } from "@/components/Button";
 import { Notice } from "@/components/Notice";
 import { Page } from "@/components/Page";
+import { Panel } from "@/components/Readout";
 import { SignInPrompt } from "@/components/SignInPrompt";
 import { TextField } from "@/components/TextField";
 
@@ -85,6 +86,7 @@ function SettingsForm({ session }: { session: StoredSession }) {
           {formError}
         </Notice>
       ) : null}
+      <Panel className="p-space-24">
       <form
         onSubmit={(event) => {
           void handleSubmit(event);
@@ -92,6 +94,8 @@ function SettingsForm({ session }: { session: StoredSession }) {
         aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
         className="flex flex-col gap-space-16"
       >
+        <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0">
+          <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">Identity</legend>
         <TextField
           id="settings-username"
           name="username"
@@ -101,6 +105,9 @@ function SettingsForm({ session }: { session: StoredSession }) {
           error={fieldErrors.username}
           onChange={setUsername}
         />
+        </fieldset>
+        <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0 border-t border-line pt-space-16">
+          <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">Credentials</legend>
         <TextField
           id="settings-email"
           name="email"
@@ -134,10 +141,12 @@ function SettingsForm({ session }: { session: StoredSession }) {
           error={fieldErrors.current_password}
           onChange={setCurrentPassword}
         />
+        </fieldset>
         <Button type="submit" variant="primary">
           Save changes
         </Button>
       </form>
+      </Panel>
     </Page>
   );
 }
