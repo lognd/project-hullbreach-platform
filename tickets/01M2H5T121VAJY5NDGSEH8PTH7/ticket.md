@@ -2,12 +2,13 @@
 id = "01M2H5T121VAJY5NDGSEH8PTH7"
 title = "S20 Browse the catalog"
 type = "story"
-category = "in-progress"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T1205GXC7WDK3G949GYJ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T11:38:10Z"
+updated = "2026-10-26T11:38:12Z"
 aliases = ["T-0065"]
 labels = ["jira:SCRUM-41", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/catalog.py", "src/hullbreach_server/db/migrations/", "src/hullbreach_server/db/models/inventory.py", "src/hullbreach_server/db/models/item.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_catalog.py", "tests/unit/test_item_models.py", "web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx", "src/hullbreach_server/api/__init__.py", "src/hullbreach_server/api/me.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/db/seed.py", "src/hullbreach_server/services/profile.py", "src/hullbreach_server/auth/schemas.py", "tests/system/test_build.py", "tests/unit/test_seed.py", "tests/unit/test_me.py", "docs/index.md"]
