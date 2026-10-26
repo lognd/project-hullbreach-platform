@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Acceptance 2 (stays signed in on refresh) delivered by ~6TZCHZ0: HttpOnly session cookie plus restore via GET /me."
+at = "2026-10-26T09:40:37Z"
+actor = "a-carten"
+rev = 1
