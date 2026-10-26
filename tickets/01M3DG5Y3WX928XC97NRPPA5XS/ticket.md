@@ -2,7 +2,8 @@
 id = "01M3DG5Y3WX928XC97NRPPA5XS"
 title = "S03-3: Response-time test for the health endpoint"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "high"
 points = 1
 parent = "01M2H5T10BYCP87BPHK38Y09BN"
