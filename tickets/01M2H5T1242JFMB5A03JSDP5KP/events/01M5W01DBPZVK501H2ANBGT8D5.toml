@@ -1,0 +1,54 @@
+kind = "evidence"
+captured_at = "2026-10-26T11:37:53Z"
+digest = "2e2c5a23a1687ee063721a698f0cc151e6f5ffbd0dbb2f3a825163fd4145aa8d"
+exit_code = 0
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Header.test.tsx (20 tests) 692ms
+ \u{2713} web/tests/unit/Store.test.tsx (13 tests) 628ms
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  07:37:53
+   Duration  1.31s (transform 377ms, setup 164ms, import 317ms, tests 1.32s, environment 610ms)
+
+JSON report written to /tmp/frob-vitest-3778943-0.json
+stderr | web/tests/unit/Header.test.tsx > Header (signed out) > links the public Leaderboard to signed-out visitors and signed-in players
+Warning: An update to Header inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Header (<worktree>/web/src/components/Header.tsx:75:54)
+
+stderr | web/tests/unit/Header.test.tsx > Header (signed out) > links the public Store to signed-out visitors and signed-in players
+Warning: An update to Header inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Header (<worktree>/web/src/components/Header.tsx:75:54)
+
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Store.test.tsx web/tests/unit/Header.test.tsx"
+size = 1529
+status = "measured"
+test_count = 33
+tests_digest = "47895dd85d3b0c3a1e4b89e4ef9d9480373f20a31d2d51afa035ec05ec8c674b"
+at = "2026-10-26T11:37:53Z"
+actor = "a-carten"
+rev = 1
