@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [1, 2]
+captured_at = "2026-10-26T09:26:36Z"
+digest = "3fd12beca000fa0973919e2ffcd5d5d017757ee0590b8140feff747b4c506985"
+exit_code = 0
+inline = """
+.......                                                                  [100%]
+7 passed in 0.18s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_elo.py"
+size = 98
+status = "measured"
+test_count = 7
+tests_digest = "82c0779ee6d5f3785ea3207c0e9c579414520fe07e975292236a37692bba2ac6"
+at = "2026-10-26T09:26:36Z"
+actor = "a-carten"
+rev = 1
