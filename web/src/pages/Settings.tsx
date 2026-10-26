@@ -100,7 +100,7 @@ function SettingsForm({ session }: { session: StoredSession }) {
           aria-describedby={formError !== null ? FORM_ERROR_ID : undefined}
           className="flex flex-col gap-space-16"
         >
-          <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0">
+          <fieldset className="m-space-0 flex min-w-space-0 flex-col gap-space-16 border-0 p-space-0">
             <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">
               Identity
             </legend>
@@ -114,7 +114,7 @@ function SettingsForm({ session }: { session: StoredSession }) {
               onChange={setUsername}
             />
           </fieldset>
-          <fieldset className="m-space-0 flex min-w-0 flex-col gap-space-16 border-0 p-space-0 border-t border-line pt-space-16">
+          <fieldset className="m-space-0 flex min-w-space-0 flex-col gap-space-16 border-0 p-space-0 border-t border-line pt-space-16">
             <legend className="float-left w-full pb-space-4 font-mono text-font-size-12 font-semibold uppercase tracking-widest text-accent">
               Credentials
             </legend>

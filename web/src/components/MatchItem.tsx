@@ -59,7 +59,7 @@ export function MatchItem({
       <span className="col-start-1 row-start-1 font-mono text-font-size-12 font-bold uppercase tracking-widest sm:col-auto sm:row-auto">
         {won ? "Win" : "Loss"}
       </span>
-      <span className="col-start-2 row-start-1 min-w-0 wrap-anywhere text-font-size-16 font-medium text-ink sm:col-auto sm:row-auto">
+      <span className="col-start-2 row-start-1 min-w-space-0 wrap-anywhere text-font-size-16 font-medium text-ink sm:col-auto sm:row-auto">
         {match.opponent}
       </span>{" "}
       <span className="col-start-2 row-start-2 font-mono text-font-size-14 tabular-nums text-muted sm:col-auto sm:row-auto sm:text-right">

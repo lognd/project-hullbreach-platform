@@ -98,7 +98,6 @@ globs = ["web/src/**/*.tsx"]
 # there is no `gap-8` that silently means 2rem.
 [tailwind]
 config = "web/tailwind.config.ts"
-css_entry = "web/src/index.css"
 tokens_file = "web/tailwind.theme.json"
 namespace_keys = true
 

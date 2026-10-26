@@ -35,7 +35,7 @@ export function Notice({
       <span className="font-mono text-font-size-12 font-semibold uppercase tracking-widest text-muted">
         {LEAD[tone]}
       </span>
-      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-space-12 gap-y-space-8 wrap-anywhere">
+      <div className="flex min-w-space-0 flex-1 flex-wrap items-center justify-between gap-x-space-12 gap-y-space-8 wrap-anywhere">
         {children}
       </div>
     </div>
