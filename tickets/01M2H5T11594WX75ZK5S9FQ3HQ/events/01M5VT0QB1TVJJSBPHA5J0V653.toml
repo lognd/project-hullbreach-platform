@@ -1,0 +1,29 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-26T09:52:39Z"
+digest = "8c896c750ca120b4153585feaf0966f39ff9e269fb2feed54948e51c981b1b33"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/unit/test_me_delete.py::test_delete_me_anonymizes_and_keeps_match_history
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_me_delete.py::test_delete_me_anonymizes_and_keeps_match_history
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 2 warnings in 0.76s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_me_delete.py::test_delete_me_anonymizes_and_keeps_match_history"
+size = 960
+status = "measured"
+test_count = 1
+tests_digest = "a74f72e329b1c753af146d92f2946d3f4bd3e2ba67b29787e3f3943160f05d12"
+at = "2026-10-26T09:52:39Z"
+actor = "a-carten"
+rev = 1
