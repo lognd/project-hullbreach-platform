@@ -43,7 +43,7 @@ class PurchaseError(BaseModel):
 
 def _refuse(
     kind: Literal["unknown_item", "already_owned", "insufficient_funds"], detail: str
-) -> Err[PurchaseError]:
+) -> Result[PurchaseReceipt, PurchaseError]:
     """Build the refusal for `kind`, logging it."""
     _log.warning("purchase refused: %s (%s)", kind, detail)
     return Err(PurchaseError(kind=kind, detail=detail))
