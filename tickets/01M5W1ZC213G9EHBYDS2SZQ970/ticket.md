@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T12:11:45Z"
-updated = "2026-10-26T12:11:45Z"
+updated = "2026-10-26T12:21:17Z"
 scope = ["src/hullbreach_ops/**", "tests/unit/test_ops_demo*.py", "docs/**", "changelog.d/**"]
 +++
 

@@ -1,0 +1,18 @@
+kind = "evidence"
+captured_at = "2026-10-26T12:21:17Z"
+digest = "bf1cef0956e530c398780a3333ca389e2ac2ee9bacf703180c1b839e32ea4393"
+exit_code = 0
+inline = """
+.................                                                        [100%]
+17 passed in 1.00s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_demo_economy.py tests/unit/test_ops_demo.py tests/unit/test_ops_demo_match.py"
+size = 99
+status = "measured"
+test_count = 17
+tests_digest = "6960a8aec9d5d28c87923ea1e85dbb7d4d9b12381fd8892d087d5ed4031e97d3"
+at = "2026-10-26T12:21:17Z"
+actor = "a-carten"
+rev = 1
