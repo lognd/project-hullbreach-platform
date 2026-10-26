@@ -1,0 +1,7 @@
+kind = "transition"
+from = "todo"
+to = "in-progress"
+reason = "lease: a-carten in platform/.claude/worktrees/agent-ac3147013eedbaa4e; scope: src/hullbreach_server/db/models/ledger.py, src/hullbreach_server/services/currency.py, src/hullbreach_server/services/matches.py, tests/unit/test_currency.py; ttl 7200s"
+at = "2026-10-26T11:20:05Z"
+actor = "a-carten"
+rev = 1

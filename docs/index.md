@@ -129,11 +129,11 @@ takes a `RegisterRequest` (`username` 3-32 chars of `[A-Za-z0-9_.-]`,
 `password` 8-128 chars; every bound is a 422 before any hashing, INV-002;
 `role` is deliberately not a field at all, never merely ignored) and returns a `UserProfile` (`id`, `username`,
 `email`, `role`, `currency`, `rating`, `created_at`) with 201 on success.
-`UserProfile.from_user(user, rating)` builds the response from the persisted
-`User` row and the caller-supplied `rating`, which register, login, `GET
-/me` and `PATCH /me` read from `services/matches.py::current_rating` (1200
-until the player has a rated match); `currency` is `0` (not a real column
-yet). A pre-query (`_duplicate_field`, case-insensitive) checks for
+`UserProfile.from_user(user, rating, currency)` builds the response from the
+persisted `User` row and the caller-supplied `rating` and `currency`, which
+register, login, `GET /me` and `PATCH /me` read from
+`services/matches.py::current_rating` (1200 until the player has a rated
+match) and `services/currency.py::balance` (see Currency). A pre-query (`_duplicate_field`, case-insensitive) checks for
 an existing `username` or `email` before the insert, so a 409 response
 can name the specific offending field (`{"detail": "username already
 taken", "field": "username"}` or the `email` equivalent). The database's
@@ -267,7 +267,8 @@ one per player: `match_id` (FK to `matches.id`, `ON DELETE CASCADE`),
 defaulting to 0. `(match_id, user_id)` is unique, so a player has at most
 one stats row per match. The user FKs deliberately have no `ON DELETE`
 action: deleting an account anonymizes the user row and keeps its matches
-(T-0037), so a hard delete of a player with matches must fail. Currency payout lands with T-0070.
+(T-0037), so a hard delete of a player with matches must fail. Recording a match also
+pays both players (see Currency).
 
 `RatingChange` (`db/models/rating.py`, table `rating_changes`, T-0057) is
 one player's rating in one match: `match_id` (FK, `ON DELETE CASCADE`),
@@ -395,7 +396,8 @@ revision (`e7a3b9c1d2f4_add_users_deleted_at.py`, T-0037) adds the nullable
 revision (`f1b6c2d8a3e5_create_designs_table.py`, S35) creates `designs`
 matching `db/models/design.py`. The eleventh revision
 (`a2c4e6f8b0d1_add_catalog_and_inventory.py`, S20) adds `items.category`
-and `items.preview_url` and creates `inventory`.
+and `items.preview_url` and creates `inventory`. The twelfth revision
+(`b3d5f7a9c1e2_add_currency_ledger.py`, S21) creates `currency_ledger`.
 
 ### Elo rating
 
@@ -681,6 +683,31 @@ always lists every category so a client can render tabs while filtered.
 `{"detail": "catalog unavailable"}`. Both are served by
 `services/catalog.py`, which returns typani `Result`s.
 
+### Currency
+
+A player's balance is the sum of their `currency_ledger` rows
+(`db/models/ledger.py::CurrencyLedger`: signed `delta`, `reason`, optional
+`match_id` and `item_id`), an append-only list that is never edited.
+`services/currency.py::balance` reads it; it is the `currency` of every
+profile. `record_match` appends one row per player in the same transaction
+that stores the match: `WIN_PAYOUT` (50) to the winner and `LOSS_PAYOUT` (10)
+to the loser. `(user_id, match_id)` is unique and the match id is the
+idempotency key, so a replayed or concurrently repeated report pays once
+and a refused report pays nothing.
+
+### Store
+
+`POST /api/v1/store/purchase` (`api/store.py`, bearer or session cookie)
+takes `{"item_id": <uuid>}` and buys that catalog item at its price
+(`services/store.py::purchase`). The debit (a negative `purchase` ledger row
+with the `item_id`) and the inventory grant commit in one transaction, after
+a row lock on the buyer, so the balance never goes negative and a double
+click charges once. Success is 200 with `{item, balance}` (the owned item and
+the balance left). Refusals carry `{"detail": ...}`: 402 insufficient funds
+(the message gives price and balance), 404 unknown item, 409 already owned,
+401 no token. A refusal changes nothing. Unique `(user_id, item_id)` keys on
+`inventory` and `currency_ledger` back the check against concurrent buys.
+
 ### Player API
 
 `src/hullbreach_server/api/me.py` serves the signed-in player's own
@@ -696,8 +723,8 @@ through `get_current_user`. The response models live in the service layer
 `inventory` (a list of `OwnedSkin` `{id, slug, name}`) and
 `recent_matches` (the newest five `MatchSummary` rows). `inventory` lists
 every item the player owns (see Catalog), empty when they own none, and
-`rating` is the player's current ELO (see Auth API); `currency` is `0` until
-the currency ledger lands.
+`rating` is the player's current ELO (see Auth API); `currency` is the
+player's ledger balance (see Currency).
 
 A `MatchSummary` (`services/matches.py`) is one match from the player's
 point of view: `id`, `played_at` (the match's `created_at`), `opponent`

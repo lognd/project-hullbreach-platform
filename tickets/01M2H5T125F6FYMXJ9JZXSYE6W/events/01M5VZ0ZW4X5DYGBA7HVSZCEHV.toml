@@ -1,0 +1,8 @@
+kind = "field"
+field = "scope"
+old = ["src/hullbreach_server/db/models/ledger.py", "src/hullbreach_server/services/currency.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py"]
+new = ["src/hullbreach_server/db/models/ledger.py", "src/hullbreach_server/services/currency.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_currency.py", "src/hullbreach_server/db/models/__init__.py", "src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/api/me.py", "src/hullbreach_server/api/auth.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "docs/index.md", "src/hullbreach_server/db/migrations/versions/b3d5f7a9c1e2_add_currency_ledger.py"]
+reason = "wire balance into profile, register ledger model and migration"
+at = "2026-10-26T11:20:12Z"
+actor = "a-carten"
+rev = 1

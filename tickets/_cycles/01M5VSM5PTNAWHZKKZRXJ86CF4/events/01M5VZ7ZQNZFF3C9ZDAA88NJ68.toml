@@ -1,0 +1,7 @@
+kind = "cycle"
+op = "over-commit"
+ticket = "01M2H5T127FEKMSVQSA2K2YHED"
+text = "implement purchase endpoint"
+at = "2026-10-26T11:24:01Z"
+actor = "a-carten"
+rev = 1

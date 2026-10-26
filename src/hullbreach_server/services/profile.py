@@ -24,6 +24,7 @@ from hullbreach_server.db.models.session import Session
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.services.catalog import list_inventory
+from hullbreach_server.services.currency import balance
 from hullbreach_server.services.matches import (
     MatchSummary,
     current_rating,
@@ -62,7 +63,9 @@ class MeResponse(UserProfile):
 # frob:tests tests/unit/test_me.py::test_get_me_lists_owned_items_in_inventory
 def build_me(db: DBSession, user: User) -> MeResponse:
     """Aggregate `user`'s profile, balance, rating, inventory and last five matches."""
-    profile = UserProfile.from_user(user, current_rating(db, user.id))
+    profile = UserProfile.from_user(
+        user, current_rating(db, user.id), balance(db, user.id)
+    )
     # frob:ticket 01M2H5T10YFV60H1CQDEEH5164
     owned = list_inventory(db, user.id)
     inventory = (

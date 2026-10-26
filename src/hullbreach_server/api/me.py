@@ -23,6 +23,7 @@ from hullbreach_server.db import get_db
 from hullbreach_server.logging import get_logger
 from hullbreach_server.services.account_deletion import delete_account
 from hullbreach_server.services.catalog import OwnedItem, list_inventory
+from hullbreach_server.services.currency import balance
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
@@ -86,7 +87,9 @@ def patch_me(
             content={"detail": error.detail, "field": error.field},
         )
     user = result.danger_ok
-    return UserProfile.from_user(user, current_rating(db, user.id))
+    return UserProfile.from_user(
+        user, current_rating(db, user.id), balance(db, user.id)
+    )
 
 
 # frob:ticket 01M2H5T11594WX75ZK5S9FQ3HQ

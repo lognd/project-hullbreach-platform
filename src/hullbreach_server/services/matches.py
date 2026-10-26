@@ -22,6 +22,7 @@ from hullbreach_server.db.models.rating import RatingChange
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.rating.elo import STARTING_RATING, rate_match
+from hullbreach_server.services.currency import add_match_payouts
 
 _log = get_logger(__name__)
 
@@ -465,6 +466,7 @@ def record_match(
         )
         for user_id in ids
     )
+    add_match_payouts(db, report.match_id, report.winner_id, loser_id, now)
     try:
         db.commit()
     except IntegrityError:
