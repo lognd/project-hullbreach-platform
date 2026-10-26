@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "API half merged-ready: purchase endpoint, atomic debit+grant, 402/404/409. Left open: web buy button (KV6PFT9)."
+at = "2026-10-26T11:26:13Z"
+actor = "a-carten"
+rev = 1
