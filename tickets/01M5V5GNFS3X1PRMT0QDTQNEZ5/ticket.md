@@ -6,8 +6,12 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-26T03:54:23Z"
-updated = "2026-10-26T03:58:37Z"
+updated = "2026-10-26T03:59:01Z"
 scope = ["src/hullbreach_server/auth/schemas.py", "src/hullbreach_server/services/profile.py"]
+
+[[acceptance]]
+text = "given a player with a changed rating, when they call /me or log in, then the real ELO is shown"
+bound = false
 +++
 
 found while working T-0054: UserProfile.from_user hardcodes rating 1200; now that RatingChange exists, /me and login profiles should use services.matches.current_rating.
