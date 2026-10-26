@@ -7,10 +7,10 @@ priority = "medium"
 parent = "01M2H5T1205GXC7WDK3G949GYJ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T11:24:01Z"
+updated = "2026-10-26T11:24:06Z"
 aliases = ["T-0071"]
 labels = ["jira:SCRUM-43", "owner:lognd", "milestone:0.3.0"]
-scope = ["src/hullbreach_server/api/store.py", "src/hullbreach_server/services/store.py", "tests/unit/test_store_purchase.py", "web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx"]
+scope = ["src/hullbreach_server/api/store.py", "src/hullbreach_server/services/store.py", "tests/unit/test_store_purchase.py", "web/src/components/ItemCard.tsx", "web/src/pages/Store.tsx", "web/tests/unit/Store.test.tsx", "src/hullbreach_server/api/__init__.py", "docs/index.md", "tests/unit/test_me.py"]
 
 [[acceptance]]
 text = "given enough currency, when buying an unowned item, then the balance decreases and the item is in the inventory immediately"
