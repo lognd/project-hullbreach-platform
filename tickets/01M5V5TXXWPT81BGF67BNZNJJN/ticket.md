@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-26T03:59:59Z"
-updated = "2026-10-26T03:59:59Z"
+updated = "2026-10-26T04:37:41Z"
 scope = ["src/hullbreach_server/**", "src/hullbreach_ops/**", "tests/**", "Makefile", "docs/**", "README.md"]
 +++
 
