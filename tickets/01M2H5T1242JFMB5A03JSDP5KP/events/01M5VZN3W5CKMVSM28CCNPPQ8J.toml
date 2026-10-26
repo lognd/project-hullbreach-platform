@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/pages/Store.tsx", "web/src/components/ItemCard.tsx", "web/tests/unit/Store.test.tsx"]
+new = ["web/src/pages/Store.tsx", "web/src/components/ItemCard.tsx", "web/tests/unit/Store.test.tsx", "web/src/router.tsx", "web/src/components/Header.tsx", "docs/index.md", "web/tests/unit/Navigation.test.tsx", "web/src/api/store.ts", "web/tests/fixtures/store.ts"]
+at = "2026-10-26T11:31:11Z"
+actor = "a-carten"
+rev = 1
