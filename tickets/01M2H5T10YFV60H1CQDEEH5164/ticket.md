@@ -8,7 +8,7 @@ points = 5
 parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T11:49:24Z"
+updated = "2026-10-26T11:49:42Z"
 aliases = ["T-0030"]
 labels = ["jira:SCRUM-30", "owner:a-carten", "milestone:0.2.0", "creates:tests/system/test_phone_width.py", "creates:tests/system/phone_width.mjs", "creates:changelog.d/01M2H5T10YFV60H1CQDEEH5164.added.md"]
 scope = ["src/hullbreach_server/api/me.py", "src/hullbreach_server/services/profile.py", "tests/unit/test_me.py", "web/src/pages/Profile.tsx", "web/tests/unit/Profile.test.tsx", "tests/system/test_phone_width.py", "tests/system/phone_width.mjs", "changelog.d/01M2H5T10YFV60H1CQDEEH5164.added.md"]
@@ -23,7 +23,7 @@ bound = true
 
 [[acceptance]]
 text = "given a phone-width screen, when the profile renders, then it is usable"
-bound = false
+bound = true
 +++
 
 As a player, I want a profile page that shows my username, rating, currency, owned skins, and recent matches, so that I can see how I am doing at a glance.

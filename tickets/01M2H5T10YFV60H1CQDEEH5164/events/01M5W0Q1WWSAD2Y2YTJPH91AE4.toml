@@ -1,0 +1,19 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-10-26T11:49:42Z"
+digest = "c09df75018caad0cdbe1af22c65d2e572de51140590efcfb6fe730b41d8dd50e"
+exit_code = 0
+inline = """
+.                                                                        [100%]
+1 passed in 1.50s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/system/test_phone_width.py::test_profile_page_fits_a_phone_width_screen_in_a_real_browser"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "d5cf1774f877136cd103c7322a68e49ab0d26aa4b8a0de889daacdeb20ec5d62"
+at = "2026-10-26T11:49:42Z"
+actor = "a-carten"
+rev = 1
