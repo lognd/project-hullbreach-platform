@@ -31,10 +31,10 @@ function Landing() {
       <div className="mx-auto grid w-full max-w-[72rem] items-start gap-space-48 px-space-16 py-space-48 sm:px-space-24 lg:grid-cols-2 lg:py-space-64">
         <div className="flex flex-col gap-space-24">
           <div className="flex flex-col gap-space-12">
-            <h1 className="font-display text-font-size-48 uppercase leading-none tracking-wider">
+            <h1 className="font-display text-font-size-32 sm:text-font-size-48 uppercase leading-none tracking-wider">
               Project Hullbreach
             </h1>
-            <h2 className="font-display text-font-size-24 uppercase leading-tight tracking-wider text-accent">
+            <h2 className="font-display text-font-size-20 sm:text-font-size-24 uppercase leading-tight tracking-wider text-accent">
               Build. Breach. Claim the void.
             </h2>
           </div>
