@@ -1,0 +1,6 @@
+kind = "comment"
+subtype = "note"
+body = "Ledger reconcile 2026-10-26: left open. Still open: GET /api/v1/ready exists server side but no ops or web caller uses it (ops probes call /api/v1/health only)."
+at = "2026-10-26T09:27:23Z"
+actor = "a-carten"
+rev = 1
