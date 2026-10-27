@@ -65,7 +65,7 @@ export function MatchItem({
         {/* The after: overlay makes the whole row the link target. */}
         <AppLink
           href={`/me/matches/${encodeURIComponent(match.id)}`}
-          className="wrap-anywhere after:absolute after:inset-0 hover:text-accent"
+          className="wrap-anywhere after:absolute after:inset-space-0 hover:text-accent"
         >
           {match.opponent}
         </AppLink>
