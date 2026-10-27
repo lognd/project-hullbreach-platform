@@ -1,0 +1,11 @@
+kind = "create"
+title = "Migrate design model from strata to grimble"
+type = "chore"
+category = "todo"
+priority = "medium"
+scope = ["design/**", "grimble.toml", ".prettierignore", "docs/**", "changelog.d/**", "src/hullbreach_server/**"]
+acceptance = ["design/hullbreach.grmb replaces design/hullbreach.strata"]
+body = "Hand migration to grimble v2; no tool exists."
+at = "2026-10-27T01:00:40Z"
+actor = "a-carten"
+rev = 1
