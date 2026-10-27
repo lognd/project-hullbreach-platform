@@ -47,8 +47,8 @@ failure; use `@pytest.mark.xfail(strict=True, reason=...)` for a known,
 tracked defect rather than skipping or deleting the test. There is no
 equivalent escape hatch for lint, types, or the frob gates: fix them.
 
-`frob check` here is frob v2 (pinned to 0.532.0 in CI; install with
-`uv tool install frob==0.532.0`). It runs frob's own rules (directives,
+`frob check` here is frob v2 (CI installs the dev pre-release via
+`scripts/install_frob_dev.sh`). It runs frob's own rules (directives,
 doc links, COV001 coverage, ledger rules, the crunk sibling); it does not
 wrap the linters, so run those yourself as the `server` and `web` jobs do.
 Run the same gates locally before pushing:
