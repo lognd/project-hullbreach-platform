@@ -953,6 +953,19 @@ the last board and shows no error; polling stops when the tab is hidden
 (and catches up when it shows again) or the page unmounts (ticket
 `01M5W2589RQ8Y6MAAMNA32EHF9`). The page does not paginate; it shows the server's default top 100.
 
+### Backend status indicator
+
+`web/src/components/StatusIndicator.tsx`, rendered in the `Footer`, shows
+`API up`, `API down` or `API checking` (a cyan dot for up, orange for down, a
+hairline while checking; the word is always shown). It calls `checkReady` in
+`web/src/api/ready.ts`: `GET /api/v1/ready` through `apiFetch` with a 3 s
+timeout (`READY_TIMEOUT_MS`). Only a 2xx counts as up; a 503, a timeout or a
+network failure is down (logged with `console.warn`, never thrown). It
+re-probes every 30 s (`STATUS_POLL_MS`). A demo presenter can read it to
+confirm the browser-to-backend-to-database link (ticket
+`01M2KR6R34724T0ND699BV81G9`). The strata `REL200` waivers for `f_health` and
+`f_ready` are not yet re-pointed; `/api/v1/health` has no web caller.
+
 ### Store page
 
 `web/src/pages/Store.tsx` is routed at `/store` and is public to browse. It

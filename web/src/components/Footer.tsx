@@ -1,4 +1,5 @@
 import { AppLink } from "@/components/AppLink";
+import { StatusIndicator } from "@/components/StatusIndicator";
 
 // frob:doc docs/index.md#routing-and-page-shell
 /** Site footer with links to the cookie notice and data policy pages. */
@@ -8,6 +9,7 @@ export function Footer() {
       <span className="w-full font-mono uppercase tracking-widest sm:mr-auto sm:w-auto">
         Class project // pre-release
       </span>
+      <StatusIndicator />
       <AppLink
         href="/cookie-policy"
         className="py-space-8 underline underline-offset-4 hover:text-ink"
