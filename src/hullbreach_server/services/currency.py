@@ -7,12 +7,16 @@ appended in the same transaction that records the match.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
+from typing import Literal
 
+from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as DBSession
+from typani import Err, Ok, Result
 
 from hullbreach_server.db.models.ledger import CurrencyLedger
+from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
 
 _log = get_logger(__name__)
@@ -67,3 +71,48 @@ def add_match_payouts(
         WIN_PAYOUT,
         LOSS_PAYOUT,
     )
+
+
+# frob:ticket 01M5XX217WGTRZ8XE24BMEPR9H
+# frob:doc docs/index.md#currency
+class CurrencyError(BaseModel):
+    """Why a credit grant was refused; `kind` says which input was wrong."""
+
+    kind: Literal["invalid_amount", "unknown_user"]
+    detail: str
+
+    def __str__(self) -> str:
+        """The plain reason, for logs and messages."""
+        return self.detail
+
+
+# frob:ticket 01M5XX217WGTRZ8XE24BMEPR9H
+# noqa: E501  # frob:tests tests/unit/test_currency_grant.py::test_grant_appends_a_ledger_row_and_returns_the_new_balance
+# frob:doc docs/index.md#currency
+def grant(
+    db: DBSession, user_id: uuid.UUID, amount: int, reason: str
+) -> Result[int, CurrencyError]:
+    """Stage a positive `amount` ledger credit for `user_id`; Ok(new balance).
+
+    The caller commits. Err when `amount` is not positive or the user is unknown.
+    """
+    if amount <= 0:
+        _log.warning("grant refused: amount %d is not positive", amount)
+        return Err(
+            CurrencyError(kind="invalid_amount", detail="amount must be positive")
+        )
+    if db.get(User, user_id) is None:
+        _log.warning("grant refused: unknown user %s", user_id)
+        return Err(CurrencyError(kind="unknown_user", detail="no such account"))
+    db.add(
+        CurrencyLedger(
+            user_id=user_id,
+            delta=amount,
+            reason=reason,
+            created_at=datetime.now(UTC),
+        )
+    )
+    db.flush()
+    total = balance(db, user_id)
+    _log.info("granted %d (%s) to %s, balance %d", amount, reason, user_id, total)
+    return Ok(total)

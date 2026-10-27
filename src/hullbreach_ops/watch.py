@@ -29,7 +29,9 @@ def _status_color(status: int) -> str | None:
     return _GREEN
 
 
-def _show(ctx: OpsContext, raw: str, show_events: bool) -> bool:
+def _show(
+    ctx: OpsContext, raw: str, show_events: bool, show_payloads: bool = True
+) -> bool:
     """Print `raw` in console form if worth showing; True when something printed."""
     parsed = parse_line(raw)
     if parsed.is_ok:
@@ -38,9 +40,11 @@ def _show(ctx: OpsContext, raw: str, show_events: bool) -> bool:
         if isinstance(entry, AccessEntry):
             flag = "  [server-key]" if entry.server_key else ""
             status = str(entry.status)
+            who = entry.username or entry.user
+            body = f"  body={entry.payload}" if show_payloads and entry.payload else ""
             ctx.console.highlight(
                 f"{stamp}  {entry.method:<6} {entry.path:<30} {status}  "
-                f"{entry.ms:>6.0f}ms  user={entry.user}{flag}",
+                f"{entry.ms:>6.0f}ms  user={who}{flag}{body}",
                 status,
                 _status_color(entry.status) or _GREEN,
             )
@@ -55,7 +59,13 @@ def _show(ctx: OpsContext, raw: str, show_events: bool) -> bool:
     return False
 
 
-def _follow(ctx: OpsContext, path: Path, handle: TextIO, show_events: bool) -> None:
+def _follow(
+    ctx: OpsContext,
+    path: Path,
+    handle: TextIO,
+    show_events: bool,
+    show_payloads: bool = True,
+) -> None:
     """Print new lines as they arrive until interrupted; survives log truncation."""
     pending = ""
     while True:
@@ -63,7 +73,7 @@ def _follow(ctx: OpsContext, path: Path, handle: TextIO, show_events: bool) -> N
         if chunk:
             pending += chunk
             if pending.endswith("\n"):
-                _show(ctx, pending, show_events)
+                _show(ctx, pending, show_events, show_payloads)
                 pending = ""
             continue
         if (
@@ -77,9 +87,17 @@ def _follow(ctx: OpsContext, path: Path, handle: TextIO, show_events: bool) -> N
 # frob:ticket 01M5V5TXXWPT81BGF67BNZNJJN
 # frob:doc docs/index.md#demo-console
 def watch(
-    ctx: OpsContext, *, show_events: bool, lines: int, follow: bool
+    ctx: OpsContext,
+    *,
+    show_events: bool,
+    lines: int,
+    follow: bool,
+    show_payloads: bool = True,
 ) -> Result[None, OpsError]:
     """Show the last `lines` requests (and DB events if `show_events`), then follow.
+
+    Each request shows its username and, unless `show_payloads` is off, the
+    sanitized payload summary the API logged (passwords/tokens already redacted).
 
     Reads the log `make demo` / `make start` writes; Err if the API has not been
     started yet. Ctrl+C ends a follow cleanly.
@@ -98,16 +116,20 @@ def watch(
         if show_events
         else "Showing requests. Add --db (make console-db) to show database changes."
     )
+    if show_payloads:
+        ctx.console.line(
+            "Request payloads are summarized; passwords and tokens are hidden."
+        )
     _log.info("console: watching %s (events=%s, follow=%s)", path, show_events, follow)
     with path.open(encoding="utf-8", errors="replace") as handle:
         recent = handle.read().splitlines()
         shown = [r for r in recent if _is_shown(r, show_events)]
         shown = shown[max(len(shown) - lines, 0) :]
         for raw in shown:
-            _show(ctx, raw, show_events)
+            _show(ctx, raw, show_events, show_payloads)
         if follow:
             try:
-                _follow(ctx, path, handle, show_events)
+                _follow(ctx, path, handle, show_events, show_payloads)
             except KeyboardInterrupt:
                 ctx.console.line()
                 ctx.console.line("Console stopped.")

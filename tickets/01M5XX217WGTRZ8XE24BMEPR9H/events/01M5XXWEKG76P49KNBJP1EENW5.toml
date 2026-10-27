@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-27T05:38:42Z"
+digest = "9624a7c37cc0e263e7f42e9308fc345559068ffc7c40825817ecbc7952c0d207"
+exit_code = 0
+head = "f882665ff6c264342e5e9e74cc487af668c7843e"
+inline = """
+.........................                                                [100%]
+25 passed in 1.31s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_grant_credits.py tests/unit/test_ops_cli.py"
+size = 99
+status = "measured"
+test_count = 25
+tests_digest = "fb52ab30df1dee282422f35c4e190bbf0fba04bcc655e409f62a6154e4b3f1d0"
+at = "2026-10-27T05:38:42Z"
+actor = "a-carten"
+rev = 1

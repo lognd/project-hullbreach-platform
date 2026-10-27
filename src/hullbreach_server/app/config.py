@@ -58,6 +58,9 @@ class AppConfig(BaseModel):
     game_server_api_keys: list[SecretStr] = []
     # host:port the matchmaking queue hands to matched players (S29).
     game_server_address: str = "127.0.0.1:7777"
+    # Add a sanitized request-payload summary to access lines (demo console);
+    # off by default, redaction is by key name (frob:ticket 01M5XX20F95MPV6YY454BQSNSF).
+    log_payloads: bool = False
 
     # frob:invariant INV-004
     @field_validator("cors_origins")
