@@ -111,6 +111,12 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
         elif name == "HULLBREACH_CORS_ORIGINS":
             line = _CORS_LOCAL_PORT.sub(web_port, line)
         out.append(line)
+    # frob:ticket 01M5XX217WGTRZ8XE24BMEPR9H
+    out += [
+        "",
+        "# Demo machine: allows `make grant-credits`. Never set in production.",
+        "HULLBREACH_DEMO_MODE=1",
+    ]
     try:
         target.write_text("\n".join(out) + "\n", encoding="utf-8")
         target.chmod(0o600)

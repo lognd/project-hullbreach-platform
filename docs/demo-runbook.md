@@ -79,6 +79,15 @@ target or documented in the [README](../README.md); nothing here is new.
    **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
    skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
    so do not try to buy those live.
+
+   To buy something pricier, give the account more credits first (demo
+   only): `make grant-credits USER=demo_pilot AMOUNT=500`. It prints the
+   new balance and the console shows `DB  credits granted: +500 to
+   'demo_pilot' (balance N)`; reload the Store (go to another page and
+   back) and the larger balance is there. The command works only when
+   `HULLBREACH_DEMO_MODE=1` is in `.env` (a fresh `make demo` writes it; add
+   the line by hand to an older `.env`). Without it the command refuses, so
+   it is unavailable in production, and there is no web endpoint for it.
    The footer shows **API up** (cyan dot) while the backend and database answer
    `/api/v1/ready`; **API down** (orange) means the front-to-back link is broken.
 8. Finish: **Log out**, then `make stop` (accounts are kept).
