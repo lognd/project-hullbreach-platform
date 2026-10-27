@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-27T01:14:21Z"
-updated = "2026-10-27T01:14:21Z"
+updated = "2026-10-27T01:18:34Z"
 scope = ["src/hullbreach_server/services/store.py", "src/hullbreach_server/services/equip.py", "tests/unit/test_service_events.py", "docs/demo-runbook.md", "docs/demo-script.md", "docs/index.md"]
 
 [[acceptance]]
