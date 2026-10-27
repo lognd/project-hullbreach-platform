@@ -41,7 +41,7 @@ export function StatusIndicator() {
       aria-label={`Backend ${view.label}`}
       className="inline-flex items-center gap-space-8 font-mono uppercase tracking-widest"
     >
-      <span aria-hidden="true" className={`inline-block h-2 w-2 ${view.dot}`} />
+      <span aria-hidden="true" className={`inline-block h-space-8 w-space-8 ${view.dot}`} />
       API {view.label}
     </span>
   );
