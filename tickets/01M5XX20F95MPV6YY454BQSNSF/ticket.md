@@ -2,11 +2,12 @@
 id = "01M5XX20F95MPV6YY454BQSNSF"
 title = "Console shows authenticated username and sanitized request payload"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-27T05:24:17Z"
-updated = "2026-10-27T05:38:40Z"
+updated = "2026-10-27T05:38:46Z"
 scope = ["src/hullbreach_server/app/**", "src/hullbreach_server/logging/**", "src/hullbreach_server/auth/deps.py", "src/hullbreach_ops/watch.py", "src/hullbreach_ops/cli.py", "src/hullbreach_ops/lifecycle.py", "tests/unit/**", "docs/**", "Makefile", "changelog.d/**"]
 
 [[acceptance]]
