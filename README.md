@@ -1190,10 +1190,10 @@ you the shared database string.
 ### frob
 
 ```
-uv tool install frob==0.532.0
+scripts/install_frob_dev.sh   # needs the gh CLI, logged in
 ```
 
-CI pins the same version. `frob --version` to check. `uv tool install` puts a program on your PATH
+CI installs the same dev pre-release (sha256-verified). `frob --version` to check. `uv tool install` puts a program on your PATH
 in its own little environment, separate from any project, which is what
 you want for a tool you run on projects. crunk is different: it is a dev
 dependency of this repo, so it lives in `.venv` and runs as `uv run crunk`.
