@@ -1,0 +1,10 @@
+kind = "create"
+title = "Console shows authenticated username and sanitized request payload"
+type = "story"
+category = "todo"
+priority = "high"
+scope = ["src/hullbreach_server/app/**", "src/hullbreach_server/logging/**", "src/hullbreach_server/auth/deps.py", "src/hullbreach_ops/watch.py", "src/hullbreach_ops/cli.py", "src/hullbreach_ops/lifecycle.py", "tests/unit/**", "docs/**", "Makefile", "changelog.d/**"]
+acceptance = ["given a JSON request, when console-db runs, then the line shows method, path, status, duration, username and a sanitized payload summary", "given passwords, tokens, secrets or hashes at any nesting depth, then the payload summary never contains them"]
+at = "2026-10-27T05:24:17Z"
+actor = "a-carten"
+rev = 1
