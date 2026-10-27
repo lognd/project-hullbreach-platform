@@ -712,6 +712,16 @@ the balance left). Refusals carry `{"detail": ...}`: 402 insufficient funds
 401 no token. A refusal changes nothing. Unique `(user_id, item_id)` keys on
 `inventory` and `currency_ledger` back the check against concurrent buys.
 
+`tests/unit/test_store_purchase_concurrent.py` proves this on real
+PostgreSQL: twelve simultaneous purchases by one account with a balance for
+three leave exactly three grants and a balance of zero, and twelve
+simultaneous buys of one item grant it once. It runs only when
+`HULLBREACH_TEST_PG_URL` names a throwaway database (each test builds and
+drops its own schema in it) and is skipped otherwise; CI sets it from a
+`postgres:16` service container. Locally, start one with
+`docker run --rm -d -e POSTGRES_PASSWORD=pw -e POSTGRES_DB=hbtest -p 127.0.0.1:55432:5432 postgres:16-alpine`
+and use `postgresql://postgres:pw@127.0.0.1:55432/hbtest`.
+
 ### Equipped skin
 
 `PUT /api/v1/me/equipped` (`api/me.py::put_equipped`, S12, ~HRZTTYB) equips

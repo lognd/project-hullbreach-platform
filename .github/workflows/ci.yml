@@ -21,6 +21,20 @@ jobs:
   server:
     name: server (python)
     runs-on: ubuntu-latest
+    # Real PostgreSQL for the concurrent-purchase test (row-lock behaviour).
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: hbtest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+    env:
+      HULLBREACH_TEST_PG_URL: postgresql://postgres:ci-only-password@127.0.0.1:5432/hbtest
     steps:
       - uses: actions/checkout@v4
 
