@@ -1175,7 +1175,8 @@ The API writes two kinds of line (`hullbreach_server/logging/events.py`,
 - `[event]`: one per database state change at INFO: user registered, login
   ok/failed, logout and session revoked, match recorded (winner and rating
   before -> after per player), idempotent replay, settings updated (field
-  names only, never values).
+  names only, never values), store purchase (item, price, balance left)
+  and skin equipped.
 
 Console format: `HH:MM:SS  METHOD  path  status  NNms  user=..  [server-key]`,
 and with `--db` `HH:MM:SS  DB      <text>`. Warnings and errors (such as a
