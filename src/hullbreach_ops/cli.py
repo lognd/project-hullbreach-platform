@@ -37,6 +37,7 @@ COMMANDS = {
     "stop": "stop the website, API and database (keeps the data)",
     "status": "show what is running",
     "reset-db": "DELETE the local database and create it again (asks first)",
+    "wipe-demo": "DELETE the database, logs and support zips a demo left (asks first)",
     "demo-users": "create two demo player accounts",
     "server-key": "make a game-server key and say where it goes",
     "console": "live view of API requests (add --db for database changes)",
@@ -134,6 +135,7 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         lifecycle,
         smoke,
         watch,
+        wipe,
     )
     from hullbreach_ops.collect import collect
     from hullbreach_ops.doctor import doctor, passed
@@ -152,6 +154,7 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         "stop": lifecycle.stop,
         "status": lifecycle.status,
         "reset-db": lifecycle.reset_db,
+        "wipe-demo": wipe.wipe_demo,
         "demo-users": accounts.demo_users,
         "server-key": accounts.server_key,
         "lan": lan.lan,

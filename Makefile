@@ -3,7 +3,7 @@ PY_STAMP  := .venv/.install-stamp
 WEB_STAMP := node_modules/.install-stamp
 
 .PHONY: install install-py install-web clean run dev db build \
-        doctor demo console console-db smoke start stop status reset-db demo-users server-key lan demo-match grant-credits
+        doctor demo console console-db smoke start stop status reset-db demo-wipe demo-users server-key lan demo-match grant-credits
 
 # T-3400: this Makefile intentionally does NOT ship format/lint/typecheck/
 # test/coverage/check targets. This is a frob-enabled polyglot project
@@ -63,6 +63,10 @@ doctor:
 
 start stop status reset-db demo-users server-key lan smoke demo-match: $(PY_STAMP)
 	uv run hullbreach_server $@
+
+# Complete wipe between demo runs: volumes, logs, support zips (asks first).
+demo-wipe: $(PY_STAMP)
+	uv run hullbreach_server wipe-demo
 
 # One command for the class demo: installs what is missing, then starts everything.
 demo: $(PY_STAMP) $(WEB_STAMP)

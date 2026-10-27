@@ -33,7 +33,7 @@ _log = get_logger(__name__)
 
 Service = Literal["api", "web"]
 _LOG_NAMES: dict[Service, str] = {"api": "api.log", "web": "web.log"}
-_DOCKER_FIX = [
+DOCKER_FIX = [
     "Run ./doctor.sh; its docker and docker-daemon checks say exactly what is wrong.",
 ]
 _DB_WAIT_SECONDS = 90.0
@@ -90,7 +90,8 @@ def _command_error(
     return OpsError(message=f"{what} failed: {detail}", fix=fix)
 
 
-def _run_ok(
+# frob:doc docs/index.md#operator-scripts-and-the-doctor
+def run_ok(
     ctx: OpsContext, argv: list[str], what: str, fix: list[str], timeout: float = 120
 ) -> Result[CommandResult, OpsError]:
     """Run `argv` in the repo root; a non-zero exit is an Err with fix steps."""
@@ -147,7 +148,7 @@ def parse_compose_ps(text: str) -> list[DbContainer]:
 def db_container(ctx: OpsContext) -> Result[DbContainer | None, OpsError]:
     """This project's database container, or None when it was never created."""
     argv = compose_argv(ctx, "ps", "--all", "--format", "json", "db")
-    result = _run_ok(ctx, argv, "docker compose ps", _DOCKER_FIX, timeout=30)
+    result = run_ok(ctx, argv, "docker compose ps", DOCKER_FIX, timeout=30)
     found = parse_compose_ps(result.unwrap().stdout)
     return Ok(found[0] if found else None)
 
@@ -189,7 +190,7 @@ def db_up(ctx: OpsContext) -> Result[bool, OpsError]:
         return Err(
             OpsError(
                 message="docker is not installed (or not on PATH)",
-                fix=_DOCKER_FIX,
+                fix=DOCKER_FIX,
             )
         )
     if not ctx.environ.get("POSTGRES_PASSWORD"):
@@ -211,12 +212,12 @@ def db_up(ctx: OpsContext) -> Result[bool, OpsError]:
         f"  Database: starting container (compose project "
         f"{ctx.settings.compose_project}, port {ctx.settings.db_port})"
     )
-    _run_ok(
+    run_ok(
         ctx,
         compose_argv(ctx, "up", "-d", "db"),
         "docker compose up",
         [
-            *_DOCKER_FIX,
+            *DOCKER_FIX,
             f"If the port is taken, set {DB_PORT_VAR} in .env to a free port "
             "and update the port in HULLBREACH_DATABASE_URL to match.",
         ],
@@ -509,8 +510,8 @@ def stop(ctx: OpsContext) -> Result[None, OpsError]:
             "started the API by hand, press Ctrl+C in its terminal."
         )
     if ctx.runner.which("docker") is not None:
-        _run_ok(
-            ctx, compose_argv(ctx, "stop", "db"), "docker compose stop", _DOCKER_FIX
+        run_ok(
+            ctx, compose_argv(ctx, "stop", "db"), "docker compose stop", DOCKER_FIX
         ).unwrap()
         ctx.console.line("  Database: stopped (your data is kept)")
     return Ok(None)
@@ -586,8 +587,8 @@ def reset_db(ctx: OpsContext) -> Result[None, OpsError]:
     for service in ("web", "api"):
         if stop_service(ctx, service):
             ctx.console.line(f"  Stopped the {service} (it was using the database)")
-    _run_ok(
-        ctx, compose_argv(ctx, "down", "-v"), "docker compose down -v", _DOCKER_FIX
+    run_ok(
+        ctx, compose_argv(ctx, "down", "-v"), "docker compose down -v", DOCKER_FIX
     ).unwrap()
     ctx.console.line(f"  Deleted the database container and volume {s.db_volume}")
     db_up(ctx).unwrap()
