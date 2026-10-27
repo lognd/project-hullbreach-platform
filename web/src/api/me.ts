@@ -43,6 +43,19 @@ export async function equipSkin(token: string, itemId: string): Promise<OwnedSki
   });
 }
 
+// frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+// frob:doc docs/index.md#equipped-skin
+/** DELETE /api/v1/me/equipped with the caller's bearer token; 204 whether or not a skin was equipped, 401 or 500 rejects with an ApiError. */
+export async function unequipSkin(token: string): Promise<void> {
+  const response = await apiFetch(`${ME_BASE}/equipped`, {
+    method: "DELETE",
+    headers: bearerHeaders(token),
+  });
+  if (!response.ok) {
+    throw await errorFromResponse(response);
+  }
+}
+
 // frob:doc docs/index.md#player-api-client-and-the-profile-page
 /** GET /api/v1/me with the caller's bearer token (or the session cookie when token is ""); 200 MeResponse on success, 401 rejects with an ApiError. */
 export async function fetchMe(token: string, timeoutMs?: number): Promise<MeResponse> {

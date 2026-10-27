@@ -1,0 +1,28 @@
+kind = "evidence"
+captured_at = "2026-10-27T06:04:29Z"
+digest = "436bf4c586afbcccde862ffec5c0d42dc5c602f089bdf8887fb5f692bd5bf710"
+exit_code = 0
+head = "5a0d36b67f1aee94700b3fd0d2c5f729b88b45c6"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/SkinPicker.test.tsx (5 tests) 210ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  02:04:29
+   Duration  783ms (transform 89ms, setup 93ms, import 98ms, tests 210ms, environment 299ms)
+
+JSON report written to /tmp/frob-vitest-563832-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/SkinPicker.test.tsx"
+size = 311
+status = "measured"
+test_count = 5
+tests_digest = "1393f64ef08ec51f96879cc35f684db7454d5a4e22da1bea611683e6c13cd46c"
+at = "2026-10-27T06:04:29Z"
+actor = "a-carten"
+rev = 1

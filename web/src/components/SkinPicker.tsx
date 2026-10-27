@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ApiError } from "@/api/auth";
-import { equipSkin, type OwnedSkin } from "@/api/me";
+import { equipSkin, unequipSkin, type OwnedSkin } from "@/api/me";
 import { Notice } from "@/components/Notice";
 
 type SkinPickerProps = {
@@ -10,8 +10,9 @@ type SkinPickerProps = {
 };
 
 // frob:ticket 01M2H5T117A35Q8AA9THRZTTYB
+// frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
 // frob:doc docs/index.md#equipped-skin
-/** Lists the owned skins as toggle buttons; pressing one equips it via PUT /api/v1/me/equipped and a refusal shows as an alert. */
+/** Lists the owned skins as toggle buttons; pressing one equips it (PUT /api/v1/me/equipped), pressing the equipped one again unequips it (DELETE), and a refusal shows as an alert. */
 export function SkinPicker({ token, skins, initial }: SkinPickerProps) {
   const [equippedId, setEquippedId] = useState<string | null>(initial?.id ?? null);
   const [pending, setPending] = useState(false);
@@ -21,8 +22,13 @@ export function SkinPicker({ token, skins, initial }: SkinPickerProps) {
     setPending(true);
     setError(null);
     try {
-      const saved = await equipSkin(token, skin.id);
-      setEquippedId(saved.id);
+      if (skin.id === equippedId) {
+        await unequipSkin(token);
+        setEquippedId(null);
+      } else {
+        const saved = await equipSkin(token, skin.id);
+        setEquippedId(saved.id);
+      }
     } catch (caught: unknown) {
       setError(
         caught instanceof ApiError ? caught.detail : "Something went wrong. Please try again.",
