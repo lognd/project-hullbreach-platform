@@ -1,0 +1,11 @@
+[check]
+# Lowest severity that makes `frob check` exit 1.
+fail_on = "error"
+
+[directives]
+# Comment namespaces the scanner reads; comments in any other are ignored.
+namespaces = ["frob", "grimble"]
+
+[grimble]
+# Root `.grmb` files, one independent model each.
+models = ["design/hullbreach.grmb"]

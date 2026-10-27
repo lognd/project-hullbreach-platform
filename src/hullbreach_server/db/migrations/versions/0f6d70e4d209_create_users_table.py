@@ -33,7 +33,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("username", sa.String(length=32), nullable=False),
         # PII (category "contact"): account identity, covered by the data
-        # policy tracked in T-0049 (design/hullbreach.strata's
+        # policy tracked in T-0049 (design/hullbreach.grmb's
         # hullbreach_server_db node declares this via `carries`).
         sa.Column("email", sa.String(length=254), nullable=False),
         # PII (category "credentials"): a credential at rest -- always an

@@ -1,0 +1,511 @@
+grimble = "2";
+
+// Sprint-1 (milestone 0.1.0) target architecture. Hand-written, not
+// generated (this file predates any generated skeleton). Migrated by hand
+// from the v1 strata model design/hullbreach.strata (there is no tool for
+// that, D136); the grimble v2 language differs, see "Migration notes".
+// Companion to docs/design/sprint-1.md, which is the human-readable spec;
+// this file is the checked model of the same design. `owns` globs are
+// bound to PLANNED files (T-0006..T-0044) that do not all exist yet, so
+// `frob check` against this branch's code tree may show MDL005 (selector
+// matches no file) or SYS findings until those tickets land -- expected
+// during the design phase, not a defect in this file.
+//
+// Migration notes (what grimble v2 could not carry from the strata model;
+// each gap is repeated at the spot it applies and in docs/design/sprint-1.md
+// section 9):
+//  1. `code` is now `owns`; `managed` is `kind external` plus `attr managed`.
+//  2. `may "x" via "f::sym"` is `may x at "f::sym"`; a grant states a reason
+//     with `because=` (MDL008 otherwise).
+//  3. Capability atoms are a closed registry. v1 `env.read`/`env.write` both
+//     become `process.env` (the read/write split is lost); `fetch_url` becomes
+//     `net.connect`. `sql`, `eval` and `client_storage` have no registered atom
+//     (a grant of one is MDL016 Error), so those grants are kept below as
+//     comments only and are NOT enforced until a pack declares the atoms.
+//  4. `waive "REL200:..."` is gone: REL200 (flow timeout) has no v2 rule and
+//     `waive` is dropped from the language (the exception kinds need a v2 rule
+//     id and a full ULID ticket). Each waiver is kept as a `v1 waiver` comment
+//     with its reason and ticket; nothing is enforced for it.
+//  5. `carries` (PII categories) is dropped from the grammar (a PII pack);
+//     kept as `attr carries = [...]`, which is data only.
+//  6. The `secret` entity and std.secrets are gone. issued_by/lifetime/revoke
+//     are kept as typed attrs on the issuing node (`attr <secret>_lifetime`,
+//     `attr <secret>_revoke`); the audience reads-flows were already
+//     hand-declared below, so nothing else changes.
+//  7. `attr "free text"` becomes `attr note = "..."` (HTTP routes use
+//     `attr route = "..."`), because an attr key must be an identifier.
+//  8. Trust zones: strata `foreign` maps to `foreign`, `trusted` to `trusted`.
+//     v1 had no per-node clearance; v2 defaults it to Secret, left implicit.
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+module hullbreach_sprint1;
+
+// -------------------------------------------------------------------
+// External callers (foreign: outside our control once code ships to them)
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node browser : foreign {
+  kind component;
+  // The React app runs inside a player's browser: our own JS, but
+  // executing in an environment the player can inspect, tamper with,
+  // or replay from -- untrusted the same way any client is.
+  owns "web/src/**";
+  may net.connect at "web/src/api/auth.ts" because="the register/login/logout fetch calls to the platform API";
+  // GAP: v1 `may "client_storage" via "web/src/auth/session.ts"` has no v2
+  // atom (MDL016); not enforced. web/src/auth/session.ts's
+  // StoredSession.token is the bearer session token held in memory only
+  // (never web storage); a reload restores the session through the server's
+  // HttpOnly cookie (T-0019's issue_session, mirrored client-side).
+  // PII category "credentials" (T-0015's db.password_hash declaration form).
+  attr carries = ["credentials"];
+  // v1 waiver REL200:f_register (ticket T-0102): T-0017 implemented the
+  // register form/fetch call (web/src/api/auth.ts::register) without a
+  // request timeout; T-0102 adds one and will declare/prove it there.
+  // v1 waiver REL200:f_login_web (ticket T-0102): T-0021 implemented the
+  // login form/fetch call (web/src/api/auth.ts::login) without a request
+  // timeout; T-0102 adds one to every fetch call in that file.
+  // v1 waiver REL200:f_logout (ticket T-0102): T-0024 implemented the logout
+  // control's fetch call (web/src/api/auth.ts::logout) without a request
+  // timeout; T-0102 adds one to every fetch call in that file.
+  // v1 waiver REL200:f_health (ticket T-0100): design-only pass; no
+  // browser-side caller of /health exists yet -- T-0100 wires a web/ops
+  // caller for both /health and /ready.
+  // v1 waiver REL200:f_ready (ticket T-0100): design-only pass; no
+  // browser-side caller of /ready exists yet -- T-0100 wires one for it.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node game_client : foreign {
+  // The Unity game client authenticates against us with a bearer
+  // token obtained from /auth/login; we do not own or scan its code.
+  kind external;
+  attr managed;
+  // v1 waiver REL200:f_login_game (ticket T-0100): the game client is
+  // managed (no code we scan) and reuses POST /auth/login verbatim (T-0020),
+  // same as f_login_web; proving a timeout formally on the platform side is
+  // T-0100's follow-up work.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node game_server : foreign {
+  // The Unity game server validates a client-presented token via
+  // GET /auth/session; lives in the sibling game repo (T-0026,
+  // labeled needs-game), no scannable code here.
+  kind external;
+  attr managed;
+  // v1 waiver REL200:f_session_check (ticket T-0100): T-0023 landed the
+  // platform side of this flow (GET /auth/session); the game server itself
+  // is managed and lives in the sibling repo, so proving a timeout formally
+  // on this side is T-0100's follow-up work.
+}
+
+// -------------------------------------------------------------------
+// Platform API, split by planned package (matches docs/design/sprint-1.md
+// section 1's module map)
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_root : trusted {
+  kind component;
+  owns "src/hullbreach_server/__init__.py";
+  owns "src/hullbreach_server/__main__.py";
+  may process.env at "src/hullbreach_server/__main__.py::main" because="main exports the operator-supplied config env (v1 grant was env.write)";
+  // Secret database_url (v1 `secret`): issued by this node; lifetime 180 d is
+  // the operational rotation policy of HULLBREACH_DATABASE_URL (an
+  // operator-rotated credential in an env var / secret manager, not
+  // something the app itself times out).
+  attr database_url_lifetime = 180 d;
+  attr database_url_revoke = 1 d;
+  // v1 waiver REL200:database_url__issue (ticket T-0100): design-only pass;
+  // the database URL is an operator-rotated credential (section 9's secret
+  // bound), not something T-0006's code path times out itself.
+  // v1 waiver REL200:database_url__revoke (ticket T-0100): same; rotation
+  // is operational, not a code-level timeout.
+  // v1 waiver REL200:f_database_url_to_db (ticket T-0100): design-only pass;
+  // db/engine.py (T-0006) reads the URL once at engine construction, no
+  // request/response cycle to time out.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_app : trusted {
+  kind component;
+  owns "src/hullbreach_server/app/**";
+  may net.listen at "src/hullbreach_server/app/app.py::App.__call__" because="the ASGI app is the server's listening surface";
+  may process.env at "src/hullbreach_server/app/config.py::AppConfig.from_external" because="config is read from the environment once at startup";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_api : trusted {
+  kind component;
+  owns "src/hullbreach_server/api/**";
+  // v1 waiver REL200:f_api_to_auth (ticket T-0100): T-0020 landed the real
+  // POST /auth/login call site, but that is a per-call, not a model-declared
+  // flow timeout attr -- proving it formally is T-0100's follow-up work.
+  // v1 waiver REL200:f_api_to_db (ticket T-0100): T-0012 landed the readiness
+  // check (check_connectivity via create_db_engine's 5s connect_timeout), but
+  // that is a connect_args kwarg, not a model-declared flow timeout attr.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_auth : trusted {
+  kind component;
+  owns "src/hullbreach_server/auth/**";
+  may process.env at "src/hullbreach_server/auth/sessions.py::_session_ttl_seconds" because="session TTL is operator-configurable";
+  may process.env at "src/hullbreach_server/auth/sessions.py::_login_rate_limit_max" because="login rate limit is operator-configurable";
+  may process.env at "src/hullbreach_server/auth/sessions.py::_login_rate_limit_window_seconds" because="login rate-limit window is operator-configurable";
+  // Secret session_token (v1 `secret`): issued here, lifetime 14 d, revoke 1 s.
+  attr session_token_lifetime = 14 d;
+  attr session_token_revoke = 1 s;
+  // Secret password_hash (v1 `secret`): issued here. Argon2id hashes are not
+  // time-bound the way a session token is; the "lifetime" stands for the
+  // rotation horizon at which a scheme/parameter upgrade should be forced
+  // (open question, docs/design/sprint-1.md section 8 -- no rehash-on-login
+  // upgrade path exists yet in 0.1.0).
+  attr password_hash_lifetime = 3650 d;
+  attr password_hash_revoke = 1 d;
+  // v1 waivers below, all REL200 (flow timeout), all ticket T-0100, each
+  // "a per-call, not a model-declared flow timeout attr -- proving it
+  // formally is T-0100's follow-up work":
+  //  - f_auth_to_db: T-0019 landed auth/sessions.py's SQLAlchemy Session calls.
+  //  - session_token__issue: T-0020 landed the real POST /auth/login cycle.
+  //  - session_token__revoke: T-0023 landed the real POST /auth/logout site.
+  //  - password_hash__issue: T-0016 landed the POST /auth/register persistence.
+  //  - password_hash__revoke: a hash is never revoked by code, only by a
+  //    future rehash-on-login upgrade path (design section 8, open question).
+  //  - f_session_token_to_browser: T-0020 POST /auth/login's response.
+  //  - f_session_token_to_game_client: same response as the browser; the game
+  //    client is managed (no code we scan).
+  //  - f_session_token_to_game_server: T-0023 landed GET /session.
+  //  - f_password_hash_to_db: T-0016 POST /auth/register persistence.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_db : trusted {
+  kind component;
+  owns "src/hullbreach_server/db/**";
+  // GAP: v1 `may "sql" via "src/hullbreach_server/db/engine.py::check_connectivity"`
+  // has no v2 atom (MDL016); not enforced.
+  may fs.read at "src/hullbreach_server/db/seed.py::_load_seed_items" because="seed items are loaded from disk";
+  may process.env at "src/hullbreach_server/db/seed.py::_create_first_admin" because="first-admin credentials come from the environment";
+  // users.email (contact) is account identity; users.password_hash
+  // (credentials) is a credential at rest, never the raw password.
+  // Both are covered by the data policy tracked in T-0049.
+  attr carries = ["contact", "credentials"];
+  // v1 waiver REL200:f_db_to_postgres (ticket T-0100): design-only pass;
+  // create_db_engine (T-0006) sets a 5s connect_timeout for the psycopg
+  // driver, but that is a connect_args kwarg, not a model-declared flow
+  // timeout attr -- proving it formally is follow-up work, not blocking
+  // T-0006's own acceptance criteria.
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_server_logging : trusted {
+  kind component;
+  owns "src/hullbreach_server/logging/**";
+}
+
+// -------------------------------------------------------------------
+// Data store (external infrastructure, no code of ours to scan)
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+node hullbreach_postgres : trusted {
+  kind store;
+  attr managed;
+}
+
+// -------------------------------------------------------------------
+// The test tree itself -- covers the capabilities pytest fixtures and
+// build-smoke tests already legitimately exercise (subprocess/exec in
+// tests/system/test_build.py's fresh-`uv sync` smoke test, tmp_path
+// writes in tests/unit/test_app.py's config-file fixture).
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:ticket 01M2KR6R31Z48GCVFTJFCXKB89
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+node tests : trusted {
+  kind component;
+  owns "tests/**";
+  owns "web/tests/**";
+  may exec at "tests/system/test_build.py" because="fresh `uv sync` smoke test spawns processes";
+  may fs.read at "tests/system/test_build.py" because="build smoke test reads project files";
+  may fs.write at "tests/unit/test_app.py" because="tmp_path config-file fixture";
+  // GAP: v1 grants with no v2 atom (MDL016), not enforced:
+  //  - eval at tests/system/test_build.py
+  //  - client_storage at web/tests/unit/Header.test.tsx
+  //  - client_storage at web/tests/unit/Login.test.tsx
+  //  - sql (whole node): sprint-1 xfail test bodies (test_seed.py,
+  //    conftest.py) execute raw SQL against the in-memory SQLite fixture to
+  //    assert idempotency/row counts; nearly every test in this node touches
+  //    the database, so per-file scoping is not worth it.
+}
+
+// -------------------------------------------------------------------
+// Test-tree import edges
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_root : tests -> hullbreach_server_root {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server/__main__ directly";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_app : tests -> hullbreach_server_app {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server.app directly";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_api : tests -> hullbreach_server_api {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server.api.health directly";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_logging : tests -> hullbreach_server_logging {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server.logging.* directly";
+}
+
+// frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_db : tests -> hullbreach_server_db {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server.db/.db.engine directly";
+}
+
+// frob:ticket 01M2H5T10FZD12FP728D4G72FY
+// frob:doc docs/design/sprint-1.md#7-test-strategy
+flow f_tests_to_auth : tests -> hullbreach_server_auth {
+  label Internal;
+  attr local;
+  attr note = "test modules import hullbreach_server.auth.passwords directly";
+}
+
+// -------------------------------------------------------------------
+// Flows: every HTTP call in the sprint-1 design, plus the DB connection.
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#endpoints
+flow f_register : browser -> hullbreach_server_api {
+  label Pii;
+  attr route = "POST /api/v1/auth/register";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#endpoints
+flow f_login_web : browser -> hullbreach_server_api {
+  label Pii;
+  attr route = "POST /api/v1/auth/login";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#endpoints
+flow f_login_game : game_client -> hullbreach_server_api {
+  label Pii;
+  attr route = "POST /api/v1/auth/login";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#endpoints
+flow f_logout : browser -> hullbreach_server_api {
+  label Internal;
+  attr route = "POST /api/v1/auth/logout";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#endpoints
+flow f_session_check : game_server -> hullbreach_server_api {
+  label Internal;
+  attr route = "GET /api/v1/auth/session";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#fail-fast-startup-t-0006
+flow f_health : browser -> hullbreach_server_api {
+  label Public;
+  attr route = "GET /api/v1/health";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#readiness-endpoint-t-0012
+flow f_ready : browser -> hullbreach_server_api {
+  label Public;
+  attr route = "GET /api/v1/ready";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_api_to_auth : hullbreach_server_api -> hullbreach_server_auth {
+  label Pii;
+  attr note = "internal call: password/session handling";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_auth_to_db : hullbreach_server_auth -> hullbreach_server_db {
+  label Pii;
+  attr note = "internal call: user/session persistence";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_api_to_db : hullbreach_server_api -> hullbreach_server_db {
+  label Internal;
+  attr note = "internal call: readiness check (SELECT 1)";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_db_to_postgres : hullbreach_server_db -> hullbreach_postgres {
+  label Pii;
+  attr note = "SQL over HULLBREACH_DATABASE_URL";
+}
+
+// frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_db_to_app : hullbreach_server_db -> hullbreach_server_app {
+  label Internal;
+  attr local;
+  attr note = "db/__init__.py reads AppConfig.from_external() to build the engine";
+}
+
+// frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_db_to_logging : hullbreach_server_db -> hullbreach_server_logging {
+  label Internal;
+  attr local;
+  attr note = "db/engine.py and db/__init__.py use the module logger convention";
+}
+
+// frob:ticket 01M2H5T108QJ1XZE5WZKK7Y5KS
+// frob:doc docs/design/sprint-1.md#seed-idempotency-and-the-items-problem-t-0008
+flow f_db_to_auth : hullbreach_server_db -> hullbreach_server_auth {
+  label Internal;
+  attr local;
+  attr note = "db/seed.py imports hash_password to create the first admin account";
+}
+
+// frob:ticket 01M2H5T10K6K9M220TZJ29XJR3
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_auth_to_logging : hullbreach_server_auth -> hullbreach_server_logging {
+  label Internal;
+  attr local;
+  attr note = "auth/sessions.py and auth/deps.py use the module logger convention";
+}
+
+// -------------------------------------------------------------------
+// Existing Python import edges within the platform package (measured, not planned;
+// the edges derived from the import graph, declared so undeclared-edge checks stay quiet).
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_root_to_app : hullbreach_server_root -> hullbreach_server_app {
+  label Internal;
+  attr local;
+  attr note = "__main__.py imports App/AppConfig from app package";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_api_to_root : hullbreach_server_api -> hullbreach_server_root {
+  label Internal;
+  attr local;
+  attr note = "api/health.py imports __version__ from package root";
+}
+
+// frob:ticket 01M2H5T10GG1ZY60EPCZXAF8E7
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_api_to_logging : hullbreach_server_api -> hullbreach_server_logging {
+  label Internal;
+  attr local;
+  attr note = "api/auth.py uses the module logger convention";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_app_to_root : hullbreach_server_app -> hullbreach_server_root {
+  label Internal;
+  attr local;
+  attr note = "app/app.py imports __version__ from package root";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_app_to_api : hullbreach_server_app -> hullbreach_server_api {
+  label Internal;
+  attr local;
+  attr note = "app/app.py imports api_router from api package";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_app_to_logging : hullbreach_server_app -> hullbreach_server_logging {
+  label Internal;
+  attr local;
+  attr note = "app/app.py imports get_logger from logging package";
+}
+
+// frob:ticket 01M2KR6R33VE66XY6M4Z9PQATE
+// frob:doc docs/design/sprint-1.md#fail-fast-startup-t-0006
+flow f_app_to_db : hullbreach_server_app -> hullbreach_server_db {
+  label Internal;
+  attr local;
+  attr note = "app/app.py imports check_connectivity/create_db_engine from db.engine for the fail-fast startup check";
+}
+
+// -------------------------------------------------------------------
+// Hand-declared "who reads/relies on this secret" edges -- the manual equivalent of the
+// v1 std.secrets auto-generated reads flows (see Migration notes 6). The audience was
+// deliberately never declared on the secrets (v1 language gap); that trade-off carries over.
+// -------------------------------------------------------------------
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_session_token_to_browser : hullbreach_server_auth -> browser {
+  label Secret;
+  attr note = "session token delivered to the web client on register/login";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_session_token_to_game_client : hullbreach_server_auth -> game_client {
+  label Secret;
+  attr note = "session token delivered to the game client on login";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_session_token_to_game_server : hullbreach_server_auth -> game_server {
+  label Secret;
+  attr note = "session token validity confirmed to the game server via GET /session";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_password_hash_to_db : hullbreach_server_auth -> hullbreach_server_db {
+  label Secret;
+  attr note = "password hash persisted for future verification";
+}
+
+// frob:ticket 01M2KR6R2ZME84T32Z6NH0VG88
+// frob:doc docs/design/sprint-1.md#9-grimble-model-designhullbreachgrmb
+flow f_database_url_to_db : hullbreach_server_root -> hullbreach_server_db {
+  label Secret;
+  attr note = "database URL used by the engine to open connections";
+}

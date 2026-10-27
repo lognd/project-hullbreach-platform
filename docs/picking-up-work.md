@@ -39,7 +39,7 @@ frob ticket update T-0031 --add-scope src/hullbreach_server/api/__init__.py
 ```
 
 Two people cannot hold the same file at once, so shout in chat before
-adding `docs/index.md` or `design/hullbreach.strata` to a scope; every
+adding `docs/index.md` or `design/hullbreach.grmb` to a scope; every
 backend ticket wants both, and they serialize.
 
 ## Read the breadcrumbs in the code
