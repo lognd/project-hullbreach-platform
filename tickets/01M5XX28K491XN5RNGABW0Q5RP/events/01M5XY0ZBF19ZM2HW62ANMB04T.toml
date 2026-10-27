@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-10-27T05:41:11Z"
+digest = "5532d453222a9f64d6f5b9977c017dfa1f2e2cb965f2f56028bc781dc0001540"
+exit_code = 0
+head = "67526605703f512b899ef87325f46ed425a6ff87"
+inline = """
+.............                                                            [100%]
+13 passed in 0.58s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_register_errors.py -p no:warnings"
+size = 99
+status = "measured"
+test_count = 13
+tests_digest = "dc23589fa6731bebee2e636f747013b4e21c8f4ed5f11d04c4476a038edc700d"
+at = "2026-10-27T05:41:11Z"
+actor = "a-carten"
+rev = 1
