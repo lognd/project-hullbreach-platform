@@ -359,7 +359,11 @@ def start_api(ctx: OpsContext, host: str) -> Result[ProcessRecord, OpsError]:
         ctx.runner.spawn(
             argv,
             cwd=ctx.settings.root,
-            env=dict(ctx.environ),
+            # Demo stack: console shows payload summaries unless opted out.
+            env={
+                "HULLBREACH_LOG_PAYLOADS": "1",
+                **ctx.environ,
+            },  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
             log_path=log_path(ctx, "api"),
         )
         .map_err(lambda e: OpsError(message=f"could not start the API: {e}"))

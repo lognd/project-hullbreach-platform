@@ -131,3 +131,43 @@ def test_watch_survives_the_log_being_reset(tmp_path: Path) -> None:
 def test_status_is_coloured_by_class(status: int, code: str) -> None:
     # frob:tests src/hullbreach_ops/watch.py::_status_color kind="unit"
     assert watch._status_color(status) == code
+
+
+ACCESS_BODY = (
+    "[access] 2026-10-26T12:00:07Z POST /api/v1/store/purchase 200 9.0ms user=u-1 key=no "
+    'name=demo_pilot body={"item_id":"rookie-stripes","password":"<redacted>"}'
+)
+
+
+def test_watch_shows_username_and_payload_summary(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/watch.py::watch kind="unit"
+    ctx = _write_log(tmp_path, ACCESS_BODY)
+
+    assert watch.watch(ctx, show_events=False, lines=10, follow=False).is_ok
+
+    text = output(ctx)
+    assert "user=demo_pilot" in text
+    assert 'body={"item_id":"rookie-stripes","password":"<redacted>"}' in text
+
+
+def test_watch_can_hide_payloads(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/watch.py::watch kind="unit"
+    ctx = _write_log(tmp_path, ACCESS_BODY)
+
+    result = watch.watch(
+        ctx, show_events=False, lines=10, follow=False, show_payloads=False
+    )
+
+    assert result.is_ok
+    assert "rookie-stripes" not in output(ctx)
+    assert "user=demo_pilot" in output(ctx)
+
+
+def test_watch_payload_view_still_masks_registered_secrets(tmp_path: Path) -> None:
+    # frob:tests src/hullbreach_ops/watch.py::watch kind="unit"
+    ctx = _write_log(tmp_path, ACCESS_BODY.replace("rookie-stripes", "leak-s3cret"))
+    ctx.console.add_secret("leak-s3cret")
+
+    assert watch.watch(ctx, show_events=False, lines=10, follow=False).is_ok
+
+    assert "leak-s3cret" not in output(ctx)

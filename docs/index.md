@@ -1163,8 +1163,10 @@ set. The step-by-step show is [docs/demo-script.md](demo-script.md).
 `make console` (or `uv run hullbreach_server console`) tails the API log
 (`.hullbreach/logs/api.log`, written by `make demo`) in a readable form so
 an audience can watch requests arrive. `make console-db` (`--db`) also
-shows the database changes the API makes. Options: `-n N` (lines of
-history, default 10), `--no-follow` (print and exit). Ctrl+C stops it.
+shows the database changes the API makes. Both show the signed-in
+username and a sanitized summary of each request payload. Options: `-n N`
+(lines of history, default 10), `--no-follow` (print and exit),
+`--no-payloads` (hide payload summaries). Ctrl+C stops it.
 
 The API writes two kinds of line (`hullbreach_server/logging/events.py`,
 `app/access_log.py`):
@@ -1172,13 +1174,26 @@ The API writes two kinds of line (`hullbreach_server/logging/events.py`,
 - `[access]`: one per request with time, method, path, status, duration,
   the signed-in user id or `-`, and whether the request carried a game
   server key (only its presence, never the value). Health polls are skipped.
+  With `HULLBREACH_LOG_PAYLOADS=1` (set by `make demo` / `make start`
+  unless you set it yourself; off for a bare `uv run hullbreach_server`)
+  it also carries the username (`name=`) and a payload summary (`body=`)
+  for JSON POST/PUT/PATCH/DELETE requests (`app/access_log.py`,
+  `logging/payload.py`).
 - `[event]`: one per database state change at INFO: user registered, login
   ok/failed, logout and session revoked, match recorded (winner and rating
   before -> after per player), idempotent replay, settings updated (field
   names only, never values), store purchase (item, price, balance left)
   and skin equipped.
 
-Console format: `HH:MM:SS  METHOD  path  status  NNms  user=..  [server-key]`,
+Payload summaries are redacted by key name at any nesting depth: any key
+containing password, token, secret, authorization, credential, cookie, hash,
+salt, session or signature, ending in `key`, or equal to auth/jwt/otp/pin
+has its whole value replaced by `<redacted>`. Other values are bounded
+(strings 48 chars, 3 list items, 12 keys, depth 3, 300 chars total); bodies
+over 64 KiB or not JSON show a placeholder. Query strings and headers are
+never logged.
+
+Console format: `HH:MM:SS  METHOD  path  status  NNms  user=<name>  [server-key]  body={...}`,
 and with `--db` `HH:MM:SS  DB      <text>`. Warnings and errors (such as a
 failed login) always show. Times are UTC. Passwords, tokens and keys are
 never logged. App-level event lines were chosen over Postgres statement

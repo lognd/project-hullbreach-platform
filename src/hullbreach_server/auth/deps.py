@@ -79,6 +79,7 @@ def get_current_user(
 
     # Read by AccessLogMiddleware to put the caller on the request's access line.
     request.state.user_id = str(user.id)
+    request.state.username = user.username  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
     return AuthContext(user=user, session=session_row)
 
 
@@ -127,4 +128,5 @@ def get_optional_user(
     user = db.get(User, result.danger_ok.user_id)
     if user is not None:
         request.state.user_id = str(user.id)
+        request.state.username = user.username  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
     return user

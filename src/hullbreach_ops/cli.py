@@ -74,6 +74,11 @@ def add_ops_commands(sub: argparse._SubParsersAction) -> None:
                 help="also show database changes (registered, match recorded, ...)",
             )
             parser.add_argument(
+                "--no-payloads",
+                action="store_true",
+                help="hide the request payload summaries (shown by default)",
+            )
+            parser.add_argument(
                 "-n",
                 "--lines",
                 type=int,
@@ -146,7 +151,11 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         result = demo.demo(ctx, args.bind_host)
     elif args.command == "console":
         result = watch.watch(
-            ctx, show_events=args.db, lines=args.lines, follow=not args.no_follow
+            ctx,
+            show_events=args.db,
+            lines=args.lines,
+            follow=not args.no_follow,
+            show_payloads=not args.no_payloads,
         )
     else:
         result = simple[args.command](ctx)

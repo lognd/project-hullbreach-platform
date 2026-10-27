@@ -38,7 +38,10 @@ target or documented in the [README](../README.md); nothing here is new.
    it.
 4. Terminal 2: `make console` shows one line per API request;
    `make console-db` also shows database changes (user registered, match
-   recorded with rating changes). Leave it visible next to the browser.
+   recorded with rating changes). Each line shows the signed-in username and
+   a short summary of the request payload (passwords and tokens appear as
+   `<redacted>`; `--no-payloads` hides it). Leave it visible next to the
+   browser.
 5. Show Profile (ELO) and Matches (history), then trigger a match:
    - Quickest: `make smoke` in a third terminal. It
      registers a fresh smoke player and a rival, records a match with the
@@ -101,7 +104,7 @@ against the console:
 | Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
 | Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
 | Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                |
-| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
+| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200 user=demo_pilot body={"item_id":...}`, `DB  purchase: ... bought ... balance` |
 | **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
 | **Log out**                                 | `DB  logout`                                                       |
 
