@@ -76,6 +76,8 @@ target or documented in the [README](../README.md); nothing here is new.
    **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
    skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
    so do not try to buy those live.
+   The footer shows **API up** (cyan dot) while the backend and database answer
+   `/api/v1/ready`; **API down** (orange) means the front-to-back link is broken.
 8. Finish: **Log out**, then `make stop` (accounts are kept).
 
 ## Troubleshooting
