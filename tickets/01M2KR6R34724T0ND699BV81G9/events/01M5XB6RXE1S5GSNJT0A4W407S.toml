@@ -1,0 +1,7 @@
+kind = "field"
+field = "scope"
+old = ["web/src/**"]
+new = ["web/src/**", "web/tests/unit/StatusIndicator.test.tsx", "docs/index.md", "docs/demo-runbook.md", "changelog.d/01M2KR6R34724T0ND699BV81G9.*"]
+at = "2026-10-27T00:12:19Z"
+actor = "a-carten"
+rev = 1
