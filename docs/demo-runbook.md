@@ -95,15 +95,15 @@ make console-db      # second terminal
 Driven through the real website (headless Chromium), each step checked
 against the console:
 
-| Step in the browser                           | Console shows                                                      |
-| --------------------------------------------- | ------------------------------------------------------------------ |
-| Create account `showtime`                     | `POST /api/v1/auth/register 201`, `DB  user registered`            |
-| Log in, click **Profile** (ELO 1200)          | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
-| Log out                                       | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
-| Log in `demo_pilot`, **Profile** (ELO 1228)   | same lines for `demo_pilot`; 6 matches, balance 520                |
-| **Store**, buy **Rookie Stripes** (40)        | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
-| **Profile**, press the skin to equip it       | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
-| **Log out**                                   | `DB  logout`                                                       |
+| Step in the browser                         | Console shows                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| Create account `showtime`                   | `POST /api/v1/auth/register 201`, `DB  user registered`            |
+| Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
+| Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
+| Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                |
+| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
+| **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
+| **Log out**                                 | `DB  logout`                                                       |
 
 Notes from the rehearsal: registering does not sign you in (you land on
 a "Registration complete" page with a **Log in** link); buying any item
