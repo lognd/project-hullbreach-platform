@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-27T05:24:18Z"
-updated = "2026-10-27T05:38:40Z"
+updated = "2026-10-27T05:38:42Z"
 scope = ["src/hullbreach_server/services/currency.py", "src/hullbreach_ops/**", "tests/unit/**", "docs/**", "Makefile", "changelog.d/**"]
 
 [[acceptance]]
@@ -15,5 +15,5 @@ bound = true
 
 [[acceptance]]
 text = "given demo mode off, an unknown user or a non-positive amount, then the command refuses and writes nothing"
-bound = false
+bound = true
 +++
