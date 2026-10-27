@@ -1,0 +1,10 @@
+kind = "create"
+title = "Concurrent purchase test on real Postgres"
+type = "task"
+category = "todo"
+priority = "medium"
+scope = ["tests/unit/test_store_purchase_concurrent.py", "src/hullbreach_server/services/store.py", "docs/index.md", ".github/workflows/ci.yml", "changelog.d/**"]
+body = "N parallel purchases must never overdraw or double-grant."
+at = "2026-10-27T00:42:04Z"
+actor = "a-carten"
+rev = 1
