@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "a-carten"
 created = "2026-10-27T05:24:25Z"
-updated = "2026-10-27T05:24:25Z"
+updated = "2026-10-27T05:40:53Z"
 labels = ["creates:tests/unit/test_register_errors.py"]
 scope = ["src/hullbreach_server/auth/**", "src/hullbreach_server/api/auth.py", "src/hullbreach_server/app/app.py", "tests/unit/test_auth_register.py", "web/src/api/auth.ts", "web/src/pages/Register.tsx", "web/tests/unit/Register.test.tsx", "docs/index.md", "changelog.d/**", "tests/unit/test_register_errors.py"]
 
