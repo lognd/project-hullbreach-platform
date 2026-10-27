@@ -16,7 +16,7 @@ from hullbreach_server.db.models.inventory import InventoryEntry
 from hullbreach_server.db.models.item import Item
 from hullbreach_server.db.models.ledger import CurrencyLedger
 from hullbreach_server.db.models.user import User
-from hullbreach_server.logging import get_logger
+from hullbreach_server.logging import get_logger, log_event
 from hullbreach_server.services.catalog import OwnedItem
 from hullbreach_server.services.currency import balance
 
@@ -65,7 +65,9 @@ def purchase(
         return _refuse("unknown_item", "no such item")
     # Serialize this player's purchases: the row lock makes the balance check
     # and the debit atomic (a no-op on SQLite, where writes are serialized).
-    db.execute(select(User.id).where(User.id == user_id).with_for_update())
+    username = db.execute(
+        select(User.username).where(User.id == user_id).with_for_update()
+    ).scalar_one()
     owned = db.execute(
         select(InventoryEntry.id).where(
             InventoryEntry.user_id == user_id, InventoryEntry.item_id == item_id
@@ -98,10 +100,12 @@ def purchase(
         # A concurrent purchase won; the unique (user, item) keys are the authority.
         db.rollback()
         return _refuse("already_owned", "you already own this item")
-    _log.info(
-        "user %s bought item %s for %d (balance %d)",
-        user_id,
-        item.slug,
+    # frob:ticket 01M5XERBZAG9BA5ZW3ZJNSMFQ4
+    log_event(
+        _log,
+        "purchase: %r bought %r for %d (balance %d)",
+        username,
+        item.name,
         item.price_cents,
         current - item.price_cents,
     )

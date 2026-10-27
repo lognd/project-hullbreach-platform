@@ -13,7 +13,8 @@ from typani import Err, Ok, Result
 
 from hullbreach_server.db.models.inventory import EquippedSkin, InventoryEntry
 from hullbreach_server.db.models.item import Item
-from hullbreach_server.logging import get_logger
+from hullbreach_server.db.models.user import User
+from hullbreach_server.logging import get_logger, log_event
 
 _log = get_logger(__name__)
 
@@ -81,7 +82,13 @@ def equip(
         row.item_id = item_id
         row.equipped_at = now
     db.commit()
-    _log.info("user %s equipped %s", user_id, item.slug)
+    # frob:ticket 01M5XERBZAG9BA5ZW3ZJNSMFQ4
+    log_event(
+        _log,
+        "skin equipped: %r wears %r",
+        db.scalar(select(User.username).where(User.id == user_id)),
+        item.name,
+    )
     return Ok(SkinRef(id=item.id, slug=item.slug, name=item.name))
 
 

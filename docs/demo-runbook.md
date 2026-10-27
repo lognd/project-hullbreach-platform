@@ -80,6 +80,57 @@ target or documented in the [README](../README.md); nothing here is new.
    `/api/v1/ready`; **API down** (orange) means the front-to-back link is broken.
 8. Finish: **Log out**, then `make stop` (accounts are kept).
 
+## Verified step list (rehearsal)
+
+Rehearsed end to end on a clean checkout (no `.env`, no `node_modules`),
+with the ports moved so nothing already running was touched:
+
+```
+export HULLBREACH_DB_PORT=54329 HULLBREACH_PORT=8010 HULLBREACH_WEB_PORT=5183
+export COMPOSE_PROJECT_NAME=hullbreach-demo   # own database volume
+make demo            # about 15 s once dependencies are installed
+make console-db      # second terminal
+```
+
+Driven through the real website (headless Chromium), each step checked
+against the console:
+
+| Step in the browser                         | Console shows                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| Create account `showtime`                   | `POST /api/v1/auth/register 201`, `DB  user registered`            |
+| Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
+| Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
+| Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                |
+| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
+| **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
+| **Log out**                                 | `DB  logout`                                                       |
+
+Notes from the rehearsal: registering does not sign you in (you land on
+a "Registration complete" page with a **Log in** link); buying any item
+over the balance shows a red "costs N, you have M" error and the console
+prints a `purchase refused` warning (that is the correct refusal, not a
+fault); a 401 on `GET /me` before sign-in is the app checking for a
+session cookie and is expected.
+
+## If it breaks
+
+1. `make status` shows what runs; logs are in `.hullbreach/logs`.
+2. Ports taken: set the three `HULLBREACH_*_PORT` variables as above
+   before `make demo`. The doctor names the process holding a port; leave
+   unrelated processes alone.
+3. "Database rejected the password": the compose project's volume is from
+   an older `.env`. Safest: pick a fresh project name with
+   `COMPOSE_PROJECT_NAME=hullbreach-demo` (never touches the old volume).
+   Only if the old data does not matter, `uv run hullbreach_server reset-db`
+   deletes this project's volume.
+4. Console empty: run `make console-db` from the same checkout and with
+   the same port variables as `make demo`.
+5. Store buy does nothing: the item costs more than the balance; use a cheap one
+   (Rookie Stripes 40, Demo Day Badge 100).
+6. Clean up after a rehearsal: `make stop`, then remove the volume you
+   created (`docker volume rm hullbreach-demo_pgdata`) if you want a
+   fresh start.
+
 ## Troubleshooting
 
 | Symptom                                             | Cause                                      | Fix                                                                                                                                                                                                                                       |
