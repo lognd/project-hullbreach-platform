@@ -1069,21 +1069,22 @@ WSL and then hand over to `doctor.sh`). The wrappers only make sure git,
 uv, Docker and Node.js exist and offer their official installers after a
 `[y/N]` question; every real check is in Python.
 
-| Command         | What it does                                                                                                                                           |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `doctor`        | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                           |
-| `demo`          | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history            |
-| `demo-match`    | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after                 |
-| `smoke`         | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)                  |
-| `start`         | database container (waits for healthy), migrations, seed, API and website in the background                                                            |
-| `stop`          | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                           |
-| `status`        | what is running, on which port                                                                                                                         |
-| `reset-db`      | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                                       |
-| `demo-users`    | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                         |
-| `server-key`    | generates a game-server key and says where it goes on both sides; never written to disk                                                                |
-| `lan`           | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`)          |
-| `grant-credits` | DEMO ONLY: `grant-credits <user> <amount>` adds a `demo_grant` ledger row; refused unless `HULLBREACH_DEMO_MODE` is on ([Demo console](#demo-console)) |
-| `console`       | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console))                                              |
+| Command         | What it does                                                                                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `doctor`        | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                                     |
+| `demo`          | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history                      |
+| `demo-match`    | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after                           |
+| `smoke`         | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)                            |
+| `start`         | database container (waits for healthy), migrations, seed, API and website in the background                                                                      |
+| `stop`          | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                                     |
+| `status`        | what is running, on which port                                                                                                                                   |
+| `reset-db`      | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                                                 |
+| `wipe-demo`     | `make demo-wipe`: stops everything, deletes the volume, logs, pid records and support zips, then lists the browser and game state only you can clear; asks first |
+| `demo-users`    | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                                   |
+| `server-key`    | generates a game-server key and says where it goes on both sides; never written to disk                                                                          |
+| `lan`           | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`)                    |
+| `grant-credits` | DEMO ONLY: `grant-credits <user> <amount>` adds a `demo_grant` ledger row; refused unless `HULLBREACH_DEMO_MODE` is on ([Demo console](#demo-console))           |
+| `console`       | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console))                                                        |
 
 Terminal output goes through `console.py`'s `Console`, not logging: every
 line is redacted (registered secret values plus anything that looks like a

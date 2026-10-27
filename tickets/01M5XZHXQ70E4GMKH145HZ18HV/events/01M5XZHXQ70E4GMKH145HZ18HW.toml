@@ -1,0 +1,13 @@
+kind = "create"
+title = "demo-wipe: completely wipe the local stack between demo runs"
+type = "task"
+category = "todo"
+priority = "high"
+points = 3
+labels = ["owner:lognd"]
+scope = ["src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "Makefile", "docs/demo-runbook.md", "docs/index.md", "changelog.d/**"]
+acceptance = ["given demo-wipe confirmed, when it runs, then the stack is stopped, the compose project's volumes removed and local logs cleared, and manual leftovers listed", "given a mistyped confirmation, when demo-wipe runs, then nothing is deleted"]
+body = "reset-db keeps .hullbreach/logs, and make console replays old api.log lines, so old usernames reappear after a DB wipe."
+at = "2026-10-27T06:07:56Z"
+actor = "a-carten"
+rev = 1

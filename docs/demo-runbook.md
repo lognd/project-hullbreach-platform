@@ -127,6 +127,55 @@ prints a `purchase refused` warning (that is the correct refusal, not a
 fault); a 401 on `GET /me` before sign-in is the app checking for a
 session cookie and is expected.
 
+## Wiping between runs
+
+`make demo-wipe` (or `uv run hullbreach_server wipe-demo`) removes every
+trace of earlier runs that this checkout can reach: it stops the website
+and API, runs `docker compose down -v` for the compose project (database
+container and volume), and deletes `.hullbreach/logs/*`,
+`.hullbreach/run/*` and any `hullbreach-support-*.zip`. It needs a
+terminal and asks you to type the volume name back.
+
+Why not `reset-db`: it recreates only the database. The API log survives
+it, and `make console` replays the last lines of `.hullbreach/logs/api.log`,
+so an old username can reappear on screen after a database wipe even
+though the server never reads logs to make names.
+
+What no command can clear, and the wipe prints after it finishes:
+
+- Browser: cookies, localStorage and saved form data for the site, plus
+  autofill (a saved username offered in the sign-in box comes from here).
+- Game: the saved name in Unity PlayerPrefs, and any
+  `HULLBREACH_PLATFORM_USERNAME`, `_PASSWORD` or `_TOKEN` in the
+  environment that launches the game.
+- Other checkouts: every folder has its own compose project, volumes,
+  `.env` and logs. Run the wipe inside each copy you have demoed from (for
+  example one under `/mnt` on a Windows drive). The wipe warns when
+  `COMPOSE_PROJECT_NAME` is set by hand, since checkouts sharing a name
+  share a volume, and lists other `*pgdata` volumes it did not touch.
+
+## Demonstrating ship motion
+
+The web app has no motion view; ships fly only in the Unity game (the
+`game` repo). This needs the Unity editor and was not run while writing
+this section; the steps are quoted from the game README.
+
+Single player, no platform (Guide 1):
+
+1. Open the project in Unity, then `Assets` > `Scenes` and double-click
+   `DemoScene`.
+2. Press Play. You start in Build mode; press `Tab` for Fly mode.
+3. In Fly mode `W`/`S` thrust, `A`/`D` turn, `Space` fires, `R` resets
+   the ship, `O` cycles the stress and damage overlays.
+
+With a platform account (Guide 4):
+
+1. Run `make demo` here and register an account on the website.
+2. In the game folder run `.\play.cmd online` (add
+   `--platform-url ...` if the API is not at `http://127.0.0.1:8000`).
+3. Sign in on the lobby screen, host and join as in Guide 2, then
+   **START GAME** and fly as above.
+
 ## If it breaks
 
 1. `make status` shows what runs; logs are in `.hullbreach/logs`.

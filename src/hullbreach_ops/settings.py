@@ -136,6 +136,11 @@ class OpsSettings(BaseModel):
         return self.state_dir / "run"
 
     @property
+    def default_compose_project(self) -> str:
+        """The project name docker compose picks for this folder when none is set."""
+        return _default_project(self.root)
+
+    @property
     def db_volume(self) -> str:
         """The docker volume holding this project's database files."""
         return f"{self.compose_project}_pgdata"
