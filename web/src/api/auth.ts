@@ -45,21 +45,48 @@ export class ApiError extends Error {
   status: number;
   detail: string;
   field?: string;
+  /** Every rejected field with its reason (register's 422 `errors` list); absent otherwise. */
+  fieldErrors?: Record<string, string>;
 
   // frob:doc docs/index.md#auth-api-client-and-the-register-page
-  constructor(status: number, detail: string, field?: string) {
+  constructor(
+    status: number,
+    detail: string,
+    field?: string,
+    fieldErrors?: Record<string, string>,
+  ) {
     super(detail);
     this.name = "ApiError";
     this.status = status;
     this.detail = detail;
     this.field = field;
+    this.fieldErrors = fieldErrors;
   }
 }
 
-/** Extracts a {detail, field?} pair from a non-ok Response body, tolerating FastAPI's array-shaped 422 detail. */
-async function parseErrorBody(
-  response: Response,
-): Promise<{ detail: string; field?: string }> {
+/** Reads register's `errors` list ([{field, detail}]) into a field-keyed map; undefined when absent or empty. */
+function parseFieldErrors(errors: unknown): Record<string, string> | undefined {
+  if (!Array.isArray(errors)) {
+    return undefined;
+  }
+  const out: Record<string, string> = {};
+  for (const item of errors as unknown[]) {
+    if (item !== null && typeof item === "object") {
+      const { field, detail } = item as Record<string, unknown>;
+      if (typeof field === "string" && typeof detail === "string" && !(field in out)) {
+        out[field] = detail;
+      }
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/** Extracts a {detail, field?, fieldErrors?} triple from a non-ok Response body, tolerating FastAPI's array-shaped 422 detail. */
+async function parseErrorBody(response: Response): Promise<{
+  detail: string;
+  field?: string;
+  fieldErrors?: Record<string, string>;
+}> {
   let body: unknown = null;
   try {
     body = await response.json();
@@ -70,7 +97,11 @@ async function parseErrorBody(
     const record = body as Record<string, unknown>;
     if (typeof record.detail === "string") {
       const field = typeof record.field === "string" ? record.field : undefined;
-      return { detail: record.detail, field };
+      return {
+        detail: record.detail,
+        field,
+        fieldErrors: parseFieldErrors(record.errors),
+      };
     }
     if (Array.isArray(record.detail)) {
       return { detail: "validation failed" };
@@ -82,8 +113,8 @@ async function parseErrorBody(
 // frob:doc docs/index.md#auth-api-client-and-the-register-page
 /** Builds the ApiError for a non-ok Response, so every client throws the same normalized shape. */
 export async function errorFromResponse(response: Response): Promise<ApiError> {
-  const { detail, field } = await parseErrorBody(response);
-  return new ApiError(response.status, detail, field);
+  const { detail, field, fieldErrors } = await parseErrorBody(response);
+  return new ApiError(response.status, detail, field, fieldErrors);
 }
 
 /** Default per-request budget; a hung server must not hang the page (~R5PHHZC). */
