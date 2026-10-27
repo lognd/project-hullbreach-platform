@@ -67,6 +67,16 @@ describe("History page", () => {
     );
   });
 
+  // frob:tests web/src/components/MatchItem.tsx::MatchItem kind="unit"
+  it("links each row to its match detail", async () => {
+    signIn();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(makeMatchPage(0, 2, 2))));
+    render(<History />);
+
+    const link = await screen.findByRole("link", { name: /rival-0/ });
+    expect(link).toHaveAttribute("href", "/me/matches/match-0");
+  });
+
   // frob:tests web/src/pages/History.tsx::History kind="unit"
   it("appends the next page on Load more and drops the control on the last page", async () => {
     signIn();

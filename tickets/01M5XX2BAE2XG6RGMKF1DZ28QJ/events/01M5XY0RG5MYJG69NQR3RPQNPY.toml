@@ -1,0 +1,29 @@
+kind = "evidence"
+captured_at = "2026-10-27T05:41:03Z"
+digest = "181f6ef6db255549273e4f579f18decf36c78ddde5b3fc1f599dde65dd3ffd20"
+exit_code = 0
+head = "f9989746fce0f55aac06aeb683da976335632d04"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/MatchDetail.test.tsx (4 tests) 177ms
+ \u{2713} web/tests/unit/History.test.tsx (11 tests) 364ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  01:41:04
+   Duration  1.04s (transform 276ms, setup 194ms, import 362ms, tests 541ms, environment 620ms)
+
+JSON report written to /tmp/frob-vitest-499619-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/MatchDetail.test.tsx web/tests/unit/History.test.tsx"
+size = 376
+status = "measured"
+test_count = 15
+tests_digest = "ba5d928904198d0d667d99365f59dac75f40db576215ea62afa8fa2e3452137b"
+at = "2026-10-27T05:41:03Z"
+actor = "a-carten"
+rev = 1

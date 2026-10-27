@@ -1,0 +1,19 @@
+kind = "evidence"
+captured_at = "2026-10-27T05:41:00Z"
+digest = "780fbc8cd5e39420d8422baf63e6272966d56eea8ae3737442931ed6cae939f1"
+exit_code = 0
+head = "001dff24bb47be31202e9d9e9fb9572a8c2c8be9"
+inline = """
+...................                                                      [100%]
+19 passed in 2.50s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_me_match_detail.py tests/unit/test_ops_demo.py -p no:warnings"
+size = 99
+status = "measured"
+test_count = 19
+tests_digest = "670bff09f61334dc46fb81bd877d74be50c0c59ce778fc2de67a74558734a253"
+at = "2026-10-27T05:41:00Z"
+actor = "a-carten"
+rev = 1

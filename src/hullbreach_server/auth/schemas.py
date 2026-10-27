@@ -9,7 +9,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, ValidationInfo, field_validator
 
 from hullbreach_server.db.models.user import Role, User
 
@@ -43,6 +43,18 @@ class RegisterRequest(BaseModel):
     def _lowercase_email(cls, value: str) -> str:
         """Store emails lower-cased so uniqueness is case-insensitive."""
         return value.lower()
+
+    # frob:ticket 01M5XX28K491XN5RNGABW0Q5RP
+    @field_validator("password")
+    @classmethod
+    def _reject_weak_password(cls, value: str, info: ValidationInfo) -> str:
+        """Refuse digits-only passwords and a password equal to the username."""
+        if value.isdigit():
+            raise ValueError("password must not be only digits")
+        username = info.data.get("username")
+        if username is not None and value.lower() == username.lower():
+            raise ValueError("password must not match the username")
+        return value
 
 
 # frob:doc docs/index.md#player-api

@@ -1,4 +1,4 @@
-import type { MatchPage, MatchSummary, MeResponse } from "@/api/me";
+import type { MatchDetail, MatchPage, MatchSummary, MeResponse } from "@/api/me";
 import type { UserProfile } from "@/api/auth";
 
 /** Builds a deterministic match, newest first by index, so list tests can assert order and counts. */
@@ -50,5 +50,36 @@ export function makeMatchPage(from: number, count: number, total: number): Match
   return {
     items: Array.from({ length: end - from }, (_, offset) => makeMatch(from + offset)),
     next_cursor: end < total ? `cursor-${end}` : null,
+  };
+}
+
+/** A typed GET /api/v1/me/matches/{id} body: `makeMatch(index)` plus your rating move and both players' lines. */
+export function makeMatchDetail(index: number): MatchDetail {
+  const base = makeMatch(index);
+  const delta = base.rating_after - base.rating_before;
+  const won = base.result === "win";
+  return {
+    ...base,
+    rating_delta: delta,
+    players: [
+      {
+        username: "flagship",
+        is_you: true,
+        won,
+        rating_before: base.rating_before,
+        rating_after: base.rating_after,
+        rating_delta: delta,
+        stats: base.stats,
+      },
+      {
+        username: base.opponent,
+        is_you: false,
+        won: !won,
+        rating_before: 1180,
+        rating_after: 1180 - delta,
+        rating_delta: -delta,
+        stats: { damage_dealt: 300, hull_breaches: 1 },
+      },
+    ],
   };
 }

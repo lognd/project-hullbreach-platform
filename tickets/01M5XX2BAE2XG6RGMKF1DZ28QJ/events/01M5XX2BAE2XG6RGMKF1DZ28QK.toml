@@ -1,0 +1,11 @@
+kind = "create"
+title = "Seed richer demo match histories and add a match detail page"
+type = "task"
+category = "todo"
+priority = "medium"
+labels = ["creates:src/hullbreach_ops/demo_history.py"]
+scope = ["src/hullbreach_ops/demo.py", "src/hullbreach_server/api/me.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_ops_demo.py", "tests/unit/test_me_matches.py", "web/src/**", "web/tests/unit/**", "docs/**", "changelog.d/**", "README.md", "src/hullbreach_ops/demo_history.py"]
+acceptance = ["given make demo, when browsing matches, then several players have rows and each row opens a detail view"]
+at = "2026-10-27T05:24:28Z"
+actor = "a-carten"
+rev = 1

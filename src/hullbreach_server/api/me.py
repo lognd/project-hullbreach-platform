@@ -31,8 +31,10 @@ from hullbreach_server.services.equip import SkinRef, equip
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
+    MatchDetail,
     MatchPage,
     current_rating,
+    match_detail,
     match_page,
 )
 from hullbreach_server.services.profile import MeResponse, build_me, update_profile
@@ -155,6 +157,34 @@ def get_my_matches(
     page = result.danger_ok
     _log.info("served %d history matches for user %s", len(page.items), ctx.user.id)
     return page
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+# noqa: E501  # frob:tests tests/unit/test_me_match_detail.py::test_match_detail_shows_both_players_and_the_elo_delta
+# noqa: E501  # frob:tests tests/unit/test_me_match_detail.py::test_match_detail_is_visible_to_the_other_participant
+# frob:tests tests/unit/test_me_match_detail.py::test_match_detail_unknown_id_is_404
+# noqa: E501  # frob:tests tests/unit/test_me_match_detail.py::test_match_detail_hides_matches_the_caller_did_not_play
+# frob:tests tests/unit/test_me_match_detail.py::test_match_detail_requires_auth
+# frob:doc docs/index.md#player-api
+@router.get(
+    "/matches/{match_id}",
+    response_model=MatchDetail,
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        404: {"model": ErrorDetail, "description": "No such match for the caller"},
+    },
+)
+def get_my_match(
+    match_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> MatchDetail | JSONResponse:
+    """Return one of the caller's matches in full; 404 if unknown or not theirs."""
+    result = match_detail(db, ctx.user, match_id)
+    if result.is_err:
+        return JSONResponse(status_code=404, content={"detail": "match not found"})
+    _log.info("served match %s for user %s", match_id, ctx.user.id)
+    return result.danger_ok
 
 
 # frob:ticket 01M2H5T121VAJY5NDGSEH8PTH7

@@ -1,0 +1,11 @@
+kind = "create"
+title = "Return per-field registration errors and show them inline"
+type = "bug"
+category = "todo"
+priority = "high"
+labels = ["creates:tests/unit/test_register_errors.py"]
+scope = ["src/hullbreach_server/auth/**", "src/hullbreach_server/api/auth.py", "src/hullbreach_server/app/app.py", "tests/unit/test_auth_register.py", "web/src/api/auth.ts", "web/src/pages/Register.tsx", "web/tests/unit/Register.test.tsx", "docs/index.md", "changelog.d/**", "tests/unit/test_register_errors.py"]
+acceptance = ["given a weak or short password, when registering, then the API names the password field and the rule"]
+at = "2026-10-27T05:24:25Z"
+actor = "a-carten"
+rev = 1

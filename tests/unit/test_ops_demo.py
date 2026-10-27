@@ -11,7 +11,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from typani import Err, Ok
 
-from hullbreach_ops import demo
+from hullbreach_ops import demo, demo_history
 from hullbreach_ops.errors import OpsError
 from hullbreach_server.db import Base
 from hullbreach_server.db.engine import create_db_engine
@@ -131,8 +131,12 @@ def test_seed_demo_data_is_idempotent(tmp_path: Path) -> None:
     assert demo.seed_demo_data(url).danger_ok is False
 
     with Session(engine) as db:
-        assert db.scalar(select(func.count()).select_from(User)) == 3
-        assert db.scalar(select(func.count()).select_from(Match)) == 6
+        assert db.scalar(select(func.count()).select_from(User)) == len(
+            demo.DEMO_ACCOUNTS
+        )
+        assert db.scalar(select(func.count()).select_from(Match)) == len(
+            demo_history.DEMO_MATCHES
+        )
     engine.dispose()
 
 
@@ -147,15 +151,17 @@ def test_seed_demo_data_rates_the_history_through_record_match(tmp_path: Path) -
     assert demo.seed_demo_data(url).danger_ok is False
 
     with Session(engine) as db:
-        assert db.scalar(select(func.count()).select_from(RatingChange)) == 12
+        assert db.scalar(select(func.count()).select_from(RatingChange)) == 2 * len(
+            demo_history.DEMO_MATCHES
+        )
         pilot = db.scalar(select(User).where(User.username == demo.DEMO_PILOT))
         assert pilot is not None
         ratings = {
             u.username: current_rating(db, u.id) for u in db.scalars(select(User))
         }
         assert ratings[demo.DEMO_PILOT] != 1200
-        assert len(set(ratings.values())) == 3
-        assert sum(ratings.values()) == 3 * 1200
+        assert len(set(ratings.values())) == len(demo.DEMO_ACCOUNTS)
+        assert sum(ratings.values()) == len(demo.DEMO_ACCOUNTS) * 1200
         page = match_page(db, pilot, None, 10).danger_ok
         oldest, newest = page.items[-1], page.items[0]
         assert oldest.rating_before == 1200
@@ -165,6 +171,43 @@ def test_seed_demo_data_rates_the_history_through_record_match(tmp_path: Path) -
         # played_at is staggered into the past, not all "now"
         assert oldest.played_at < newest.played_at
     engine.dispose()
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+def test_seed_demo_data_gives_every_demo_player_a_varied_history(
+    tmp_path: Path,
+) -> None:
+    # frob:tests src/hullbreach_ops/demo.py::seed_demo_data kind="unit"
+    url = f"sqlite:///{tmp_path / 'demo.db'}"
+    engine = create_db_engine(url)
+    Base.metadata.create_all(engine)
+
+    assert demo.seed_demo_data(url).danger_ok is True
+
+    with Session(engine) as db:
+        for user in db.scalars(select(User)):
+            items = match_page(db, user, None, 100).danger_ok.items
+            assert len(items) >= 4, user.username
+            assert {"win", "loss"} <= {m.result for m in items}, user.username
+            assert len({m.opponent for m in items}) >= 2, user.username
+            assert len({m.duration_seconds for m in items}) >= 4
+            assert len({m.stats["damage_dealt"] for m in items}) >= 4
+            assert all(m.rating_after != m.rating_before for m in items)
+    engine.dispose()
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+def test_demo_history_is_chronological_with_unique_ids() -> None:
+    # frob:tests src/hullbreach_ops/demo_history.py::DEMO_MATCHES kind="unit"
+    matches = demo_history.DEMO_MATCHES
+    ago = [m.minutes_ago for m in matches]
+    assert ago == sorted(ago, reverse=True)
+    assert len({m.key for m in matches}) == len(matches)
+    names = {m.player_a for m in matches} | {m.player_b for m in matches}
+    assert names == set(demo.DEMO_ACCOUNTS)
+    assert all(m.player_a != m.player_b for m in matches)
+    # the original pilot history keeps its ids, so an old demo database replays
+    assert {f"match-{i}" for i in range(6)} <= {m.key for m in matches}
 
 
 def test_seed_demo_data_reports_a_missing_schema(tmp_path: Path) -> None:

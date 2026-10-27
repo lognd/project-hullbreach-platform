@@ -144,8 +144,20 @@ that loses the insert race hits `IntegrityError`, which is rolled back
 and mapped to the same 409. The 401/409/429/503 bodies are declared on
 the route decorators (`ErrorDetail`, `ConflictResponse`,
 `NotReadyResponse`), so `/api/openapi.json` describes the failure
-contract. A too-short password or malformed email fails
-pydantic validation with FastAPI's default 422, no custom body needed.
+contract. Beyond the bounds, a password of only digits or equal to the
+username is refused (`RegisterRequest._reject_weak_password`). Any
+validation failure on register returns a 422 with a per-field body,
+`{"detail": "<first reason>", "field": "<first field>", "errors":
+[{"field", "detail"}, ...]}`, built by
+`src/hullbreach_server/auth/register_errors.py::field_errors` (for
+example `password must be at least 8 characters`, `enter a valid email
+address`) and installed as a `RequestValidationError` handler in
+`create_app` for the register path only; every other route keeps
+FastAPI's default 422. Each rejected field is logged as
+`register: rejected field=... reason=...`; the submitted values, the
+password above all, are never logged. The web client puts `errors` into
+`ApiError.fieldErrors` and the register page shows each reason inline
+next to its field.
 
 `POST /api/v1/auth/login` (`src/hullbreach_server/api/auth.py::login`)
 takes a `LoginRequest` (`username` 1-32 chars, `password` at most 128
@@ -647,9 +659,10 @@ request goes through `apiFetch`, which adds `credentials: "include"`, the
 status 0 (~R5PHHZC). There is deliberately no client
 for `GET /api/v1/auth/session`: that route needs a game-server key a
 browser never holds, so the website checks its token with `GET /me`. Any non-2xx
-response is normalized into a thrown `ApiError {status, detail, field?}`
+response is normalized into a thrown `ApiError {status, detail, field?, fieldErrors?}`
 -- `field` is present only when the server named one (409's duplicate
-username/email), letting a caller show the error next to that field
+username/email, register's 422), `fieldErrors` carries register's whole
+`errors` list keyed by field, letting a caller show the error next to that field
 specifically rather than as a generic banner.
 
 `web/src/pages/Register.tsx` is the first such caller: it keeps a
@@ -794,6 +807,13 @@ a 409 `{"detail": "username already taken" | "email already taken",
 password and revokes every other session of the player, keeping the one
 that made the request. The response is the updated `UserProfile`.
 
+`GET /api/v1/me/matches/{match_id}` (`api/me.py::get_my_match`) returns a
+`MatchDetail`: the caller's `MatchSummary` plus `rating_delta` and
+`players[]` (`username`, `is_you`, `won`, `rating_before`, `rating_after`,
+`rating_delta`, `stats`) for both sides (`services/matches.py::match_detail`).
+Unknown ids and matches the caller did not play both answer 404
+`{"detail": "match not found"}`; no token is a 401.
+
 `GET /api/v1/me/matches?cursor=&limit=` (`api/me.py::get_my_matches`,
 T-0059) returns a `MatchPage` `{items, next_cursor}` of `MatchSummary`
 rows, newest first (`services/matches.py::match_page`). Paging is keyset,
@@ -927,6 +947,12 @@ session and navigates to `/` (the server clears the cookie). The data
 policy page's Deletion section describes this flow.
 
 ### Match history page
+
+Each row links to `web/src/pages/MatchDetail.tsx`, routed at
+`/me/matches/:matchId`, which loads `fetchMatch` (`GET /api/v1/me/matches/{id}`,
+see Player API) and shows the result, duration, your rating move and both
+players' lines (rating before and after, change, counters). An unknown id
+and a match the caller did not play are the same 404 notice.
 
 `web/src/pages/History.tsx` is routed at `/me/matches` and lists the
 signed-in player's matches, newest first, through `fetchMatches` in
@@ -1124,12 +1150,15 @@ working browser -> website -> API -> database stack in one step, and
    touched, and no secret value is printed.
 2. `lifecycle.start`: database, migrations, catalog and admin seed, API,
    website (see the table above).
-3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
-   published on purpose: the database listens on 127.0.0.1 only) with two
-   opponents, `demo_rival` and `demo_ace`, and six matches of history. Each match goes through
-   `services/matches.py::record_match` (backdated one to six days) with a
-   fixed match id, so ratings evolve from 1200 and history shows real
-   `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
+3. `seed_demo_data`: four players, `demo_pilot`, `demo_rival`, `demo_ace`
+   and `demo_cadet` (password `demo-password-123`, published on purpose: the
+   database listens on 127.0.0.1 only), and 14 scripted matches between them
+   (`hullbreach_ops/demo_history.py::DEMO_MATCHES`; `demo_pilot` plays 9 of
+   them against all three others, with wins and losses, varied durations
+   and damage). Each match goes through
+   `services/matches.py::record_match` (backdated up to six days, oldest
+   first) with a fixed match id, so ratings evolve from 1200 and history
+   shows real `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
    same ids and changes nothing.
 4. `demo_economy.ensure_demo_economy`: so the store can be shown live.
    Items cost 199 and up while a ranked match pays 50 (win) or 10 (loss),

@@ -30,7 +30,9 @@ export function Register() {
       await register({ username, email, password });
       setSubmitted(true);
     } catch (error) {
-      if (error instanceof ApiError && error.field !== undefined) {
+      if (error instanceof ApiError && error.fieldErrors !== undefined) {
+        setFieldErrors(error.fieldErrors);
+      } else if (error instanceof ApiError && error.field !== undefined) {
         setFieldErrors({ [error.field]: error.detail });
       } else if (error instanceof ApiError) {
         setFormError(error.detail);
@@ -71,6 +73,7 @@ export function Register() {
       ) : null}
       <Panel label="New account" className="p-space-24">
         <form
+          noValidate
           onSubmit={(event) => {
             void handleSubmit(event);
           }}

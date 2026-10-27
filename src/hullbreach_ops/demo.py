@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import re
 import secrets
-import uuid
 from datetime import UTC, datetime, timedelta
 
 from dotenv import dotenv_values
@@ -23,13 +22,14 @@ from typani import Err, Ok, Result, propagate
 from hullbreach_ops import lifecycle
 from hullbreach_ops.context import OpsContext
 from hullbreach_ops.demo_economy import ensure_demo_economy
+from hullbreach_ops.demo_history import DEMO_ACCOUNT_NAMES, DEMO_MATCHES, build_reports
 from hullbreach_ops.errors import OpsError
 from hullbreach_ops.settings import load_app_config
 from hullbreach_server.auth.passwords import hash_password
 from hullbreach_server.db.engine import create_db_engine
 from hullbreach_server.db.models.user import User
 from hullbreach_server.logging import get_logger
-from hullbreach_server.services.matches import MatchReport, PlayerReport, record_match
+from hullbreach_server.services.matches import record_match
 
 _log = get_logger(__name__)
 
@@ -37,20 +37,7 @@ _log = get_logger(__name__)
 # demo database that listens on 127.0.0.1 (README "One-command demo").
 DEMO_PASSWORD = "demo-password-123"  # noqa: S105
 DEMO_PILOT = "demo_pilot"
-DEMO_ACCOUNTS = (DEMO_PILOT, "demo_rival", "demo_ace")
-
-# (opponent, pilot won, minutes ago, duration seconds, pilot damage, opponent damage)
-_HISTORY = (
-    ("demo_rival", True, 60 * 24 * 6, 412, 900, 300),
-    ("demo_ace", False, 60 * 24 * 5, 655, 410, 1100),
-    ("demo_rival", True, 60 * 24 * 4, 388, 1050, 270),
-    ("demo_rival", False, 60 * 24 * 3, 721, 620, 980),
-    ("demo_ace", True, 60 * 24 * 2, 502, 1300, 640),
-    ("demo_rival", True, 60 * 24, 340, 870, 150),
-)
-
-# Namespace for the demo matches' fixed ids, so seeding is replayable.
-_NAMESPACE = uuid.UUID("6f1c1f0e-5d0a-4c53-9a53-0d3e6a1b7c10")
+DEMO_ACCOUNTS = DEMO_ACCOUNT_NAMES
 
 _SECRET_LINES = {
     "POSTGRES_PASSWORD": "db",
@@ -141,42 +128,6 @@ def ensure_env(ctx: OpsContext) -> Result[bool, OpsError]:
     return Ok(True)
 
 
-# frob:ticket 01M5V5GNFS3X1PRMT0QDTQNEZ5
-def _reports(pilot: User, others: dict[str, User]) -> list[tuple[MatchReport, int]]:
-    """The demo history as (report, minutes ago) pairs with fixed match ids."""
-    reports: list[tuple[MatchReport, int]] = []
-    for index, (opponent, won, minutes_ago, seconds, mine, theirs) in enumerate(
-        _HISTORY
-    ):
-        other = others[opponent]
-        reports.append(
-            (
-                MatchReport(
-                    match_id=uuid.uuid5(_NAMESPACE, f"match-{index}"),
-                    winner_id=pilot.id if won else other.id,
-                    duration_seconds=seconds,
-                    players=[
-                        _player(pilot.id, mine, seconds if not won else seconds - 20),
-                        _player(other.id, theirs, seconds if won else seconds - 20),
-                    ],
-                ),
-                minutes_ago,
-            )
-        )
-    return reports
-
-
-def _player(user_id: uuid.UUID, damage: int, alive: int) -> PlayerReport:
-    """One demo player's counters, derived from their damage."""
-    return PlayerReport(
-        user_id=user_id,
-        damage_dealt=damage,
-        blocks_destroyed=damage // 60,
-        blocks_placed=damage // 45,
-        time_alive_seconds=alive,
-    )
-
-
 def _ensure_users(db: Session) -> tuple[dict[str, User], bool]:
     """Get or create the demo accounts; the flag says whether any was created."""
     existing = {
@@ -211,9 +162,8 @@ def seed_demo_data(database_url: str) -> Result[bool, OpsError]:
     try:
         with Session(engine) as db:
             users, created = _ensure_users(db)
-            others = {k: v for k, v in users.items() if k != DEMO_PILOT}
             now = datetime.now(UTC)
-            for report, minutes_ago in _reports(users[DEMO_PILOT], others):
+            for report, minutes_ago in build_reports(users):
                 played_at = now - timedelta(minutes=minutes_ago)
                 recorded = record_match(db, report, played_at)
                 if recorded.is_err:
@@ -272,7 +222,8 @@ def demo(ctx: OpsContext, host: str | None = None) -> Result[None, OpsError]:
     ctx.console.line(f"  Sign in at {ctx.settings.web_url}/login")
     ctx.console.line(f"  Username: {DEMO_PILOT}    Password: {DEMO_PASSWORD}")
     ctx.console.line(
-        "  (with 6 matches of history and a starter balance to spend in the store)"
+        f"  (with {len(DEMO_MATCHES)} matches of history across "
+        f"{len(DEMO_ACCOUNTS)} players and a starter balance to spend in the store)"
         if created
         else "  (already set up; the account and its history are unchanged)"
     )

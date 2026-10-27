@@ -2,14 +2,22 @@ import sys
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from hullbreach_server import __version__
 from hullbreach_server.api import api_router
 from hullbreach_server.app.access_log import AccessLogMiddleware
 from hullbreach_server.app.config import AppConfig
 from hullbreach_server.auth import validate_auth_env
+from hullbreach_server.auth.register_errors import (
+    REGISTER_PATH,
+    field_errors,
+    log_failures,
+)
 from hullbreach_server.db import dispose_engine, init_engine
 from hullbreach_server.db.engine import check_connectivity
 from hullbreach_server.logging import get_logger
@@ -61,6 +69,26 @@ def create_app(cfg: AppConfig) -> FastAPI:
         AccessLogMiddleware, log_payloads=cfg.log_payloads
     )  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
     app.state.cfg = cfg
+
+    # frob:ticket 01M5XX28K491XN5RNGABW0Q5RP
+    @app.exception_handler(RequestValidationError)
+    async def _validation_handler(
+        request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
+        """Per-field 422 for register; every other route keeps FastAPI's default."""
+        if request.url.path != REGISTER_PATH:
+            return await request_validation_exception_handler(request, exc)
+        items = field_errors(exc.errors())
+        log_failures(items)
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": items[0].detail,
+                "field": items[0].field,
+                "errors": [item.model_dump() for item in items],
+            },
+        )
+
     app.include_router(api_router, prefix="/api/v1")
     return app
 

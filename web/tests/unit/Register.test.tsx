@@ -317,3 +317,76 @@ describe("api/auth.ts", () => {
     ).rejects.toMatchObject({ status: 429 });
   });
 });
+
+// frob:ticket 01M5XX28K491XN5RNGABW0Q5RP
+const REGISTER_422 = {
+  detail: "password must be at least 8 characters",
+  field: "password",
+  errors: [
+    { field: "email", detail: "enter a valid email address" },
+    { field: "password", detail: "password must be at least 8 characters" },
+  ],
+};
+
+describe("Register page per-field errors", () => {
+  // frob:tests web/src/pages/Register.tsx::Register kind="unit"
+  it("shows every rejected field's reason inline next to its input", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse(REGISTER_422, 422)),
+    );
+    const { Register } = await import(registerModulePath);
+    const user = userEvent.setup();
+    render(<Register />);
+    await user.type(screen.getByLabelText(/username/i), "flagship");
+    await user.type(screen.getByLabelText(/email/i), "nope");
+    await user.type(screen.getByLabelText(/password/i), "1234");
+    await user.click(screen.getByRole("button", { name: /register/i }));
+
+    const passwordNode = document.getElementById(
+      screen.getByLabelText(/password/i).getAttribute("aria-describedby") ?? "",
+    );
+    expect(passwordNode).toHaveTextContent(
+      "password must be at least 8 characters",
+    );
+    const emailNode = document.getElementById(
+      screen.getByLabelText(/email/i).getAttribute("aria-describedby") ?? "",
+    );
+    expect(emailNode).toHaveTextContent("enter a valid email address");
+  });
+
+  // frob:tests web/src/pages/Register.tsx::Register kind="unit"
+  it("submits even when the browser would call the email invalid", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(REGISTER_422, 422));
+    vi.stubGlobal("fetch", fetchMock);
+    const { Register } = await import(registerModulePath);
+    const user = userEvent.setup();
+    render(<Register />);
+    await user.type(screen.getByLabelText(/email/i), "nope");
+    await user.click(screen.getByRole("button", { name: /register/i }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("api/auth.ts field errors", () => {
+  // frob:tests web/src/api/auth.ts::errorFromResponse kind="unit"
+  it("exposes register's errors list as ApiError.fieldErrors", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse(REGISTER_422, 422)),
+    );
+    const { register } = await import(authApiModulePath);
+    await expect(
+      register({ username: "flagship", email: "nope", password: "1234" }),
+    ).rejects.toMatchObject({
+      status: 422,
+      field: "password",
+      fieldErrors: {
+        email: "enter a valid email address",
+        password: "password must be at least 8 characters",
+      },
+    });
+  });
+});

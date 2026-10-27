@@ -1,0 +1,1 @@
+Match detail: `GET /api/v1/me/matches/{id}` and a `/me/matches/:id` page showing the result, duration, ELO move and both players' lines; match history rows link to it. `make demo` now seeds four players (adds `demo_cadet`) with 14 matches of varied history.
