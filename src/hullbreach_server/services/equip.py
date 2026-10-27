@@ -8,6 +8,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 from sqlalchemy import delete, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session as DBSession
 from typani import Err, Ok, Result
 
@@ -90,6 +91,38 @@ def equip(
         item.name,
     )
     return Ok(SkinRef(id=item.id, slug=item.slug, name=item.name))
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+# frob:doc docs/index.md#equipped-skin
+class UnequipError(BaseModel):
+    """Why an unequip failed (the store was unavailable); maps to HTTP 500."""
+
+    detail: str
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+# frob:doc docs/index.md#equipped-skin
+# frob:tests tests/unit/test_active_skin.py::test_unequip_clears_the_skin
+# frob:tests tests/unit/test_active_skin.py::test_unequip_with_nothing_equipped_is_204
+# frob:tests tests/unit/test_active_skin.py::test_unequip_leaves_other_players_alone
+def unequip(db: DBSession, user_id: uuid.UUID) -> Result[bool, UnequipError]:
+    """Clear and commit `user_id`'s equipped skin; Ok(True) if one was removed."""
+    row = db.get(EquippedSkin, user_id)
+    if row is None:
+        _log.debug("unequip for %s: nothing equipped", user_id)
+        return Ok(False)
+    item_name = db.scalar(select(Item.name).where(Item.id == row.item_id))
+    username = db.scalar(select(User.username).where(User.id == user_id))
+    try:
+        db.delete(row)
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        _log.exception("unequip failed for %s", user_id)
+        return Err(UnequipError(detail="could not unequip, try again"))
+    log_event(_log, "skin unequipped: %r removed %r", username, item_name)
+    return Ok(True)
 
 
 # frob:ticket 01M2H5T117A35Q8AA9THRZTTYB

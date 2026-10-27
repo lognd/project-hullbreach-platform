@@ -755,6 +755,15 @@ again is a no-op 200). A player has at most one row in `equipped_skins`
 `services/equip.py::equip` returns a typani `Result[SkinRef, EquipError]`.
 Deleting the account clears the row (see Player API).
 
+`DELETE /api/v1/me/equipped` (`api/me.py::delete_equipped`, ~BP9FP8F)
+unequips: bearer token required (401), success is an empty 204, and it is
+idempotent (204 when nothing was equipped too). It removes only the
+caller's row and commits; `services/equip.py::unequip` returns a typani
+`Result[bool, UnequipError]` (`Ok(True)` if a skin was removed; a database
+failure is `Err`, served as 500 `{"detail": ...}`) and logs the console
+line `DB  skin unequipped: 'name' removed 'skin'`. On the profile, pressing
+the already-equipped skin again calls it (see Player API client).
+
 The game reads the choice two ways. `GET /api/v1/me` reports it as
 `equipped_skin` (`SkinRef` or `null`). The matchmaking `match` also carries
 `skin` and `opponent_skin` (slugs or `null`), read when the status is
@@ -884,8 +893,9 @@ Player API): the `UserProfile` fields (`currency` is the balance, `rating`
 the Elo) plus `inventory` (owned skins) and `recent_matches` (newest
 first) and `equipped_skin` (or `null`). `equipSkin(token, itemId)` calls
 `PUT /api/v1/me/equipped` (see Equipped skin); `components/SkinPicker.tsx`
-renders the owned skins on the profile as `aria-pressed` toggle buttons and
-shows a refusal as an alert. `MatchSummary` is shared with the match history (T-0059). The
+renders the owned skins on the profile as `aria-pressed` toggle buttons;
+pressing the equipped one again unequips it (`unequipSkin(token)` calls
+`DELETE /api/v1/me/equipped`) and a refusal shows as an alert. `MatchSummary` is shared with the match history (T-0059). The
 shared fixture `web/tests/fixtures/me.ts` is a typed instance of that
 contract, so pages are tested without a server.
 

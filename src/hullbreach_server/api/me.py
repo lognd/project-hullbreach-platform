@@ -27,7 +27,7 @@ from hullbreach_server.logging import get_logger
 from hullbreach_server.services.account_deletion import delete_account
 from hullbreach_server.services.catalog import OwnedItem, list_inventory
 from hullbreach_server.services.currency import balance
-from hullbreach_server.services.equip import SkinRef, equip
+from hullbreach_server.services.equip import SkinRef, equip, unequip
 from hullbreach_server.services.matches import (
     DEFAULT_PAGE_SIZE,
     MAX_PAGE_SIZE,
@@ -254,3 +254,30 @@ def put_equipped(
             content={"detail": error.detail},
         )
     return result.danger_ok
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+# frob:tests tests/unit/test_active_skin.py::test_unequip_clears_the_skin
+# frob:tests tests/unit/test_active_skin.py::test_unequip_with_nothing_equipped_is_204
+# frob:tests tests/unit/test_active_skin.py::test_unequip_requires_auth
+# frob:doc docs/index.md#equipped-skin
+@router.delete(
+    "/equipped",
+    status_code=204,
+    response_class=Response,
+    responses={
+        401: {"model": ErrorDetail, "description": "Token invalid"},
+        500: {"model": ErrorDetail, "description": "Store unavailable"},
+    },
+)
+def delete_equipped(
+    db: Session = Depends(get_db),
+    ctx: AuthContext = Depends(get_current_user),
+) -> Response:
+    """Unequip the caller's skin; 204 whether or not one was equipped."""
+    result = unequip(db, ctx.user.id)
+    if result.is_err:
+        return JSONResponse(
+            status_code=500, content={"detail": result.danger_err.detail}
+        )
+    return Response(status_code=204)

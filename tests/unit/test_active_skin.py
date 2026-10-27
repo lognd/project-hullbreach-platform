@@ -139,3 +139,54 @@ def test_match_assignment_carries_both_skins(client, db_session, pilots) -> None
     assert (match["skin"], match["opponent_skin"]) == (mine.slug, theirs.slug)
     other = client.get(_QUEUE, headers=rival_headers).json()["match"]
     assert (other["skin"], other["opponent_skin"]) == (theirs.slug, mine.slug)
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+def test_unequip_clears_the_skin(client, db_session, pilots) -> None:
+    """Given an equipped skin, when unequipped, then it is a 204 and /me shows null."""
+    headers, me, _ = pilots
+    item = _item(db_session)
+    _own(db_session, me, item)
+    client.put(_EQUIP, json={"item_id": str(item.id)}, headers=headers)
+
+    response = client.delete(_EQUIP, headers=headers)
+
+    assert response.status_code == 204
+    assert client.get(_ME, headers=headers).json()["equipped_skin"] is None
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+def test_unequip_with_nothing_equipped_is_204(client, pilots) -> None:
+    """Given no equipped skin, when unequipped, then it is still a 204 (idempotent)."""
+    headers, _, _ = pilots
+
+    assert client.delete(_EQUIP, headers=headers).status_code == 204
+    assert client.delete(_EQUIP, headers=headers).status_code == 204
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+def test_unequip_requires_auth(client) -> None:
+    """Given no token, when unequipping, then it is a 401."""
+    assert client.delete(_EQUIP).status_code == 401
+
+
+# frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+def test_unequip_leaves_other_players_alone(client, db_session, pilots) -> None:
+    """Given both players equipped, when one unequips, then the rival keeps theirs."""
+    headers, me, rival = pilots
+    item = _item(db_session)
+    _own(db_session, me, item)
+    _own(db_session, rival, item)
+    client.put(_EQUIP, json={"item_id": str(item.id)}, headers=headers)
+    db_session.add(
+        EquippedSkin(
+            user_id=rival.id, item_id=item.id, equipped_at=datetime.now(timezone.utc)
+        )
+    )
+    db_session.commit()
+
+    client.delete(_EQUIP, headers=headers)
+    db_session.expire_all()
+
+    assert db_session.get(EquippedSkin, me.id) is None
+    assert db_session.get(EquippedSkin, rival.id) is not None

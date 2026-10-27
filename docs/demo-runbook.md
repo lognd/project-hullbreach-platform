@@ -78,7 +78,7 @@ target or documented in the [README](../README.md); nothing here is new.
    match payouts from the seeded history) and the catalog has four cheap demo items
    (**Rookie Stripes** 40, **Rust Bucket Wrap** 60, **First Flight Decal** 80,
    **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
-   skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
+   skin to equip it (it shows "(equipped)"); press it again to unequip it. Everything else costs 199 or more and a match pays only 50/10,
    so do not try to buy those live.
 
    To buy something pricier, give the account more credits first (demo
@@ -117,6 +117,7 @@ against the console:
 | Log in `demo_pilot`, **Profile** (ELO 1239) | same lines for `demo_pilot`; 9 matches, balance 630                                                     |
 | **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200 user=demo_pilot body={"item_id":...}`, `DB  purchase: ... bought ... balance` |
 | **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                                                        |
+| Press the equipped skin again to unequip it | `DELETE /me/equipped 204`, `DB  skin unequipped: ...`                                                   |
 | **Log out**                                 | `DB  logout`                                                                                            |
 
 Notes from the rehearsal: registering does not sign you in (you land on

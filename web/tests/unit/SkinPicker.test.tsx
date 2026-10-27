@@ -80,4 +80,54 @@ describe("SkinPicker", () => {
       screen.getByRole("button", { name: "Frost Plating (equipped)" }),
     ).toHaveAttribute("aria-pressed", "true");
   });
+
+  // frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+  // frob:tests web/src/components/SkinPicker.tsx::SkinPicker kind="unit"
+  // frob:tests web/src/api/me.ts::unequipSkin kind="unit"
+  it("unequips the equipped skin when it is pressed again", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetchMock);
+    render(
+      <SkinPicker
+        token="tok-1"
+        skins={meFixture.inventory}
+        initial={meFixture.inventory[1]}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Frost Plating (equipped)" }));
+
+    expect(await screen.findByRole("button", { name: "Frost Plating" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    expect(screen.queryByText(/equipped\)/)).toBeNull();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/v1/me/equipped",
+      expect.objectContaining({ method: "DELETE" }),
+    );
+  });
+
+  // frob:ticket 01M5XYWVF56BWJXQ43EBP9FP8F
+  // frob:tests web/src/components/SkinPicker.tsx::SkinPicker kind="unit"
+  it("shows an unequip failure as an alert and keeps the skin pressed", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse({ detail: "could not unequip" }, 500)),
+    );
+    render(
+      <SkinPicker
+        token="tok-1"
+        skins={meFixture.inventory}
+        initial={meFixture.inventory[1]}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Frost Plating (equipped)" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("could not unequip");
+    expect(
+      screen.getByRole("button", { name: "Frost Plating (equipped)" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
 });
