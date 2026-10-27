@@ -973,7 +973,7 @@ timeout (`READY_TIMEOUT_MS`). Only a 2xx counts as up; a 503, a timeout or a
 network failure is down (logged with `console.warn`, never thrown). It
 re-probes every 30 s (`STATUS_POLL_MS`). A demo presenter can read it to
 confirm the browser-to-backend-to-database link (ticket
-`01M2KR6R34724T0ND699BV81G9`). The strata `REL200` waivers for `f_health` and
+`01M2KR6R34724T0ND699BV81G9`). The v1 `REL200` waivers (now comments in the grimble model) for `f_health` and
 `f_ready` are not yet re-pointed; `/api/v1/health` has no web caller.
 
 ### Store page
@@ -1189,5 +1189,5 @@ sentences.
 `docs/design/sprint-1.md` is the system design for milestone 0.1.0
 (database wiring, auth, and the site shell): module map, data model,
 config, CLI, auth contracts, web routing, and a per-acceptance-criterion
-test plan. `design/hullbreach.strata` is its checked companion model
+test plan. `design/hullbreach.grmb` is its checked companion model
 (nodes, flows, and secrets for the same target architecture).

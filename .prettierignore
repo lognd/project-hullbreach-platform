@@ -7,4 +7,4 @@ tests/
 uv.lock
 web/tailwind.theme.json
 tickets/
-design/*.strata
+design/*.grmb

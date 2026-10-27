@@ -514,7 +514,7 @@ needs it -- T-0006's `tests/unit/test_db_engine.py` is scope-eligible to
 add it since fixtures shared across `tests/unit/` conventionally live
 there) provides -- `tests/unit/test_db_engine.py` and this fixture file
 are the direct imports of `hullbreach_server.db`/`db.engine` that
-`f_tests_to_db` (section 9) declares in `design/hullbreach.strata`:
+`f_tests_to_db` (section 9) declares in `design/hullbreach.grmb`:
 
 - `engine` -- `create_db_engine("sqlite:///:memory:")` with
   `StaticPool` and `connect_args={"check_same_thread": False}` so the
@@ -522,7 +522,7 @@ are the direct imports of `hullbreach_server.db`/`db.engine` that
   `TestClient` and the test itself both open.
 - `db_session` -- runs `Base.metadata.create_all(engine)`, yields a
   `sqlalchemy.orm.Session`, rolls back and drops all tables after.
-- `app` / `client` (`tests` node in `design/hullbreach.strata`) --
+- `app` / `client` (`tests` node in `design/hullbreach.grmb`) --
   `create_app(AppConfig(database_url="sqlite://"))`
   with `app.dependency_overrides[get_db]` pointed at the `db_session`
   fixture, wrapped in `TestClient`, matching the existing
@@ -535,9 +535,9 @@ which Alembic supports for DDL-only migrations (no Postgres-only column
 types are used in the three 0.1.0 migrations, so this holds).
 `tests/unit/test_passwords.py` and `tests/unit/test_roles.py`'s direct
 imports of `hullbreach_server.auth.passwords` are the `f_tests_to_auth`
-edge (section 9) in `design/hullbreach.strata`.
+edge (section 9) in `design/hullbreach.grmb`.
 
-The strata `tests` node's `code` glob (section 9) covers both `tests/**`
+The grimble `tests` node's `owns` globs (section 9) covers both `tests/**`
 (the Python suite above) and `web/tests/**` -- T-0044/T-0017/T-0021/T-0024's
 vitest suite, whose T-0021/T-0024 session-persistence tests reach
 `localStorage`/`StorageEvent` (the `client_storage` capability), per the
@@ -634,7 +634,40 @@ file:
   implemented; add it if a deployment process later needs a
   DBA-reviewed SQL diff instead of a live migration run.
 
-## 9. strata model (`design/hullbreach.strata`)
+## 9. grimble model (`design/hullbreach.grmb`)
+
+**Migrated from the v1 strata model.** The model was hand-migrated from
+`design/hullbreach.strata` to grimble v2 (`design/hullbreach.grmb`,
+declared as the root in `grimble.toml`); there is no migration tool. The
+prose below describes the model in its original v1 vocabulary (`code`,
+`managed`, `may "x" via`, `secret`, `waive`); read it with this mapping,
+and with the gaps grimble v2 could not carry:
+
+- `code` is `owns`; `managed` is `kind external` (or `kind store` for
+  Postgres) plus `attr managed`; `may "x" via "f::s"` is
+  `may x at "f::s" because="..."`; `attr "text"` is `attr note = "text"`
+  (HTTP routes: `attr route = "..."`).
+- **Gap: capability atoms are a closed registry.** `env.read` and
+  `env.write` both became `process.env` (the read/write split is lost) and
+  `fetch_url` became `net.connect`. `sql`, `eval` and `client_storage` have
+  no registered atom (granting one is MDL016), so those grants are
+  comments in the file and are not enforced until a pack declares them.
+- **Gap: `waive` and REL200 are gone.** grimble v2 has no flow-timeout
+  rule and no `waive`; the roughly 30 `REL200` waivers (tickets T-0100,
+  T-0102) are kept as `v1 waiver` comments with their reasons. Nothing
+  enforces them, and the timeout work they point at is still open.
+- **Gap: the `secret` entity and `std.secrets` are gone.**
+  `issued_by`/`lifetime`/`revoke` survive only as typed attrs on the
+  issuing node (`session_token_lifetime`, `password_hash_revoke`, ...);
+  no claims are generated from them. The hand-declared "reads" flows below
+  are unchanged.
+- **Gap: `carries` (PII categories) is gone;** kept as
+  `attr carries = [...]`, which is data only.
+- **Not validated by tool.** No `grimble` binary was available when this
+  was written, so the file was checked against the language spec by hand;
+  `frob check` treats the grimble sibling as unavailable when it is absent.
+  Expect MDL005 (selector matches no file) for globs bound to files that
+  later tickets create.
 
 The kernel-checked companion to this document: nodes for the browser
 (untrusted), the game client and game server (external, `managed`), the
@@ -679,7 +712,7 @@ cache-of-authority model, each with `issued_by`, `lifetime`, and a
 mandatory `revoke` bound.
 
 This design pass is tracked as **T-0095** (kind `docs`; scope: this
-document, `design/hullbreach.strata`, `docs/index.md`,
+document, `design/hullbreach.grmb`, `docs/index.md`,
 `docs/design/registry/capability-via-ratchet.lock.json`, and
 
 `frob.toml`). Filing that ticket, adding `frob:ticket T-0095` to every

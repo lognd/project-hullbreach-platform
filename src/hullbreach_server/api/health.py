@@ -59,7 +59,7 @@ def ready(db: Session = Depends(get_db)) -> ReadyResponse | JSONResponse:
 
     `check_connectivity` (hullbreach_server.db) logs the outcome itself; this
     route adds no separate log line to avoid a second api->logging import
-    edge the strata model does not yet declare (design/hullbreach.strata is
+    edge the grimble model does not yet declare (design/hullbreach.grmb is
     under another ticket's lease -- see T-0012's Done report).
     """
     bind = db.get_bind()

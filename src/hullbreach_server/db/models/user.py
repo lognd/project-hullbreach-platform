@@ -34,7 +34,7 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
     # PII (category "contact"): account identity, covered by the data
-    # policy tracked in T-0049 (design/hullbreach.strata's
+    # policy tracked in T-0049 (design/hullbreach.grmb's
     # hullbreach_server_db node declares this via `carries`).
     email: Mapped[str] = mapped_column(String(254), nullable=False, unique=True)
     # PII (category "credentials"): a credential at rest -- always an
