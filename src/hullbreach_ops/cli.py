@@ -41,6 +41,7 @@ COMMANDS = {
     "server-key": "make a game-server key and say where it goes",
     "console": "live view of API requests (add --db for database changes)",
     "lan": "start so other computers on the network can connect",
+    "grant-credits": "DEMO ONLY: add credits to an account (needs demo mode)",
 }
 _LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s: %(message)s"
 
@@ -74,6 +75,11 @@ def add_ops_commands(sub: argparse._SubParsersAction) -> None:
                 help="also show database changes (registered, match recorded, ...)",
             )
             parser.add_argument(
+                "--no-payloads",
+                action="store_true",
+                help="hide the request payload summaries (shown by default)",
+            )
+            parser.add_argument(
                 "-n",
                 "--lines",
                 type=int,
@@ -85,6 +91,9 @@ def add_ops_commands(sub: argparse._SubParsersAction) -> None:
                 action="store_true",
                 help="print the recent lines and exit instead of following",
             )
+        if name == "grant-credits":
+            parser.add_argument("user", help="username to credit, e.g. demo_pilot")
+            parser.add_argument("amount", type=int, help="credits to add, above 0")
         if name in ("start", "demo"):
             parser.add_argument(
                 "--host",
@@ -116,7 +125,16 @@ def _report(console: Console, error: OpsError) -> None:
 
 def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
     """Run one operator command; the exit code is 0 on success."""
-    from hullbreach_ops import accounts, demo, demo_match, lan, lifecycle, smoke, watch
+    from hullbreach_ops import (
+        accounts,
+        demo,
+        demo_match,
+        grant_credits,
+        lan,
+        lifecycle,
+        smoke,
+        watch,
+    )
     from hullbreach_ops.collect import collect
     from hullbreach_ops.doctor import doctor, passed
 
@@ -146,8 +164,14 @@ def _dispatch(ctx: OpsContext, args: argparse.Namespace) -> int:
         result = demo.demo(ctx, args.bind_host)
     elif args.command == "console":
         result = watch.watch(
-            ctx, show_events=args.db, lines=args.lines, follow=not args.no_follow
+            ctx,
+            show_events=args.db,
+            lines=args.lines,
+            follow=not args.no_follow,
+            show_payloads=not args.no_payloads,
         )
+    elif args.command == "grant-credits":
+        result = grant_credits.grant_credits(ctx, args.user, args.amount)
     else:
         result = simple[args.command](ctx)
     if result.is_err:

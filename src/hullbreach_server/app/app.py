@@ -57,7 +57,9 @@ def create_app(cfg: AppConfig) -> FastAPI:
         allow_headers=_CORS_HEADERS,
     )
     # Added after CORS so it is outermost and sees every response, preflights included.
-    app.add_middleware(AccessLogMiddleware)
+    app.add_middleware(
+        AccessLogMiddleware, log_payloads=cfg.log_payloads
+    )  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
     app.state.cfg = cfg
     app.include_router(api_router, prefix="/api/v1")
     return app

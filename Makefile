@@ -3,7 +3,7 @@ PY_STAMP  := .venv/.install-stamp
 WEB_STAMP := node_modules/.install-stamp
 
 .PHONY: install install-py install-web clean run dev db build \
-        doctor demo console console-db smoke start stop status reset-db demo-users server-key lan demo-match
+        doctor demo console console-db smoke start stop status reset-db demo-users server-key lan demo-match grant-credits
 
 # T-3400: this Makefile intentionally does NOT ship format/lint/typecheck/
 # test/coverage/check targets. This is a frob-enabled polyglot project
@@ -74,6 +74,13 @@ console: $(PY_STAMP)
 
 console-db: $(PY_STAMP)
 	uv run hullbreach_server console --db
+
+# Demo only: make grant-credits USER=demo_pilot AMOUNT=500 (needs HULLBREACH_DEMO_MODE=1).
+# USER is also the login name in the shell, so only a value given on the command line counts.
+grant-credits: $(PY_STAMP)
+	@if [ "$(origin USER)" != "command line" ] || [ -z "$(AMOUNT)" ]; then \
+	  echo "usage: make grant-credits USER=demo_pilot AMOUNT=500"; exit 2; fi
+	uv run hullbreach_server grant-credits "$(USER)" "$(AMOUNT)"
 
 # ---------- clean ----------
 

@@ -142,6 +142,8 @@ def test_start_stop_records_and_ends_the_api_and_web(
         "--port", "5173", "--strictPort",
     ]  # fmt: skip
     assert runner.spawn_envs[1]["HULLBREACH_PORT"] == "8000"
+    # The demo API logs payload summaries for the console unless opted out.
+    assert runner.spawn_envs[0]["HULLBREACH_LOG_PAYLOADS"] == "1"
     assert lifecycle.read_record(ctx, "api").pid == 4101  # type: ignore[union-attr]
     assert lifecycle.log_path(ctx, "web").exists()
     assert "The platform is running" in output(ctx)

@@ -699,6 +699,12 @@ to the loser. `(user_id, match_id)` is unique and the match id is the
 idempotency key, so a replayed or concurrently repeated report pays once
 and a refused report pays nothing.
 
+`services/currency.py::grant(db, user_id, amount, reason)` stages one extra
+positive ledger row and returns `Ok(new balance)`, or `Err(CurrencyError)`
+for a non-positive amount or an unknown user; the caller commits. Its only
+caller is the demo-only `grant-credits` command
+([Demo console](#demo-console)), never an HTTP route.
+
 ### Store
 
 `POST /api/v1/store/purchase` (`api/store.py`, bearer or session cookie)
@@ -1027,20 +1033,21 @@ WSL and then hand over to `doctor.sh`). The wrappers only make sure git,
 uv, Docker and Node.js exist and offer their official installers after a
 `[y/N]` question; every real check is in Python.
 
-| Command      | What it does                                                                                                                                  |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `doctor`     | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                  |
-| `demo`       | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history   |
-| `demo-match` | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after        |
-| `smoke`      | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)         |
-| `start`      | database container (waits for healthy), migrations, seed, API and website in the background                                                   |
-| `stop`       | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                  |
-| `status`     | what is running, on which port                                                                                                                |
-| `reset-db`   | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                              |
-| `demo-users` | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                |
-| `server-key` | generates a game-server key and says where it goes on both sides; never written to disk                                                       |
-| `lan`        | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`) |
-| `console`    | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console))                                     |
+| Command         | What it does                                                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `doctor`        | runs the checks below; `--demo website/guest/platform/online`, `--only <check>`, `--collect`                                                           |
+| `demo`          | everything for the class demo in one go: creates `.env` with generated secrets if missing, then `start`, then the demo accounts and history            |
+| `demo-match`    | posts one sample match as the game server (first configured key): `demo_pilot` beats a fresh rival, prints the rating before and after                 |
+| `smoke`         | front-to-back check of a running stack: register, log in, profile, history, game session check, log out (through the website's proxy)                  |
+| `start`         | database container (waits for healthy), migrations, seed, API and website in the background                                                            |
+| `stop`          | stops what `start` began (process ids in `.hullbreach/run/`) and the container; data is kept                                                           |
+| `status`        | what is running, on which port                                                                                                                         |
+| `reset-db`      | deletes this compose project's database volume and recreates it; needs a terminal and the volume name typed back                                       |
+| `demo-users`    | registers `demo_pilot_1` and `demo_pilot_2` through the API; the password is typed or generated and shown once                                         |
+| `server-key`    | generates a game-server key and says where it goes on both sides; never written to disk                                                                |
+| `lan`           | `start` bound to `0.0.0.0`, prints the addresses to share, and on WSL the Windows port-forward and firewall commands (run only after `[y/N]`)          |
+| `grant-credits` | DEMO ONLY: `grant-credits <user> <amount>` adds a `demo_grant` ledger row; refused unless `HULLBREACH_DEMO_MODE` is on ([Demo console](#demo-console)) |
+| `console`       | tails the API log as readable request lines; `--db` adds database changes ([Demo console](#demo-console))                                              |
 
 Terminal output goes through `console.py`'s `Console`, not logging: every
 line is redacted (registered secret values plus anything that looks like a
@@ -1163,8 +1170,10 @@ set. The step-by-step show is [docs/demo-script.md](demo-script.md).
 `make console` (or `uv run hullbreach_server console`) tails the API log
 (`.hullbreach/logs/api.log`, written by `make demo`) in a readable form so
 an audience can watch requests arrive. `make console-db` (`--db`) also
-shows the database changes the API makes. Options: `-n N` (lines of
-history, default 10), `--no-follow` (print and exit). Ctrl+C stops it.
+shows the database changes the API makes. Both show the signed-in
+username and a sanitized summary of each request payload. Options: `-n N`
+(lines of history, default 10), `--no-follow` (print and exit),
+`--no-payloads` (hide payload summaries). Ctrl+C stops it.
 
 The API writes two kinds of line (`hullbreach_server/logging/events.py`,
 `app/access_log.py`):
@@ -1172,18 +1181,55 @@ The API writes two kinds of line (`hullbreach_server/logging/events.py`,
 - `[access]`: one per request with time, method, path, status, duration,
   the signed-in user id or `-`, and whether the request carried a game
   server key (only its presence, never the value). Health polls are skipped.
+  With `HULLBREACH_LOG_PAYLOADS=1` (set by `make demo` / `make start`
+  unless you set it yourself; off for a bare `uv run hullbreach_server`)
+  it also carries the username (`name=`) and a payload summary (`body=`)
+  for JSON POST/PUT/PATCH/DELETE requests (`app/access_log.py`,
+  `logging/payload.py`).
 - `[event]`: one per database state change at INFO: user registered, login
   ok/failed, logout and session revoked, match recorded (winner and rating
   before -> after per player), idempotent replay, settings updated (field
   names only, never values), store purchase (item, price, balance left)
   and skin equipped.
 
-Console format: `HH:MM:SS  METHOD  path  status  NNms  user=..  [server-key]`,
+Payload summaries are redacted by key name at any nesting depth: any key
+containing password, token, secret, authorization, credential, cookie, hash,
+salt, session or signature, ending in `key`, or equal to auth/jwt/otp/pin
+has its whole value replaced by `<redacted>`. Other values are bounded
+(strings 48 chars, 3 list items, 12 keys, depth 3, 300 chars total); bodies
+over 64 KiB or not JSON show a placeholder. Query strings and headers are
+never logged.
+
+Console format: `HH:MM:SS  METHOD  path  status  NNms  user=<name>  [server-key]  body={...}`,
 and with `--db` `HH:MM:SS  DB      <text>`. Warnings and errors (such as a
 failed login) always show. Times are UTC. Passwords, tokens and keys are
 never logged. App-level event lines were chosen over Postgres statement
 logs because they need no database configuration and read as plain
 sentences.
+
+### Granting demo credits
+
+The starter grant is 300 and a ranked match pays 50/10, so a presenter who
+buys a few items runs dry. `make grant-credits USER=demo_pilot AMOUNT=500`
+(`uv run hullbreach_server grant-credits demo_pilot 500`,
+`hullbreach_ops/grant_credits.py`) appends one `demo_grant` ledger row
+through `services/currency.py::grant` and prints the new balance. It is a
+command-line tool only: there is no HTTP endpoint, so nothing on the
+network can call it.
+
+- It refuses (changing nothing, exit 1) unless `HULLBREACH_DEMO_MODE` is
+  1/true/yes/on in the environment or `.env`. A fresh `make demo` writes
+  `HULLBREACH_DEMO_MODE=1` into the `.env` it creates; for an existing
+  `.env` add that line yourself. Never set it in production: leaving it
+  unset is what makes the command unavailable there.
+- It also refuses an amount that is not a positive whole number and a
+  username that does not exist, naming the problem.
+- With the stack running it adds a console line,
+  `DB  credits granted: +500 to 'demo_pilot' (balance 720)`, so the grant
+  shows in `make console-db` next to the purchase lines.
+- `make` takes `USER=` only from the command line (the shell's own `$USER`
+  is ignored), so a forgotten `USER=` prints the usage instead of crediting
+  your login name.
 
 ## Sprint 1 design
 

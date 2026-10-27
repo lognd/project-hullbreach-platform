@@ -38,7 +38,10 @@ target or documented in the [README](../README.md); nothing here is new.
    it.
 4. Terminal 2: `make console` shows one line per API request;
    `make console-db` also shows database changes (user registered, match
-   recorded with rating changes). Leave it visible next to the browser.
+   recorded with rating changes). Each line shows the signed-in username and
+   a short summary of the request payload (passwords and tokens appear as
+   `<redacted>`; `--no-payloads` hides it). Leave it visible next to the
+   browser.
 5. Show Profile (ELO) and Matches (history), then trigger a match:
    - Quickest: `make smoke` in a third terminal. It
      registers a fresh smoke player and a rival, records a match with the
@@ -76,8 +79,18 @@ target or documented in the [README](../README.md); nothing here is new.
    **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
    skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
    so do not try to buy those live.
+
+   To buy something pricier, give the account more credits first (demo
+   only): `make grant-credits USER=demo_pilot AMOUNT=500`. It prints the
+   new balance and the console shows `DB  credits granted: +500 to
+'demo_pilot' (balance N)`; reload the Store (go to another page and
+   back) and the larger balance is there. The command works only when
+   `HULLBREACH_DEMO_MODE=1` is in `.env` (a fresh `make demo` writes it; add
+   the line by hand to an older `.env`). Without it the command refuses, so
+   it is unavailable in production, and there is no web endpoint for it.
    The footer shows **API up** (cyan dot) while the backend and database answer
    `/api/v1/ready`; **API down** (orange) means the front-to-back link is broken.
+
 8. Finish: **Log out**, then `make stop` (accounts are kept).
 
 ## Verified step list (rehearsal)
@@ -95,15 +108,15 @@ make console-db      # second terminal
 Driven through the real website (headless Chromium), each step checked
 against the console:
 
-| Step in the browser                         | Console shows                                                      |
-| ------------------------------------------- | ------------------------------------------------------------------ |
-| Create account `showtime`                   | `POST /api/v1/auth/register 201`, `DB  user registered`            |
-| Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
-| Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
-| Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                |
-| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
-| **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
-| **Log out**                                 | `DB  logout`                                                       |
+| Step in the browser                         | Console shows                                                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Create account `showtime`                   | `POST /api/v1/auth/register 201`, `DB  user registered`                                                 |
+| Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`                                                   |
+| Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`                                               |
+| Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                                                     |
+| **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200 user=demo_pilot body={"item_id":...}`, `DB  purchase: ... bought ... balance` |
+| **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                                                        |
+| **Log out**                                 | `DB  logout`                                                                                            |
 
 Notes from the rehearsal: registering does not sign you in (you land on
 a "Registration complete" page with a **Log in** link); buying any item

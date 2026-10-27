@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-10-27T05:38:40Z"
+digest = "bae93fe730024f00d48d21057962e5d38dd102ac1c2df7d930725ae017ef0aab"
+exit_code = 0
+head = "b2c985a1e2fb6ca1dfadff5bbd2a8ba058f990ce"
+inline = """
+.............................................                            [100%]
+45 passed in 0.07s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_payload_summary.py"
+size = 99
+status = "measured"
+test_count = 45
+tests_digest = "2352bd263834c44b40bb5a0cf657fb0ee9cbac00c99a1deed8d2b410da56d2cf"
+at = "2026-10-27T05:38:40Z"
+actor = "a-carten"
+rev = 1

@@ -2,15 +2,16 @@
 
 The API writes two kinds of line to its log: `[access]` (one per HTTP request)
 and `[event]` (one per database state change, in plain words). The operator
-console parses them back. Lines never carry passwords, tokens, keys, headers,
-bodies or query strings.
+console parses them back. Lines never carry passwords, tokens, keys, headers
+or query strings; a request line may carry the username and an already
+sanitized payload summary (see `logging.payload`).
 """
 
 from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 from pydantic import BaseModel
 from typani import Err, Ok, Result
@@ -32,6 +33,8 @@ class AccessEntry(BaseModel):
     ms: float
     user: str
     server_key: bool
+    username: str | None = None  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
+    payload: str | None = None
 
 
 # frob:doc docs/index.md#demo-console
@@ -75,13 +78,20 @@ def format_access(
     *,
     user_id: str | None,
     server_key: bool = False,
+    username: str | None = None,
+    payload: str | None = None,
 ) -> str:
     """Return the one-line `[access]` text (path percent-quoted: no forged lines)."""
     safe_path = quote(path, safe=_PATH_SAFE)
-    return (
+    line = (
         f"{ACCESS_TAG} {_stamp(when)} {method} {safe_path} {status} {ms:.1f}ms "
         f"user={user_id or '-'} key={'yes' if server_key else 'no'}"
     )
+    if username:
+        line += f" name={quote(username, safe='')}"
+    if payload:
+        line += f" body={' '.join(payload.split())}"
+    return line
 
 
 # frob:doc docs/index.md#demo-console
@@ -98,10 +108,20 @@ def log_event(log: logging.Logger, text: str, *args: object) -> None:
 
 def _parse_access(rest: str) -> Result[AccessEntry, LineError]:
     """Parse the fields after the `[access]` tag."""
-    parts = rest.split(" ")
-    if len(parts) != 7:
+    parts = rest.split(" ", 7)
+    if len(parts) < 7:
         return Err(LineError(message="access line has the wrong field count"))
-    stamp, method, path, status, ms, user, key = parts
+    stamp, method, path, status, ms, user, key = parts[:7]
+    extra = parts[7] if len(parts) == 8 else ""
+    username: str | None = None
+    payload: str | None = None
+    if extra.startswith("name="):
+        name_token, _sep, extra = extra.partition(" ")
+        username = unquote(name_token[len("name=") :])
+    if extra.startswith("body="):
+        payload = extra[len("body=") :]
+    elif extra:
+        return Err(LineError(message="access line has the wrong field count"))
     when = _parse_stamp(stamp)
     if when is None or not status.isdigit() or not ms.endswith("ms"):
         return Err(LineError(message="access line has a malformed field"))
@@ -120,6 +140,8 @@ def _parse_access(rest: str) -> Result[AccessEntry, LineError]:
             ms=millis,
             user=user[len("user=") :],
             server_key=key == "key=yes",
+            username=username,
+            payload=payload,
         )
     )
 
