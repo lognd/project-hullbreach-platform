@@ -28,7 +28,8 @@ target or documented in the [README](../README.md); nothing here is new.
 ## Run it
 
 1. Terminal 1: `make demo`. It installs what is missing, starts the
-   database, API and website, and seeds a demo player with 6 matches. It
+   database, API and website, and seeds four demo players with 14 matches between them
+   (`demo_pilot` has 9; open any row on **Matches** for its detail). It
    ends by printing the login line.
 2. Browser: http://localhost:5173/login, sign in as `demo_pilot` /
    `demo-password-123`.
@@ -69,9 +70,9 @@ target or documented in the [README](../README.md); nothing here is new.
      new `match_id`.
 6. In the browser click **Profile** (not reload) to see the new ELO, then
    **Matches** for the new row.
-7. Show the store: click **Store**. `demo_pilot` has a starter balance of 300
-   (`make demo` and `make demo-match` grant it once as a ledger row with
-   reason `demo_grant`) and the catalog has four cheap demo items
+7. Show the store: click **Store**. `demo_pilot` has a starter balance of 630
+   (300 granted once as a ledger row with reason `demo_grant`, plus the
+   match payouts from the seeded history) and the catalog has four cheap demo items
    (**Rookie Stripes** 40, **Rust Bucket Wrap** 60, **First Flight Decal** 80,
    **Demo Day Badge** 100). Buy **Rookie Stripes**, then click **Profile** and press the
    skin to equip it (it shows "(equipped)"). Everything else costs 199 or more and a match pays only 50/10,
@@ -100,7 +101,7 @@ against the console:
 | Create account `showtime`                   | `POST /api/v1/auth/register 201`, `DB  user registered`            |
 | Log in, click **Profile** (ELO 1200)        | `DB  login ok`, `POST /auth/login 200`, `GET /me 200`              |
 | Log out                                     | `DB  logout ... session revoked`, `POST /auth/logout 204`          |
-| Log in `demo_pilot`, **Profile** (ELO 1228) | same lines for `demo_pilot`; 6 matches, balance 520                |
+| Log in `demo_pilot`, **Profile** (ELO 1239) | same lines for `demo_pilot`; 9 matches, balance 630                |
 | **Store**, buy **Rookie Stripes** (40)      | `POST /store/purchase 200`, `DB  purchase: ... bought ... balance` |
 | **Profile**, press the skin to equip it     | `PUT /me/equipped 200`, `DB  skin equipped: ...`                   |
 | **Log out**                                 | `DB  logout`                                                       |

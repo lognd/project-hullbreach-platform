@@ -7,6 +7,7 @@ import { Register } from "@/pages/Register";
 import { History } from "@/pages/History";
 import { Leaderboard } from "@/pages/Leaderboard";
 import { Login } from "@/pages/Login";
+import { MatchDetail } from "@/pages/MatchDetail";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
 import { Store } from "@/pages/Store";
@@ -47,6 +48,8 @@ export const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "me", element: <Profile /> },
       { path: "me/matches", element: <History /> },
+      // frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+      { path: "me/matches/:matchId", element: <MatchDetail /> },
       { path: "leaderboard", element: <Leaderboard /> },
       { path: "settings", element: <Settings /> },
       // frob:ticket 01M2H5T11HZP2VXR9KV24Q8RV3

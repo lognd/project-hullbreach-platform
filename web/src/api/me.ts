@@ -103,3 +103,33 @@ export async function fetchMatches(
     headers: bearerHeaders(token),
   });
 }
+
+// frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+// frob:doc docs/index.md#match-history-page
+/** One player's line in a match detail: result, rating move and counters. */
+export type PlayerLine = {
+  username: string;
+  is_you: boolean;
+  won: boolean;
+  rating_before: number;
+  rating_after: number;
+  rating_delta: number;
+  stats: Record<string, number>;
+};
+
+// frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+// frob:doc docs/index.md#match-history-page
+/** GET /api/v1/me/matches/{id}'s 200 body: the caller's summary plus the rating change and both players' lines. */
+export type MatchDetail = MatchSummary & {
+  rating_delta: number;
+  players: PlayerLine[];
+};
+
+// frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+// frob:doc docs/index.md#match-history-page
+/** GET /api/v1/me/matches/{id} with the caller's bearer token; 200 MatchDetail, 404 (unknown or not yours) or 401 rejects with an ApiError. */
+export async function fetchMatch(token: string, matchId: string): Promise<MatchDetail> {
+  return requestJson<MatchDetail>(`${ME_BASE}/matches/${encodeURIComponent(matchId)}`, {
+    headers: bearerHeaders(token),
+  });
+}

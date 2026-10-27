@@ -222,6 +222,106 @@ def match_page(
     return Ok(MatchPage(items=_summarize(db, user, rows), next_cursor=next_cursor))
 
 
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+# frob:doc docs/index.md#player-api
+class PlayerLine(BaseModel):
+    """One side of a match in the detail view: counters and rating move."""
+
+    username: str
+    is_you: bool
+    won: bool
+    rating_before: int
+    rating_after: int
+    rating_delta: int
+    stats: dict[str, int]
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+# frob:doc docs/index.md#player-api
+class MatchDetail(MatchSummary):
+    """A `MatchSummary` plus the ELO change and both players' lines."""
+
+    rating_delta: int
+    players: list[PlayerLine]
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+# frob:doc docs/index.md#player-api
+class MatchNotFound(BaseModel):
+    """No such match, or one the caller did not play (indistinguishable)."""
+
+    match_id: uuid.UUID
+
+
+def _player_lines(db: DBSession, user: User, match: Match) -> list[PlayerLine]:
+    """Both players' lines for `match`, the caller first."""
+    names = {
+        row.id: row.name
+        for row in db.execute(
+            select(User.id, display_name().label("name")).where(
+                User.id.in_([row.user_id for row in match.player_stats])
+            )
+        )
+    }
+    changes = {
+        change.user_id: change
+        for change in db.scalars(
+            select(RatingChange).where(RatingChange.match_id == match.id)
+        )
+    }
+    lines = []
+    for row in match.player_stats:
+        change = changes.get(row.user_id)
+        before = change.rating_before if change else STARTING_RATING
+        after = change.rating_after if change else STARTING_RATING
+        lines.append(
+            PlayerLine(
+                username=names.get(row.user_id, _NO_OPPONENT),
+                is_you=row.user_id == user.id,
+                won=match.winner_id == row.user_id,
+                rating_before=before,
+                rating_after=after,
+                rating_delta=after - before,
+                stats={
+                    "damage_dealt": row.damage_dealt,
+                    "blocks_destroyed": row.blocks_destroyed,
+                    "blocks_placed": row.blocks_placed,
+                    "time_alive_seconds": row.time_alive_seconds,
+                },
+            )
+        )
+    return sorted(lines, key=lambda line: (not line.is_you, line.username))
+
+
+# frob:ticket 01M5XX2BAE2XG6RGMKF1DZ28QJ
+# frob:doc docs/index.md#player-api
+# noqa: E501  # frob:tests tests/unit/test_me_match_detail.py::test_match_detail_service_returns_err_for_a_stranger
+def match_detail(
+    db: DBSession, user: User, match_id: uuid.UUID
+) -> Result[MatchDetail, MatchNotFound]:
+    """Return one of `user`'s matches in full, or Err if absent or not theirs."""
+    row = (
+        db.execute(
+            select(Match, MatchPlayerStats)
+            .join(MatchPlayerStats, MatchPlayerStats.match_id == Match.id)
+            .where(Match.id == match_id, MatchPlayerStats.user_id == user.id)
+        )
+        .tuples()
+        .first()
+    )
+    if row is None:
+        _log.info("match %s not found for user %s", match_id, user.id)
+        return Err(MatchNotFound(match_id=match_id))
+    summary = _summarize(db, user, [row])[0]
+    detail = MatchDetail(
+        **summary.model_dump(),
+        rating_delta=summary.rating_after - summary.rating_before,
+        players=_player_lines(db, user, row[0]),
+    )
+    _log.debug("loaded match %s detail for user %s", match_id, user.id)
+    return Ok(detail)
+
+
 # frob:ticket 01M2H5T11SW5W3X3716GRY6J80
 # frob:doc docs/index.md#matches
 # noqa: E501  # frob:tests tests/unit/test_rating_history.py::test_a_player_with_no_history_has_the_starting_rating

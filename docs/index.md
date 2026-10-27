@@ -801,6 +801,13 @@ a 409 `{"detail": "username already taken" | "email already taken",
 password and revokes every other session of the player, keeping the one
 that made the request. The response is the updated `UserProfile`.
 
+`GET /api/v1/me/matches/{match_id}` (`api/me.py::get_my_match`) returns a
+`MatchDetail`: the caller's `MatchSummary` plus `rating_delta` and
+`players[]` (`username`, `is_you`, `won`, `rating_before`, `rating_after`,
+`rating_delta`, `stats`) for both sides (`services/matches.py::match_detail`).
+Unknown ids and matches the caller did not play both answer 404
+`{"detail": "match not found"}`; no token is a 401.
+
 `GET /api/v1/me/matches?cursor=&limit=` (`api/me.py::get_my_matches`,
 T-0059) returns a `MatchPage` `{items, next_cursor}` of `MatchSummary`
 rows, newest first (`services/matches.py::match_page`). Paging is keyset,
@@ -934,6 +941,12 @@ session and navigates to `/` (the server clears the cookie). The data
 policy page's Deletion section describes this flow.
 
 ### Match history page
+
+Each row links to `web/src/pages/MatchDetail.tsx`, routed at
+`/me/matches/:matchId`, which loads `fetchMatch` (`GET /api/v1/me/matches/{id}`,
+see Player API) and shows the result, duration, your rating move and both
+players' lines (rating before and after, change, counters). An unknown id
+and a match the caller did not play are the same 404 notice.
 
 `web/src/pages/History.tsx` is routed at `/me/matches` and lists the
 signed-in player's matches, newest first, through `fetchMatches` in
@@ -1130,12 +1143,15 @@ working browser -> website -> API -> database stack in one step, and
    touched, and no secret value is printed.
 2. `lifecycle.start`: database, migrations, catalog and admin seed, API,
    website (see the table above).
-3. `seed_demo_data`: the player `demo_pilot` (password `demo-password-123`,
-   published on purpose: the database listens on 127.0.0.1 only) with two
-   opponents, `demo_rival` and `demo_ace`, and six matches of history. Each match goes through
-   `services/matches.py::record_match` (backdated one to six days) with a
-   fixed match id, so ratings evolve from 1200 and history shows real
-   `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
+3. `seed_demo_data`: four players, `demo_pilot`, `demo_rival`, `demo_ace`
+   and `demo_cadet` (password `demo-password-123`, published on purpose: the
+   database listens on 127.0.0.1 only), and 14 scripted matches between them
+   (`hullbreach_ops/demo_history.py::DEMO_MATCHES`; `demo_pilot` plays 9 of
+   them against all three others, with wins and losses, varied durations
+   and damage). Each match goes through
+   `services/matches.py::record_match` (backdated up to six days, oldest
+   first) with a fixed match id, so ratings evolve from 1200 and history
+   shows real `rating_before`/`rating_after` and stats. Idempotent: a re-run replays the
    same ids and changes nothing.
 4. `demo_economy.ensure_demo_economy`: so the store can be shown live.
    Items cost 199 and up while a ranked match pays 50 (win) or 10 (loss),

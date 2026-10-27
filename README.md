@@ -639,7 +639,7 @@ make demo
 (or `uv run hullbreach_server demo`). It creates your settings file with
 fresh passwords if you have none, starts the database, applies the
 migrations, loads the catalog, starts the API and the website, and creates
-a demo player with match history. It ends by printing:
+four demo players (`demo_pilot`, `demo_rival`, `demo_ace`, `demo_cadet`) with match history. It ends by printing:
 
 ```
 Sign in at http://localhost:5173/login
@@ -695,7 +695,7 @@ you signed in; see [the note at the top](#project-hullbreach-platform)).
       email or password.", and a wrong one shows "current password is
       incorrect".
 - [ ] **5. Match history.** Click **Matches**: a fresh account shows
-      "No matches yet."; `demo_pilot` shows six seeded matches with
+      "No matches yet."; `demo_pilot` shows nine seeded matches (against three rivals) with
       rating changes. Run `make demo-match` and refresh to see a new
       one. Then open **Leaderboard** (it refreshes itself every 5 s) and
       **Store** (buy a cheap `demo-` item, then equip it on Profile).
