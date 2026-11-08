@@ -151,4 +151,5 @@ jobs:
       - name: frob check
         run: |
           source .venv/bin/activate
-          frob check
+          # --text prints the verdict; the default JSON hides why exit is 1.
+          frob check --text
