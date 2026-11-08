@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "wont-fix"
+reason = "Obsolete: design model migrated from strata to grimble (7BV5QZ2); hullbreach.strata and its REL200 waivers no longer exist."
+at = "2026-11-08T07:06:58Z"
+actor = "lognd"
+rev = 1
