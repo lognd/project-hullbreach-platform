@@ -2,7 +2,8 @@
 id = "01M2H5T114G1C2NS9KF4WKN7VA"
 title = "S11 Delete my account"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 3
 parent = "01M2H5T10XRAQYXM52JKK4FTSQ"
