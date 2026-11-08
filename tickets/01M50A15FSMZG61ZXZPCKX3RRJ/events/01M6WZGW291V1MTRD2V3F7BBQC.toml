@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-11-08T07:03:42Z"
+digest = "3213daffa727b1430ad8cfbd715fb972de9a6da1646ab5d073c336f3b6824db2"
+exit_code = 0
+head = "155b53378128d3e6883fac33ba22e1c6dd4e28d7"
+inline = """
+.                                                                        [100%]
+1 passed in 3.19s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_db_engine.py::test_create_db_engine_pre_pings_pooled_connections_by_default"
+size = 98
+status = "measured"
+test_count = 1
+tests_digest = "61b582eb5a3fcd2cb219fe18c29f7898d7603a8a9d6a8e11551cd980338ef105"
+at = "2026-11-08T07:03:42Z"
+actor = "lognd"
+rev = 1

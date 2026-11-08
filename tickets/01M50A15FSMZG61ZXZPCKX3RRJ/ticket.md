@@ -6,12 +6,12 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-15T17:33:48Z"
-updated = "2026-10-15T17:33:48Z"
+updated = "2026-11-08T07:03:42Z"
 scope = ["src/hullbreach_server/db/engine.py"]
 
 [[acceptance]]
 text = "create_db_engine sets pool_pre_ping (or equivalent) so stale pooled connections are replaced"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "a test proves a request after a dropped connection succeeds"
