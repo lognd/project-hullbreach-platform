@@ -2,11 +2,12 @@
 id = "01M50A6VNPMEYRHGAR069D0XC1"
 title = "Downgrading migration 3b8e6f1c9d24 fails: constraint name prefixed twice"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-15T17:36:54Z"
-updated = "2026-11-08T07:03:58Z"
+updated = "2026-11-08T07:06:35Z"
 scope = ["src/hullbreach_server/db/migrations/versions/3b8e6f1c9d24_user_role_check_and_ci_unique.py"]
 
 [[acceptance]]
