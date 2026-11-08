@@ -35,3 +35,4 @@ FROBLEMS.md
 # operator scripts: pid files, logs, support bundles (hullbreach_server doctor)
 .hullbreach/
 hullbreach-support-*.zip
+.grimble/

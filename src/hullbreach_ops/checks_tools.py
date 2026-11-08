@@ -23,7 +23,7 @@ _DOCKER_DESKTOP_EXE = Path("/mnt/c/Program Files/Docker/Docker/Docker Desktop.ex
 
 def _version(text: str) -> tuple[int, ...] | None:
     """The first dotted version number in `text`, e.g. (22, 18, 0)."""
-    found = re.search(r"(\d+)\.(\d+)(?:\.(\d+))?", text)
+    found = re.search(r"(?<!\d)(\d++)\.(\d++)(?:\.(\d++))?", text)
     if not found:
         return None
     return tuple(int(part) for part in found.groups() if part is not None)
