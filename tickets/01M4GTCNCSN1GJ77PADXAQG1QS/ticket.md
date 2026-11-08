@@ -2,11 +2,12 @@
 id = "01M4GTCNCSN1GJ77PADXAQG1QS"
 title = "Postgres-backed integration tests for the db boundary"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T17:11:51Z"
-updated = "2026-11-08T07:06:17Z"
+updated = "2026-11-08T07:06:35Z"
 labels = ["owner:lognd", "audit:db"]
 scope = ["tests/system/test_postgres.py"]
 
