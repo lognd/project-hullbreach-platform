@@ -2,13 +2,14 @@
 id = "01M2H5T12PWAJEVZ18CDFJCG57"
 title = "S29 Find an online opponent (platform half: matchmaking queue API)"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 5
 parent = "01M2H5T12NSRFVQ2H4YCE7ZX30"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:39Z"
+updated = "2026-11-08T07:24:41Z"
 aliases = ["T-0086"]
 labels = ["needs-game", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
