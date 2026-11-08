@@ -2,12 +2,13 @@
 id = "01M2H5T12J047CP3Z2AC59XD4G"
 title = "S25 Curate the item catalog"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:30Z"
+updated = "2026-11-08T07:24:40Z"
 aliases = ["T-0082"]
 labels = ["jira:SCRUM-46", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/items.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_admin_items.py", "web/src/pages/admin/Items.tsx", "web/tests/unit/AdminItems.test.tsx"]
