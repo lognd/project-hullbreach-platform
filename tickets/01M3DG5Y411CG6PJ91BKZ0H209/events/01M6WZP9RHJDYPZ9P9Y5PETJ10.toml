@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "wont-fix"
+reason = "Game repo CI job; belongs to the game repository, not this platform repo."
+at = "2026-11-08T07:06:46Z"
+actor = "lognd"
+rev = 1
