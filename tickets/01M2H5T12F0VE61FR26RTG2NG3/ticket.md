@@ -2,12 +2,13 @@
 id = "01M2H5T12F0VE61FR26RTG2NG3"
 title = "S24 Correct a player's rating"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:13Z"
+updated = "2026-11-08T07:24:40Z"
 aliases = ["T-0079"]
 labels = ["jira:SCRUM-45", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/matches.py", "src/hullbreach_server/api/admin/ratings.py", "src/hullbreach_server/services/admin.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_admin_ratings.py", "tests/unit/test_admin_void.py"]
