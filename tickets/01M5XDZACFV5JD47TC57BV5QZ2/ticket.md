@@ -6,12 +6,12 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-27T01:00:40Z"
-updated = "2026-10-27T01:00:40Z"
+updated = "2026-11-08T07:07:14Z"
 scope = ["design/**", "grimble.toml", ".prettierignore", "docs/**", "changelog.d/**", "src/hullbreach_server/**"]
 
 [[acceptance]]
 text = "design/hullbreach.grmb replaces design/hullbreach.strata"
-bound = false
+bound = true
 +++
 
 Hand migration to grimble v2; no tool exists.
