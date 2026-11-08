@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [1, 2]
+captured_at = "2026-11-08T05:57:14Z"
+digest = "f6ccb9b943718fb499688610c19ed8efcb0a5b9b92598099f1c8e987d6662e84"
+exit_code = 0
+head = "546a4629ae56ae481a8b4788cfc47ab7db22d4ef"
+inline = """
+.....                                                                    [100%]
+5 passed in 1.38s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_ops_wipe.py"
+size = 98
+status = "measured"
+test_count = 5
+tests_digest = "03bb44017a122340c99215b1c939de8e959be037fc28c39238a860542f83eaa1"
+at = "2026-11-08T05:57:14Z"
+actor = "a-carten"
+rev = 1
