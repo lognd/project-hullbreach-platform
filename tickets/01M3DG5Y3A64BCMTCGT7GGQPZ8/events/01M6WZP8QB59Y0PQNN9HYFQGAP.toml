@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "wont-fix"
+reason = "Course-process task (sprint ceremony or deliverable) tracked outside the code repository; not engineering work this ticket queue can evidence."
+at = "2026-11-08T07:06:45Z"
+actor = "lognd"
+rev = 1
