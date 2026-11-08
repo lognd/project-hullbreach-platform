@@ -1,0 +1,29 @@
+kind = "evidence"
+accepts = [3]
+captured_at = "2026-11-08T07:24:30Z"
+digest = "5be33408eb6b5dbad6cb37ab84ad49711fcc6c1bf6cd247263d1570d7d6fb0cd"
+exit_code = 0
+head = "6259fd60229fb7c0d3687414a4c9eb7259c32297"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/AdminItems.test.tsx (2 tests) 228ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  02:24:30
+   Duration  1.14s (transform 139ms, setup 118ms, import 182ms, tests 228ms, environment 504ms)
+
+JSON report written to /tmp/frob-vitest-1091862-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/AdminItems.test.tsx"
+size = 315
+status = "measured"
+test_count = 2
+tests_digest = "1a77b59cd1371315ab59fcb6386121599fc43791255cc6ed456728f771284f8c"
+at = "2026-11-08T07:24:30Z"
+actor = "lognd"
+rev = 1

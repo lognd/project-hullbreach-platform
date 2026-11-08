@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:16Z"
+updated = "2026-11-08T07:24:30Z"
 aliases = ["T-0082"]
 labels = ["jira:SCRUM-46", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/items.py", "src/hullbreach_server/services/catalog.py", "tests/unit/test_admin_items.py", "web/src/pages/admin/Items.tsx", "web/tests/unit/AdminItems.test.tsx"]
@@ -22,7 +22,7 @@ bound = true
 
 [[acceptance]]
 text = "given a catalog change, when players reload, then they see it without a redeploy"
-bound = false
+bound = true
 +++
 
 As a administrator, I want to add, edit, price, and retire catalog items, so that the store can change without a code deploy.
