@@ -2,7 +2,7 @@
 const ROOT_FONT_PX = 16;
 
 /** Matches a bare (variant-free) fixed width utility such as `w-[24rem]` or `min-w-[320px]`. */
-const FIXED_WIDTH = /^(?:min-)?w-\[(\d*\.?\d+)(rem|px)\]$/;
+const FIXED_WIDTH = /^(?:min-)?w-\[(\d+(?:\.\d+)?|\.\d+)(rem|px)\]$/;
 
 /** Describes every element under `root` whose classes can force it wider than `viewportPx`: a fixed width above it, or text that refuses to wrap. */
 export function overflowRisks(root: HTMLElement, viewportPx: number): string[] {

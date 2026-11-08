@@ -55,6 +55,11 @@ def create_app(cfg: AppConfig) -> FastAPI:
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
     )
+    # Inside CORS, which must be added last: CORS answers preflights, unlogged.
+    app.add_middleware(
+        AccessLogMiddleware, log_payloads=cfg.log_payloads
+    )  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
+    # Added last so it is outermost and decorates every response.
     # frob:invariant INV-004
     app.add_middleware(
         CORSMiddleware,
@@ -64,10 +69,6 @@ def create_app(cfg: AppConfig) -> FastAPI:
         allow_methods=_CORS_METHODS,
         allow_headers=_CORS_HEADERS,
     )
-    # Added after CORS so it is outermost and sees every response, preflights included.
-    app.add_middleware(
-        AccessLogMiddleware, log_payloads=cfg.log_payloads
-    )  # frob:ticket 01M5XX20F95MPV6YY454BQSNSF
     app.state.cfg = cfg
 
     # frob:ticket 01M5XX28K491XN5RNGABW0Q5RP

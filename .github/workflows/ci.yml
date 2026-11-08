@@ -36,53 +36,53 @@ jobs:
     env:
       HULLBREACH_TEST_PG_URL: postgresql://postgres:ci-only-password@127.0.0.1:5432/hbtest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
       - name: install
-        run: uv sync
+        run: uv sync --locked
 
       - name: lint
-        run: uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+        run: uv run --locked ruff check src/ tests/ && uv run --locked ruff format --check src/ tests/
 
       - name: typecheck
-        run: uv run ty check src/
+        run: uv run --locked ty check src/
 
       - name: test
-        run: uv run pytest tests/ -n auto --cov=src --cov-report=term-missing
+        run: uv run --locked pytest tests/ -n auto --cov=src --cov-report=term-missing
 
   web:
     name: web (typescript)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
           cache: "npm"
           cache-dependency-path: package-lock.json
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
       - name: install
-        run: npm ci && uv sync
+        run: npm ci --ignore-scripts && uv sync --locked
 
       - name: lint
-        run: npm run lint && npx prettier --check .
+        run: npm run lint && npm run fmt:check
 
       # crunk: the design-system gate. Fails on any color/size/shadow in
       # CSS or a className string that crunk.toml does not declare, and on
       # generated token files that drifted from the spec.
       - name: crunk
-        run: uv run crunk check && uv run crunk tokens --check
+        run: uv run --locked crunk check && uv run --locked crunk tokens --check
 
       - name: typecheck
         run: npm run typecheck
@@ -97,23 +97,23 @@ jobs:
     name: frob check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0 # frob diffs against main
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
           cache: "npm"
           cache-dependency-path: package-lock.json
 
       - name: install
-        run: uv sync && npm ci
+        run: uv sync --locked && npm ci --ignore-scripts
 
       # actions/checkout leaves HEAD detached (a pull_request merge commit
       # or a bare sha), and frob.toml's ref_mode = "branch" commits the

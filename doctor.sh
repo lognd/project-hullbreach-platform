@@ -21,7 +21,7 @@ say() { printf '%s\n' "$*"; }
 
 ask_yes() {
   # ask_yes "question" -> 0 only when a person typed y or yes.
-  if [ ! -t 0 ]; then
+  if [[ ! -t 0 ]]; then
     say "  (not asking: no keyboard attached; run ./doctor.sh in a terminal to be asked)"
     return 1
   fi
@@ -59,7 +59,7 @@ say "Checking the tools this project needs: git, uv, Docker, Node.js."
 say ""
 
 # ---------- uv (required: it runs the real doctor) ----------
-if ! have uv && [ -x "$HOME/.local/bin/uv" ]; then
+if ! have uv && [[ -x "$HOME/.local/bin/uv" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 if have uv; then
@@ -68,7 +68,7 @@ else
   say "  uv:      NOT FOUND. uv installs Python and this project's Python packages."
   say "           Official installer: curl -LsSf https://astral.sh/uv/install.sh | sh"
   if ask_yes "           Run the official uv installer now?"; then
-    if curl -LsSf https://astral.sh/uv/install.sh | sh; then
+    if curl --proto '=https' --tlsv1.2 -LsSf https://astral.sh/uv/install.sh | sh; then
       export PATH="$HOME/.local/bin:$PATH"
     fi
   fi
@@ -127,7 +127,7 @@ else
     *)
       say "           Official convenience installer: curl -fsSL https://get.docker.com | sh"
       if ask_yes "           Run the official Docker installer now (it asks for your password)?"; then
-        curl -fsSL https://get.docker.com -o "${TMPDIR:-/tmp}/get-docker.sh" &&
+        curl --proto '=https' --tlsv1.2 -fsSL https://get.docker.com -o "${TMPDIR:-/tmp}/get-docker.sh" &&
           sudo sh "${TMPDIR:-/tmp}/get-docker.sh"
         rm -f "${TMPDIR:-/tmp}/get-docker.sh"
         say "           Then let your user run docker: sudo usermod -aG docker \"$USER\""
@@ -139,7 +139,7 @@ else
 fi
 
 # ---------- Node.js ----------
-if ! have node && [ -s "$HOME/.nvm/nvm.sh" ]; then
+if ! have node && [[ -s "$HOME/.nvm/nvm.sh" ]]; then
   # shellcheck disable=SC1091
   . "$HOME/.nvm/nvm.sh"
 fi
@@ -151,7 +151,7 @@ else
   say "             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
   say "             nvm install 22"
   if ask_yes "           Run those two now?"; then
-    if curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash; then
+    if curl --proto '=https' --tlsv1.2 -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash; then
       export NVM_DIR="$HOME/.nvm"
       # shellcheck disable=SC1091
       . "$NVM_DIR/nvm.sh" && nvm install 22
@@ -165,7 +165,7 @@ else
 fi
 
 say ""
-if [ "$missing_required" -ne 0 ]; then
+if [[ "$missing_required" -ne 0 ]]; then
   say "Stopped: uv is needed to run the rest of the checks."
   say "Install it as shown above, open a new terminal, and run ./doctor.sh again."
   exit 1
@@ -175,8 +175,8 @@ say "Starting the full check (the first run downloads Python packages; this can 
 say ""
 uv run --quiet hullbreach_server doctor "$@"
 status=$?
-if [ "$status" -ne 0 ]; then
-  if [ ! -d .venv ]; then
+if [[ "$status" -ne 0 ]]; then
+  if [[ ! -d .venv ]]; then
     say ""
     say "uv could not install the Python packages. Check your internet connection,"
     say "then run: uv sync   (and read its last lines), then ./doctor.sh again."

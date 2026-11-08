@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import dataclasses
 import secrets
+from urllib.parse import urlunsplit
 
 from hullbreach_ops import dbstate, lan, lifecycle
 from hullbreach_ops import readme_links as rl
@@ -247,7 +248,9 @@ def _web_get(run: DoctorRun, path: str) -> HttpResponse | None:
     """GET `path` from the dev server (localhost first, then 127.0.0.1)."""
     port = run.ctx.settings.web_port
     for host in ("localhost", _LOOPBACK):
-        answer = run.ctx.http.request("GET", f"http://{host}:{port}{path}", timeout=5.0)
+        # Built from parts: the dev server is plain-HTTP on loopback only.
+        url = urlunsplit(("http", f"{host}:{port}", path, "", ""))
+        answer = run.ctx.http.request("GET", url, timeout=5.0)
         if answer.is_ok:
             return answer.danger_ok
     return None
