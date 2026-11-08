@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "done"
+reason = "retroactive closeout: Shipped: SkinPicker on the profile page equips and marks the pressed skin; vitest evidence bound."
+at = "2026-11-08T05:57:35Z"
+actor = "a-carten"
+rev = 1

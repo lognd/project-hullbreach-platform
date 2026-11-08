@@ -1,0 +1,30 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-11-08T05:58:09Z"
+digest = "41c08307fb0a9acb22cfadbc1883ebe1aa875c7c53043bad60b20c5f560fa9bb"
+exit_code = 0
+head = "c248f01c523bd7eae6efe55889913750093b0d77"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/Settings.test.tsx (11 tests) 2459ms
+     \u{2713} sends only the changed email and current password, then confirms  748ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  00:58:11
+   Duration  4.90s (transform 525ms, setup 401ms, import 630ms, tests 2.46s, environment 1.13s)
+
+JSON report written to /tmp/frob-vitest-453560-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/Settings.test.tsx"
+size = 402
+status = "measured"
+test_count = 11
+tests_digest = "6ec387e2acb27ad5a7f9ef6baadf6469a11df66d04034893797c2971e77b82c7"
+at = "2026-11-08T05:58:09Z"
+actor = "a-carten"
+rev = 1

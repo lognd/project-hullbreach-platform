@@ -1,0 +1,28 @@
+kind = "evidence"
+captured_at = "2026-11-08T05:56:37Z"
+digest = "179137eb152ed36af8653c053de6e2f323eefa9f1cf23309def1d25d372548d8"
+exit_code = 0
+head = "5fc83854883295b43ebfdaf3b13c37fc9586972e"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/StatusIndicator.test.tsx (6 tests) 319ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  00:56:38
+   Duration  2.44s (transform 498ms, setup 375ms, import 460ms, tests 319ms, environment 963ms)
+
+JSON report written to /tmp/frob-vitest-440867-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/StatusIndicator.test.tsx"
+size = 319
+status = "measured"
+test_count = 6
+tests_digest = "79fdc77081af77ade22734622e3a7a2764df0a5677d42725f9f299fd65461461"
+at = "2026-11-08T05:56:37Z"
+actor = "a-carten"
+rev = 1

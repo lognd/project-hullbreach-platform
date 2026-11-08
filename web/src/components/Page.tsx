@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { AppLink } from "@/components/AppLink";
 
 /** Content column width: narrow for forms, wide for the landing page and lists. */
@@ -43,6 +43,15 @@ export function Breadcrumb({ crumbs }: { crumbs: readonly Crumb[] }) {
   );
 }
 
+/** Site name used as the document-title base and as the title on pages without a crumb. */
+export const SITE_TITLE = "Project Hullbreach";
+
+/** Browser tab title for a page: its current crumb plus the site name, or the site name alone. */
+export function documentTitle(crumbs: readonly Crumb[]): string {
+  const current = crumbs[crumbs.length - 1];
+  return current === undefined ? SITE_TITLE : `${current.label} | ${SITE_TITLE}`;
+}
+
 // frob:doc docs/index.md#visual-design-rules
 /** The `<main>` every route renders: breadcrumb, a display-face h1 and a one-line purpose, so every page answers "where am I and what is this for". */
 export function Page({
@@ -60,6 +69,11 @@ export function Page({
   titleClassName?: string;
   children?: ReactNode;
 }) {
+  const tabTitle = documentTitle(crumbs);
+  // frob:ticket 01M6WVGM99DSD12F2M69MK8XPB
+  useEffect(() => {
+    document.title = tabTitle;
+  }, [tabTitle]);
   return (
     <main className="flex w-full flex-1 flex-col text-ink">
       <div

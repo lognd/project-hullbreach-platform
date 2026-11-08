@@ -1,0 +1,10 @@
+kind = "create"
+title = "Per-page browser tab titles from the current crumb"
+type = "task"
+category = "todo"
+priority = "medium"
+scope = ["web/src/components/Page.tsx", "web/tests/unit/BlueprintShell.test.tsx", "docs/index.md", "changelog.d/*"]
+body = "found in final-polish walk: every route showed the same tab title."
+at = "2026-11-08T05:53:46Z"
+actor = "a-carten"
+rev = 1

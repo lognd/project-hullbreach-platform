@@ -1,0 +1,29 @@
+kind = "evidence"
+captured_at = "2026-11-08T05:55:56Z"
+digest = "810c3420abd9465745d13e590d4d1053f4868c6a57797bd9ff807b7105eabb1e"
+exit_code = 0
+head = "5f16a9e165586ee043781e1baeb8775eb32ec690"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/BlueprintShell.test.tsx (8 tests) 732ms
+     \u{2713} shows Home plus the crumbs and marks only the last as the current page  427ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  00:55:57
+   Duration  4.09s (transform 835ms, setup 611ms, import 686ms, tests 732ms, environment 1.48s)
+
+JSON report written to /tmp/frob-vitest-437556-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/BlueprintShell.test.tsx"
+size = 410
+status = "measured"
+test_count = 8
+tests_digest = "1f44a31486f5f368d23090f12950b65114d2ee12aff01d2c2828d58eb94a53f2"
+at = "2026-11-08T05:55:56Z"
+actor = "a-carten"
+rev = 1

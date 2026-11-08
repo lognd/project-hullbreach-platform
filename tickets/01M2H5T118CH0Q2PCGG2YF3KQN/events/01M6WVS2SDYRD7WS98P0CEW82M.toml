@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "done"
+reason = "retroactive closeout: Shipped as PUT /api/v1/me/equipped (and DELETE to unequip) in api/me.py; pytest evidence bound."
+at = "2026-11-08T05:58:23Z"
+actor = "a-carten"
+rev = 1

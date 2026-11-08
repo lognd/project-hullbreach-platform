@@ -1,0 +1,29 @@
+kind = "evidence"
+captured_at = "2026-11-08T05:57:02Z"
+digest = "795a0d9cdec3b1826e5735018efbd21c6754136e3ad5e7cdaf37c0e40c4eeedc"
+exit_code = 0
+head = "3f24a538c27d1fe35897feb6823ea8b3628405a3"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/SkinPicker.test.tsx (5 tests) 780ms
+     \u{2713} equips the pressed skin and marks it  438ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  00:57:04
+   Duration  3.30s (transform 321ms, setup 329ms, import 653ms, tests 780ms, environment 1.12s)
+
+JSON report written to /tmp/frob-vitest-443155-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/SkinPicker.test.tsx"
+size = 372
+status = "measured"
+test_count = 5
+tests_digest = "1393f64ef08ec51f96879cc35f684db7454d5a4e22da1bea611683e6c13cd46c"
+at = "2026-11-08T05:57:02Z"
+actor = "a-carten"
+rev = 1

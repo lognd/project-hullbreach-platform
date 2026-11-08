@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "done"
+reason = "retroactive closeout: Shipped: Settings danger zone requires the confirm step and a typed password before DELETE /me is sent; vitest evidence bound."
+at = "2026-11-08T05:58:23Z"
+actor = "a-carten"
+rev = 1
