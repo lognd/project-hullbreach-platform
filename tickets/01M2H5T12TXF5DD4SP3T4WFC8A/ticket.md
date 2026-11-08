@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T12NSRFVQ2H4YCE7ZX30"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:17Z"
+updated = "2026-11-08T07:24:18Z"
 aliases = ["T-0090"]
 labels = ["needs-game", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/api/trust.py", "src/hullbreach_server/db/models/trust.py", "tests/unit/test_trust_events.py"]
@@ -18,7 +18,7 @@ bound = true
 
 [[acceptance]]
 text = "given an admin, when they view a player, then trust events are listed"
-bound = false
+bound = true
 +++
 
 As a administrator, I want trust events from the game server logged and visible on the platform, so that repeated implausible claims are reviewable rather than lost in server logs.
