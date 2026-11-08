@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from sqlalchemy import Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from hullbreach_server.db.engine import Base
+from hullbreach_server.db.models.types import UTCDateTime
 
 # Category given to a row that predates the category column.
 DEFAULT_CATEGORY = "general"
@@ -34,3 +36,6 @@ class Item(Base):
     )
     # Relative or absolute URL of a preview image; null until art is attached.
     preview_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Set when an admin retires the item (VBT4P6C): it leaves the public
+    # catalog and the store but stays in existing owners' inventories.
+    retired_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)

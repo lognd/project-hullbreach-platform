@@ -4,7 +4,7 @@ The platform API for Project Hullbreach. It owns everything that is not
 time-critical: accounts, token sessions and account deletion, ELO, match
 history, stats and the leaderboard, matchmaking queue, the item catalog,
 cosmetic store, currency and equipped items, and saved ship designs. There
-is no admin moderation surface yet. The game server
+is an admin moderation surface (see [Admin API](#admin-api)). The game server
 reports match results here over REST; the web frontend and the game client
 both authenticate against it. Real-time match traffic never touches it.
 
@@ -118,10 +118,41 @@ threadpool next to the sync `get_db` session, not on the event loop.
 not `Role.admin`, and otherwise returns the same `AuthContext`. 401
 means "I don't know who you are"; 403 means "I know who you are and the
 answer is no" -- a Player token is fully authenticated, merely
-unauthorized, so `require_admin` never returns 401. No production admin
-route exists yet in milestone 0.1.0 (admin moderation is a later
-milestone); `require_admin` is exercised by a test-only router mounted
-directly on the test app fixture (`tests/unit/test_roles.py`).
+unauthorized, so `require_admin` never returns 401. Every route
+under `/api/v1/admin` depends on it (see [Admin API](#admin-api)); the
+gate itself is also exercised by a test-only router
+(`tests/unit/test_roles.py`).
+
+### Admin API
+
+All routes live under `/api/v1/admin` and require an Admin session
+(401 anonymous, 403 for a Player). Every mutating call takes a
+`reason` (1..500 chars) and writes a `moderation_log` row. Errors map
+`not_found` to 404, `conflict` to 409 and `invalid` to 422.
+
+- `GET /players?q=&limit=`: case-insensitive partial username search
+  (LIKE wildcards are matched literally, limit capped at 100).
+- `GET /players/{id}`: rating, balance, suspension state, moderation
+  history and trust events.
+- `POST /players/{id}/suspend` and `/unsuspend`: suspension revokes all
+  of the player's sessions; a suspended login returns 403
+  `{"detail": "account suspended", "reason": ...}`. Self-suspension and
+  repeated suspension are refused.
+- `PUT /players/{id}/rating`: appends a `rating_changes` row with a null
+  `match_id` and the reason; ratings below 100 are rejected.
+- `POST /matches/{id}/void`: deletes the match's rating and currency
+  ledger rows and stamps `voided_at`, so both players return to their
+  pre-match rating and balance and the match leaves history. Later
+  matches keep their recorded values, and a balance can go negative if
+  the payout was already spent.
+- `GET/POST /items`, `PATCH /items/{id}`, `DELETE /items/{id}`: catalog
+  management. Delete retires the item (`retired_at`): it disappears from
+  the public catalog and cannot be purchased, but owners keep it in
+  their inventory.
+
+Trust events: the game server posts `POST /api/v1/trust-events`
+(`X-Server-Key`) with `user_id`, `kind` and `detail`; they are listed,
+with time and kind, on the admin player detail.
 
 ### Auth API
 

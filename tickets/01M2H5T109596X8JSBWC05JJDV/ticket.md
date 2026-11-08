@@ -2,12 +2,13 @@
 id = "01M2H5T109596X8JSBWC05JJDV"
 title = "S02 Block merges that fail the quality gate"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T104B4HY0X1B5KX80SJ7"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:22Z"
+updated = "2026-11-08T07:24:44Z"
 aliases = ["T-0009"]
 labels = ["jira:SCRUM-23", "owner:lognd", "milestone:0.1.0"]
 scope = ["CONTRIBUTING.md", "README.md"]

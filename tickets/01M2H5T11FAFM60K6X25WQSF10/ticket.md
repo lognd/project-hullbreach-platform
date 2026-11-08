@@ -2,12 +2,13 @@
 id = "01M2H5T11FAFM60K6X25WQSF10"
 title = "S14 Understand what data is collected"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T11ARH7FQCAQZ52ER1Y6"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:22Z"
+updated = "2026-11-08T07:24:45Z"
 aliases = ["T-0047"]
 labels = ["jira:SCRUM-35", "owner:a-carten", "milestone:0.3.0"]
 scope = ["web/src/components/CookieNotice.tsx", "web/src/components/Footer.tsx", "web/src/pages/DataPolicy.tsx", "web/tests/unit/CookieNotice.test.tsx", "web/tests/unit/DataPolicy.test.tsx"]

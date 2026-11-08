@@ -2,13 +2,14 @@
 id = "01M4GREZ98HHCGREZDAV50P336"
 title = "Cosmetic loadout model and migration (per-block-type skins plus trail, banner and projectile-effect slots)"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "wont-fix"
 priority = "medium"
 points = 2
 parent = "01M2H5T117A35Q8AA9THRZTTYB"
 reporter = "lognd"
 created = "2026-10-09T16:38:09Z"
-updated = "2026-10-09T16:38:09Z"
+updated = "2026-11-08T07:24:40Z"
 labels = ["owner:lognd", "needs-game", "milestone:0.3.0"]
 
 [[links]]

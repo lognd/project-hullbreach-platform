@@ -2,12 +2,13 @@
 id = "01M2H5T10SJRRFCSNHGH9AF0ZF"
 title = "S07 Sign in from inside the game"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T10DT4023PZH1JHFEWQE"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:52:44Z"
+updated = "2026-11-08T07:24:45Z"
 aliases = ["T-0025"]
 labels = ["needs-game", "milestone:0.1.0"]
 scope = ["src/hullbreach_server/api/auth.py", "src/hullbreach_server/auth/deps.py", "tests/unit/test_auth_game.py"]

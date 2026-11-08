@@ -79,11 +79,22 @@ def list_catalog(
     """List catalog items (maybe one `category`), flagging `viewer_id`'s own."""
     try:
         categories = list(
-            db.execute(select(Item.category).distinct().order_by(Item.category))
+            db.execute(
+                select(Item.category)
+                .where(Item.retired_at.is_(None))
+                .distinct()
+                .order_by(Item.category)
+            )
             .scalars()
             .all()
         )
-        query = select(Item).order_by(Item.category, Item.name, Item.slug)
+        # frob:ticket 01M2H5T12CA6BAHAQ9Q4WFRQM6
+        # Retired items leave the public catalog (VBT4P6C) but stay in inventories.
+        query = (
+            select(Item)
+            .where(Item.retired_at.is_(None))
+            .order_by(Item.category, Item.name, Item.slug)
+        )
         if category is not None:
             query = query.where(Item.category == category)
         items = db.execute(query).scalars().all()

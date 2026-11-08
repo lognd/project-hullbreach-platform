@@ -2,20 +2,21 @@
 id = "01M50A15FSMZG61ZXZPCKX3RRJ"
 title = "API returns 500 after a database restart until the API is restarted"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-15T17:33:48Z"
-updated = "2026-10-15T17:33:48Z"
+updated = "2026-11-08T07:06:35Z"
 scope = ["src/hullbreach_server/db/engine.py"]
 
 [[acceptance]]
 text = "create_db_engine sets pool_pre_ping (or equivalent) so stale pooled connections are replaced"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "a test proves a request after a dropped connection succeeds"
-bound = false
+bound = true
 +++
 
 Found during the doctor beginner run: docker stop of the DB container then start, with the API left running, made POST /auth/register return 500 (psycopg AdminShutdown on a stale pooled connection). create_db_engine in src/hullbreach_server/db/engine.py does not set pool_pre_ping. hullbreach_server start now restarts the API when it had to bring the DB back (ops workaround); a uvicorn started by hand still breaks.

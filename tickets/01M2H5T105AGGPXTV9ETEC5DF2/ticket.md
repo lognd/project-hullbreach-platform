@@ -2,12 +2,13 @@
 id = "01M2H5T105AGGPXTV9ETEC5DF2"
 title = "S01 Run the platform against a central database"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 parent = "01M2H5T104B4HY0X1B5KX80SJ7"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:22Z"
+updated = "2026-11-08T07:24:44Z"
 aliases = ["T-0005"]
 labels = ["jira:SCRUM-22", "owner:lognd", "milestone:0.1.0"]
 scope = ["src/hullbreach_server/__main__.py", "src/hullbreach_server/db/__init__.py", "src/hullbreach_server/db/engine.py", "src/hullbreach_server/db/migrations/", "src/hullbreach_server/db/seed.py", "src/hullbreach_server/db/seed_items.json", "tests/system/test_build.py", "tests/unit/test_db_engine.py", "tests/unit/test_seed.py"]

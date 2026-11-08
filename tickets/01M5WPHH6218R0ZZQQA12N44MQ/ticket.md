@@ -2,11 +2,12 @@
 id = "01M5WPHH6218R0ZZQQA12N44MQ"
 title = "docs/index.md intro omits store, currency, designs, leaderboard, deletion"
 type = "docs"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "low"
 reporter = "a-carten"
 created = "2026-10-26T18:11:11Z"
-updated = "2026-10-26T18:11:11Z"
+updated = "2026-11-08T07:21:23Z"
 scope = ["docs/index.md"]
 +++
 

@@ -1,0 +1,19 @@
+kind = "evidence"
+captured_at = "2026-11-08T06:57:58Z"
+digest = "6b36e2c623a13634a5485ffa05c1707fc5074f1ea5376e4275a2a936c3a2d239"
+exit_code = 0
+head = "b35dca943b4b5475acb454f1a00057eeb812357b"
+inline = """
+...................                                                      [100%]
+19 passed in 3.24s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_db_engine.py tests/unit/test_seed.py"
+size = 99
+status = "measured"
+test_count = 19
+tests_digest = "5e596f87a5a7758754b1fee71012ed66ec317eb465e0aafcc35c629cd9f8605d"
+at = "2026-11-08T06:57:58Z"
+actor = "a-carten"
+rev = 1

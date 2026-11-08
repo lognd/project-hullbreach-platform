@@ -1,0 +1,30 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-11-08T07:23:36Z"
+digest = "77ddb57eb7c37e48ed73f29a19b7da4f06d053c442515bb072f271bb2f05220c"
+exit_code = 0
+head = "366347ab1a831d424933adc16c87586b368e07a1"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/AdminItems.test.tsx (2 tests) 332ms
+     \u{2713} saves a changed price through PATCH and shows the item  325ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  02:23:36
+   Duration  1.57s (transform 239ms, setup 236ms, import 257ms, tests 332ms, environment 578ms)
+
+JSON report written to /tmp/frob-vitest-1088988-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/AdminItems.test.tsx"
+size = 391
+status = "measured"
+test_count = 2
+tests_digest = "1a77b59cd1371315ab59fcb6386121599fc43791255cc6ed456728f771284f8c"
+at = "2026-11-08T07:23:36Z"
+actor = "lognd"
+rev = 1

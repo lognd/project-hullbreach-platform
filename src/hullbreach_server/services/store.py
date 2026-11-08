@@ -61,7 +61,8 @@ def purchase(
 ) -> Result[PurchaseReceipt, PurchaseError]:
     """Debit `item_id`'s price from `user_id` and grant the item in one transaction."""
     item = db.get(Item, item_id)
-    if item is None:
+    # frob:ticket 01M2H5T12CA6BAHAQ9Q4WFRQM6
+    if item is None or item.retired_at is not None:
         return _refuse("unknown_item", "no such item")
     # Serialize this player's purchases: the row lock makes the balance check
     # and the debit atomic (a no-op on SQLite, where writes are serialized).

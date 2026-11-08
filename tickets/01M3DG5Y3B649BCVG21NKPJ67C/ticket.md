@@ -2,13 +2,14 @@
 id = "01M3DG5Y3B649BCVG21NKPJ67C"
 title = "P1-3: Sprint demo build and presentation preparation"
 type = "docs"
-category = "todo"
+category = "done"
+outcome = "wont-fix"
 priority = "medium"
 points = 3
 parent = "01M3DG5Y38V8QRYA38SCZHKBXY"
 reporter = "human"
 created = "2026-09-26T00:00:00Z"
-updated = "2026-09-26T00:00:00Z"
+updated = "2026-11-08T07:06:45Z"
 aliases = ["T-0107"]
 labels = ["process", "jira:SCRUM-218", "owner:lognd", "milestone:0.1.0"]
 +++

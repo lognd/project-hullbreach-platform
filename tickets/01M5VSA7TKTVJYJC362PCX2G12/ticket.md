@@ -2,11 +2,12 @@
 id = "01M5VSA7TKTVJYJC362PCX2G12"
 title = "Replace REL200 timeout waivers in hullbreach.strata with a declared timeout"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "wont-fix"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-26T09:40:24Z"
-updated = "2026-10-26T23:58:31Z"
+updated = "2026-11-08T07:06:58Z"
 scope = ["design/hullbreach.strata"]
 +++
 

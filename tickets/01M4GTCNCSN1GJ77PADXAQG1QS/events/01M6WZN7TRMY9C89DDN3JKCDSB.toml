@@ -1,0 +1,7 @@
+kind = "field"
+field = "acceptance"
+new = ["upgrade head, seed twice and register/login/session round-trip pass against real Postgres"]
+moved = []
+at = "2026-11-08T07:06:12Z"
+actor = "lognd"
+rev = 1

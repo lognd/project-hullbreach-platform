@@ -128,6 +128,7 @@ def register(
     response_model=LoginResponse,
     responses={
         401: {"model": ErrorDetail, "description": "Invalid username or password"},
+        403: {"model": ErrorDetail, "description": "Account suspended (with reason)"},
         429: {"model": ErrorDetail, "description": "Too many failed attempts"},
     },
 )
@@ -172,7 +173,16 @@ def login(
         )
 
     clear_failed_logins(payload.username)
-    # noqa: E501  # frob:todo 01M2H5T12DHERRG7PFSX31A3MK refuse a suspended user here with 403 and the suspension reason, before issuing a session
+    # frob:ticket 01M2H5T12DHERRG7PFSX31A3MK
+    if user.suspended_at is not None:
+        _log.warning("login refused: %s is suspended", shown)
+        return JSONResponse(
+            status_code=403,
+            content={
+                "detail": "account suspended",
+                "reason": user.suspended_reason or "",
+            },
+        )
     _session_row, token = issue_session(db, user)
     log_event(
         _log,

@@ -2,11 +2,12 @@
 id = "01M2H5T12NSRFVQ2H4YCE7ZX30"
 title = "E13 Game server integration (platform half)"
 type = "epic"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "high"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-09-15T00:00:00Z"
+updated = "2026-11-08T07:24:50Z"
 aliases = ["T-0085"]
 labels = ["milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/api/designs.py", "src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/api/trust.py", "src/hullbreach_server/db/models/design.py", "src/hullbreach_server/db/models/trust.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_designs.py", "tests/unit/test_matchmaking.py", "tests/unit/test_trust_events.py"]

@@ -2,13 +2,14 @@
 id = "01M3DG5Y3M4QD4VJYSYH0QGES2"
 title = "P3-2: Pull request review of teammates' changes throughout the sprint"
 type = "docs"
-category = "todo"
+category = "done"
+outcome = "wont-fix"
 priority = "medium"
 points = 3
 parent = "01M3DG5Y38V8QRYA38SCZHKBXY"
 reporter = "human"
 created = "2026-09-26T00:00:00Z"
-updated = "2026-09-26T00:00:00Z"
+updated = "2026-11-08T07:06:46Z"
 aliases = ["T-0116"]
 labels = ["process", "jira:SCRUM-227", "owner:lognd", "milestone:0.3.0"]
 +++
