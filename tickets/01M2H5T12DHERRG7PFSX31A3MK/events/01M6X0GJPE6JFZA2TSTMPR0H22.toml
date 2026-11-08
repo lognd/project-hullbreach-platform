@@ -1,0 +1,30 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-11-08T07:21:06Z"
+digest = "fa27803315beed42f9cbcd02a8784da8ad9072924a7a1b174188b2822e904eec"
+exit_code = 0
+head = "2d6a22027a782fde3e4a8390392696d736582827"
+inline = """
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/unit/test_moderation.py::test_suspended_player_login_is_403_with_the_reason
+  <worktree>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/unit/test_moderation.py::test_suspended_player_login_is_403_with_the_reason
+  <worktree>/.venv/lib/python3.11/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 2 warnings in 1.14s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_moderation.py::test_suspended_player_login_is_403_with_the_reason"
+size = 964
+status = "measured"
+test_count = 1
+tests_digest = "6d8da3d2706421d76768908093740e28d5381f7c3522d5fefadfe6a81fb197e4"
+at = "2026-11-08T07:21:06Z"
+actor = "lognd"
+rev = 1
