@@ -62,13 +62,19 @@ def create_db_engine(url: str, **kwargs: Any) -> Engine:
     decision D1, without every caller needing to spell the driver out.
     A psycopg connection also gets a default 5-second connect timeout
     (unless the caller passes its own `connect_args`) so a network-level
-    outage fails fast instead of hanging the caller indefinitely.
+    outage fails fast instead of hanging the caller indefinitely. Pooled
+    connections are pre-pinged by default so stale ones (after a database
+    restart) are replaced rather than raised to the request.
     """
     parsed = make_url(url)
     if parsed.drivername == "postgresql":
         parsed = parsed.set(drivername="postgresql+psycopg")
     if parsed.drivername == "postgresql+psycopg" and "connect_args" not in kwargs:
         kwargs = {**kwargs, "connect_args": {"connect_timeout": 5}}
+    # frob:ticket 01M50A15FSMZG61ZXZPCKX3RRJ
+    # Probe pooled connections on checkout so a restarted database costs one
+    # transparent reconnect instead of a 500 until the API restarts.
+    kwargs.setdefault("pool_pre_ping", True)
     safe_url = parsed.render_as_string(hide_password=True)
     _log.debug("creating database engine for %s", safe_url)
     return create_engine(parsed, **kwargs)

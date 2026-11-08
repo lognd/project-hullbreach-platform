@@ -48,4 +48,7 @@ def downgrade() -> None:
     op.drop_index("uq_users_email_lower", table_name="users")
     op.drop_index("uq_users_username_lower", table_name="users")
     with op.batch_alter_table("users") as batch:
-        batch.drop_constraint("ck_users_role", type_="check")
+        # frob:ticket 01M50A6VNPMEYRHGAR069D0XC1
+        # op.f() marks the name as final so the naming convention does not
+        # prefix it a second time (ck_users_ck_users_role).
+        batch.drop_constraint(op.f("ck_users_role"), type_="check")

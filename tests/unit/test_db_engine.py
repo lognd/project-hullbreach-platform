@@ -52,6 +52,16 @@ def test_create_db_engine_returns_a_sqlalchemy_engine() -> None:
     assert isinstance(engine, Engine)
 
 
+# frob:ticket 01M50A15FSMZG61ZXZPCKX3RRJ
+def test_create_db_engine_pre_pings_pooled_connections_by_default() -> None:
+    """Stale pooled connections are replaced on checkout, not raised to requests."""
+    from hullbreach_server.db.engine import create_db_engine
+
+    assert create_db_engine("sqlite:///:memory:").pool._pre_ping is True
+    opted_out = create_db_engine("sqlite:///:memory:", pool_pre_ping=False)
+    assert opted_out.pool._pre_ping is False
+
+
 # frob:ticket 01M2H5T1068D0ZRB2AZ3JNFQY4
 def test_base_is_shared_across_db_package(engine) -> None:
     """hullbreach_server.db.Base is the same DeclarativeBase re-exported from db.engine."""
