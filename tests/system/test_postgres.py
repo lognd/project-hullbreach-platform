@@ -103,7 +103,11 @@ def test_register_login_session_round_trip(migrated: Engine) -> None:
 
     application.dependency_overrides[get_db] = _session
     with TestClient(application) as client:
-        body = {"username": "pilot", "email": "pilot@example.com", "password": _PASSWORD}
+        body = {
+            "username": "pilot",
+            "email": "pilot@example.com",
+            "password": _PASSWORD,
+        }
         assert client.post("/api/v1/auth/register", json=body).status_code == 201
         login = client.post(
             "/api/v1/auth/login", json={"username": "pilot", "password": _PASSWORD}
