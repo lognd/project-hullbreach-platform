@@ -1,0 +1,30 @@
+kind = "evidence"
+accepts = [1]
+captured_at = "2026-11-08T07:23:33Z"
+digest = "04a8ba3cddb43810ade4e6b27a04c4bdab82b4aeb9e8ada68fcf26a6927f6035"
+exit_code = 0
+head = "d674bba4e78a06d19dfeb6648c936f6f476d2d28"
+inline = '''
+
+ RUN  v4.1.11 <worktree>
+
+ \u{2713} web/tests/unit/AdminPlayers.test.tsx (2 tests) 457ms
+     \u{2713} lets an admin search and suspend a player with a reason  420ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  02:23:34
+   Duration  1.79s (transform 211ms, setup 182ms, import 261ms, tests 457ms, environment 684ms)
+
+JSON report written to /tmp/frob-vitest-1088878-0.json
+'''
+passed = true
+provider = "vitest"
+ref = "web/tests/unit/AdminPlayers.test.tsx"
+size = 394
+status = "measured"
+test_count = 2
+tests_digest = "a7111ae03620392e51f98ff057fed2530e0e6da86f2279cc416bb9a0256d6d9a"
+at = "2026-11-08T07:23:33Z"
+actor = "lognd"
+rev = 1
