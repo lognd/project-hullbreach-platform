@@ -6,13 +6,13 @@ category = "todo"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-09T17:11:51Z"
-updated = "2026-11-08T07:06:12Z"
+updated = "2026-11-08T07:06:17Z"
 labels = ["owner:lognd", "audit:db"]
 scope = ["tests/system/test_postgres.py"]
 
 [[acceptance]]
 text = "upgrade head, seed twice and register/login/session round-trip pass against real Postgres"
-bound = false
+bound = true
 +++
 
 found while working ~7523D2D: the role CHECK and case-insensitive unique indexes are now covered on SQLite only. The production dialect (Postgres: seed postgresql insert branch, timestamptz, FK cascade, server_default, DataError on over-long values, concurrent register race) has no integration coverage. Add a Postgres-backed integration test (testcontainers or a CI service) that runs upgrade head, seeds twice, and round-trips register/login/session.
