@@ -2,11 +2,12 @@
 id = "01M50A15FSMZG61ZXZPCKX3RRJ"
 title = "API returns 500 after a database restart until the API is restarted"
 type = "bug"
-category = "todo"
+category = "done"
+outcome = "fixed"
 priority = "medium"
 reporter = "lognd"
 created = "2026-10-15T17:33:48Z"
-updated = "2026-11-08T07:03:50Z"
+updated = "2026-11-08T07:06:35Z"
 scope = ["src/hullbreach_server/db/engine.py"]
 
 [[acceptance]]
