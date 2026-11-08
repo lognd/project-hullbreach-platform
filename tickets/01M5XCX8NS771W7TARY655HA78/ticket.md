@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-10-27T00:42:04Z"
-updated = "2026-10-27T00:42:04Z"
+updated = "2026-11-08T07:07:22Z"
 scope = ["tests/unit/test_store_purchase_concurrent.py", "src/hullbreach_server/services/store.py", "docs/index.md", ".github/workflows/ci.yml", "changelog.d/**"]
 +++
 
