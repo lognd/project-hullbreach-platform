@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:09Z"
+updated = "2026-11-08T07:24:10Z"
 aliases = ["T-0075"]
 labels = ["jira:SCRUM-44", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/api/auth.py", "src/hullbreach_server/db/models/moderation.py", "src/hullbreach_server/services/admin.py", "tests/unit/test_admin_players.py", "tests/unit/test_moderation.py", "web/src/pages/admin/Players.tsx", "web/src/router.tsx", "web/tests/unit/AdminPlayers.test.tsx"]
@@ -26,7 +26,7 @@ bound = true
 
 [[acceptance]]
 text = "given a Player session, when any admin screen or endpoint is requested, then it is refused"
-bound = false
+bound = true
 +++
 
 As a administrator, I want to search for a player and suspend or reinstate their account, so that I can act on cheating or abuse reports.
