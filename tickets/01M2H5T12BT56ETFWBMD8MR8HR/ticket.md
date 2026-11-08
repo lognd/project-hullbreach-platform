@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:07Z"
+updated = "2026-11-08T07:24:09Z"
 aliases = ["T-0075"]
 labels = ["jira:SCRUM-44", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/api/auth.py", "src/hullbreach_server/db/models/moderation.py", "src/hullbreach_server/services/admin.py", "tests/unit/test_admin_players.py", "tests/unit/test_moderation.py", "web/src/pages/admin/Players.tsx", "web/src/router.tsx", "web/tests/unit/AdminPlayers.test.tsx"]
@@ -22,7 +22,7 @@ bound = true
 
 [[acceptance]]
 text = "given any moderation action, when performed, then admin, time, and reason are recorded"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a Player session, when any admin screen or endpoint is requested, then it is refused"
