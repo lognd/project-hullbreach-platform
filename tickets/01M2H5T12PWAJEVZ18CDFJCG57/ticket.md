@@ -8,7 +8,7 @@ points = 5
 parent = "01M2H5T12NSRFVQ2H4YCE7ZX30"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:32Z"
+updated = "2026-11-08T07:24:33Z"
 aliases = ["T-0086"]
 labels = ["needs-game", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
@@ -19,7 +19,7 @@ bound = true
 
 [[acceptance]]
 text = "given two queued players within the rating window, when matched, then both receive the same game server address without typing one"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given a matched game, when it ends, then it is recorded as ranked"
