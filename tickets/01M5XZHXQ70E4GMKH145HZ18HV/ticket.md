@@ -7,7 +7,7 @@ priority = "high"
 points = 3
 reporter = "a-carten"
 created = "2026-10-27T06:07:56Z"
-updated = "2026-10-27T06:07:56Z"
+updated = "2026-11-08T05:56:56Z"
 labels = ["owner:lognd"]
 scope = ["src/hullbreach_ops/**", "tests/unit/test_ops_*.py", "Makefile", "docs/demo-runbook.md", "docs/index.md", "changelog.d/**"]
 
