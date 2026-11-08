@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "done"
+reason = "retroactive closeout: Shipped: wipe_demo in src/hullbreach_ops/wipe.py, make demo-wipe and the runbook section; pytest evidence bound."
+at = "2026-11-08T05:57:32Z"
+actor = "a-carten"
+rev = 1
