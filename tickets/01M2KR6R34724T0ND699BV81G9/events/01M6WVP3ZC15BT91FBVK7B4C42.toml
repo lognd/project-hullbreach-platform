@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "done"
+reason = "retroactive closeout: Caller shipped: web/src/api/ready.ts and the footer StatusIndicator probe /api/v1/ready; vitest evidence bound. The strata REL200 timeout declaration is tracked by the PCX2G12 ticket."
+at = "2026-11-08T05:56:46Z"
+actor = "a-carten"
+rev = 1

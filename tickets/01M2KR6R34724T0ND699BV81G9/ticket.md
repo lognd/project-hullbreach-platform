@@ -2,11 +2,12 @@
 id = "01M2KR6R34724T0ND699BV81G9"
 title = "Wire GET /api/v1/ready into a real caller (web/ops)"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 reporter = "human"
 created = "2026-09-16T00:00:00Z"
-updated = "2026-11-08T05:56:37Z"
+updated = "2026-11-08T05:56:46Z"
 aliases = ["T-0100"]
 labels = ["jira:none"]
 scope = ["web/src/**", "web/tests/unit/StatusIndicator.test.tsx", "docs/index.md", "docs/demo-runbook.md", "changelog.d/01M2KR6R34724T0ND699BV81G9.*"]
