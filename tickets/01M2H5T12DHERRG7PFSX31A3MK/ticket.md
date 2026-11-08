@@ -2,13 +2,14 @@
 id = "01M2H5T12DHERRG7PFSX31A3MK"
 title = "Suspension state with ModerationLog rows; login refuses suspended players with the reason"
 type = "task"
-category = "todo"
+category = "done"
+outcome = "done"
 priority = "medium"
 points = 3
 parent = "01M2H5T12BT56ETFWBMD8MR8HR"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:21:06Z"
+updated = "2026-11-08T07:21:08Z"
 aliases = ["T-0077"]
 labels = ["jira:SCRUM-193", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/db/models/moderation.py", "src/hullbreach_server/api/admin/players.py", "src/hullbreach_server/api/auth.py", "tests/unit/test_moderation.py"]
