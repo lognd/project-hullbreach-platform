@@ -1,0 +1,20 @@
+kind = "evidence"
+accepts = [2]
+captured_at = "2026-11-08T07:24:22Z"
+digest = "e9a4e8d6832275b0fb98983801e8c4c363eec8fcbc6af2db91d299b0b43f147d"
+exit_code = 0
+head = "edd317b3c57ced2d30b26393812732c4aa234ca2"
+inline = """
+........                                                                 [100%]
+8 passed in 0.44s
+"""
+passed = true
+provider = "pytest"
+ref = "tests/unit/test_designs.py::test_validate_design_rejects_each_bad_shape"
+size = 98
+status = "measured"
+test_count = 8
+tests_digest = "0bd07b612c51c21e2f9ff27edf53610d5fce4c5869c7b41cfda2fdd0f0a49b62"
+at = "2026-11-08T07:24:22Z"
+actor = "lognd"
+rev = 1
