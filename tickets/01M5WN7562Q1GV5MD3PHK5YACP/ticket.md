@@ -6,7 +6,7 @@ category = "todo"
 priority = "low"
 reporter = "a-carten"
 created = "2026-10-26T17:48:03Z"
-updated = "2026-10-26T17:48:03Z"
+updated = "2026-11-08T07:21:23Z"
 scope = ["README.md"]
 +++
 
