@@ -6,7 +6,7 @@ category = "todo"
 priority = "medium"
 reporter = "a-carten"
 created = "2026-11-08T05:53:46Z"
-updated = "2026-11-08T05:53:46Z"
+updated = "2026-11-08T05:55:56Z"
 scope = ["web/src/components/Page.tsx", "web/tests/unit/BlueprintShell.test.tsx", "docs/index.md", "changelog.d/*"]
 +++
 
