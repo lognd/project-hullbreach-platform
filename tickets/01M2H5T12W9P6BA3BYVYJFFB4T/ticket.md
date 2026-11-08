@@ -6,7 +6,7 @@ category = "todo"
 priority = "high"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-09-15T00:00:00Z"
+updated = "2026-11-08T07:24:50Z"
 aliases = ["T-0092"]
 scope = ["src/hullbreach_server/api/replays.py", "tests/unit/test_replays.py", "web/src/pages/Replay.tsx"]
 +++
