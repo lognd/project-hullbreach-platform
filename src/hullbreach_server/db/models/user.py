@@ -60,6 +60,11 @@ class User(Base):
     # Set when the owner deletes the account (T-0037): the row is anonymized
     # and kept so match history and the leaderboard stay intact.
     deleted_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    # Set while an admin has suspended the account (X31A3MK): login is refused
+    # with `suspended_reason`; null when the account is in good standing.
+    # frob:ticket 01M2H5T12DHERRG7PFSX31A3MK
+    suspended_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), nullable=True)
+    suspended_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
 
 # Case-insensitive uniqueness (the exact-match unique constraints on the

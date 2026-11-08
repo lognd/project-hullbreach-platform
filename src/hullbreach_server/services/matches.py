@@ -70,7 +70,7 @@ def _player_matches(user: User) -> Select[tuple[Match, MatchPlayerStats]]:
     return (
         select(Match, MatchPlayerStats)
         .join(MatchPlayerStats, MatchPlayerStats.match_id == Match.id)
-        .where(MatchPlayerStats.user_id == user.id)
+        .where(MatchPlayerStats.user_id == user.id, Match.voided_at.is_(None))
         .order_by(Match.created_at.desc(), Match.id.desc())
     )
 

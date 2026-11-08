@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, Index, Integer, UniqueConstraint, Uuid
+from sqlalchemy import ForeignKey, Index, Integer, String, UniqueConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from hullbreach_server.db.engine import Base
@@ -30,7 +30,7 @@ class RatingChange(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
     match_id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(), ForeignKey("matches.id", ondelete="CASCADE"), nullable=False
+        Uuid(), ForeignKey("matches.id", ondelete="CASCADE"), nullable=True
     )
     # No ON DELETE action, like the match FKs: a deleted account is
     # anonymized, never removed, so its rating history survives.
@@ -42,3 +42,7 @@ class RatingChange(Base):
     # Set in Python (microsecond precision) so a player's latest change sorts
     # reliably; a server-side now() ticks per second on SQLite.
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), nullable=False)
+    # Set only on an admin adjustment (P40M2PE), which has no match; null for a
+    # match-driven change.
+    # frob:ticket 01M2H5T12CA6BAHAQ9Q4WFRQM6
+    reason: Mapped[str | None] = mapped_column(String(500), nullable=True)

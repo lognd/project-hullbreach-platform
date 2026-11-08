@@ -36,6 +36,11 @@ class Match(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    # Set when an admin voids the match (7XW9SF2); a voided match is hidden
+    # from history and its rating and payout effects are reversed.
+    voided_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     player_stats: Mapped[list[MatchPlayerStats]] = relationship(
         back_populates="match", cascade="all, delete-orphan"
     )

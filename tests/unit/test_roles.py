@@ -1,8 +1,8 @@
 """Unit tests for the Role enum, the require_admin dependency, and role
 exclusion from register/profile schemas (T-0028). The Role enum and
-default-role behavior landed with T-0015; require_admin is a test-only
-router (`_mount_admin_route`) mounted on the app fixture, since no
-production admin route exists yet.
+default-role behavior landed with T-0015; require_admin is also checked
+here through a test-only router (`_mount_admin_route`); production admin
+routes live under /api/v1/admin.
 """
 
 from __future__ import annotations
