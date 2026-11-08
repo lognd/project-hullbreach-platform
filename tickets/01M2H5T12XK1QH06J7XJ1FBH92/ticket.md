@@ -2,12 +2,13 @@
 id = "01M2H5T12XK1QH06J7XJ1FBH92"
 title = "S52 Watch a match from the website"
 type = "story"
-category = "todo"
+category = "done"
+outcome = "wont-fix"
 priority = "medium"
 parent = "01M2H5T12W9P6BA3BYVYJFFB4T"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:23Z"
+updated = "2026-11-08T07:24:44Z"
 aliases = ["T-0093"]
 labels = ["needs-game", "jira:SCRUM-73", "owner:lognd"]
 scope = ["src/hullbreach_server/api/replays.py", "tests/unit/test_replays.py", "web/src/pages/Replay.tsx"]
