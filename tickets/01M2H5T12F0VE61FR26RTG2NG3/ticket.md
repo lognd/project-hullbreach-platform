@@ -7,7 +7,7 @@ priority = "medium"
 parent = "01M2H5T12AMDB83JD0BVTR1BQP"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-11-08T07:24:12Z"
+updated = "2026-11-08T07:24:13Z"
 aliases = ["T-0079"]
 labels = ["jira:SCRUM-45", "owner:lognd", "milestone:0.3.0"]
 scope = ["src/hullbreach_server/api/admin/matches.py", "src/hullbreach_server/api/admin/ratings.py", "src/hullbreach_server/services/admin.py", "src/hullbreach_server/services/matches.py", "tests/unit/test_admin_ratings.py", "tests/unit/test_admin_void.py"]
@@ -18,7 +18,7 @@ bound = true
 
 [[acceptance]]
 text = "given a recorded match, when an admin voids it, then its rating and currency effects are reversed for both players"
-bound = false
+bound = true
 +++
 
 As a administrator, I want to reset or adjust a player's rating, so that I can undo the effect of a cheated or bugged match.
