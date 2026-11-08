@@ -1,0 +1,8 @@
+kind = "transition"
+from = "todo"
+to = "done"
+outcome = "wont-fix"
+reason = "All children dropped as out-of-repo course process tasks."
+at = "2026-11-08T07:06:46Z"
+actor = "lognd"
+rev = 1
