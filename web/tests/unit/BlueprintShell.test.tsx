@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { EloTrace, traceGeometry } from "@/components/EloTrace";
 import { Header } from "@/components/Header";
-import { Breadcrumb, Page } from "@/components/Page";
+import { Breadcrumb, Page, documentTitle } from "@/components/Page";
 import { saveSession } from "@/auth/session";
 import { overflowRisks } from "../support/layout";
 
@@ -24,6 +24,16 @@ describe("Page and Breadcrumb", () => {
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/me");
     expect(screen.getByText("Matches")).toHaveAttribute("aria-current", "page");
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+  });
+
+  // frob:tests web/src/components/Page.tsx::documentTitle kind="unit"
+  it("names the browser tab after the current crumb", () => {
+    expect(documentTitle([{ label: "Profile", href: "/me" }, { label: "Matches" }])).toBe(
+      "Matches | Project Hullbreach",
+    );
+    expect(documentTitle([])).toBe("Project Hullbreach");
+    render(<Page crumbs={[{ label: "Store" }]} title="Store" />);
+    expect(document.title).toBe("Store | Project Hullbreach");
   });
 
   // frob:tests web/src/components/Page.tsx::Page kind="unit"

@@ -616,6 +616,8 @@ not suggested:
   and only under `prefers-reduced-motion: no-preference`.
 - States: every data page has Loading plus `SkeletonRows`, an
   `EmptyState` with a next step, and an error `Notice` with Try again.
+- Tab title: `Page` sets `document.title` to the current crumb plus
+  "Project Hullbreach" (the site name alone when there are no crumbs).
 - Shared components, not one-offs: `Page` and `Breadcrumb` (shell,
   trail, title, purpose), `Button` / `ButtonLink` (orange primary,
   cyan-outline secondary), `TextField` (label, hint, error tied by
