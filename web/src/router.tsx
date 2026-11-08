@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { App } from "@/App";
 import { CookiePolicy } from "@/pages/CookiePolicy";
 import { DataPolicy } from "@/pages/DataPolicy";
+import { AdminItems } from "@/pages/admin/Items";
+import { AdminPlayers } from "@/pages/admin/Players";
 import { Landing } from "@/pages/Landing";
 import { Register } from "@/pages/Register";
 import { History } from "@/pages/History";
@@ -60,7 +62,10 @@ export const router = createBrowserRouter([
       // the ticket's scope first (`frob ticket scope T-#### --add`).
       // frob:ticket 01M2H5T1242JFMB5A03JSDP5KP
       { path: "store", element: <Store /> },
-      // frob:todo 01M2H5T12E0JWYSBMM6HZ09J6Q path admin/* -> pages/admin/, gated on role is admin
+      // frob:ticket 01M2H5T12E0JWYSBMM6HZ09J6Q
+      { path: "admin/players", element: <AdminPlayers /> },
+      // frob:ticket 01M2H5T12E0JWYSBMM6HZ09J6Q
+      { path: "admin/items", element: <AdminItems /> },
       { path: "*", element: <NotFound /> },
     ],
   },
