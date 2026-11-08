@@ -8,14 +8,14 @@ points = 5
 parent = "01M2H5T12NSRFVQ2H4YCE7ZX30"
 reporter = "human"
 created = "2026-09-15T00:00:00Z"
-updated = "2026-10-26T09:27:23Z"
+updated = "2026-11-08T07:24:32Z"
 aliases = ["T-0086"]
 labels = ["needs-game", "milestone:0.2.0"]
 scope = ["src/hullbreach_server/api/matchmaking.py", "src/hullbreach_server/services/matchmaking.py", "tests/unit/test_matchmaking.py"]
 
 [[acceptance]]
 text = "given a signed-in player, when they enter the queue, then they can see they are queued and cancel"
-bound = false
+bound = true
 
 [[acceptance]]
 text = "given two queued players within the rating window, when matched, then both receive the same game server address without typing one"
